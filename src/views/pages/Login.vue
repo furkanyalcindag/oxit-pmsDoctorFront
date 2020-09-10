@@ -6,7 +6,7 @@
           <CCardGroup>
             <CCard class="p-4">
               <CCardBody>
-                <CForm name="login-form" @submit.prevent="handleLogin">
+                <CForm name="login-form" >
                   <h1>Login</h1>
                   <p class="text-muted">Sign In to your account</p>
                   <CInput
@@ -26,7 +26,7 @@
                   </CInput>
                   <CRow>
                     <CCol col="6" class="text-left">
-                      <CButton color="primary" class="px-4">Login</CButton>
+                      <CButton @click="handleLogin" color="primary" class="px-4">Login</CButton>
                     </CCol>
                     <CCol col="6" class="text-right">
                       <CButton color="link" class="px-0">Forgot password?</CButton>
@@ -63,7 +63,7 @@
 
 <script>
 
-import User from '../models/user';
+import User from '../../models/user';
 
 export default {
   name: 'Login',
@@ -76,27 +76,29 @@ export default {
   },
   computed:{
     loggedIn(){
-      return this.$store.state.auth.status.loggedIn;
+      if(this.$store.state.auth!=null&&this.$store.state.auth.status!=null)
+        return this.$store.state.auth.status.loggedIn;
     }
   },
   created() {
     if (this.loggedIn) {
-      this.$router.push('/profile');
+      this.$router.push('/dashboard');
     }
   },
   methods: {
     handleLogin() {
+      console.log(this.$store);
       this.loading = true;
-      this.$validator.validateAll().then(isValid => {
-        if (!isValid) {
-          this.loading = false;
-          return;
-        }
+      debugger;
+    
+       
 
         if (this.user.username && this.user.password) {
+        
+          
           this.$store.dispatch('auth/login', this.user).then(
             () => {
-              this.$router.push('/profile');
+              this.$router.push('/dashboard');
             },
             error => {
               this.loading = false;
@@ -107,7 +109,7 @@ export default {
             }
           );
         }
-      });
+     
     }
   }
 };

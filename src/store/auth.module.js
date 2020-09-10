@@ -13,6 +13,7 @@ export const auth = {
       return AuthService.login(user).then(
         user => {
           commit('loginSuccess', user);
+          localStorage.setItem("user",user);
           return Promise.resolve(user);
         },
         error => {
