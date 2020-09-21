@@ -541,6 +541,9 @@ export default {
       ]
     }
   },
+  created() {
+    //this.deneme()
+  },
   methods: {
     color (value) {
       let $color
@@ -554,6 +557,11 @@ export default {
         $color = 'danger'
       }
       return $color
+    },
+
+    deneme(){
+      console.log("deneme",localStorage)
+
     }
   }
 }

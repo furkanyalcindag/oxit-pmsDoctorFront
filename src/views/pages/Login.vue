@@ -78,20 +78,19 @@ export default {
     loggedIn(){
       if(this.$store.state.auth!=null&&this.$store.state.auth.status!=null)
         return this.$store.state.auth.status.loggedIn;
+      else
+        return null
     }
   },
   created() {
-    if (this.loggedIn) {
+   /* if (this.loggedIn) {
       this.$router.push('/dashboard');
-    }
+    }*/
   },
   methods: {
     handleLogin() {
-      console.log(this.$store);
+      //console.log(this.$store);
       this.loading = true;
-      debugger;
-    
-       
 
         if (this.user.username && this.user.password) {
         
@@ -101,6 +100,7 @@ export default {
               this.$router.push('/dashboard');
             },
             error => {
+              console.log(error.response);
               this.loading = false;
               this.message =
                 (error.response && error.response.data) ||
