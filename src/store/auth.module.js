@@ -25,6 +25,10 @@ export const auth = {
     logout({ commit }) {
       AuthService.logout();
       commit('logout');
+      localStorage.clear();
+      return true;
+
+      
     },
     register({ commit }, user) {
       return AuthService.register(user).then(
