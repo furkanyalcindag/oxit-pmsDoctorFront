@@ -1,7 +1,7 @@
 <template>
   <CRow>
     <CCol sm="6" lg="3">
-      <CWidgetDropdown color="primary" header="9.823" text="Members online">
+      <CWidgetDropdown color="primary"  v-bind:header="cars"  text="Members online">
         <template #default>
           <CDropdown
             color="transparent p-0"
@@ -133,6 +133,8 @@ import { CChartLineSimple, CChartBarSimple } from '../charts/index.js'
 
 export default {
   name: 'WidgetsDropdown',
-  components: { CChartLineSimple, CChartBarSimple }
+  components: { CChartLineSimple, CChartBarSimple },
+  props:['cars']
+  
 }
 </script>
