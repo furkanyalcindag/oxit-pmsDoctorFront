@@ -1,6 +1,14 @@
 import AuthService from '../services/auth.service';
+import {use} from "vee-validate/dist/vee-validate.minimal.esm";
 
-const user = JSON.parse(localStorage.getItem('user'));
+let user=null
+if(localStorage!=null&&localStorage.getItem('user')!=null){
+user = JSON.parse(localStorage.getItem('user'));
+}
+else {
+   user  = null;
+}
+
 const initialState = user
   ? { status: { loggedIn: true }, user }
   : { status: { loggedIn: false }, user: null };
@@ -10,10 +18,12 @@ export const auth = {
   state: initialState,
   actions: {
     login({ commit }, user) {
+      console.log(user)
       return AuthService.login(user).then(
-        user => {
-          commit('loginSuccess', user);
-          localStorage.setItem("user",user);
+        response => {
+          //commit('loginSuccess', user);
+          console.log(response.accessToken)
+          //localStorage.setItem("user",JSON.beautify(user));
           return Promise.resolve(user);
         },
         error => {
