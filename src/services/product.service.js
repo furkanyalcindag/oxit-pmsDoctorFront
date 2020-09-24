@@ -7,10 +7,9 @@ class ProductService {
     getProducts()
     {
       
+       return  axios.get(API_URL + '/car-service/product-api/', { headers: authHeader() })
         
-          return axios.get(API_URL + '/car-service/product-api/', { headers: authHeader() }).then(response=>response.data)
-          
-
+      
     }
 
 
@@ -19,4 +18,4 @@ class ProductService {
 
 }
 
-export default new ProductService()
+export default ProductService

@@ -134,7 +134,11 @@ import { CChartLineSimple, CChartBarSimple } from '../charts/index.js'
 export default {
   name: 'WidgetsDropdown',
   components: { CChartLineSimple, CChartBarSimple },
-  props:['cars']
+ 
+  props: {
+  cars: String,
+ 
+}
   
 }
 </script>
