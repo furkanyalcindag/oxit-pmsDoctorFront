@@ -25,6 +25,15 @@ class AuthService {
     localStorage.removeItem('user');
   }
 
+  localStorageControl() {
+    if(localStorage.getItem('user_token')===null){
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
   register(user) {
     return axios.post(API_URL + '/car-service/user-api/', {
       first_name: user.first_name,
