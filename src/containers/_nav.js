@@ -222,6 +222,18 @@ export default [
         ]
       },
       {
+        _name: 'CSidebarNavDropdown',
+        name: 'Müşteri',
+        route: '/customer',
+        icon: 'cil-star',
+        items: [
+          {
+            name: 'Müşteri',
+            to: '/customer/customer'
+          }
+        ]
+      },
+      {
         _name: 'CSidebarNavItem',
         name: 'Download CoreUI',
         href: 'http://coreui.io/vue/',

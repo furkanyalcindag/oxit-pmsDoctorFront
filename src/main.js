@@ -7,9 +7,12 @@ import { iconsSet as icons } from './assets/icons/icons.js'
 import store from './store/store'
 import VeeValidate from 'vee-validate';
 
+
+
 Vue.config.performance = true
 Vue.use(CoreuiVue)
-Vue.use(VeeValidate);
+Vue.use(VeeValidate)
+
 Vue.prototype.$log = console.log.bind(console)
 
 new Vue({
@@ -19,6 +22,6 @@ new Vue({
   icons,
   template: '<App/>',
   components: {
-    App
+    App,
   }
 })

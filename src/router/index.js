@@ -58,6 +58,7 @@ const Register = () => import('@/views/pages/Register')
 const Users = () => import('@/views/users/Users')
 const User = () => import('@/views/users/User')
 
+//customer
 const Customer = ()=>import('@/views/customer/Customer')
 
 Vue.use(Router)
@@ -136,6 +137,22 @@ function configRoutes () {
               name: 'User',
               component: User
             }
+          ]
+        },
+        {
+          path: '/customer',
+          redirect: '/customer/customer',
+          name: 'Customer',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'customer',
+              name: 'Customer',
+              component: Customer
+            },
+
           ]
         },
         {
@@ -339,24 +356,9 @@ function configRoutes () {
           component: Register
         }
       ]
-    },
-
-    {
-      path: '/customer',
-      redirect: '/customer/customer',
-      name: 'Customer',
-      component: {
-        render (c) { return c('router-view') }
-      },
-      children: [
-        {
-          path: 'customer',
-          name: 'Customer',
-          component: Customer
-        },
-
-      ]
     }
+
+
   ]
 }
 
