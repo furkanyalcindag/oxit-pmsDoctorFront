@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+
 // Containers
 const TheContainer = () => import('@/containers/TheContainer')
 
@@ -56,6 +57,8 @@ const Register = () => import('@/views/pages/Register')
 // Users
 const Users = () => import('@/views/users/Users')
 const User = () => import('@/views/users/User')
+
+const Customer = ()=>import('@/views/customer/Customer')
 
 Vue.use(Router)
 
@@ -335,6 +338,23 @@ function configRoutes () {
           name: 'Register',
           component: Register
         }
+      ]
+    },
+
+    {
+      path: '/customer',
+      redirect: '/customer/customer',
+      name: 'Customer',
+      component: {
+        render (c) { return c('router-view') }
+      },
+      children: [
+        {
+          path: 'customer',
+          name: 'Customer',
+          component: Customer
+        },
+
       ]
     }
   ]
