@@ -24,6 +24,18 @@
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
+                <div>
+                  <CAlert color="success" :show="isSuccess" close-button>
+                    Müşteri başarıyla kaydedildi.
+                  </CAlert>
+
+                  <CAlert color="danger" :show="isError" close-button>
+                    Lütfen form alanlarını kontrol ediniz.
+                  </CAlert>
+                </div>
+                <CRow>
+
+                </CRow>
                 <CRow>
 
                   <CCol lg="3">
@@ -72,27 +84,26 @@
                         v-model="customer.mobilePhone"
                     />
                     <CTextarea :rows="3"
-                        label="Adres"
-                        description=""
+                               label="Adres"
+                               description=""
 
 
+                               autocomplete="autocomplete"
 
-                        autocomplete="autocomplete"
-
-                        v-model="customer.address"
+                               v-model="customer.address"
                     />
 
 
-                    <CRow form class="form-group" >
-                      <CCol tag="label" sm="3" class="col-form-label">
+                    <CRow form class="form-group">
+                      <CCol tag="label" sm="4" class="col-form-label">
                         Kurumsal
                       </CCol>
 
-                      <CCol sm="9" :class="'form-inline'">
+                      <CCol sm="8" :class="'form-inline'">
                         <CInputCheckbox
                             :label="'evet'"
                             :value="'true'"
-                            v-model="customer.isCorporate"
+
                             :checked="isCorporate"
                             v-on:change="isCorporateControl"
                         />
@@ -105,8 +116,6 @@
                   </CCol>
 
                   <CCol lg="3">
-
-
 
 
                     <CInput
@@ -128,20 +137,14 @@
                     />
 
 
-
-
-
-
                   </CCol>
-
-
 
 
                 </CRow>
 
 
                 <div class="form-actions">
-                  <CButton type="submit" color="primary">Save changes</CButton>
+                  <CButton type="submit" color="primary" @click="addCustomer">Save changes</CButton>
                   <CButton color="secondary">Cancel</CButton>
                 </div>
               </CCardBody>
@@ -222,6 +225,8 @@
 <script>
 
 import Customer from '../../models/customer';
+import CustomerService from "@/services/customer.service";
+
 
 const items = [
   {username: 'Samppa Nori', registered: '2012/01/01', role: 'Member', status: 'Active'},
@@ -273,9 +278,11 @@ export default {
       items: items.map((item, id) => {
         return {...item, id}
       }),
+      isSuccess: false,
+      isError: false,
       fieldsTable,
       details: [],
-      isCorporate:false,
+      isCorporate: false,
       collapseDuration: 0,
       selected: [], // Must be an array reference!
       show: true,
@@ -326,18 +333,37 @@ export default {
       })
     },
 
-    isCorporateControl(){
+    isCorporateControl() {
 
       console.log(this.isCorporate)
       this.isCorporate = !this.isCorporate;
+      this.customer.isCorporate = this.isCorporate
+
+    },
 
 
+    async addCustomer() {
+
+      let a = await (new CustomerService).customerAdd(this.customer)
+
+      console.log("status",a);
+      if (a.status === 200) {
+
+        this.isSuccess = true;
+      } else if (a.status === 401) {
+        this.isError = true
+        await this.$router.push('/pages/login');
+      } else {
+        this.isError = true
+      }
 
 
     }
 
 
-
+  },
+  created() {
+    this.isCorporateControl()
   }
 }
 </script>
