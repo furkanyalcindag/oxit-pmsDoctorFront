@@ -1,30 +1,32 @@
 <template>
+
+
   <div>
     <CRow>
       <CCol lg="12">
         <transition name="fade">
           <CCard v-if="show">
             <CCardHeader>
-              <CIcon name="cil-pencil" />
+              <CIcon name="cil-pencil"/>
               Müşteri
               <div class="card-header-actions">
                 <CLink href="#" class="card-header-action btn-setting">
-                  <CIcon name="cil-settings" />
+                  <CIcon name="cil-settings"/>
                 </CLink>
                 <CLink
-                  class="card-header-action btn-minimize"
-                  @click="formCollapsed = !formCollapsed"
+                    class="card-header-action btn-minimize"
+                    @click="formCollapsed = !formCollapsed"
                 >
                   <CIcon
-                    :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
+                      :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
                   />
                 </CLink>
                 <CLink
-                  href="#"
-                  class="card-header-action btn-close"
-                  v-on:click="show = !show"
+                    href="#"
+                    class="card-header-action btn-close"
+                    v-on:click="show = !show"
                 >
-                  <CIcon name="cil-x-circle" />
+                  <CIcon name="cil-x-circle"/>
                 </CLink>
               </div>
             </CCardHeader>
@@ -35,50 +37,50 @@
                     Müşteri başarıyla kaydedildi.
                   </CAlert>
 
-                  <CAlert color="danger" :show="isError">
-                    Lütfen form alanlarını kontrol ediniz.
+                  <CAlert v-for="item in errors" :key="item.message" color="danger" :show="isError">
+                    E-mail: {{ item }}
                   </CAlert>
                 </div>
-                <CRow> </CRow>
+                <CRow></CRow>
                 <CRow>
                   <CCol lg="3">
                     <CInput
-                      label="İsim"
-                      description=""
-                      autocomplete="autocomplete"
-                      v-model="customer.firstName"
+                        label="İsim"
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="customer.firstName"
                     />
 
                     <CInput
-                      label="Soyisim"
-                      description=""
-                      autocomplete="autocomplete"
-                      v-model="customer.lastName"
+                        label="Soyisim"
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="customer.lastName"
                     />
 
                     <CInput
-                      label="Email"
-                      description=""
-                      type="email"
-                      autocomplete="email"
-                      prepend="@"
-                      v-model="customer.username"
+                        label="Email"
+                        description=""
+                        type="email"
+                        autocomplete="email"
+                        prepend="@"
+                        v-model="customer.username"
                     />
                   </CCol>
 
                   <CCol lg="3">
                     <CInput
-                      label="Telefon Numarası"
-                      description=""
-                      autocomplete="autocomplete"
-                      v-model="customer.mobilePhone"
+                        label="Telefon Numarası"
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="customer.mobilePhone"
                     />
                     <CTextarea
-                      :rows="3"
-                      label="Adres"
-                      description=""
-                      autocomplete="autocomplete"
-                      v-model="customer.address"
+                        :rows="3"
+                        label="Adres"
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="customer.address"
                     />
 
                     <CRow form class="form-group">
@@ -88,10 +90,10 @@
 
                       <CCol sm="8" :class="'form-inline'">
                         <CInputCheckbox
-                          :label="'evet'"
-                          :value="'true'"
-                          :checked="isCorporate"
-                          v-on:change="isCorporateControl"
+                            :label="'evet'"
+                            :value="'true'"
+                            :checked="isCorporate"
+                            v-on:change="isCorporateControl"
                         />
                       </CCol>
                     </CRow>
@@ -99,24 +101,25 @@
 
                   <CCol lg="3">
                     <CInput
-                      label="Firma Adı"
-                      description=""
-                      autocomplete="autocomplete"
-                      v-model="customer.firmName"
+                        label="Firma Adı"
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="customer.firmName"
                     />
 
                     <CInput
-                      label="Vergi Numarası"
-                      description=""
-                      autocomplete="autocomplete"
-                      v-model="customer.taxNumber"
+                        label="Vergi Numarası"
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="customer.taxNumber"
                     />
                   </CCol>
                 </CRow>
 
                 <div class="form-actions">
                   <CButton type="submit" color="primary" @click="addCustomer"
-                    >Save changes</CButton
+                  >Save changes
+                  </CButton
                   >
                   <CButton color="secondary">Cancel</CButton>
                 </div>
@@ -132,15 +135,16 @@
           <CCard v-if="show">
             <CCardBody>
               <CDataTable
-                :items="items"
-                :fields="fieldsTable"
-                column-filter
-                table-filter
-                items-per-page-select
-                :items-per-page="5"
-                hover
-                sorter
-                pagination
+                  :items="items"
+                  :fields="fieldsTable"
+                  column-filter
+                  table-filter
+                  items-per-page-select
+                  :items-per-page="5"
+                  :activePage="4"
+                  hover
+                  sorter
+                  pagination
               >
                 <template #status="{ item }">
                   <td>
@@ -152,11 +156,11 @@
                 <template #show_details="{ item, index }">
                   <td class="py-2">
                     <CButton
-                      color="primary"
-                      variant="outline"
-                      square
-                      size="sm"
-                      @click="toggleDetails(item, index)"
+                        color="primary"
+                        variant="outline"
+                        square
+                        size="sm"
+                        @click="toggleDetails(item, index)"
                     >
                       {{ Boolean(item._toggled) ? "Hide" : "Show" }}
                     </CButton>
@@ -164,8 +168,8 @@
                 </template>
                 <template #details="{ item }">
                   <CCollapse
-                    :show="Boolean(item._toggled)"
-                    :duration="collapseDuration"
+                      :show="Boolean(item._toggled)"
+                      :duration="collapseDuration"
                   >
                     <CCardBody>
                       <CMedia :aside-image-props="{ height: 102 }">
@@ -186,17 +190,70 @@
                   </CCollapse>
                 </template>
               </CDataTable>
+
+
             </CCardBody>
           </CCard>
         </transition>
       </CCol>
     </CRow>
+    <CRow>
+
+      <table id="example" class="display" style="width:100%">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Position</th>
+          <th>Office</th>
+          <th>Age</th>
+          <th>Start date</th>
+          <th>Salary</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>Tiger Nixon</td>
+          <td>System Architect</td>
+          <td>Edinburgh</td>
+          <td>61</td>
+          <td>2011/04/25</td>
+          <td>$320,800</td>
+        </tr>
+        <tr>
+          <td>Garrett Winters</td>
+          <td>Accountant</td>
+          <td>Tokyo</td>
+          <td>63</td>
+          <td>2011/07/25</td>
+          <td>$170,750</td>
+        </tr>
+
+        </tbody>
+        <tfoot>
+        <tr>
+          <th>Name</th>
+          <th>Position</th>
+          <th>Office</th>
+          <th>Age</th>
+          <th>Start date</th>
+          <th>Salary</th>
+        </tr>
+        </tfoot>
+      </table>
+
+
+
+
+    </CRow>
   </div>
+
 </template>
 
 <script>
 import Customer from "../../models/customer";
 import CustomerService from "@/services/customer.service";
+import $ from 'jquery'
+@import '';
 
 const items = [
   {
@@ -355,26 +412,20 @@ const items = [
 ];
 
 
-const fields =[
+const fields = [
 
-{ key: "Müşteri", _style: "min-width:200px" },
-{key:"Telefon Numarası"}
-
-
-
-
-
+  {key: "Müşteri", _style: "min-width:200px"},
+  {key: "Telefon Numarası"}
 
 
 ]
 
 
-
 const fieldsTable = [
-  { key: "username", _style: "min-width:200px" },
+  {key: "username", _style: "min-width:200px"},
   "registered",
-  { key: "role", _style: "min-width:100px;" },
-  { key: "status", _style: "min-width:100px;" },
+  {key: "role", _style: "min-width:100px;"},
+  {key: "status", _style: "min-width:100px;"},
   {
     key: "show_details",
     label: "",
@@ -390,17 +441,18 @@ export default {
     return {
       customer: new Customer("", "", "", "", "", "", "", ""),
       items: items.map((item, id) => {
-        return { ...item, id };
+        return {...item, id};
       }),
       isSuccess: false,
       isError: false,
       fieldsTable,
       details: [],
+      errors: [],
       isCorporate: false,
       collapseDuration: 0,
       selected: [], // Must be an array reference!
       show: true,
-      horizontal: { label: "col-3", input: "col-9" },
+      horizontal: {label: "col-3", input: "col-9"},
       options: ["Option 1", "Option 2", "Option 3"],
       selectOptions: [
         "Option 1",
@@ -469,14 +521,18 @@ export default {
         this.isSuccess = false;
         this.isSuccess = true;
         this.successHide();
-      } else if (a.status === 401) {
+      } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
         this.errorHide();
+
         await this.$router.push("/pages/login");
       } else {
         this.isError = false;
         this.isError = true;
+
+        this.errors = a.response.data['username']
+
         this.errorHide();
       }
     },
@@ -492,5 +548,8 @@ export default {
   created() {
     this.isCorporateControl();
   },
+  mounted() {
+    $('#example').DataTable();
+  }
 };
 </script>
