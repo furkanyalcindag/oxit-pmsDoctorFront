@@ -15,9 +15,4 @@ export default {
   @import 'assets/scss/style';
 </style>
 
-<style>
-@import 'https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css';
-</style>
-
-
 
