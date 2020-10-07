@@ -121,9 +121,9 @@
 
                 <div class="form-actions">
                   <CButton type="submit" color="primary" @click="addCustomer"
-                  >Save changes
+                  >Kaydet
                   </CButton>
-                  <CButton color="secondary">Cancel</CButton>
+
                 </div>
               </CCardBody>
             </CCollapse>
@@ -132,60 +132,7 @@
       </CCol>
     </CRow>
 
-    <CRow>
-      <CCol lg="12">
-        <transition name="fade">
-          <CCard v-if="show">
-            <CCardBody>
-              <template>
-                <v-card>
-                  <v-card-title>
-                    Nutrition
-                    <v-spacer></v-spacer>
-                    <v-text-field
-                        v-model="search"
-                        append-icon="mdi-magnify"
-                        label="Search"
-                        single-line
-                        hide-details
-                    ></v-text-field>
-                  </v-card-title>
-                  <template>
-                    <v-data-table
-                        :page="page"
-                        :pageCount="numberOfPages"
-                        :headers="headers"
-                        :items="customers"
-                        :options.sync="options"
-                        :server-items-length="total"
-                        :loading="loading"
-                        class="elevation-1"
-                        :items-per-page="5"
 
-
-                    >
-
-                      <template v-slot:item.isCorporate="{ item }">
-                        <CButtonGroup>
-                          <CButton color="success">{{ item.isCorporate }}</CButton>
-                          <CButton color="info">Button</CButton>
-                          <CButton color="primary">Button</CButton>
-                        </CButtonGroup>
-                      </template>
-
-                    </v-data-table>
-                  </template>
-
-                  <CRow>
-
-                  </CRow>
-                </v-card>
-              </template>
-            </CCardBody>
-          </CCard>
-        </transition>
-      </CCol>
-    </CRow>
 
     <CRow>
       <CCol lg="12">
@@ -195,35 +142,34 @@
               <CCardBody>
 
                 <CDataTable
-                    :items="customers"
+                    :items="computedItems"
                     :fields="fieldsTable"
                     column-filter
-                    table-filter
-                    items-per-page-select
+
+
                     :items-per-page="5"
                     :activePage="4"
                     hover
                     sorter
                     pagination
+                    :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+
+                    clickableRows
 
                 >
-                  <template #deneme="{ item }">
-                    <td>
-                      {{ item.user.username }}
 
-                    </td>
-                  </template>
-                  <template #show_details="{ item, index }">
+                  <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CButton
-                          color="primary"
-                          variant="outline"
-                          square
-                          size="sm"
-                          @click="toggleDetails(item, index)"
-                      >
-                        {{ Boolean(item._toggled) ? "Hide" : "Show" }}
-                      </CButton>
+
+                      <CButtonGroup class="mx-1 d-sm-down-none">
+                        <CButton color="primary">Araç</CButton>
+                        <CButton color="success">Cari</CButton>
+                        <CButton color="danger">Sil</CButton>
+                        <CButton color="warning">Güncelle</CButton>
+                      </CButtonGroup>
+
+
+
                     </td>
                   </template>
                   <template #details="{ item }">
@@ -262,11 +208,12 @@ export default {
   data() {
     return {
       fieldsTable: [
-        {key: 'userUsername', label: "Kullanıcı Adı", _style: "min-width:200px"},
-        {key: "firstName"},
-        {key: "lastName"},
-        {key: "deneme"},
+        {key: 'nameSurname', label: "Ad Soyad", _style: "min-width:200px"},
+        {key: "firmName",label: "Firma"},
+        {key: "mobilePhone",label: "Telefon"},
+        {key: "actions",label: "İşlemler"},
       ],
+      pageLabel:{ label:'sasasa',external: true,  },
       page: 1,
       numberOfPages: 0,
       selected: [],
@@ -276,89 +223,7 @@ export default {
       loading: false,
       pagination: { external: true },
       customers: [],
-      desserts: [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%",
-          actions: true
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: "1%",
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: "7%",
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: "8%",
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: "16%",
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: "0%",
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: "2%",
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: "45%",
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: "22%",
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: "6%",
-        },
-      ],
+
       headers: [
         {
           text: "Müşteri",
@@ -413,19 +278,8 @@ export default {
   methods: {
 
 
-    computedItems() {
-      console.log("burada", this.customers)
-      this.customers = this.customers.map(item => {
 
-        return {
-          ...item,
-          userUsername: item.user.username,
-          firstName: item.user.first_name,
-          lastName: item.user.last_name,
 
-        }
-      })
-    },
 
     validator(val) {
       return val ? val.length >= 4 : false;
@@ -512,26 +366,16 @@ export default {
           })
           .catch(err => console.log(err.response.data))
           .finally(() => this.loading = false);
+      this.loading=false
     }
+
 
 
   },
 
   watch: {
-    options: {
-      handler() {
-        this.getCategoriesByPagination();
-      },
-      deep: true,
-    },
-    customers: {
-      handler() {
-        console.log("değiştiii")
 
-        this.computedItems()
-      },
-      deep: true
-    }
+
 
   },
 
@@ -541,9 +385,34 @@ export default {
   },
   mounted() {
     this.getCategoriesByPagination();
-    this.computedItems();
+
   },
-  computed: {}
+  computed: {
+
+
+
+    computedItems () {
+
+      return this.customers.map(item => {
+        return {
+          ...item,
+          userUsername: item.user.username,
+          nameSurname:item.user.first_name + ' ' + item.user.last_name
+
+        }
+      })
+    },
+
+
+
+
+
+
+
+
+
+
+  }
 
 };
 </script>
