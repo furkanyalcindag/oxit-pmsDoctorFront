@@ -151,29 +151,34 @@
                     ></v-text-field>
                   </v-card-title>
                   <template>
-                  <v-data-table
-                      :headers="headers"
-                      :items="customer"
-                      :search="search"
-                      :items-per-page="10"
-                      item-key="name"
-                      class="elevation-1"
-                      :total-items="total"
-                      :loading="loading"
+                    <v-data-table
+                        :page="page"
+                        :pageCount="numberOfPages"
+                        :headers="headers"
+                        :items="customers"
+                        :options.sync="options"
+                        :server-items-length="total"
+                        :loading="loading"
+                        class="elevation-1"
+                        :items-per-page="5"
 
 
-                  >
+                    >
 
-                    <template v-slot:item="{ item }">
-                      <CButtonGroup>
-                        <CButton color="success">Button</CButton>
-                        <CButton color="info">Button</CButton>
-                        <CButton color="primary">Button</CButton>
-                      </CButtonGroup>
-                    </template>
+                      <template v-slot:item.isCorporate="{ item }">
+                        <CButtonGroup>
+                          <CButton color="success">{{ item.isCorporate }}</CButton>
+                          <CButton color="info">Button</CButton>
+                          <CButton color="primary">Button</CButton>
+                        </CButtonGroup>
+                      </template>
 
-                  </v-data-table>
+                    </v-data-table>
                   </template>
+
+                  <CRow>
+
+                  </CRow>
                 </v-card>
               </template>
             </CCardBody>
@@ -181,6 +186,65 @@
         </transition>
       </CCol>
     </CRow>
+
+    <CRow>
+      <CCol lg="12">
+        <transition name="fade">
+          <CCard v-if="show">
+            <template>
+              <CCardBody>
+
+                <CDataTable
+                    :items="customers"
+                    :fields="fieldsTable"
+                    column-filter
+                    table-filter
+                    items-per-page-select
+                    :items-per-page="5"
+                    :activePage="4"
+                    hover
+                    sorter
+                    pagination
+
+                >
+                  <template #deneme="{ item }">
+                    <td>
+                      {{ item.user.username }}
+
+                    </td>
+                  </template>
+                  <template #show_details="{ item, index }">
+                    <td class="py-2">
+                      <CButton
+                          color="primary"
+                          variant="outline"
+                          square
+                          size="sm"
+                          @click="toggleDetails(item, index)"
+                      >
+                        {{ Boolean(item._toggled) ? "Hide" : "Show" }}
+                      </CButton>
+                    </td>
+                  </template>
+                  <template #details="{ item }">
+                    <CCollapse
+                        :show="Boolean(item._toggled)"
+                        :duration="collapseDuration"
+                    >
+
+                    </CCollapse>
+                  </template>
+                </CDataTable>
+
+
+              </CCardBody>
+            </template>
+          </CCard>
+        </transition>
+      </CCol>
+    </CRow>
+
+
   </div>
 </template>
 
@@ -188,15 +252,8 @@
 import Customer from "../../models/customer";
 import CustomerService from "@/services/customer.service";
 import Vuetify from "vuetify/lib";
-import * as axios from "core-js";
-
-
-
-const fields = [
-  {key: "Müşteri", _style: "min-width:200px"},
-  {key: "Telefon Numarası"},
-];
-
+import axios from "axios";
+import authHeader from "@/services/auth-header";
 
 
 export default {
@@ -204,13 +261,21 @@ export default {
   vuetify: new Vuetify(),
   data() {
     return {
-
+      fieldsTable: [
+        {key: 'userUsername', label: "Kullanıcı Adı", _style: "min-width:200px"},
+        {key: "firstName"},
+        {key: "lastName"},
+        {key: "deneme"},
+      ],
+      page: 1,
+      numberOfPages: 0,
       selected: [],
-      rowsPerPageItems: [10],
+      rowsPerPageItems: [5],
       search: '',
       total: 0,
       loading: false,
-      pagination: {},
+      pagination: { external: true },
+      customers: [],
       desserts: [
         {
           name: "Frozen Yogurt",
@@ -219,7 +284,7 @@ export default {
           carbs: 24,
           protein: 4.0,
           iron: "1%",
-          actions:true
+          actions: true
         },
         {
           name: "Ice cream sandwich",
@@ -296,14 +361,14 @@ export default {
       ],
       headers: [
         {
-          text: "Dessert (100g serving)",
+          text: "Müşteri",
           align: "start",
           sortable: false,
-          value: "gender",
+          value: "user.first_name",
         },
-        {text: "Tax", value: "tax_number"},
+        {text: "Tax", value: "taxNumber"},
 
-        {text: "Actions (%)", value: "actions"}
+        {text: "Actions (%)", value: "isCorporate"}
       ],
       customer: new Customer("", "", "", "", "", "", "", ""),
 
@@ -346,6 +411,22 @@ export default {
   },
 
   methods: {
+
+
+    computedItems() {
+      console.log("burada", this.customers)
+      this.customers = this.customers.map(item => {
+
+        return {
+          ...item,
+          userUsername: item.user.username,
+          firstName: item.user.first_name,
+          lastName: item.user.last_name,
+
+        }
+      })
+    },
+
     validator(val) {
       return val ? val.length >= 4 : false;
     },
@@ -385,6 +466,7 @@ export default {
         this.isSuccess = false;
         this.isSuccess = true;
         this.successHide();
+        this.getCategoriesByPagination();
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
@@ -410,36 +492,58 @@ export default {
     },
 
     getCategoriesByPagination() {
-      this.loading = true;
+
       // get by search keyword
+      console.log("search", this.search)
+      console.log("pagination", this.pagination.page)
+      console.log("pagination", this.pagination.rowsPerPage)
+      this.loading = true;
+      const {page, itemsPerPage} = this.options;
+      let pageNumber = page;
 
 
-      if (this.search) {
-        axios.get(`localhost:8000/car-service/customer-api/?search=${this.search}&page=${this.pagination.page}&per_page=${this.pagination.rowsPerPage}`)
-            .then(res => {
-              this.customer = res.data.data;
-              this.total = res.data.recordsTotal;
-            })
-            .catch(err => console.log(err.response.data))
-            .finally(() => this.loading = false);
-      }
+      axios.get(`http://localhost:8000/car-service/customer-api/?search=${this.search}&page=1&per_page=10`, {headers: authHeader()})
+          .then(res => {
+            this.customers = res.data.data;
+            console.log("ssa", res.data.data)
+            this.total = res.data.recordsTotal;
+            this.numberOfPages = 2;
+
+          })
+          .catch(err => console.log(err.response.data))
+          .finally(() => this.loading = false);
     }
 
 
   },
+
   watch: {
-    pagination() {
-      this.getCategoriesByPagination();
+    options: {
+      handler() {
+        this.getCategoriesByPagination();
+      },
+      deep: true,
     },
-    search() {
-      this.getCategoriesByPagination();
+    customers: {
+      handler() {
+        console.log("değiştiii")
+
+        this.computedItems()
+      },
+      deep: true
     }
+
   },
+
   created() {
     this.isCorporateControl();
-    this.getCategoriesByPagination();
+
   },
   mounted() {
+    this.getCategoriesByPagination();
+    this.computedItems();
   },
+  computed: {}
+
 };
 </script>
