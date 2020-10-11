@@ -145,15 +145,13 @@
                     :items="computedItems"
                     :fields="fieldsTable"
                     column-filter
-
-
+                    :border="true"
                     :items-per-page="5"
                     :activePage="4"
                     hover
                     sorter
                     pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
-
                     clickableRows
 
                 >
@@ -162,7 +160,7 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton color="primary">Araç</CButton>
+                        <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
                         <CButton color="success">Cari</CButton>
                         <CButton color="danger">Sil</CButton>
                         <CButton color="warning">Güncelle</CButton>
@@ -191,6 +189,79 @@
     </CRow>
 
 
+    <CModal
+      :show.sync="darkModal"
+      :no-close-on-backdrop="true"
+      :centered="true"
+      title="Modal title 2"
+      size="xl"
+      color="dark"
+    >
+       <CRow>
+      <CCol lg="12">
+        <transition name="fade">
+          <CCard v-if="show">
+            <template>
+              <CCardBody>
+
+                <CDataTable
+                    :items="computedItemsCar"
+                    :fields="fieldsTableCar"
+                    column-filter
+
+
+                    :items-per-page="5"
+                    :activePage="4"
+                    hover
+                    sorter
+                    pagination
+                    :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+
+                    clickableRows
+
+                >
+
+                  <template #actions="{ item, index }">
+                    <td class="py-2">
+
+                      <CButtonGroup class="mx-1 d-sm-down-none">
+                        <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
+                        <CButton color="success">Cari</CButton>
+                        <CButton color="danger">Sil</CButton>
+                        <CButton color="warning">Güncelle</CButton>
+                      </CButtonGroup>
+
+
+
+                    </td>
+                  </template>
+                  <template #details="{ item }">
+                    <CCollapse
+                        :show="Boolean(item._toggled)"
+                        :duration="collapseDuration"
+                    >
+
+                    </CCollapse>
+                  </template>
+                </CDataTable>
+
+
+              </CCardBody>
+            </template>
+          </CCard>
+        </transition>
+      </CCol>
+    </CRow>
+      <template #header>
+        <h6 class="modal-title">Araçlar</h6>
+        <CButtonClose @click="darkModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="darkModal = false" color="danger">Discard</CButton>
+        <CButton @click="darkModal = false" color="success">Accept</CButton>
+      </template>
+    </CModal>
+
   </div>
 </template>
 
@@ -213,6 +284,15 @@ export default {
         {key: "mobilePhone",label: "Telefon"},
         {key: "actions",label: "İşlemler"},
       ],
+      fieldsTableCar: [
+        {key: 'plate', label: "Plaka", _style: "min-width:100px"},
+        {key: "brand",label: "Marka"},
+        {key: "model",label: "Model"},
+        {key: "year",label: "Yıl"},
+        {key:"chassisNumber",label: "Şase No"},
+        {key:"engineNumber",label: "Motor No"},
+        {key: "actions",label: "İşlemler"}
+      ],
       pageLabel:{ label:'sasasa',external: true,  },
       page: 1,
       numberOfPages: 0,
@@ -223,18 +303,9 @@ export default {
       loading: false,
       pagination: { external: true },
       customers: [],
+      cars:[],
 
-      headers: [
-        {
-          text: "Müşteri",
-          align: "start",
-          sortable: false,
-          value: "user.first_name",
-        },
-        {text: "Tax", value: "taxNumber"},
 
-        {text: "Actions (%)", value: "isCorporate"}
-      ],
       customer: new Customer("", "", "", "", "", "", "", ""),
 
       isSuccess: false,
@@ -244,7 +315,7 @@ export default {
       errors: [],
       isCorporate: false,
       collapseDuration: 0,
-
+      darkModal: false,
       show: true,
       horizontal: {label: "col-3", input: "col-9"},
       options: ["Option 1", "Option 2", "Option 3"],
@@ -276,11 +347,6 @@ export default {
   },
 
   methods: {
-
-
-
-
-
     validator(val) {
       return val ? val.length >= 4 : false;
     },
@@ -314,25 +380,21 @@ export default {
 
     async addCustomer() {
       let a = await new CustomerService().customerAdd(this.customer);
-
       console.log("status", a);
       if (a.status === 200) {
         this.isSuccess = false;
         this.isSuccess = true;
         this.successHide();
-        this.getCategoriesByPagination();
+        this.getCustomersPagination();
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
         this.errorHide();
-
         await this.$router.push("/pages/login");
       } else {
         this.isError = false;
         this.isError = true;
-
         this.errors = a.response.data["username"];
-
         this.errorHide();
       }
     },
@@ -344,8 +406,12 @@ export default {
       setTimeout(() => (this.isSuccess = false), 5000);
       console.log("naber");
     },
+    async getCustomers(){
+      let customersRes =await new CustomerService().customerGet('','','');
+        this.customers = customersRes;
+    },
 
-    getCategoriesByPagination() {
+    getCustomersPagination() {
 
       // get by search keyword
       console.log("search", this.search)
@@ -367,9 +433,32 @@ export default {
           .catch(err => console.log(err.response.data))
           .finally(() => this.loading = false);
       this.loading=false
+    },
+
+     getCarPagination(uuid) {
+
+      this.darkModal=true
+
+      // get by search keyword
+      console.log("search", this.search)
+      console.log("pagination", this.pagination.page)
+      console.log("pagination", this.pagination.rowsPerPage)
+      this.loading = true;
+      const {page, itemsPerPage} = this.options;
+      let pageNumber = page;
+console.log("uuid",uuid)
+      axios.get(`http://localhost:8000/car-service/car-api/?uuid=${uuid}`, {headers: authHeader()})
+          .then(res => {
+            this.cars = res.data;
+            //this.total = res.data.recordsTotal;
+            //this.numberOfPages = 2;
+            console.log(this.cars)
+
+          })
+          .catch(err => console.log(err.response.data))
+          .finally(() => this.loading = false);
+      this.loading=false
     }
-
-
 
   },
 
@@ -383,15 +472,12 @@ export default {
     this.isCorporateControl();
 
   },
-  mounted() {
-    this.getCategoriesByPagination();
+  async mounted() {
+    await this.getCustomersPagination();
 
   },
-  computed: {
-
-
-
-    computedItems () {
+   computed: {
+     computedItems () {
 
       return this.customers.map(item => {
         return {
@@ -402,16 +488,16 @@ export default {
         }
       })
     },
+      computedItemsCar () {
+
+      return this.cars.map(item => {
+        return {
+          ...item,
 
 
-
-
-
-
-
-
-
-
+        }
+      })
+    }
   }
 
 };

@@ -29,6 +29,18 @@ class CustomerService {
 
     }
 
+    customerGet(search,page,per_page){
+
+         axios.get(`http://localhost:8000/car-service/customer-api/?search=${search}&page=1&per_page=10`, {headers: authHeader()})
+          .then(res => {
+           return res.data.data;
+
+          })
+          .catch(err => console.log(err.response.data));
+
+
+    }
+
 
 
 
