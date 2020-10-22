@@ -133,7 +133,6 @@
     </CRow>
 
 
-
     <CRow>
       <CCol lg="12">
         <transition name="fade">
@@ -161,11 +160,11 @@
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
                         <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
+                        <CButton @click="addCarModal(item.uuid)" color="info">Araç Ekle</CButton>
                         <CButton color="success">Cari</CButton>
                         <CButton color="danger">Sil</CButton>
                         <CButton color="warning">Güncelle</CButton>
                       </CButtonGroup>
-
 
 
                     </td>
@@ -190,68 +189,68 @@
 
 
     <CModal
-      :show.sync="darkModal"
-      :no-close-on-backdrop="true"
-      :centered="true"
-      title="Modal title 2"
-      size="xl"
-      color="dark"
+        :show.sync="darkModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
     >
-       <CRow>
-      <CCol lg="12">
-        <transition name="fade">
-          <CCard v-if="show">
-            <template>
-              <CCardBody>
 
-                <CDataTable
-                    :items="computedItemsCar"
-                    :fields="fieldsTableCar"
-                    column-filter
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="show">
+              <template>
+                <CCardBody>
 
-
-                    :items-per-page="5"
-                    :activePage="4"
-                    hover
-                    sorter
-                    pagination
-                    :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
-
-                    clickableRows
-
-                >
-
-                  <template #actions="{ item, index }">
-                    <td class="py-2">
-
-                      <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
-                        <CButton color="success">Cari</CButton>
-                        <CButton color="danger">Sil</CButton>
-                        <CButton color="warning">Güncelle</CButton>
-                      </CButtonGroup>
+                  <CDataTable
+                      :items="computedItemsCar"
+                      :fields="fieldsTableCar"
+                      column-filter
 
 
+                      :items-per-page="5"
+                      :activePage="4"
+                      hover
+                      sorter
+                      pagination
+                      :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
 
-                    </td>
-                  </template>
-                  <template #details="{ item }">
-                    <CCollapse
-                        :show="Boolean(item._toggled)"
-                        :duration="collapseDuration"
-                    >
+                      clickableRows
 
-                    </CCollapse>
-                  </template>
-                </CDataTable>
+                  >
+
+                    <template #actions="{ item, index }">
+                      <td class="py-2">
+
+                        <CButtonGroup class="mx-1 d-sm-down-none">
+                          <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
+                          <CButton color="success">Cari</CButton>
+                          <CButton color="danger">Sil</CButton>
+                          <CButton color="warning">Güncelle</CButton>
+                        </CButtonGroup>
 
 
-              </CCardBody>
-            </template>
-          </CCard>
-        </transition>
-      </CCol>
-    </CRow>
+                      </td>
+                    </template>
+                    <template #details="{ item }">
+                      <CCollapse
+                          :show="Boolean(item._toggled)"
+                          :duration="collapseDuration"
+                      >
+
+                      </CCollapse>
+                    </template>
+                  </CDataTable>
+
+
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
       <template #header>
         <h6 class="modal-title">Araçlar</h6>
         <CButtonClose @click="darkModal = false" class="text-white"/>
@@ -262,6 +261,132 @@
       </template>
     </CModal>
 
+
+    <CModal
+        :show.sync="carModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="showAddCar">
+              <template>
+                <CCardBody>
+
+                  <div>
+                    <CAlert color="success" :show="isSuccessCar">
+                      Araba başarıyla kaydedildi.
+                    </CAlert>
+
+                    <CAlert
+                        v-for="item in errorsCar"
+                        :key="item.message"
+                        color="danger"
+                        :show="isError"
+                    >
+                      E-mail: {{ item }}
+                    </CAlert>
+                  </div>
+
+
+                  <CRow>
+                    <CCol lg="6">
+                      <CInput
+                          label="Plaka"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="car.plate"
+                      />
+
+                      <CInput
+                          label="Marka"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="car.brand"
+                      />
+
+                      <CInput
+                          label="Model"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="car.model"
+                      />
+                      <CInput
+                          label="Yıl"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="car.year"
+                      />
+
+                      <CInput
+                          label="Motor Tipi"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="car.engine"
+                      />
+                    </CCol>
+
+
+                    <CCol lg="6">
+                      <CInput
+                          label="Yakıt"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="car.oilType"
+                      />
+
+                      <CInput
+                          label="Şase Numarası"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="car.chassisNumber"
+                      />
+
+                      <CInput
+                          label="KM"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="car.currentKM"
+                      />
+                      <CInput
+                          label="Motor Numarası"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="car.engineNumber"
+                      />
+
+                      <CInput
+                          label="Renk"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="car.color"
+                      />
+                    </CCol>
+
+                  </CRow>
+
+
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Araç Ekle</h6>
+        <CButtonClose @click="carModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="carModal = false" color="danger">Kapat</CButton>
+        <CButton @click="addCar()" color="success">Kaydet</CButton>
+      </template>
+    </CModal>
+
+
   </div>
 </template>
 
@@ -271,6 +396,8 @@ import CustomerService from "@/services/customer.service";
 import Vuetify from "vuetify/lib";
 import axios from "axios";
 import authHeader from "@/services/auth-header";
+import Car from "@/models/car";
+import CarService from "@/services/car.service";
 
 
 export default {
@@ -280,20 +407,20 @@ export default {
     return {
       fieldsTable: [
         {key: 'nameSurname', label: "Ad Soyad", _style: "min-width:200px"},
-        {key: "firmName",label: "Firma"},
-        {key: "mobilePhone",label: "Telefon"},
-        {key: "actions",label: "İşlemler"},
+        {key: "firmName", label: "Firma"},
+        {key: "mobilePhone", label: "Telefon"},
+        {key: "actions", label: "İşlemler"},
       ],
       fieldsTableCar: [
         {key: 'plate', label: "Plaka", _style: "min-width:100px"},
-        {key: "brand",label: "Marka"},
-        {key: "model",label: "Model"},
-        {key: "year",label: "Yıl"},
-        {key:"chassisNumber",label: "Şase No"},
-        {key:"engineNumber",label: "Motor No"},
-        {key: "actions",label: "İşlemler"}
+        {key: "brand", label: "Marka"},
+        {key: "model", label: "Model"},
+        {key: "year", label: "Yıl"},
+        {key: "chassisNumber", label: "Şase No"},
+        {key: "engineNumber", label: "Motor No"},
+        {key: "actions", label: "İşlemler"}
       ],
-      pageLabel:{ label:'sasasa',external: true,  },
+      pageLabel: {label: 'sasasa', external: true,},
       page: 1,
       numberOfPages: 0,
       selected: [],
@@ -301,22 +428,27 @@ export default {
       search: '',
       total: 0,
       loading: false,
-      pagination: { external: true },
+      pagination: {external: true},
       customers: [],
-      cars:[],
+      cars: [],
 
 
       customer: new Customer("", "", "", "", "", "", "", ""),
-
+      car : new Car("","","","","","","","","","",""),
       isSuccess: false,
+      isSuccessCar: false,
       isError: false,
+
 
       details: [],
       errors: [],
+      errorsCar:[],
       isCorporate: false,
       collapseDuration: 0,
       darkModal: false,
+      carModal: false,
       show: true,
+      showAddCar: true,
       horizontal: {label: "col-3", input: "col-9"},
       options: ["Option 1", "Option 2", "Option 3"],
       selectOptions: [
@@ -377,6 +509,14 @@ export default {
       this.isCorporate = !this.isCorporate;
       this.customer.isCorporate = this.isCorporate;
     },
+    addCarModal(profileUuid) {
+
+      console.log("uuid",profileUuid)
+      this.carModal=true
+      this.car.profileUuid=profileUuid
+      console.log("car",this.car)
+
+    },
 
     async addCustomer() {
       let a = await new CustomerService().customerAdd(this.customer);
@@ -406,9 +546,16 @@ export default {
       setTimeout(() => (this.isSuccess = false), 5000);
       console.log("naber");
     },
-    async getCustomers(){
-      let customersRes =await new CustomerService().customerGet('','','');
-        this.customers = customersRes;
+    errorHideCar() {
+      setTimeout(() => (this.isErrorCar = false), 5000);
+    },
+    successHideCar() {
+      setTimeout(() => (this.isSuccessCar = false), 5000);
+      console.log("naber");
+    },
+    async getCustomers() {
+      let customersRes = await new CustomerService().customerGet('', '', '');
+      this.customers = customersRes;
     },
 
     getCustomersPagination() {
@@ -432,12 +579,12 @@ export default {
           })
           .catch(err => console.log(err.response.data))
           .finally(() => this.loading = false);
-      this.loading=false
+      this.loading = false
     },
 
-     getCarPagination(uuid) {
+    getCarPagination(uuid) {
 
-      this.darkModal=true
+      this.darkModal = true
 
       // get by search keyword
       console.log("search", this.search)
@@ -446,7 +593,7 @@ export default {
       this.loading = true;
       const {page, itemsPerPage} = this.options;
       let pageNumber = page;
-console.log("uuid",uuid)
+      console.log("uuid", uuid)
       axios.get(`http://localhost:8000/car-service/car-api/?uuid=${uuid}`, {headers: authHeader()})
           .then(res => {
             this.cars = res.data;
@@ -457,16 +604,38 @@ console.log("uuid",uuid)
           })
           .catch(err => console.log(err.response.data))
           .finally(() => this.loading = false);
-      this.loading=false
+      this.loading = false
+    },
+
+   async addCar() {
+
+
+      console.log("car",this.car)
+      let a = await new CarService().carAdd(this.car);
+      console.log("status", a);
+      if (a.status === 200) {
+        this.isSuccessCar = false;
+        this.isSuccessCar = true;
+        this.successHideCar();
+        //this.getCustomersPagination();
+      } else if (a.response.status === 401) {
+        this.isErrorCar = false;
+        this.isErrorCar = true;
+        this.errorHideCar();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isErrorCar = false;
+        this.isErrorCar = true;
+        this.errorsCar = a.response.data["username"];
+        this.errorHideCar();
+      }
+
+
     }
 
   },
 
-  watch: {
-
-
-
-  },
+  watch: {},
 
   created() {
     this.isCorporateControl();
@@ -476,19 +645,19 @@ console.log("uuid",uuid)
     await this.getCustomersPagination();
 
   },
-   computed: {
-     computedItems () {
+  computed: {
+    computedItems() {
 
       return this.customers.map(item => {
         return {
           ...item,
           userUsername: item.user.username,
-          nameSurname:item.user.first_name + ' ' + item.user.last_name
+          nameSurname: item.user.first_name + ' ' + item.user.last_name
 
         }
       })
     },
-      computedItemsCar () {
+    computedItemsCar() {
 
       return this.cars.map(item => {
         return {

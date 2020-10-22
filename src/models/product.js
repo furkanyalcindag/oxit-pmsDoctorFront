@@ -3,8 +3,8 @@ export default class Product {
 
         this.name = name;
         this.barcode_number = barcode_number;
-        this.uuid = uuid,
-        this.quantity = quantity,
+        this.uuid = uuid
+        this.quantity = quantity
         this.price = price
     }
 }
