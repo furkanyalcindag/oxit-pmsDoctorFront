@@ -233,6 +233,18 @@ export default [
           }
         ]
       },
+        {
+        _name: 'CSidebarNavDropdown',
+        name: 'Katalog',
+        route: '/category',
+        icon: 'cil-star',
+        items: [
+          {
+            name: 'Kategori',
+            to: '/catalog/category'
+          }
+        ]
+      },
       {
         _name: 'CSidebarNavItem',
         name: 'Download CoreUI',

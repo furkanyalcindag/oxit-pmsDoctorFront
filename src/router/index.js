@@ -61,6 +61,8 @@ const User = () => import('@/views/users/User')
 //customer
 const Customer = ()=>import('@/views/customer/Customer')
 
+const Category = ()=>import('@/views/catalog/Category')
+
 Vue.use(Router)
 
 export default new Router({
@@ -151,6 +153,22 @@ function configRoutes () {
               path: 'customer',
               name: 'Customer',
               component: Customer
+            },
+
+          ]
+        },
+          {
+          path: '/catalog',
+          redirect: '/catalog/category',
+          name: 'Category',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'category',
+              name: 'Category',
+              component: Category
             },
 
           ]
