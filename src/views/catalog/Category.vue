@@ -51,7 +51,7 @@
                         label="İsim"
                         description=""
                         autocomplete="autocomplete"
-                        v-model="customer.firstName"
+
                     />
 
 
@@ -62,7 +62,7 @@
                         label="Telefon Numarası"
                         description=""
                         autocomplete="autocomplete"
-                        v-model="customer.mobilePhone"
+
                     />
 
 
@@ -100,8 +100,8 @@
               <CCardBody>
 
                 <CDataTable
-                    :items="computedItems"
-                    :fields="fieldsTable"
+                    :items="computedItemsCategory"
+                    :fields="fieldsTableCategory"
                     column-filter
                     :border="true"
                     :items-per-page="5"
@@ -118,8 +118,8 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
-                        <CButton @click="addCarModal(item.uuid)" color="info">Araç Ekle</CButton>
+                        <CButton  color="primary">Araç</CButton>
+                        <CButton  color="info">Araç Ekle</CButton>
                         <CButton color="success">Cari</CButton>
                         <CButton color="danger">Sil</CButton>
                         <CButton color="warning">Güncelle</CButton>
@@ -147,215 +147,20 @@
     </CRow>
 
 
-    <CModal
-        :show.sync="darkModal"
-        :no-close-on-backdrop="true"
-        :centered="true"
-        title="Modal title 2"
-        size="xl"
-        color="dark"
-    >
-
-      <CRow>
-        <CCol lg="12">
-          <transition name="fade">
-            <CCard v-if="show">
-              <template>
-                <CCardBody>
-
-                  <CDataTable
-                      :items="computedItemsCar"
-                      :fields="fieldsTableCar"
-                      column-filter
 
 
-                      :items-per-page="5"
-                      :activePage="4"
-                      hover
-                      sorter
-                      pagination
-                      :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
-
-                      clickableRows
-
-                  >
-
-                    <template #actions="{ item, index }">
-                      <td class="py-2">
-
-                        <CButtonGroup class="mx-1 d-sm-down-none">
-                          <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
-                          <CButton color="success">Cari</CButton>
-                          <CButton color="danger">Sil</CButton>
-                          <CButton color="warning">Güncelle</CButton>
-                        </CButtonGroup>
-
-
-                      </td>
-                    </template>
-                    <template #details="{ item }">
-                      <CCollapse
-                          :show="Boolean(item._toggled)"
-                          :duration="collapseDuration"
-                      >
-
-                      </CCollapse>
-                    </template>
-                  </CDataTable>
-
-
-                </CCardBody>
-              </template>
-            </CCard>
-          </transition>
-        </CCol>
-      </CRow>
-      <template #header>
-        <h6 class="modal-title">Araçlar</h6>
-        <CButtonClose @click="darkModal = false" class="text-white"/>
-      </template>
-      <template #footer>
-        <CButton @click="darkModal = false" color="danger">Discard</CButton>
-        <CButton @click="darkModal = false" color="success">Accept</CButton>
-      </template>
-    </CModal>
-
-
-    <CModal
-        :show.sync="carModal"
-        :no-close-on-backdrop="true"
-        :centered="true"
-        title="Modal title 2"
-        size="xl"
-        color="dark"
-    >
-      <CRow>
-        <CCol lg="12">
-          <transition name="fade">
-            <CCard v-if="showAddCar">
-              <template>
-                <CCardBody>
-
-                  <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Araba başarıyla kaydedildi.
-                    </CAlert>
-
-                    <CAlert
-                        v-for="item in errorsCar"
-                        :key="item.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      E-mail: {{ item }}
-                    </CAlert>
-                  </div>
-
-
-                  <CRow>
-                    <CCol lg="6">
-                      <CInput
-                          label="Plaka"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.plate"
-                      />
-
-                      <CInput
-                          label="Marka"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.brand"
-                      />
-
-                      <CInput
-                          label="Model"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.model"
-                      />
-                      <CInput
-                          label="Yıl"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.year"
-                      />
-
-                      <CInput
-                          label="Motor Tipi"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.engine"
-                      />
-                    </CCol>
-
-
-                    <CCol lg="6">
-                      <CInput
-                          label="Yakıt"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.oilType"
-                      />
-
-                      <CInput
-                          label="Şase Numarası"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.chassisNumber"
-                      />
-
-                      <CInput
-                          label="KM"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.currentKM"
-                      />
-                      <CInput
-                          label="Motor Numarası"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.engineNumber"
-                      />
-
-                      <CInput
-                          label="Renk"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.color"
-                      />
-                    </CCol>
-
-                  </CRow>
-
-
-                </CCardBody>
-              </template>
-            </CCard>
-          </transition>
-        </CCol>
-      </CRow>
-      <template #header>
-        <h6 class="modal-title">Araç Ekle</h6>
-        <CButtonClose @click="carModal = false" class="text-white"/>
-      </template>
-      <template #footer>
-        <CButton @click="carModal = false" color="danger">Kapat</CButton>
-        <CButton @click="addCar()" color="success">Kaydet</CButton>
-      </template>
-    </CModal>
 
 
   </div>
 </template>
 
 <script>
-import Customer from "../../models/customer";
+
 import CustomerService from "@/services/customer.service";
 import Vuetify from "vuetify/lib";
 import axios from "axios";
 import authHeader from "@/services/auth-header";
-import Car from "@/models/car";
+
 import CarService from "@/services/car.service";
 import Category from "@/models/category";
 
@@ -365,19 +170,10 @@ export default {
   vuetify: new Vuetify(),
   data() {
     return {
-      fieldsTable: [
-        {key: 'nameSurname', label: "Ad Soyad", _style: "min-width:200px"},
-        {key: "firmName", label: "Firma"},
-        {key: "mobilePhone", label: "Telefon"},
-        {key: "actions", label: "İşlemler"},
-      ],
-      fieldsTableCar: [
-        {key: 'plate', label: "Plaka", _style: "min-width:100px"},
-        {key: "brand", label: "Marka"},
-        {key: "model", label: "Model"},
-        {key: "year", label: "Yıl"},
-        {key: "chassisNumber", label: "Şase No"},
-        {key: "engineNumber", label: "Motor No"},
+
+      fieldsTableCategory: [
+        {key: 'name', label: "Kategori Adı", _style: "min-width:100px"},
+        {key: "parentPath", label: "Üst Kategori"},
         {key: "actions", label: "İşlemler"}
       ],
       pageLabel: {label: 'sasasa', external: true,},
@@ -389,12 +185,10 @@ export default {
       total: 0,
       loading: false,
       pagination: {external: true},
-      customers: [],
-      cars: [],
+      categories: [],
+
 
       category: new Category("", ""),
-      customer: new Customer("", "", "", "", "", "", "", ""),
-      car: new Car("", "", "", "", "", "", "", "", "", "", ""),
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
@@ -403,7 +197,7 @@ export default {
       details: [],
       errors: [],
       errorsCar: [],
-      isCorporate: false,
+
       collapseDuration: 0,
       darkModal: false,
       carModal: false,
@@ -464,19 +258,6 @@ export default {
       });
     },
 
-    isCorporateControl() {
-      console.log(this.isCorporate);
-      this.isCorporate = !this.isCorporate;
-      this.customer.isCorporate = this.isCorporate;
-    },
-    addCarModal(profileUuid) {
-
-      console.log("uuid", profileUuid)
-      this.carModal = true
-      this.car.profileUuid = profileUuid
-      console.log("car", this.car)
-
-    },
 
     async addCustomer() {
       let a = await new CustomerService().customerAdd(this.customer);
@@ -518,7 +299,7 @@ export default {
       this.customers = customersRes;
     },
 
-    getCustomersPagination() {
+    getCategories() {
 
       // get by search keyword
       console.log("search", this.search)
@@ -529,10 +310,10 @@ export default {
       let pageNumber = page;
 
 
-      axios.get(`http://localhost:8000/car-service/customer-api/?search=${this.search}&page=1&per_page=10`, {headers: authHeader()})
+      axios.get(process.env.VUE_APP_API_URL + "/car-service/category-api/", {headers: authHeader()})
           .then(res => {
-            this.customers = res.data.data;
-            console.log("ssa", res.data.data)
+            this.categories = res.data;
+            console.log("ssa", res)
             this.total = res.data.recordsTotal;
             this.numberOfPages = 2;
 
@@ -542,7 +323,7 @@ export default {
       this.loading = false
     },
 
-    getCarPagination(uuid) {
+     getCarPagination(uuid) {
 
       this.darkModal = true
 
@@ -598,28 +379,18 @@ export default {
   watch: {},
 
   created() {
-    this.isCorporateControl();
+
 
   },
   async mounted() {
-    await this.getCustomersPagination();
+    await this.getCategories();
 
   },
   computed: {
-    computedItems() {
 
-      return this.customers.map(item => {
-        return {
-          ...item,
-          userUsername: item.user.username,
-          nameSurname: item.user.first_name + ' ' + item.user.last_name
+    computedItemsCategory() {
 
-        }
-      })
-    },
-    computedItemsCar() {
-
-      return this.cars.map(item => {
+      return this.categories.map(item => {
         return {
           ...item,
 
