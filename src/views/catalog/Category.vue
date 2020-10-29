@@ -58,12 +58,14 @@
                   </CCol>
 
                   <CCol lg="5">
-                    <CInput
+                    <CSelect
+                        :options="selectCategories"
                         label="Telefon Numarası"
-                        description=""
-                        autocomplete="autocomplete"
+
 
                     />
+
+
 
 
                   </CCol>
@@ -186,7 +188,7 @@ export default {
       loading: false,
       pagination: {external: true},
       categories: [],
-
+      selectCategories:[],
 
       category: new Category("", ""),
       isSuccess: false,
@@ -322,6 +324,26 @@ export default {
           .finally(() => this.loading = false);
       this.loading = false
     },
+    getSelectCategories() {
+
+      // get by search keyword
+
+      this.loading = true;
+      const {page, itemsPerPage} = this.options;
+      let pageNumber = page;
+
+
+      axios.get(process.env.VUE_APP_API_URL + "/car-service/category-select-api/", {headers: authHeader()})
+          .then(res => {
+            this.selectCategories = res.data;
+            console.log("ssa", res)
+
+
+          })
+          .catch(err => console.log(err.response.data))
+          .finally(() => this.loading = false);
+      this.loading = false
+    },
 
      getCarPagination(uuid) {
 
@@ -384,6 +406,7 @@ export default {
   },
   async mounted() {
     await this.getCategories();
+    await this.getSelectCategories();
 
   },
   computed: {
