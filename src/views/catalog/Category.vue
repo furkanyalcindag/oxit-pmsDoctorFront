@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Müşteri
+              Kategori
               <div class="card-header-actions">
                 <CLink href="#" class="card-header-action btn-setting">
                   <CIcon name="cil-settings"/>
@@ -32,7 +32,7 @@
               <CCardBody>
                 <div>
                   <CAlert color="success" :show="isSuccess">
-                    Müşteri başarıyla kaydedildi.
+                    Kategori başarıyla kaydedildi.
                   </CAlert>
 
                   <CAlert
@@ -48,9 +48,10 @@
                 <CRow>
                   <CCol lg="5">
                     <CInput
-                        label="İsim"
+                        label="Kategori Adı"
                         description=""
                         autocomplete="autocomplete"
+                        v-model="category.name"
 
                     />
 
@@ -60,12 +61,13 @@
                   <CCol lg="5">
                     <CSelect
                         :options="selectCategories"
-                        label="Telefon Numarası"
+                        label="Üst Kategori"
+
+                        :value.sync="category.parent"
+
 
 
                     />
-
-
 
 
                   </CCol>
@@ -73,7 +75,7 @@
                   <CCol lg="2">
 
                     <div class="form-actions" style="margin-top: 29px">
-                      <CButton type="submit" color="primary" @click="addCustomer"
+                      <CButton type="submit" color="primary" @click="addCategory"
                       >Kaydet
                       </CButton>
 
@@ -120,11 +122,8 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton  color="primary">Araç</CButton>
-                        <CButton  color="info">Araç Ekle</CButton>
-                        <CButton color="success">Cari</CButton>
                         <CButton color="danger">Sil</CButton>
-                        <CButton color="warning">Güncelle</CButton>
+                        <CButton color="warning" @click="updateCategoryModal(item.id)" >Güncelle</CButton>
                       </CButtonGroup>
 
 
@@ -150,6 +149,111 @@
 
 
 
+    <CModal
+        :show.sync="categoryUpdateModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="showUpdateCategory">
+              <template>
+                <CCardBody>
+
+                  <div>
+                    <CAlert color="success" :show="isSuccessCar">
+                      Araba başarıyla kaydedildi.
+                    </CAlert>
+
+                    <CAlert
+                        v-for="item in errorsCar"
+                        :key="item.message"
+                        color="danger"
+                        :show="isError"
+                    >
+                      E-mail: {{ item }}
+                    </CAlert>
+                  </div>
+
+
+                  <CRow>
+
+
+                     <CCol lg="5">
+                    <CInput
+                        label="Kategori Adı"
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="categoryUpdate.name"
+
+                    />
+
+
+                  </CCol>
+
+                  <CCol lg="5">
+                    <CSelect
+                        :options="selectCategories"
+                        label="Üst Kategori"
+                        v-model="categoryUpdate.parent"
+                        :value.sync="categoryUpdate.parent"
+
+
+
+                    />
+
+
+                  </CCol>
+
+                  <CCol lg="2">
+
+                    <div class="form-actions" style="margin-top: 29px">
+                      <CButton type="submit" color="primary" @click="addCategory"
+                      >Kaydet
+                      </CButton>
+
+                    </div>
+
+
+                  </CCol>
+
+
+
+
+
+
+
+                  </CRow>
+
+
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Kategori Güncelle</h6>
+        <CButtonClose @click="categoryUpdateModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="categoryUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="addCar()" color="success">Kaydet</CButton>
+      </template>
+    </CModal>
+
+
+
+
+
+
+
+
+
 
 
 
@@ -159,17 +263,17 @@
 <script>
 
 import CustomerService from "@/services/customer.service";
-import Vuetify from "vuetify/lib";
+
 import axios from "axios";
 import authHeader from "@/services/auth-header";
 
-import CarService from "@/services/car.service";
 import Category from "@/models/category";
+import CategoryService from "@/services/category.service";
 
 
 export default {
   name: "Category",
-  vuetify: new Vuetify(),
+
   data() {
     return {
 
@@ -188,9 +292,13 @@ export default {
       loading: false,
       pagination: {external: true},
       categories: [],
-      selectCategories:[],
+      selectCategories: [],
+      categoryUpdateModal:false,
+      showUpdateCategory:true,
 
-      category: new Category("", ""),
+
+      category: new Category("","", "0"),
+      categoryUpdate: new Category("","", "0"),
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
@@ -206,7 +314,7 @@ export default {
       show: true,
       showAddCar: true,
       horizontal: {label: "col-3", input: "col-9"},
-      options: ["Option 1", "Option 2", "Option 3"],
+
       selectOptions: [
         "Option 1",
         "Option 2",
@@ -260,15 +368,18 @@ export default {
       });
     },
 
+    deneme(){
+      console.log("ghg",this.category)
+    },
 
-    async addCustomer() {
-      let a = await new CustomerService().customerAdd(this.customer);
+    async addCategory() {
+      let a = await new CategoryService().categoryAdd(this.category);
       console.log("status", a);
       if (a.status === 200) {
         this.isSuccess = false;
         this.isSuccess = true;
         this.successHide();
-        this.getCustomersPagination();
+        this.getCategories();
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
@@ -280,6 +391,16 @@ export default {
         this.errors = a.response.data["username"];
         this.errorHide();
       }
+    },
+
+     updateCategoryModal(categoryId) {
+
+
+      this.categoryUpdateModal=true
+      this.categoryUpdate.id=categoryId
+      this.categoryUpdate.parent=5
+
+
     },
 
     errorHide() {
@@ -304,12 +425,12 @@ export default {
     getCategories() {
 
       // get by search keyword
-      console.log("search", this.search)
-      console.log("pagination", this.pagination.page)
-      console.log("pagination", this.pagination.rowsPerPage)
+     // console.log("search", this.search)
+      //console.log("pagination", this.pagination.page)
+      //console.log("pagination", this.pagination.rowsPerPage)
       this.loading = true;
-      const {page, itemsPerPage} = this.options;
-      let pageNumber = page;
+      //const {page, itemsPerPage} = this.options;
+      //let pageNumber = page;
 
 
       axios.get(process.env.VUE_APP_API_URL + "/car-service/category-api/", {headers: authHeader()})
@@ -329,8 +450,8 @@ export default {
       // get by search keyword
 
       this.loading = true;
-      const {page, itemsPerPage} = this.options;
-      let pageNumber = page;
+      //const {page, itemsPerPage} = this.options;
+      // let pageNumber = page;
 
 
       axios.get(process.env.VUE_APP_API_URL + "/car-service/category-select-api/", {headers: authHeader()})
@@ -345,56 +466,6 @@ export default {
       this.loading = false
     },
 
-     getCarPagination(uuid) {
-
-      this.darkModal = true
-
-      // get by search keyword
-      console.log("search", this.search)
-      console.log("pagination", this.pagination.page)
-      console.log("pagination", this.pagination.rowsPerPage)
-      this.loading = true;
-      const {page, itemsPerPage} = this.options;
-      let pageNumber = page;
-      console.log("uuid", uuid)
-      axios.get(`http://localhost:8000/car-service/car-api/?uuid=${uuid}`, {headers: authHeader()})
-          .then(res => {
-            this.cars = res.data;
-            //this.total = res.data.recordsTotal;
-            //this.numberOfPages = 2;
-            console.log(this.cars)
-
-          })
-          .catch(err => console.log(err.response.data))
-          .finally(() => this.loading = false);
-      this.loading = false
-    },
-
-    async addCar() {
-
-
-      console.log("car", this.car)
-      let a = await new CarService().carAdd(this.car);
-      console.log("status", a);
-      if (a.status === 200) {
-        this.isSuccessCar = false;
-        this.isSuccessCar = true;
-        this.successHideCar();
-        //this.getCustomersPagination();
-      } else if (a.response.status === 401) {
-        this.isErrorCar = false;
-        this.isErrorCar = true;
-        this.errorHideCar();
-        await this.$router.push("/pages/login");
-      } else {
-        this.isErrorCar = false;
-        this.isErrorCar = true;
-        this.errorsCar = a.response.data["username"];
-        this.errorHideCar();
-      }
-
-
-    }
 
   },
 
