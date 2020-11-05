@@ -393,7 +393,7 @@
 <script>
 import Customer from "../../models/customer";
 import CustomerService from "@/services/customer.service";
-import Vuetify from "vuetify/lib";
+
 import axios from "axios";
 import authHeader from "@/services/auth-header";
 import Car from "@/models/car";
@@ -402,7 +402,7 @@ import CarService from "@/services/car.service";
 
 export default {
   name: "Customer",
-  vuetify: new Vuetify(),
+
   data() {
     return {
       fieldsTable: [
