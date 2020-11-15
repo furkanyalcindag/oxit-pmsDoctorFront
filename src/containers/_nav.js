@@ -242,6 +242,10 @@ export default [
           {
             name: 'Kategori',
             to: '/catalog/category'
+          },
+            {
+            name: 'Ürünler',
+            to: '/catalog/product-list'
           }
         ]
       },

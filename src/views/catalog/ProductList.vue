@@ -1,111 +1,29 @@
 <template>
   <div>
+
     <CRow>
       <CCol lg="12">
         <transition name="fade">
           <CCard v-if="show">
             <CCardHeader>
-              <CIcon name="cil-pencil"/>
-              Kategori
-              <div class="card-header-actions">
-                <CLink href="#" class="card-header-action btn-setting">
-                  <CIcon name="cil-settings"/>
-                </CLink>
-                <CLink
-                    class="card-header-action btn-minimize"
-                    @click="formCollapsed = !formCollapsed"
-                >
-                  <CIcon
-                      :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
-                  />
-                </CLink>
-                <CLink
-                    href="#"
-                    class="card-header-action btn-close"
-                    v-on:click="show = !show"
-                >
-                  <CIcon name="cil-x-circle"/>
-                </CLink>
-              </div>
-            </CCardHeader>
-            <CCollapse :show="formCollapsed">
-              <CCardBody>
-                <div>
-                  <CAlert color="success" :show="isSuccess">
-                    Kategori başarıyla kaydedildi.
-                  </CAlert>
-
-                  <CAlert
-                      v-for="item in errors"
-                      :key="item.message"
-                      color="danger"
-                      :show="isError"
-                  >
-                    E-mail: {{ item }}
-                  </CAlert>
-                </div>
-                <CRow></CRow>
-                <CRow>
-                  <CCol lg="5">
-                    <CInput
-                        label="Kategori Adı"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="category.name"
-
-                    />
-
-
-                  </CCol>
-
-                  <CCol lg="5">
-                    <CSelect
-                        :options="selectCategories"
-                        label="Üst Kategori"
-
-
-                        :value.sync="category.parent"
-
-
-
-                    />
-
-
-                  </CCol>
-
-                  <CCol lg="2">
-
-                    <div class="form-actions" style="margin-top: 29px">
-                      <CButton type="submit" color="primary" @click="addCategory"
-                      >Kaydet
-                      </CButton>
-
-                    </div>
-
-
-                  </CCol>
-
-
+              <CRow>
+              <CCol  lg="3" class="text-left mt-3">
+                <CButton color="success">
+                  <CIcon name="cil-lightbulb"/>&nbsp;Ghost Button
+                </CButton>
+              </CCol>
+              <CCol lg="9" class="text-right mt-3">
+                <CButton color="success">
+                  <CIcon name="cil-plus"/>&nbsp;Ghost Button
+                </CButton>
+              </CCol>
                 </CRow>
-
-
-              </CCardBody>
-            </CCollapse>
-          </CCard>
-        </transition>
-      </CCol>
-    </CRow>
-
-
-    <CRow>
-      <CCol lg="12">
-        <transition name="fade">
-          <CCard v-if="show">
+            </CCardHeader>
             <template>
               <CCardBody>
 
                 <CDataTable
-                    :items="computedItemsCategory"
+                    :items="computedItemsProduct"
                     :fields="fieldsTableCategory"
                     column-filter
                     :border="true"
@@ -124,7 +42,7 @@
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
                         <CButton color="danger">Sil</CButton>
-                        <CButton color="warning" @click="updateCategoryModal(item.id)" >Güncelle</CButton>
+                        <CButton color="warning" @click="updateCategoryModal(item.id)">Güncelle</CButton>
                       </CButtonGroup>
 
 
@@ -147,7 +65,6 @@
         </transition>
       </CCol>
     </CRow>
-
 
 
     <CModal
@@ -184,48 +101,42 @@
                   <CRow>
 
 
-                     <CCol lg="5">
-                    <CInput
-                        label="Kategori Adı"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="categoryUpdate.name"
+                    <CCol lg="5">
+                      <CInput
+                          label="Kategori Adı"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="categoryUpdate.name"
 
-                    />
-
-
-                  </CCol>
-
-                  <CCol lg="5">
-                    <CSelect
-                        :options="selectCategories"
-                        label="Üst Kategori"
-                        v-model="categoryUpdate.parent"
-                        :value.sync="categoryUpdate.parent"
+                      />
 
 
+                    </CCol>
 
-                    />
-
-
-                  </CCol>
-
-                  <CCol lg="2">
-
-                    <div class="form-actions" style="margin-top: 29px">
-                      <CButton type="submit" color="primary" @click="addCategory"
-                      >Kaydet
-                      </CButton>
-
-                    </div>
+                    <CCol lg="5">
+                      <CSelect
+                          :options="selectCategories"
+                          label="Üst Kategori"
+                          v-model="categoryUpdate.parent"
+                          :value.sync="categoryUpdate.parent"
 
 
-                  </CCol>
+                      />
 
 
+                    </CCol>
+
+                    <CCol lg="2">
+
+                      <div class="form-actions" style="margin-top: 29px">
+                        <CButton type="submit" color="primary" @click="addCategory"
+                        >Kaydet
+                        </CButton>
+
+                      </div>
 
 
-
+                    </CCol>
 
 
                   </CRow>
@@ -248,16 +159,6 @@
     </CModal>
 
 
-
-
-
-
-
-
-
-
-
-
   </div>
 </template>
 
@@ -270,17 +171,22 @@ import authHeader from "@/services/auth-header";
 
 import Category from "@/models/category";
 import CategoryService from "@/services/category.service";
+import Product from "@/models/product";
 
 
 export default {
-  name: "Category",
+  name: "ProductList",
 
   data() {
     return {
 
       fieldsTableCategory: [
-        {key: 'name', label: "Kategori Adı", _style: "min-width:100px"},
-        {key: "parentPath", label: "Üst Kategori"},
+        {key: 'barcodeNumber', label: "Barkod", _style: "min-width:100px"},
+        {key: "name", label: "Ürün Adı"},
+        {key: "netPrice", label: "Net Fiyat"},
+        {key: "taxRate", label: "KDV"},
+        {key: "totalProduct", label: "Toplam Fiyat"},
+        {key: "isActive", label: "Aktif"},
         {key: "actions", label: "İşlemler"}
       ],
       pageLabel: {label: 'sasasa', external: true,},
@@ -294,12 +200,12 @@ export default {
       pagination: {external: true},
       categories: [],
       selectCategories: [],
-      categoryUpdateModal:false,
-      showUpdateCategory:true,
-
-
-      category: new Category("","", "0"),
-      categoryUpdate: new Category("","", "0"),
+      categoryUpdateModal: false,
+      showUpdateCategory: true,
+      product: new Product("", "", "", "", "", "", "", "", "", ""),
+      products: [],
+      category: new Category("", "", "0"),
+      categoryUpdate: new Category("", "", "0"),
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
@@ -369,8 +275,8 @@ export default {
       });
     },
 
-    deneme(){
-      console.log("ghg",this.category)
+    deneme() {
+      console.log("ghg", this.category)
     },
 
     async addCategory() {
@@ -394,12 +300,12 @@ export default {
       }
     },
 
-     updateCategoryModal(categoryId) {
+    updateCategoryModal(categoryId) {
 
 
-      this.categoryUpdateModal=true
-      this.categoryUpdate.id=categoryId
-      this.categoryUpdate.parent=5
+      this.categoryUpdateModal = true
+      this.categoryUpdate.id = categoryId
+      this.categoryUpdate.parent = 5
 
 
     },
@@ -423,10 +329,10 @@ export default {
       this.customers = customersRes;
     },
 
-    getCategories() {
+    getProducts() {
 
       // get by search keyword
-     // console.log("search", this.search)
+      // console.log("search", this.search)
       //console.log("pagination", this.pagination.page)
       //console.log("pagination", this.pagination.rowsPerPage)
       this.loading = true;
@@ -434,10 +340,10 @@ export default {
       //let pageNumber = page;
 
 
-      axios.get(process.env.VUE_APP_API_URL + "/car-service/category-api/", {headers: authHeader()})
+      axios.get(process.env.VUE_APP_API_URL + "/car-service/product-api/", {headers: authHeader()})
           .then(res => {
-            this.categories = res.data;
-            console.log("ssa", res)
+            this.products = res.data;
+
             this.total = res.data.recordsTotal;
             this.numberOfPages = 2;
 
@@ -477,15 +383,15 @@ export default {
 
   },
   async mounted() {
-    await this.getCategories();
+    await this.getProducts();
     await this.getSelectCategories();
 
   },
   computed: {
 
-    computedItemsCategory() {
+    computedItemsProduct() {
 
-      return this.categories.map(item => {
+      return this.products.map(item => {
         return {
           ...item,
 

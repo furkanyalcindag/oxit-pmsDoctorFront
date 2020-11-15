@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import ProductList from "@/views/catalog/ProductList";
 
 
 // Containers
@@ -169,6 +170,11 @@ function configRoutes () {
               path: 'category',
               name: 'Category',
               component: Category
+            },
+              {
+              path: 'product-list',
+              name: 'ProductList',
+              component: ProductList
             },
 
           ]
