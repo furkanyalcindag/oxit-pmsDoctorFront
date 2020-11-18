@@ -381,6 +381,7 @@ export default {
         this.isSuccess = true;
         this.successHide();
         this.getCategories();
+        this.getSelectCategories();
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
