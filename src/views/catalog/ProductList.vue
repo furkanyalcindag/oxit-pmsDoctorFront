@@ -7,14 +7,10 @@
           <CCard v-if="show">
             <CCardHeader>
               <CRow>
-              <CCol  lg="3" class="text-left mt-3">
-                <CButton color="success">
-                  <CIcon name="cil-lightbulb"/>&nbsp;Ghost Button
-                </CButton>
-              </CCol>
-              <CCol lg="9" class="text-right mt-3">
-                <CButton color="success">
-                  <CIcon name="cil-plus"/>&nbsp;Ghost Button
+
+              <CCol lg="12" class="text-right mt-3">
+                <CButton color="success" @click="addProductModal">
+                  <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>&nbsp;Ghost Button
                 </CButton>
               </CCol>
                 </CRow>
@@ -24,7 +20,7 @@
 
                 <CDataTable
                     :items="computedItemsProduct"
-                    :fields="fieldsTableCategory"
+                    :fields="fieldsTableProduct"
                     column-filter
                     :border="true"
                     :items-per-page="5"
@@ -68,7 +64,7 @@
 
 
     <CModal
-        :show.sync="categoryUpdateModal"
+        :show.sync="showAddProduct"
         :no-close-on-backdrop="true"
         :centered="true"
         title="Modal title 2"
@@ -78,7 +74,7 @@
       <CRow>
         <CCol lg="12">
           <transition name="fade">
-            <CCard v-if="showUpdateCategory">
+            <CCard v-if="showAddProduct">
               <template>
                 <CCardBody>
 
@@ -103,15 +99,37 @@
 
                     <CCol lg="5">
                       <CInput
-                          label="Kategori Adı"
+                          label="Barkod Numarası"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="categoryUpdate.name"
+                          v-model="product.barcode_number"
+
+                      />
+                      <CInput
+                          label="Ürün Adı."
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.barcode_number"
+
+                      />
+                      <CInput
+                          label="Barkod Numarası"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.barcode_number"
+
+                      />
+                      <CInput
+                          label="Barkod Numarası"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.barcode_number"
 
                       />
 
 
                     </CCol>
+
 
                     <CCol lg="5">
                       <CSelect
@@ -172,21 +190,24 @@ import authHeader from "@/services/auth-header";
 import Category from "@/models/category";
 import CategoryService from "@/services/category.service";
 import Product from "@/models/product";
-
+import { freeSet } from '@coreui/icons'
 
 export default {
   name: "ProductList",
+  freeSet,
+
 
   data() {
+
     return {
 
-      fieldsTableCategory: [
+      fieldsTableProduct: [
         {key: 'barcodeNumber', label: "Barkod", _style: "min-width:100px"},
         {key: "name", label: "Ürün Adı"},
         {key: "netPrice", label: "Net Fiyat"},
         {key: "taxRate", label: "KDV"},
         {key: "totalProduct", label: "Toplam Fiyat"},
-        {key: "isActive", label: "Aktif"},
+        {key: "isOPEN", label: "Aktif"},
         {key: "actions", label: "İşlemler"}
       ],
       pageLabel: {label: 'sasasa', external: true,},
@@ -246,6 +267,7 @@ export default {
         "Radios - custom",
         "Inline Radios - custom",
       ],
+      showAddProduct:false
     };
   },
 
@@ -308,6 +330,11 @@ export default {
       this.categoryUpdate.parent = 5
 
 
+    },
+
+    addProductModal(){
+
+      this.showAddProduct =true
     },
 
     errorHide() {
