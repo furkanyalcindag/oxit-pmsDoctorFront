@@ -8,12 +8,12 @@
             <CCardHeader>
               <CRow>
 
-              <CCol lg="12" class="text-right mt-3">
-                <CButton color="success" @click="addProductModal">
-                  <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>&nbsp;Ghost Button
-                </CButton>
-              </CCol>
-                </CRow>
+                <CCol lg="12" class="text-right mt-3">
+                  <CButton color="success" @click="addProductModal">
+                    <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>&nbsp;Ghost Button
+                  </CButton>
+                </CCol>
+              </CRow>
             </CCardHeader>
             <template>
               <CCardBody>
@@ -97,7 +97,7 @@
                   <CRow>
 
 
-                    <CCol lg="5">
+                    <CCol lg="6">
                       <CInput
                           label="Barkod Numarası"
                           description=""
@@ -109,50 +109,54 @@
                           label="Ürün Adı."
                           description=""
                           autocomplete="autocomplete"
-                          v-model="product.barcode_number"
+                          v-model="product.name"
 
                       />
                       <CInput
-                          label="Barkod Numarası"
+                          label="Net Ücret"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="product.barcode_number"
+                          v-model="product.netPrice"
+                          type="number"
 
                       />
                       <CInput
-                          label="Barkod Numarası"
+                          label="KDV Oranı(%)"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="product.barcode_number"
+                          v-model="product.taxRate"
+                          type="number"
 
                       />
 
 
                     </CCol>
-
-
-                    <CCol lg="5">
+                    <CCol lg="6">
                       <CSelect
                           :options="selectCategories"
                           label="Üst Kategori"
-                          v-model="categoryUpdate.parent"
-                          :value.sync="categoryUpdate.parent"
+                          v-model="product.categories"
+                          :value.sync="product.categories"
+                      />
+
+                      <CInput
+                          label="Stok"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.quantity"
+                          type="number"
 
 
                       />
+                      <CInputFile
+                          label="Resim Ekle"
+                          horizontal
+                          @change="getBase64"
+                          custom
+                          multiple
+                          :placeholder="selectedFile"
 
-
-                    </CCol>
-
-                    <CCol lg="2">
-
-                      <div class="form-actions" style="margin-top: 29px">
-                        <CButton type="submit" color="primary" @click="addCategory"
-                        >Kaydet
-                        </CButton>
-
-                      </div>
-
+                      />
 
                     </CCol>
 
@@ -167,12 +171,12 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Kategori Güncelle</h6>
-        <CButtonClose @click="categoryUpdateModal = false" class="text-white"/>
+        <h6 class="modal-title">Ürün EKle</h6>
+        <CButtonClose @click="showAddProduct = false" class="text-white"/>
       </template>
       <template #footer>
         <CButton @click="categoryUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="addCar()" color="success">Kaydet</CButton>
+        <CButton @click="addProduct()" color="success">Kaydet</CButton>
       </template>
     </CModal>
 
@@ -190,7 +194,9 @@ import authHeader from "@/services/auth-header";
 import Category from "@/models/category";
 import CategoryService from "@/services/category.service";
 import Product from "@/models/product";
-import { freeSet } from '@coreui/icons'
+import {freeSet} from '@coreui/icons'
+import ProductService from "@/services/product.service";
+import product from "@/models/product";
 
 export default {
   name: "ProductList",
@@ -230,6 +236,8 @@ export default {
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
+      x:'',
+      selectedFile:"Dosya Seçiniz",
 
 
       details: [],
@@ -267,7 +275,7 @@ export default {
         "Radios - custom",
         "Inline Radios - custom",
       ],
-      showAddProduct:false
+      showAddProduct: false
     };
   },
 
@@ -301,6 +309,59 @@ export default {
       console.log("ghg", this.category)
     },
 
+    getBase64(event) {
+      var reader = new FileReader();
+      reader.readAsDataURL(event[0]);
+      console.log("sdsd",product)
+      this.selectedFile = event.length +' dosya seçildi'
+      var x = this
+      reader.onload = function () {
+       x.product.productImages = reader.result
+
+
+      };
+      reader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
+
+
+
+      this.product.productImages =x
+    }
+    ,
+
+    async addProduct() {
+
+      console.log("deneme",this.product)
+      debugger;
+
+
+      debugger;
+      this.product.isOpen=true
+
+      let productResponse = await new ProductService().addProduct(this.product);
+
+      if (productResponse.status === 200) {
+        this.isSuccess = false;
+        this.isSuccess = true;
+        this.showAddProduct = false;
+        this.successHide();
+        this.getCategories();
+
+      } else if (productResponse.response.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        this.errors = productResponse.response.data["username"];
+        this.errorHide();
+      }
+
+    },
+
     async addCategory() {
       let a = await new CategoryService().categoryAdd(this.category);
       console.log("status", a);
@@ -332,9 +393,9 @@ export default {
 
     },
 
-    addProductModal(){
+    addProductModal() {
 
-      this.showAddProduct =true
+      this.showAddProduct = true
     },
 
     errorHide() {

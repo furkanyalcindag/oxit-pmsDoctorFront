@@ -1,5 +1,5 @@
 export default class Product {
-    constructor(name, barcode_number, uuid, quantity, netPrice, isOpen, totalProduct, taxRate, categories,productImage) {
+    constructor(name, barcode_number, uuid, quantity, netPrice, isOpen, totalProduct, taxRate, categories,productImages) {
         this.name = name;
         this.barcode_number = barcode_number;
         this.uuid = uuid
@@ -9,7 +9,7 @@ export default class Product {
         this.netPrice = netPrice
         this.totalProduct = totalProduct
         this.categories = categories
-        this.productImage = productImage
+        this.productImages = productImages
 
     }
 }
