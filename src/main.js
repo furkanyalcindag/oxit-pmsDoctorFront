@@ -17,6 +17,7 @@ import store from './store/store'
 
 
 
+
 Vue.config.performance = true
 
 Vue.use(CoreuiVue)

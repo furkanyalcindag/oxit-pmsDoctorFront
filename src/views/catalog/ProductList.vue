@@ -33,6 +33,12 @@
 
                 >
 
+
+                  <template #productImage="{ item, index }">
+                    <td class="py-2">
+                      <img :src="item.productImage" alt="Red dot" />
+                    </td>
+                  </template>
                   <template #actions="{ item, index }">
                     <td class="py-2">
 
@@ -77,10 +83,9 @@
             <CCard v-if="showAddProduct">
               <template>
                 <CCardBody>
-
                   <div>
                     <CAlert color="success" :show="isSuccessCar">
-                      Araba başarıyla kaydedildi.
+                      Ürün başarıyla kaydedildi.
                     </CAlert>
 
                     <CAlert
@@ -137,6 +142,7 @@
                           label="Üst Kategori"
                           v-model="product.categories"
                           :value.sync="product.categories"
+
                       />
 
                       <CInput
@@ -158,6 +164,8 @@
 
                       />
 
+
+
                     </CCol>
 
 
@@ -166,6 +174,7 @@
 
                 </CCardBody>
               </template>
+
             </CCard>
           </transition>
         </CCol>
@@ -208,12 +217,13 @@ export default {
     return {
 
       fieldsTableProduct: [
+        {key: 'productImage', label: "Resim", _style: "min-width:100px"},
         {key: 'barcodeNumber', label: "Barkod", _style: "min-width:100px"},
         {key: "name", label: "Ürün Adı"},
         {key: "netPrice", label: "Net Fiyat"},
         {key: "taxRate", label: "KDV"},
         {key: "totalProduct", label: "Toplam Fiyat"},
-        {key: "isOPEN", label: "Aktif"},
+        {key: "isOpen", label: "Aktif"},
         {key: "actions", label: "İşlemler"}
       ],
       pageLabel: {label: 'sasasa', external: true,},
@@ -236,8 +246,8 @@ export default {
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
-      x:'',
-      selectedFile:"Dosya Seçiniz",
+      x: '',
+      selectedFile: "Dosya Seçiniz",
 
 
       details: [],
@@ -312,11 +322,11 @@ export default {
     getBase64(event) {
       var reader = new FileReader();
       reader.readAsDataURL(event[0]);
-      console.log("sdsd",product)
-      this.selectedFile = event.length +' dosya seçildi'
+      console.log("sdsd", product)
+      this.selectedFile = event.length + ' dosya seçildi'
       var x = this
       reader.onload = function () {
-       x.product.productImages = reader.result
+        x.product.productImages = reader.result
 
 
       };
@@ -325,19 +335,18 @@ export default {
       };
 
 
-
-      this.product.productImages =x
+      this.product.productImages = x
     }
     ,
 
     async addProduct() {
 
-      console.log("deneme",this.product)
+      console.log("deneme", this.product)
       debugger;
 
 
       debugger;
-      this.product.isOpen=true
+      this.product.isOpen = true
 
       let productResponse = await new ProductService().addProduct(this.product);
 
@@ -431,7 +440,7 @@ export default {
       axios.get(process.env.VUE_APP_API_URL + "/car-service/product-api/", {headers: authHeader()})
           .then(res => {
             this.products = res.data;
-
+            console.log("ürünler",this.products)
             this.total = res.data.recordsTotal;
             this.numberOfPages = 2;
 
