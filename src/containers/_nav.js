@@ -11,7 +11,7 @@ export default [
           color: 'primary',
           text: 'NEW'
         }
-      },
+      }, /*
       {
         _name: 'CSidebarNavTitle',
         _children: ['Theme']
@@ -28,7 +28,7 @@ export default [
         to: '/theme/typography',
         icon: 'cil-pencil'
       },
-      {
+     {
         _name: 'CSidebarNavTitle',
         _children: ['Components']
       },
@@ -192,16 +192,16 @@ export default [
       {
         _name: 'CSidebarNavDivider',
         _class: 'm-2'
-      },
+      },*/
       {
         _name: 'CSidebarNavTitle',
-        _children: ['Extras']
+        _children: ['İşlemler']
       },
       {
         _name: 'CSidebarNavDropdown',
-        name: 'Pages',
+        name: 'Cari',
         route: '/pages',
-        icon: 'cil-star',
+        icon: 'cil-calculator',
         items: [
           {
             name: 'Login',
@@ -225,7 +225,7 @@ export default [
         _name: 'CSidebarNavDropdown',
         name: 'Müşteri',
         route: '/customer',
-        icon: 'cil-star',
+        icon: 'cil-user',
         items: [
           {
             name: 'Müşteri',
@@ -249,7 +249,7 @@ export default [
           }
         ]
       },
-      {
+      /*{
         _name: 'CSidebarNavItem',
         name: 'Download CoreUI',
         href: 'http://coreui.io/vue/',
@@ -264,7 +264,7 @@ export default [
         icon: { name: 'cil-layers', class: 'text-white' },
         _class: 'bg-danger text-white',
         target: '_blank'
-      }
+      }*/
     ]
   }
 ]

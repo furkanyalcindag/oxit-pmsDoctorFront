@@ -38,7 +38,8 @@ class ProductService {
                 isOpen : product.isOpen,
                 taxRate : product.taxRate,
                 categories : product.categories,
-                productImage :product.productImages
+                productImage :product.productImages,
+                shelf :product.shelf
 
             }, {headers: authHeader()}).then(response => {
             console.log(response)

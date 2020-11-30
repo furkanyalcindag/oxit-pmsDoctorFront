@@ -7,16 +7,25 @@
           <CCard v-if="show">
             <CCardHeader>
               <CRow>
+                <CCol lg="3" class="text-left mt-3">
+                  <h2>Ürünler</h2>
 
-                <CCol lg="12" class="text-right mt-3">
+                  </CCol>
+                <CCol lg="9" class="text-right mt-3">
                   <CButton color="success" @click="addProductModal">
-                    <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>&nbsp;Ghost Button
+                    <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>&nbsp;Ürün Ekle
                   </CButton>
                 </CCol>
               </CRow>
             </CCardHeader>
             <template>
               <CCardBody>
+                <div>
+                  <CAlert color="success" :show="isSuccess">
+                    Ürün başarıyla kaydedildi.
+                  </CAlert>
+
+                </div>
 
                 <CDataTable
                     :items="computedItemsProduct"
@@ -36,7 +45,7 @@
 
                   <template #productImage="{ item, index }">
                     <td class="py-2">
-                      <img :src="item.productImage" alt="Red dot" />
+                      <img :src="item.productImage" width="50px" alt="" />
                     </td>
                   </template>
                   <template #actions="{ item, index }">
@@ -154,6 +163,14 @@
 
 
                       />
+
+                      <CInput
+                          label="Raf Numarası"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.shelf"
+
+                      />
                       <CInputFile
                           label="Resim Ekle"
                           horizontal
@@ -219,6 +236,7 @@ export default {
       fieldsTableProduct: [
         {key: 'productImage', label: "Resim", _style: "min-width:100px"},
         {key: 'barcodeNumber', label: "Barkod", _style: "min-width:100px"},
+        {key: 'shelf', label: "Raf", _style: "min-width:100px"},
         {key: "name", label: "Ürün Adı"},
         {key: "netPrice", label: "Net Fiyat"},
         {key: "taxRate", label: "KDV"},
@@ -239,7 +257,7 @@ export default {
       selectCategories: [],
       categoryUpdateModal: false,
       showUpdateCategory: true,
-      product: new Product("", "", "", "", "", "", "", "", "", ""),
+      product: new Product("", "", "", "", "", "", "", "", "", "",""),
       products: [],
       category: new Category("", "", "0"),
       categoryUpdate: new Category("", "", "0"),
@@ -355,7 +373,7 @@ export default {
         this.isSuccess = true;
         this.showAddProduct = false;
         this.successHide();
-        this.getCategories();
+        this.getProducts();
 
       } else if (productResponse.response.status === 401) {
         this.isError = false;

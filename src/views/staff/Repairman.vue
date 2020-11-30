@@ -401,7 +401,7 @@ import CarService from "@/services/car.service";
 
 
 export default {
-  name: "Customer",
+  name: "Repairman",
 
   data() {
     return {
@@ -607,7 +607,7 @@ export default {
       this.loading = false
     },
 
-   async addCar() {
+    async addCar() {
 
 
       console.log("car",this.car)
