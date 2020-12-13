@@ -225,7 +225,7 @@
                       <td class="py-2">
 
                         <CButtonGroup class="mx-1 d-sm-down-none">
-                          <CButton color="success">Servis</CButton>
+                          <CButton color="success" @click="goService(item.uuid)">Servis</CButton>
 
                           <CButton color="warning">Güncelle</CButton>
                           <CButton color="danger">Sil</CButton>
@@ -631,6 +631,10 @@ export default {
       }
 
 
+    },
+
+    goService(carId){
+      this.$router.push({name: 'OpenServiceCard', params: { carId: carId}});
     }
 
   },

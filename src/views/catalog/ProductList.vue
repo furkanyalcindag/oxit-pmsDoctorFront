@@ -360,10 +360,7 @@ export default {
     async addProduct() {
 
       console.log("deneme", this.product)
-      debugger;
 
-
-      debugger;
       this.product.isOpen = true
 
       let productResponse = await new ProductService().addProduct(this.product);

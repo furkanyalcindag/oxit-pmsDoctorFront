@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import ProductList from "@/views/catalog/ProductList";
+import Repairman from "@/views/staff/Staff";
+import Staff from "@/views/staff/Staff";
+
 
 
 // Containers
@@ -63,6 +66,9 @@ const User = () => import('@/views/users/User')
 const Customer = ()=>import('@/views/customer/Customer')
 
 const Category = ()=>import('@/views/catalog/Category')
+
+
+const OpenServiceCard =()=>import('@/views/customer/OpenServiceCard')
 
 Vue.use(Router)
 
@@ -156,6 +162,12 @@ function configRoutes () {
               component: Customer
             },
 
+            {
+              path: '/open-service/:carId',
+              name: 'OpenServiceCard',
+              component: OpenServiceCard
+            }
+
           ]
         },
           {
@@ -176,6 +188,22 @@ function configRoutes () {
               name: 'ProductList',
               component: ProductList
             },
+
+          ]
+        },
+        {
+          path: '/staff',
+          redirect: '/staff/staff-operations',
+          name: 'Staff',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'staff-operations',
+              name: 'Staff',
+              component: Staff
+            }
 
           ]
         },

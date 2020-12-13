@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Müşteri
+              Servis
               <div class="card-header-actions">
                 <CLink href="#" class="card-header-action btn-setting">
                   <CIcon name="cil-settings"/>
@@ -32,7 +32,7 @@
               <CCardBody>
                 <div>
                   <CAlert color="success" :show="isSuccess">
-                    Müşteri başarıyla kaydedildi.
+                    Servis kartı başarıyla kaydedildi.
                   </CAlert>
 
                   <CAlert
@@ -47,11 +47,20 @@
                 <CRow></CRow>
                 <CRow>
                   <CCol lg="3">
-                    <CInput
-                        label="İsim"
+
+                    <CSelect
+                        :options="serviceTypes"
+                        label="Servis Tipi"
+                        v-model="service.serviceType"
+                        :value.sync="service.serviceType"
+
+                    />
+                    <CTextarea
+                        :rows="3"
+                        label="Şikayet"
                         description=""
                         autocomplete="autocomplete"
-                        v-model="customer.firstName"
+                        v-model="service.complaint"
                     />
 
                     <CInput
@@ -225,7 +234,7 @@
                       <td class="py-2">
 
                         <CButtonGroup class="mx-1 d-sm-down-none">
-                          <CButton color="success">Servis</CButton>
+                          <CButton color="success" @click="goService()">Servis</CButton>
 
                           <CButton color="warning">Güncelle</CButton>
                           <CButton color="danger">Sil</CButton>
@@ -262,129 +271,7 @@
     </CModal>
 
 
-    <CModal
-        :show.sync="carModal"
-        :no-close-on-backdrop="true"
-        :centered="true"
-        title="Modal title 2"
-        size="xl"
-        color="dark"
-    >
-      <CRow>
-        <CCol lg="12">
-          <transition name="fade">
-            <CCard v-if="showAddCar">
-              <template>
-                <CCardBody>
 
-                  <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Araba başarıyla kaydedildi.
-                    </CAlert>
-
-                    <CAlert
-                        v-for="item in errorsCar"
-                        :key="item.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      E-mail: {{ item }}
-                    </CAlert>
-                  </div>
-
-
-                  <CRow>
-                    <CCol lg="6">
-                      <CInput
-                          label="Plaka"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.plate"
-                      />
-
-                      <CInput
-                          label="Marka"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.brand"
-                      />
-
-                      <CInput
-                          label="Model"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.model"
-                      />
-                      <CInput
-                          label="Yıl"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.year"
-                      />
-
-                      <CInput
-                          label="Motor Tipi"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.engine"
-                      />
-                    </CCol>
-
-
-                    <CCol lg="6">
-                      <CInput
-                          label="Yakıt"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.oilType"
-                      />
-
-                      <CInput
-                          label="Şase Numarası"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.chassisNumber"
-                      />
-
-                      <CInput
-                          label="KM"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.currentKM"
-                      />
-                      <CInput
-                          label="Motor Numarası"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.engineNumber"
-                      />
-
-                      <CInput
-                          label="Renk"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="car.color"
-                      />
-                    </CCol>
-
-                  </CRow>
-
-
-                </CCardBody>
-              </template>
-            </CCard>
-          </transition>
-        </CCol>
-      </CRow>
-      <template #header>
-        <h6 class="modal-title">Araç Ekle</h6>
-        <CButtonClose @click="carModal = false" class="text-white"/>
-      </template>
-      <template #footer>
-        <CButton @click="carModal = false" color="danger">Kapat</CButton>
-        <CButton @click="addCar()" color="success">Kaydet</CButton>
-      </template>
-    </CModal>
 
 
   </div>
@@ -398,10 +285,14 @@ import axios from "axios";
 import authHeader from "@/services/auth-header";
 import Car from "@/models/car";
 import CarService from "@/services/car.service";
+import Service from "@/models/service";
+import GeneralService from "@/services/general.service";
+import ServiceService from "@/services/service.service";
+
 
 
 export default {
-  name: "Repairman",
+  name: "OpenServiceCard",
 
   data() {
     return {
@@ -432,7 +323,7 @@ export default {
       customers: [],
       cars: [],
 
-
+      service : new Service(),
       customer: new Customer("", "", "", "", "", "", "", ""),
       car : new Car("","","","","","","","","","",""),
       isSuccess: false,
@@ -446,7 +337,8 @@ export default {
       isCorporate: false,
       collapseDuration: 0,
       darkModal: false,
-      carModal: false,
+      serviceTypes :[],
+
       show: true,
       showAddCar: true,
       horizontal: {label: "col-3", input: "col-9"},
@@ -518,27 +410,6 @@ export default {
 
     },
 
-    async addCustomer() {
-      let a = await new CustomerService().customerAdd(this.customer);
-      console.log("status", a);
-      if (a.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
-        this.successHide();
-        this.getCustomersPagination();
-      } else if (a.response.status === 401) {
-        this.isError = false;
-        this.isError = true;
-        this.errorHide();
-        await this.$router.push("/pages/login");
-      } else {
-        this.isError = false;
-        this.isError = true;
-        this.errors = a.response.data["username"];
-        this.errorHide();
-      }
-    },
-
     errorHide() {
       setTimeout(() => (this.isError = false), 5000);
     },
@@ -553,84 +424,18 @@ export default {
       setTimeout(() => (this.isSuccessCar = false), 5000);
       console.log("naber");
     },
-    async getCustomers() {
-      let customersRes = await new CustomerService().customerGet('', '', '');
-      this.customers = customersRes;
+
+
+
+    async getServiceType() {
+      let response = await new ServiceService().getServiceType();
+
+      this.serviceTypes = response.data
     },
 
-    getCustomersPagination() {
 
-      // get by search keyword
-      console.log("search", this.search)
-      console.log("pagination", this.pagination.page)
-      console.log("pagination", this.pagination.rowsPerPage)
-      this.loading = true;
-      const {page, itemsPerPage} = this.options;
-      let pageNumber = page;
-
-
-      axios.get(`http://localhost:8000/car-service/customer-api/?search=${this.search}&page=1&per_page=10`, {headers: authHeader()})
-          .then(res => {
-            this.customers = res.data.data;
-            console.log("ssa", res.data.data)
-            this.total = res.data.recordsTotal;
-            this.numberOfPages = 2;
-
-          })
-          .catch(err => console.log(err.response.data))
-          .finally(() => this.loading = false);
-      this.loading = false
-    },
-
-    getCarPagination(uuid) {
-
-      this.darkModal = true
-
-      // get by search keyword
-      console.log("search", this.search)
-      console.log("pagination", this.pagination.page)
-      console.log("pagination", this.pagination.rowsPerPage)
-      this.loading = true;
-      const {page, itemsPerPage} = this.options;
-      let pageNumber = page;
-      console.log("uuid", uuid)
-      axios.get(`http://localhost:8000/car-service/car-api/?uuid=${uuid}`, {headers: authHeader()})
-          .then(res => {
-            this.cars = res.data;
-            //this.total = res.data.recordsTotal;
-            //this.numberOfPages = 2;
-            console.log(this.cars)
-
-          })
-          .catch(err => console.log(err.response.data))
-          .finally(() => this.loading = false);
-      this.loading = false
-    },
-
-    async addCar() {
-
-
-      console.log("car",this.car)
-      let a = await new CarService().carAdd(this.car);
-      console.log("status", a);
-      if (a.status === 200) {
-        this.isSuccessCar = false;
-        this.isSuccessCar = true;
-        this.successHideCar();
-        //this.getCustomersPagination();
-      } else if (a.response.status === 401) {
-        this.isErrorCar = false;
-        this.isErrorCar = true;
-        this.errorHideCar();
-        await this.$router.push("/pages/login");
-      } else {
-        this.isErrorCar = false;
-        this.isErrorCar = true;
-        this.errorsCar = a.response.data["username"];
-        this.errorHideCar();
-      }
-
-
+    goService(){
+      this.$router.push({name: '/customer/open-service', params: { userId: "bar"}});
     }
 
   },
@@ -641,8 +446,9 @@ export default {
     this.isCorporateControl();
 
   },
-  async mounted() {
-    await this.getCustomersPagination();
+  mounted() {
+    this.getServiceType()
+
 
   },
   computed: {

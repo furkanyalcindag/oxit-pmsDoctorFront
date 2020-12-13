@@ -1,17 +1,17 @@
 export default [
-  {
-    _name: 'CSidebarNav',
-    _children: [
-      {
-        _name: 'CSidebarNavItem',
-        name: 'Dashboard',
-        to: '/dashboard',
-        icon: 'cil-speedometer',
-        badge: {
-          color: 'primary',
-          text: 'NEW'
-        }
-      }, /*
+    {
+        _name: 'CSidebarNav',
+        _children: [
+            {
+                _name: 'CSidebarNavItem',
+                name: 'Dashboard',
+                to: '/dashboard',
+                icon: 'cil-speedometer',
+                badge: {
+                    color: 'primary',
+                    text: 'NEW'
+                }
+            }, /*
       {
         _name: 'CSidebarNavTitle',
         _children: ['Theme']
@@ -193,78 +193,90 @@ export default [
         _name: 'CSidebarNavDivider',
         _class: 'm-2'
       },*/
-      {
-        _name: 'CSidebarNavTitle',
-        _children: ['İşlemler']
-      },
-      {
-        _name: 'CSidebarNavDropdown',
-        name: 'Cari',
-        route: '/pages',
-        icon: 'cil-calculator',
-        items: [
-          {
-            name: 'Login',
-            to: '/pages/login'
-          },
-          {
-            name: 'Register',
-            to: '/pages/register'
-          },
-          {
-            name: 'Error 404',
-            to: '/pages/404'
-          },
-          {
-            name: 'Error 500',
-            to: '/pages/500'
-          }
-        ]
-      },
-      {
-        _name: 'CSidebarNavDropdown',
-        name: 'Müşteri',
-        route: '/customer',
-        icon: 'cil-user',
-        items: [
-          {
-            name: 'Müşteri',
-            to: '/customer/customer'
-          }
-        ]
-      },
-        {
-        _name: 'CSidebarNavDropdown',
-        name: 'Katalog',
-        route: '/category',
-        icon: 'cil-star',
-        items: [
-          {
-            name: 'Kategori',
-            to: '/catalog/category'
-          },
             {
-            name: 'Ürünler',
-            to: '/catalog/product-list'
-          }
+                _name: 'CSidebarNavTitle',
+                _children: ['İşlemler']
+            },
+            {
+                _name: 'CSidebarNavDropdown',
+                name: 'Cari',
+                route: '/pages',
+                icon: 'cil-calculator',
+                items: [
+                    {
+                        name: 'Login',
+                        to: '/pages/login'
+                    },
+                    {
+                        name: 'Register',
+                        to: '/pages/register'
+                    },
+                    {
+                        name: 'Error 404',
+                        to: '/pages/404'
+                    },
+                    {
+                        name: 'Error 500',
+                        to: '/pages/500'
+                    }
+                ]
+            },
+            {
+                _name: 'CSidebarNavDropdown',
+                name: 'Müşteri',
+                route: '/customer',
+                icon: 'cil-user',
+                items: [
+                    {
+                        name: 'Müşteri',
+                        to: '/customer/customer'
+                    }
+                ]
+            },
+            {
+                _name: 'CSidebarNavDropdown',
+                name: 'Katalog',
+                route: '/category',
+                icon: 'cil-star',
+                items: [
+                    {
+                        name: 'Kategori',
+                        to: '/catalog/category'
+                    },
+                    {
+                        name: 'Ürünler',
+                        to: '/catalog/product-list'
+                    }
+                ]
+            },
+            {
+                _name: 'CSidebarNavDropdown',
+                name: 'Personel',
+                route: '/staff',
+                icon: 'cil-star',
+                items: [
+                    {
+                        name: 'Personel İşlemleri',
+                        to: '/staff/staff-operations'
+                    }
+                ]
+            },
+            /*{
+              _name: 'CSidebarNavItem',
+              name: 'Download CoreUI',
+              href: 'http://coreui.io/vue/',
+              icon: { name: 'cil-cloud-download', class: 'text-white' },
+              _class: 'bg-success text-white',
+              target: '_blank'
+            },
+            {
+              _name: 'CSidebarNavItem',
+              name: 'Try CoreUI PRO',
+              href: 'http://coreui.io/pro/vue/',
+              icon: { name: 'cil-layers', class: 'text-white' },
+              _class: 'bg-danger text-white',
+              target: '_blank'
+            }*/
         ]
-      },
-      /*{
-        _name: 'CSidebarNavItem',
-        name: 'Download CoreUI',
-        href: 'http://coreui.io/vue/',
-        icon: { name: 'cil-cloud-download', class: 'text-white' },
-        _class: 'bg-success text-white',
-        target: '_blank'
-      },
-      {
-        _name: 'CSidebarNavItem',
-        name: 'Try CoreUI PRO',
-        href: 'http://coreui.io/pro/vue/',
-        icon: { name: 'cil-layers', class: 'text-white' },
-        _class: 'bg-danger text-white',
-        target: '_blank'
-      }*/
-    ]
-  }
+    }
 ]
