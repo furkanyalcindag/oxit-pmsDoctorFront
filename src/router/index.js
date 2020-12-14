@@ -165,6 +165,7 @@ function configRoutes () {
             {
               path: '/open-service/:carId',
               name: 'OpenServiceCard',
+
               component: OpenServiceCard
             }
 

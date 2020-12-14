@@ -36,17 +36,17 @@
                   </CAlert>
 
                   <CAlert
-                      v-for="item in errors"
-                      :key="item.message"
+                      v-for="(value,key) in errors"
+                      :key="value.message"
                       color="danger"
                       :show="isError"
                   >
-                    E-mail: {{ item }}
+                    {{ key }}: {{ value[0] }}
                   </CAlert>
                 </div>
                 <CRow></CRow>
                 <CRow>
-                  <CCol lg="3">
+                  <CCol lg="4">
 
                     <CSelect
                         :options="serviceTypes"
@@ -55,81 +55,52 @@
                         :value.sync="service.serviceType"
 
                     />
+
+
+                    <CInput
+                        label="Araç KM"
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="service.serviceKM"
+                        type="number"
+                    />
+                  </CCol>
+
+                  <CCol lg="4">
+                    <CInput
+                        label="Teslim Eden Kişi"
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="service.responsiblePerson"
+                    />
+                    <CSelect
+                        :options="servicemen"
+                        label="Usta"
+                        v-model="service.serviceman"
+                        :value.sync="service.serviceman"
+
+                    />
+
+
+                  </CCol>
+
+                  <CCol lg="4">
                     <CTextarea
-                        :rows="3"
+                        :rows="5"
                         label="Şikayet"
                         description=""
                         autocomplete="autocomplete"
                         v-model="service.complaint"
                     />
 
-                    <CInput
-                        label="Soyisim"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="customer.lastName"
-                    />
 
-                    <CInput
-                        label="Email"
-                        description=""
-                        type="email"
-                        autocomplete="email"
-                        prepend="@"
-                        v-model="customer.username"
-                    />
                   </CCol>
 
-                  <CCol lg="3">
-                    <CInput
-                        label="Telefon Numarası"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="customer.mobilePhone"
-                    />
-                    <CTextarea
-                        :rows="3"
-                        label="Adres"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="customer.address"
-                    />
 
-                    <CRow form class="form-group">
-                      <CCol tag="label" sm="4" class="col-form-label">
-                        Kurumsal
-                      </CCol>
-
-                      <CCol sm="8" :class="'form-inline'">
-                        <CInputCheckbox
-                            :label="'evet'"
-                            :value="'true'"
-                            :checked="isCorporate"
-                            v-on:change="isCorporateControl"
-                        />
-                      </CCol>
-                    </CRow>
-                  </CCol>
-
-                  <CCol lg="3">
-                    <CInput
-                        label="Firma Adı"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="customer.firmName"
-                    />
-
-                    <CInput
-                        label="Vergi Numarası"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="customer.taxNumber"
-                    />
-                  </CCol>
                 </CRow>
 
                 <div class="form-actions">
-                  <CButton type="submit" color="primary" @click="addCustomer"
+                  <CButton type="submit" color="primary" @click="addOpenServiceCard"
                   >Kaydet
                   </CButton>
 
@@ -197,81 +168,6 @@
     </CRow>
 
 
-    <CModal
-        :show.sync="darkModal"
-        :no-close-on-backdrop="true"
-        :centered="true"
-        title="Modal title 2"
-        size="xl"
-        color="dark"
-    >
-
-      <CRow>
-        <CCol lg="12">
-          <transition name="fade">
-            <CCard v-if="show">
-              <template>
-                <CCardBody>
-
-                  <CDataTable
-                      :items="computedItemsCar"
-                      :fields="fieldsTableCar"
-                      column-filter
-
-
-                      :items-per-page="5"
-                      :activePage="4"
-                      hover
-                      sorter
-                      pagination
-                      :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
-
-                      clickableRows
-
-                  >
-
-                    <template #actions="{ item, index }">
-                      <td class="py-2">
-
-                        <CButtonGroup class="mx-1 d-sm-down-none">
-                          <CButton color="success" @click="goService()">Servis</CButton>
-
-                          <CButton color="warning">Güncelle</CButton>
-                          <CButton color="danger">Sil</CButton>
-                        </CButtonGroup>
-
-
-                      </td>
-                    </template>
-                    <template #details="{ item }">
-                      <CCollapse
-                          :show="Boolean(item._toggled)"
-                          :duration="collapseDuration"
-                      >
-
-                      </CCollapse>
-                    </template>
-                  </CDataTable>
-
-
-                </CCardBody>
-              </template>
-            </CCard>
-          </transition>
-        </CCol>
-      </CRow>
-      <template #header>
-        <h6 class="modal-title">Araçlar</h6>
-        <CButtonClose @click="darkModal = false" class="text-white"/>
-      </template>
-      <template #footer>
-        <CButton @click="darkModal = false" color="danger">Discard</CButton>
-        <CButton @click="darkModal = false" color="success">Accept</CButton>
-      </template>
-    </CModal>
-
-
-
 
 
   </div>
@@ -288,7 +184,7 @@ import CarService from "@/services/car.service";
 import Service from "@/models/service";
 import GeneralService from "@/services/general.service";
 import ServiceService from "@/services/service.service";
-
+import StaffService from "@/services/staff.service";
 
 
 export default {
@@ -320,12 +216,12 @@ export default {
       total: 0,
       loading: false,
       pagination: {external: true},
-      customers: [],
+      servicemen: [],
       cars: [],
 
-      service : new Service(),
+      service: new Service(),
       customer: new Customer("", "", "", "", "", "", "", ""),
-      car : new Car("","","","","","","","","","",""),
+      car: new Car("", "", "", "", "", "", "", "", "", "", ""),
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
@@ -333,11 +229,11 @@ export default {
 
       details: [],
       errors: [],
-      errorsCar:[],
+      errorsCar: [],
       isCorporate: false,
       collapseDuration: 0,
       darkModal: false,
-      serviceTypes :[],
+      serviceTypes: [],
 
       show: true,
       showAddCar: true,
@@ -403,10 +299,10 @@ export default {
     },
     addCarModal(profileUuid) {
 
-      console.log("uuid",profileUuid)
-      this.carModal=true
-      this.car.profileUuid=profileUuid
-      console.log("car",this.car)
+      console.log("uuid", profileUuid)
+      this.carModal = true
+      this.car.profileUuid = profileUuid
+      console.log("car", this.car)
 
     },
 
@@ -426,16 +322,44 @@ export default {
     },
 
 
-
     async getServiceType() {
       let response = await new ServiceService().getServiceType();
 
       this.serviceTypes = response.data
     },
 
+    async getServicemanSelect() {
+      let response = await new StaffService().getServicemanSelect();
 
-    goService(){
-      this.$router.push({name: '/customer/open-service', params: { userId: "bar"}});
+      this.servicemen = response.data
+    },
+
+
+    goService() {
+      this.$router.push({name: '/customer/open-service', params: {userId: "bar"}});
+    },
+
+    async addOpenServiceCard() {
+      this.service.carUUID = this.$route.params.carId
+      let a = await new ServiceService().addService(this.service);
+      console.log("status", a);
+      if (a.status === 200) {
+        this.isSuccess = false;
+        this.isSuccess = true;
+        this.successHide();
+       // this.getStaffs();
+      } else if (a.response.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        console.log("error", a.response.data)
+        this.errors = a.response.data;
+        this.errorHide();
+      }
     }
 
   },
@@ -448,11 +372,13 @@ export default {
   },
   mounted() {
     this.getServiceType()
+    this.getServicemanSelect()
+    console.log(this.$route.params.carId)
 
 
   },
   computed: {
-    computedItems() {
+  /*  computedItems() {
 
       return this.customers.map(item => {
         return {
@@ -462,17 +388,8 @@ export default {
 
         }
       })
-    },
-    computedItemsCar() {
+    } */
 
-      return this.cars.map(item => {
-        return {
-          ...item,
-
-
-        }
-      })
-    }
   }
 
 };

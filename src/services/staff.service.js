@@ -29,9 +29,14 @@ class StaffService {
     }
 
 
-
     getStaffs() {
         return axios.get(process.env.VUE_APP_API_URL + `/car-service/staff-api/`, {headers: authHeader()})
+
+
+    }
+
+    getServicemanSelect() {
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/serviceman-select-api/`, {headers: authHeader()})
 
 
     }

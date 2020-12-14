@@ -402,7 +402,10 @@ import CarService from "@/services/car.service";
 
 export default {
   name: "Customer",
-
+ props: {
+    plate: String,
+    customer: String
+  },
   data() {
     return {
       fieldsTable: [
