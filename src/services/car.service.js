@@ -5,6 +5,17 @@ import authHeader from "@/services/auth-header";
 class CarService {
 
 
+    getCarApi(id) {
+        const params = {
+            uuid: id
+
+        };
+
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-car-by-id-api/`,  {headers: authHeader(),params})
+
+
+    }
+
 
     carAdd(car) {
         return axios.post(process.env.VUE_APP_API_URL + '/car-service/car-api/',

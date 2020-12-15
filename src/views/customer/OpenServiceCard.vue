@@ -4,9 +4,9 @@
       <CCol lg="12">
         <transition name="fade">
           <CCard v-if="show">
-            <CCardHeader>
+            <CCardHeader >
               <CIcon name="cil-pencil"/>
-              Servis
+              Servis <span v-text="this.carPlate"></span>
               <div class="card-header-actions">
                 <CLink href="#" class="card-header-action btn-setting">
                   <CIcon name="cil-settings"/>
@@ -135,15 +135,18 @@
 
                 >
 
+                  <template #serviceSituation="{item}">
+                    <td>
+                      <CBadge :color="getBadge(item.serviceSituation)">{{item.serviceSituation}}</CBadge>
+                    </td>
+                  </template>
+
                   <template #actions="{ item, index }">
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
-                        <CButton @click="addCarModal(item.uuid)" color="info">Araç Ekle</CButton>
-                        <CButton color="success">Cari</CButton>
-                        <CButton color="danger">Sil</CButton>
-                        <CButton color="warning">Güncelle</CButton>
+                        <CButton @click="getCarPagination(item.uuid)" color="primary">Servis Detay</CButton>
+
                       </CButtonGroup>
 
 
@@ -166,8 +169,6 @@
         </transition>
       </CCol>
     </CRow>
-
-
 
 
   </div>
@@ -193,9 +194,11 @@ export default {
   data() {
     return {
       fieldsTable: [
-        {key: 'nameSurname', label: "Ad Soyad", _style: "min-width:200px"},
-        {key: "firmName", label: "Firma"},
-        {key: "mobilePhone", label: "Telefon"},
+        {key: 'serviceType', label: "Servis Tipi", _style: "min-width:200px"},
+        {key: "serviceKM", label: "KM"},
+        {key: "serviceSituation", label: "Durum"},
+        {key: "serviceman", label: "Usta"},
+        {key: "creationDate", label: "Tarih"},
         {key: "actions", label: "İşlemler"},
       ],
       fieldsTableCar: [
@@ -234,6 +237,7 @@ export default {
       collapseDuration: 0,
       darkModal: false,
       serviceTypes: [],
+      services :[],
 
       show: true,
       showAddCar: true,
@@ -263,6 +267,7 @@ export default {
         "Radios - custom",
         "Inline Radios - custom",
       ],
+      carPlate: "",
     };
   },
 
@@ -272,14 +277,16 @@ export default {
     },
     getBadge(status) {
       switch (status) {
-        case "Active":
+        case "Tamamlandı":
           return "success";
-        case "Inactive":
+        case "İşlem Bekleniyor":
           return "secondary";
-        case "Pending":
+        case "Müşteri Onayı Bekleniyor":
           return "warning";
         case "Banned":
           return "danger";
+        case "İşlemde":
+          return "info";
         default:
           "primary";
       }
@@ -334,10 +341,27 @@ export default {
       this.servicemen = response.data
     },
 
+    async getCar() {
+      let response = await new CarService().getCarApi(this.$route.params.carId);
+
+      this.carPlate = response.data.plate +'-'+response.data.profile.firmName+'-'+response.data.profile.user.first_name+' ' +response.data.profile.user.last_name
+    },
+
+    async getCarServices() {
+
+      let response = await new ServiceService().getCarServices(this.$route.params.carId);
+      console.log(response)
+
+      this.services = response.data
+
+     },
+
+
 
     goService() {
       this.$router.push({name: '/customer/open-service', params: {userId: "bar"}});
-    },
+    }
+    ,
 
     async addOpenServiceCard() {
       this.service.carUUID = this.$route.params.carId
@@ -347,7 +371,7 @@ export default {
         this.isSuccess = false;
         this.isSuccess = true;
         this.successHide();
-       // this.getStaffs();
+        this.getCarServices()
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
@@ -364,33 +388,38 @@ export default {
 
   },
 
-  watch: {},
+  watch: {}
+  ,
 
   created() {
     this.isCorporateControl();
 
-  },
+  }
+  ,
   mounted() {
     this.getServiceType()
     this.getServicemanSelect()
+    this.getCar()
+    this.getCarServices()
     console.log(this.$route.params.carId)
 
 
-  },
+  }
+  ,
   computed: {
-  /*  computedItems() {
+      computedItems() {
 
-      return this.customers.map(item => {
-        return {
-          ...item,
-          userUsername: item.user.username,
-          nameSurname: item.user.first_name + ' ' + item.user.last_name
+        return this.services.map(item => {
+          return {
+            ...item,
 
-        }
-      })
-    } */
+
+          }
+        })
+      }
 
   }
 
-};
+}
+;
 </script>

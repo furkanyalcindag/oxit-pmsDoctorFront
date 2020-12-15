@@ -404,7 +404,7 @@ export default {
   name: "Customer",
  props: {
     plate: String,
-    customer: String
+    customerName: String
   },
   data() {
     return {
@@ -434,8 +434,6 @@ export default {
       pagination: {external: true},
       customers: [],
       cars: [],
-
-
       customer: new Customer("", "", "", "", "", "", "", ""),
       car : new Car("","","","","","","","","","",""),
       isSuccess: false,

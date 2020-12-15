@@ -7,17 +7,17 @@
             <CCard class="p-4">
               <CCardBody>
                 <CForm name="login-form" >
-                  <h1>Login</h1>
+                  <h1>Giriş Yap</h1>
                   <p class="text-muted">Sign In to your account</p>
                   <CInput
-                    placeholder="Username"
+                    placeholder="E-mail"
                     autocomplete="username email"
                     v-model="user.username"
                   >
                     <template #prepend-content><CIcon name="cil-user"/></template>
                   </CInput>
                   <CInput
-                    placeholder="Password"
+                    placeholder="Şifre"
                     type="password"
                     autocomplete="curent-password"
                     v-model="user.password"
@@ -26,10 +26,10 @@
                   </CInput>
                   <CRow>
                     <CCol col="6" class="text-left">
-                      <CButton @click="handleLogin" color="primary" class="px-4">Login</CButton>
+                      <CButton @click="handleLogin" color="primary" class="px-4">Giriş</CButton>
                     </CCol>
                     <CCol col="6" class="text-right">
-                      <CButton color="link" class="px-0">Forgot password?</CButton>
+                      <CButton color="link" class="px-0">Şifremi Unuttum</CButton>
                       <CButton color="link" class="d-lg-none">Register now!</CButton>
                     </CCol>
                   </CRow>
@@ -43,15 +43,9 @@
               body-wrapper
             >
               <CCardBody>
-                <h2>Sign up</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                <CButton
-                  color="light"
-                  variant="outline"
-                  size="lg"
-                >
-                  Register Now!
-                </CButton>
+                <h2>OXIT BİLİŞİM TEKNOLOJİLERİ</h2>
+                <p>Servis Yazılımı</p>
+
               </CCardBody>
             </CCard>
           </CCardGroup>

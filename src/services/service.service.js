@@ -40,6 +40,20 @@ class ServiceService {
 
     }
 
+    getCarServices(id) {
+        const params = {
+            uuid: id
+
+        };
+
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-car-services-api/`, {
+            headers: authHeader(),
+            params
+        })
+
+
+    }
+
 
 }
 
