@@ -11,11 +11,7 @@
                   <h3>Servis Listesi</h3>
 
                 </CCol>
-                <CCol lg="9" class="text-right mt-3">
-                  <CButton color="success" @click="addProductModal">
-                    <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>&nbsp;Ürün Ekle
-                  </CButton>
-                </CCol>
+
               </CRow>
             </CCardHeader>
             <template>
@@ -44,7 +40,7 @@
 
                   <template #serviceSituation="{item}">
                     <td>
-                      <CBadge :color="getBadge(item.serviceSituation)">{{item.serviceSituation}}</CBadge>
+                      <CBadge :color="getBadge(item.serviceSituation)">{{ item.serviceSituation }}</CBadge>
                     </td>
                   </template>
 
@@ -52,8 +48,9 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton @click="getCarPagination(item.uuid)" variant="outline" color="dark">Servis Detay</CButton>
-                        <CButton color="primary" >İşlem Yap</CButton>
+                        <CButton @click="getServiceDetail(item.uuid)" variant="outline" color="dark">Servis Detay
+                        </CButton>
+                        <CButton color="primary">İşlem Yap</CButton>
 
                       </CButtonGroup>
 
@@ -80,7 +77,7 @@
 
 
     <CModal
-        :show.sync="showAddProduct"
+        :show.sync="showServiceDetail"
         :no-close-on-backdrop="true"
         :centered="true"
         title="Modal title 2"
@@ -90,104 +87,24 @@
       <CRow>
         <CCol lg="12">
           <transition name="fade">
-            <CCard v-if="showAddProduct">
+            <CCard v-if="showServiceDetail">
               <template>
                 <CCardBody>
-                  <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Ürün başarıyla kaydedildi.
-                    </CAlert>
-
-                    <CAlert
-                        v-for="item in errorsCar"
-                        :key="item.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      E-mail: {{ item }}
-                    </CAlert>
-                  </div>
-
-
-                  <CRow>
-
-
-                    <CCol lg="6">
-                      <CInput
-                          label="Barkod Numarası"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.barcode_number"
-
-                      />
-                      <CInput
-                          label="Ürün Adı."
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.name"
-
-                      />
-                      <CInput
-                          label="Net Ücret"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.netPrice"
-                          type="number"
-
-                      />
-                      <CInput
-                          label="KDV Oranı(%)"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.taxRate"
-                          type="number"
-
-                      />
-
-
-                    </CCol>
-                    <CCol lg="6">
-                      <CSelect
-                          :options="selectCategories"
-                          label="Üst Kategori"
-                          v-model="product.categories"
-                          :value.sync="product.categories"
-
-                      />
-
-                      <CInput
-                          label="Stok"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.quantity"
-                          type="number"
-
-
-                      />
-
-                      <CInput
-                          label="Raf Numarası"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.shelf"
-
-                      />
-                      <CInputFile
-                          label="Resim Ekle"
-                          horizontal
-                          @change="getBase64"
-                          custom
-                          multiple
-                          :placeholder="selectedFile"
-
-                      />
-
-
-
-                    </CCol>
-
-
-                  </CRow>
+                  <h5>Müşteri : {{ carPlate }}</h5>
+                  <hr>
+                  <h5>Plaka : {{ serviceDetail.plate }}</h5>
+                   <hr>
+                  <h5>Servis Tipi : {{ serviceDetail.serviceType }}</h5>
+                   <hr>
+                  <h5>KM : {{ serviceDetail.serviceKM }} KM</h5>
+                   <hr>
+                  <h5>Servise Getiren Kişi : {{ serviceDetail.responsiblePerson }} </h5>
+                   <hr>
+                  <h5>Usta : {{ serviceDetail.serviceman }}</h5>
+                   <hr>
+                  <h5>Giriş Zamanı : {{ serviceDetail.creationDate }} </h5>
+                   <hr>
+                  <h5>Şikayet : {{ serviceDetail.complaint }} </h5>
 
 
                 </CCardBody>
@@ -198,12 +115,12 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Ürün EKle</h6>
-        <CButtonClose @click="showAddProduct = false" class="text-white"/>
+        <h6 class="modal-title">Servis Detay</h6>
+        <CButtonClose @click="showServiceDetail = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="categoryUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="addProduct()" color="success">Kaydet</CButton>
+        <CButton @click="showServiceDetail = false" color="danger">Kapat</CButton>
+
       </template>
     </CModal>
 
@@ -221,6 +138,7 @@ import product from "@/models/product";
 import {freeSet} from '@coreui/icons'
 import Service from "@/models/service";
 import ServiceService from "@/services/service.service";
+import CarService from "@/services/car.service";
 
 export default {
   name: "ServiceList",
@@ -253,7 +171,7 @@ export default {
       selectCategories: [],
       categoryUpdateModal: false,
       showUpdateCategory: true,
-      product: new Product("", "", "", "", "", "", "", "", "", "",""),
+      product: new Product("", "", "", "", "", "", "", "", "", "", ""),
       products: [],
       category: new Category("", "", "0"),
       categoryUpdate: new Category("", "", "0"),
@@ -299,9 +217,11 @@ export default {
         "Radios - custom",
         "Inline Radios - custom",
       ],
-      showAddProduct: false,
+      showServiceDetail: false,
       service: new Service(),
-      services:[]
+      services: [],
+      serviceDetail: null,
+      carPlate: ''
     };
   },
 
@@ -325,6 +245,8 @@ export default {
           "primary";
       }
     },
+
+
     toggleDetails(item) {
       this.$set(this.items[item.id], "_toggled", !item._toggled);
       this.collapseDuration = 300;
@@ -367,6 +289,21 @@ export default {
     },
 
 
+    async getServiceDetail(id) {
+
+      let response = await new ServiceService().getServiceDetail(id);
+      console.log(response)
+
+
+      this.serviceDetail = response.data
+      let responsePlate = await new CarService().getCarApi(this.serviceDetail.carUUID);
+
+      this.carPlate =  responsePlate.data.profile.firmName + '-' + responsePlate.data.profile.user.first_name + ' ' + responsePlate.data.profile.user.last_name
+
+      this.serviceDetailModal()
+
+    },
+
 
     updateCategoryModal(categoryId) {
 
@@ -378,9 +315,9 @@ export default {
 
     },
 
-    addProductModal() {
+    serviceDetailModal() {
 
-      this.showAddProduct = true
+      this.showServiceDetail = true
     },
 
     errorHide() {
@@ -402,13 +339,12 @@ export default {
       this.customers = customersRes;
     },
 
-     intervalFetchData: async function () {
+    intervalFetchData: async function () {
       setInterval(() => {
         this.getServiceList();
 
       }, 10000);
     }
-
 
 
   },
@@ -419,9 +355,9 @@ export default {
 
 
   },
-   mounted() {
+  mounted() {
     this.getServiceList()
-     this.intervalFetchData()
+    this.intervalFetchData()
 
   },
   computed: {

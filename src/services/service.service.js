@@ -61,6 +61,21 @@ class ServiceService {
     }
 
 
+    getServiceDetail(id) {
+        const params = {
+            uuid: id
+
+        };
+
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-service-detail-api/`, {
+            headers: authHeader(),
+            params
+        })
+
+
+    }
+
+
 }
 
 export default ServiceService
