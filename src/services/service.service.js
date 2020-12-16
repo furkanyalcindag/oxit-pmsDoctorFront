@@ -54,6 +54,12 @@ class ServiceService {
 
     }
 
+    getServicesList() {
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-services-api/`, {headers: authHeader()})
+
+
+    }
+
 
 }
 

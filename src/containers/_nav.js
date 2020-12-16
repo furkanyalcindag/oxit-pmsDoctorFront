@@ -261,6 +261,18 @@ export default [
                     }
                 ]
             },
+            {
+                _name: 'CSidebarNavDropdown',
+                name: 'Servis',
+                route: '/service',
+                icon: 'cil-star',
+                items: [
+                    {
+                        name: 'Servis Listesi',
+                        to: '/service/service-list'
+                    }
+                ]
+            },
             /*{
               _name: 'CSidebarNavItem',
               name: 'Download CoreUI',
