@@ -570,7 +570,7 @@ export default {
       let pageNumber = page;
 
 
-      axios.get(`http://localhost:8000/car-service/customer-api/?search=${this.search}&page=1&per_page=10`, {headers: authHeader()})
+      axios.get(process.env.VUE_APP_API_URL+`/car-service/customer-api/?search=${this.search}&page=1&per_page=10`, {headers: authHeader()})
           .then(res => {
             this.customers = res.data.data;
             console.log("ssa", res.data.data)
@@ -595,7 +595,8 @@ export default {
       const {page, itemsPerPage} = this.options;
       let pageNumber = page;
       console.log("uuid", uuid)
-      axios.get(`http://localhost:8000/car-service/car-api/?uuid=${uuid}`, {headers: authHeader()})
+
+      axios.get(process.env.VUE_APP_API_URL+`/car-service/car-api/?uuid=${uuid}`, {headers: authHeader()})
           .then(res => {
             this.cars = res.data;
             //this.total = res.data.recordsTotal;
