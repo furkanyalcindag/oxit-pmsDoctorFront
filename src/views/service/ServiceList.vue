@@ -50,7 +50,7 @@
                       <CButtonGroup class="mx-1 d-sm-down-none">
                         <CButton @click="getServiceDetail(item.uuid)" variant="outline" color="dark">Servis Detay
                         </CButton>
-                        <CButton color="primary">İşlem Yap</CButton>
+                        <CButton color="primary" @click="goServiceDetermation(item.uuid)">İşlem Yap</CButton>
 
                       </CButtonGroup>
 
@@ -344,6 +344,10 @@ export default {
         this.getServiceList();
 
       }, 10000);
+    },
+
+     goServiceDetermation(serviceId){
+      this.$router.push({name: 'ServiceDetermination', params: { serviceId: serviceId}});
     }
 
 

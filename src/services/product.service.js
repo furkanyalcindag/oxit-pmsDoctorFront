@@ -54,6 +54,17 @@ class ProductService {
 
     }
 
+     getSearchProduct(barcode) {
+        const params = {
+            barcode: barcode
+
+        };
+
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-product-search-api/`,  {headers: authHeader(),params})
+
+
+    }
+
 
 
 

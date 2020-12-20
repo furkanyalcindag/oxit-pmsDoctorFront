@@ -7,6 +7,11 @@ import CoreuiVue from '@coreui/vue'
 import { iconsSet as icons } from './assets/icons/icons.js'
 import store from './store/store'
 //import VeeValidate from 'vee-validate';
+import VueLazyload from 'vue-lazyload'
+import VueUploadMultipleImage from 'vue-upload-multiple-image'
+
+
+Vue.use(VueLazyload)
 
 
 
@@ -42,6 +47,7 @@ new Vue({
   
   components: {
     App,
+    VueUploadMultipleImage
    
   }
 })

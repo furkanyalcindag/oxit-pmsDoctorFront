@@ -71,6 +71,8 @@ const OpenServiceCard = () => import('@/views/customer/OpenServiceCard')
 
 const ServiceList = () => import('@/views/service/ServiceList')
 
+const ServiceDetermination = () => import('@/views/service/ServiceDetermination')
+
 Vue.use(Router)
 
 export default new Router({
@@ -231,6 +233,11 @@ function configRoutes() {
                             path: 'service-list',
                             name: 'ServiceList',
                             component: ServiceList
+                        },
+                        {
+                            path: 'service-determination/:serviceId',
+                            name: 'ServiceDetermination',
+                            component: ServiceDetermination
                         }
 
                     ]
