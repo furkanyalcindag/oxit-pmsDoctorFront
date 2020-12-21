@@ -96,8 +96,14 @@
             <CCardHeader>
               <CRow>
                 <CCol lg="3" class="text-left mt-3">
-                  <h3>Servis Tespit Ekranı</h3>
+                  <b>Servis Tespit Ekranı</b>
 
+
+                </CCol>
+                <CCol lg="9">
+                  <CButton color="primary" class="float-right" @click="addProductModal">
+                    <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>&nbsp;Ürün Ekle
+                  </CButton>
                 </CCol>
 
               </CRow>
@@ -107,7 +113,7 @@
                 <div>
                   <div>
                     <CAlert color="success" :show="isSuccess">
-                      Kategori başarıyla kaydedildi.
+                      Ürün başarıyla kaydedildi.
                     </CAlert>
 
                     <CAlert
@@ -127,7 +133,7 @@
                           label="Arıza Tespiti"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="category.name"
+                          v-model="determination"
 
                       />
 
@@ -136,24 +142,23 @@
                     <CCol lg="3">
 
 
-                                <div id="my-strictly-unique-vue-upload-multiple-image"
-                                     style="display: flex; justify-content: center;">
-                                  <vue-upload-multiple-image
-                                      @upload-success="uploadImageSuccess"
-                                      @before-remove="beforeRemove"
-                                      @edit-image="editImage"
-                                      :data-images="images"
-                                      idUpload="myIdUpload"
-                                      editUpload="myIdEdit"
-                                      :primary-text ="primaryText"
-                                      :browse-text="browseText"
-                                      :drag-text="dragText"
-                                      :markIsPrimaryText="markPrimary"
-                                      :popupText="popupText"
+                      <div id="my-strictly-unique-vue-upload-multiple-image"
+                           style="display: flex; justify-content: center;">
+                        <vue-upload-multiple-image
+                            @upload-success="uploadImageSuccess"
+                            @before-remove="beforeRemove"
+                            @edit-image="editImage"
+                            :data-images="images"
+                            idUpload="myIdUpload"
+                            editUpload="myIdEdit"
+                            :primary-text="primaryText"
+                            :browse-text="browseText"
+                            :drag-text="dragText"
+                            :markIsPrimaryText="markPrimary"
+                            :popupText="popupText"
 
-                                  ></vue-upload-multiple-image>
-                                </div>
-
+                        ></vue-upload-multiple-image>
+                      </div>
 
 
                     </CCol>
@@ -208,6 +213,7 @@
                                 <CCard>
                                   <CCardHeader>
                                     <b>Ürünler</b>
+
                                   </CCardHeader>
                                   <CListGroup
 
@@ -215,11 +221,13 @@
                                   >
                                     <CListGroupItem class="d-flex justify-content-between align-items-center"
                                                     v-for="product in products" :key="product" href="#">
-                                       <CButton align="right" size="sm" color="success"
+                                      <CButton align="right" size="sm" color="success"
                                                @click="addCart(product.name,product.uuid,1,product.netPrice)">
                                         <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
                                       </CButton>
-                                      <span>{{ product.name }} | {{ product.netPrice }} ₺ |  %{{ product.taxRate }}</span>
+                                      <span>{{ product.name }} | {{ product.netPrice }} ₺ |  %{{
+                                          product.taxRate
+                                        }}</span>
 
                                       <CBadge color="primary" shape="pill">{{ product.quantity }}</CBadge>
                                     </CListGroupItem>
@@ -228,14 +236,15 @@
 
                                 </CCard>
                                 <CCard>
-                                  <CCardHeader><b>Sepet</b> <span class="float-right">Toplam: {{cartTotal}} ₺</span></CCardHeader>
+                                  <CCardHeader><b>Sepet</b> <span class="float-right">Toplam: {{ cartTotal }} ₺</span>
+                                  </CCardHeader>
                                   <CListGroup flush>
                                     <CListGroupItem class="d-flex justify-content-between align-items-center"
                                                     v-for="(cart,index) in carts" :key="cart" href="#">
-                                       <CButton align="left" size="sm" color="danger" @click="removeCart(index)">
+                                      <CButton align="left" size="sm" color="danger" @click="removeCart(index)">
                                         <CIcon :content="$options.freeSet.cilMinus" name="cil-minus"/>
                                       </CButton>
-                                      <span>{{ cart.name }} | {{cart.netPrice}} ₺</span>
+                                      <span>{{ cart.name }} | {{ cart.netPrice }} ₺</span>
 
                                       <CBadge color="primary" shape="pill">{{ cart.quantity }}</CBadge>
                                     </CListGroupItem>
@@ -252,12 +261,18 @@
                       </CRow>
 
                     </CCol>
-
+                    <CCol lg="12">
+                      <CButton color="success" class="float-right" @click="addDetermination">
+                        <CIcon :content="$options.freeSet.cilSave" name="cil-save"/>
+                        Kaydet
+                      </CButton>
+                    </CCol>
 
                   </CRow>
 
 
                 </div>
+
               </CCardBody>
 
             </CCollapse>
@@ -266,6 +281,133 @@
       </CCol>
     </CRow>
 
+
+    <CModal
+        :show.sync="showAddProduct"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="showAddProduct">
+              <template>
+                <CCardBody>
+                  <div>
+                    <CAlert color="success" :show="isSuccessCar">
+                      Ürün başarıyla kaydedildi.
+                    </CAlert>
+
+                    <CAlert
+                        v-for="item in errorsCar"
+                        :key="item.message"
+                        color="danger"
+                        :show="isError"
+                    >
+                      E-mail: {{ item }}
+                    </CAlert>
+                  </div>
+
+
+                  <CRow>
+
+
+                    <CCol lg="6">
+                      <CInput
+                          label="Barkod Numarası"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.barcode_number"
+
+                      />
+                      <CInput
+                          label="Ürün Adı."
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.name"
+
+                      />
+                      <CInput
+                          label="Net Ücret"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.netPrice"
+                          type="number"
+
+                      />
+                      <CInput
+                          label="KDV Oranı(%)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.taxRate"
+                          type="number"
+
+                      />
+
+
+                    </CCol>
+                    <CCol lg="6">
+                      <CSelect
+                          :options="selectCategories"
+                          label="Üst Kategori"
+                          v-model="product.categories"
+                          :value.sync="product.categories"
+
+                      />
+
+                      <CInput
+                          label="Stok"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.quantity"
+                          type="number"
+
+
+                      />
+
+                      <CInput
+                          label="Raf Numarası"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.shelf"
+
+                      />
+                      <CInputFile
+                          label="Resim Ekle"
+                          horizontal
+                          @change="getBase64"
+                          custom
+                          multiple
+                          :placeholder="selectedFile"
+
+                      />
+
+
+                    </CCol>
+
+
+                  </CRow>
+
+
+                </CCardBody>
+              </template>
+
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Ürün EKle</h6>
+        <CButtonClose @click="showAddProduct = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="showAddProduct = false" color="danger">Kapat</CButton>
+        <CButton @click="addProduct()" color="success">Kaydet</CButton>
+      </template>
+    </CModal>
 
     <CModal
         :show.sync="showServiceDetail"
@@ -333,6 +475,8 @@ import CarService from "@/services/car.service";
 import ProductService from "@/services/product.service";
 import Cart from "@/models/cart";
 import VueUploadMultipleImage from 'vue-upload-multiple-image';
+import axios from "axios";
+import authHeader from "@/services/auth-header";
 
 export default {
   name: "ServiceDetermination",
@@ -386,6 +530,7 @@ export default {
       carModal: false,
       show: true,
       showAddCar: true,
+      showAddProduct: false,
       horizontal: {label: "col-3", input: "col-9"},
 
       selectOptions: [
@@ -420,12 +565,14 @@ export default {
       barcodeSearch: '',
       carts: [],
 
-      primaryText:"Fotoğraf Yükle",
-      browseText :"Fotoğraf Yükle",
-      dragText:"Fotğrafları Sürükle",
-      markPrimary:"Ana fotoğraf yap",
-      popupText:"Araç Resimleri",
-      cartTotal:0
+      primaryText: "Fotoğraf Yükle",
+      browseText: "Fotoğraf Yükle",
+      dragText: "Fotğrafları Sürükle",
+      markPrimary: "Ana fotoğraf yap",
+      popupText: "Araç Resimleri",
+      cartTotal: 0,
+      determination: '',
+      imagesPost:[]
 
 
     };
@@ -450,6 +597,42 @@ export default {
         default:
           "primary";
       }
+    },
+    addProductModal() {
+
+      this.showAddProduct = true
+    },
+    getSelectCategories() {
+
+      // get by search keyword
+
+      this.loading = true;
+      //const {page, itemsPerPage} = this.options;
+      // let pageNumber = page;
+
+
+      axios.get(process.env.VUE_APP_API_URL + "/car-service/category-select-api/", {headers: authHeader()})
+          .then(res => {
+            this.selectCategories = res.data;
+            console.log("ssa", res)
+
+
+          })
+          .catch(err => console.log(err.response.data))
+          .finally(() => this.loading = false);
+      this.loading = false
+    },
+
+    async addDetermination() {
+
+      let response = await new ServiceService().addServiceDetermination(this.$route.params.serviceId, this.imagesPost, this.carts, this.determination);
+      console.log(response)
+
+      if( response.status===200){
+
+      }
+
+
     },
 
 
@@ -521,10 +704,10 @@ export default {
 
     },
 
-    addCart(name, uuid, quantity,netPrice) {
-      console.log("netPrice",netPrice)
+    addCart(name, uuid, quantity, netPrice) {
+      console.log("netPrice", netPrice)
 
-      let cartItem = new Cart(uuid, name, quantity,netPrice)
+      let cartItem = new Cart(uuid, name, quantity, netPrice)
 
       console.log("item", cartItem)
       this.carts.push(cartItem)
@@ -544,17 +727,17 @@ export default {
 
     },
 
-    calculateCartTotal(){
-      let x=0
-      console.log("asasasa",this.carts)
-      for(let i =0;i<this.carts.length;i++){
+    calculateCartTotal() {
+      let x = 0
+      console.log("asasasa", this.carts)
+      for (let i = 0; i < this.carts.length; i++) {
 
-        x=parseFloat(x)+parseFloat(this.carts[i].netPrice);
+        x = parseFloat(x) + parseFloat(this.carts[i].netPrice);
 
       }
 
 
-      this.cartTotal=x
+      this.cartTotal = x
     },
 
 
@@ -600,6 +783,8 @@ export default {
     },
     uploadImageSuccess(formData, index, fileList) {
       console.log('data', formData, index, fileList)
+      console.log("ddd", fileList)
+      this.imagesPost = fileList
       // Upload image api
       // axios.post('http://your-url-upload', formData).then(response => {
       //   console.log(response)
@@ -608,11 +793,42 @@ export default {
     beforeRemove(index, done, fileList) {
       console.log('index', index, fileList)
       done()
+      this.imagesPost = fileList
+
 
     },
     editImage(formData, index, fileList) {
       console.log('edit data', formData, index, fileList)
-    }
+      this.imagesPost = fileList
+    },
+    async addProduct() {
+
+      console.log("deneme", this.product)
+
+      this.product.isOpen = true
+
+      let productResponse = await new ProductService().addProduct(this.product);
+
+      if (productResponse.status === 200) {
+        this.isSuccess = false;
+        this.isSuccess = true;
+        this.showAddProduct = false;
+        this.successHide();
+        this.getProducts();
+
+      } else if (productResponse.response.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        this.errors = productResponse.response.data["username"];
+        this.errorHide();
+      }
+
+    },
 
 
   },
@@ -625,6 +841,7 @@ export default {
   },
   mounted() {
     this.getServiceDetail(this.$route.params.serviceId)
+    this.getSelectCategories()
 
 
   },

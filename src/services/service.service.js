@@ -75,6 +75,27 @@ class ServiceService {
 
     }
 
+    addServiceDetermination(uuid, photos, products, determination) {
+        return axios.post(process.env.VUE_APP_API_URL + '/car-service/service-determination-api/',
+            {
+                uuid: uuid,
+                photos: photos,
+                products: products,
+                determination: determination,
+
+
+            }, {headers: authHeader()}).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            console.log("hata", error)
+            return error
+        });
+
+
+    }
+
 
 }
 
