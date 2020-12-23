@@ -96,6 +96,35 @@ class ServiceService {
 
     }
 
+    getServiceProducts(id) {
+        const params = {
+            uuid: id
+
+        };
+
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-service-products-api/`, {
+            headers: authHeader(),
+            params
+        })
+
+
+    }
+
+
+    getServiceImages(id) {
+        const params = {
+            uuid: id
+
+        };
+
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-service-images-api/`, {
+            headers: authHeader(),
+            params
+        })
+
+
+    }
+
 
 }
 

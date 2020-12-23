@@ -73,6 +73,8 @@ const ServiceList = () => import('@/views/service/ServiceList')
 
 const ServiceDetermination = () => import('@/views/service/ServiceDetermination')
 
+const ServiceDetail = () => import('@/views/service/ServiceDetail')
+
 Vue.use(Router)
 
 export default new Router({
@@ -238,6 +240,11 @@ function configRoutes() {
                             path: 'service-determination/:serviceId',
                             name: 'ServiceDetermination',
                             component: ServiceDetermination
+                        },
+                        {
+                            path: 'service-detail/:serviceId',
+                            name: 'ServiceDetail',
+                            component: ServiceDetail
                         }
 
                     ]
