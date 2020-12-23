@@ -8,7 +8,7 @@
             <CCardHeader>
               <CRow>
                 <CCol lg="3" class="text-left mt-3">
-                  <h3>Servis Listesi</h3>
+                  <h3>Servis Listesi {{this.message}}</h3>
 
                 </CCol>
 
@@ -93,17 +93,17 @@
                   <h5>Müşteri : {{ carPlate }}</h5>
                   <hr>
                   <h5>Plaka : {{ serviceDetail.plate }}</h5>
-                   <hr>
+                  <hr>
                   <h5>Servis Tipi : {{ serviceDetail.serviceType }}</h5>
-                   <hr>
+                  <hr>
                   <h5>KM : {{ serviceDetail.serviceKM }} KM</h5>
-                   <hr>
+                  <hr>
                   <h5>Servise Getiren Kişi : {{ serviceDetail.responsiblePerson }} </h5>
-                   <hr>
+                  <hr>
                   <h5>Usta : {{ serviceDetail.serviceman }}</h5>
-                   <hr>
+                  <hr>
                   <h5>Giriş Zamanı : {{ serviceDetail.creationDate }} </h5>
-                   <hr>
+                  <hr>
                   <h5>Şikayet : {{ serviceDetail.complaint }} </h5>
 
 
@@ -225,6 +225,8 @@ export default {
     };
   },
 
+  props: ['message'],
+
   methods: {
     validator(val) {
       return val ? val.length >= 4 : false;
@@ -298,7 +300,7 @@ export default {
       this.serviceDetail = response.data
       let responsePlate = await new CarService().getCarApi(this.serviceDetail.carUUID);
 
-      this.carPlate =  responsePlate.data.profile.firmName + '-' + responsePlate.data.profile.user.first_name + ' ' + responsePlate.data.profile.user.last_name
+      this.carPlate = responsePlate.data.profile.firmName + '-' + responsePlate.data.profile.user.first_name + ' ' + responsePlate.data.profile.user.last_name
 
       this.serviceDetailModal()
 
@@ -346,8 +348,8 @@ export default {
       }, 10000);
     },
 
-     goServiceDetermation(serviceId){
-      this.$router.push({name: 'ServiceDetermination', params: { serviceId: serviceId}});
+    goServiceDetermation(serviceId) {
+      this.$router.push({name: 'ServiceDetermination', params: {serviceId: serviceId}});
     }
 
 
@@ -362,6 +364,7 @@ export default {
   mounted() {
     this.getServiceList()
     this.intervalFetchData()
+
 
   },
   computed: {

@@ -107,6 +107,29 @@
                 </CCol>
 
               </CRow>
+              <CRow>
+
+                <CCol lg="12">
+
+                  <CAlert
+                      :show.sync="dismissCountDown"
+                      closeButton
+                      color="success"
+                  >
+                    Servis işlemi gerçekleştirildi. {{ dismissCountDown }} saniye sonra Servis Listesine yönlendiriliceksiniz.
+                    <CProgress
+                        color="success"
+                        :max="dismissSecs"
+                        :value="dismissCountDown"
+                        height="4px"
+                    />
+                  </CAlert>
+
+
+                </CCol>
+
+
+              </CRow>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
@@ -572,13 +595,21 @@ export default {
       popupText: "Araç Resimleri",
       cartTotal: 0,
       determination: '',
-      imagesPost:[]
+      imagesPost: [],
+      dismissSecs: 3,
+      dismissCountDown: 0,
 
 
     };
   },
 
   methods: {
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
+    },
+    showAlert() {
+      this.dismissCountDown = this.dismissSecs
+    },
     validator(val) {
       return val ? val.length >= 4 : false;
     },
@@ -626,10 +657,17 @@ export default {
     async addDetermination() {
 
       let response = await new ServiceService().addServiceDetermination(this.$route.params.serviceId, this.imagesPost, this.carts, this.determination);
-      console.log(response)
+      //console.log(response)
 
-      if( response.status===200){
+      if (response.status === 200) {
 
+        this.dismissCountDown = 3
+
+
+        setTimeout(() => this.$router.push({
+          name: 'ServiceList',
+          params: {message: "Arıza tespiti başarıyla yapıldı"}
+        }), 3000);
       }
 
 
