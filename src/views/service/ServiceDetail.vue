@@ -176,18 +176,31 @@
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                <div >
+                <div>
                   <CRow>
-                  <CCol lg="4"
-                        v-for="item in serviceProductImages"
-                     :key="item.image"
-                  >
-                    <img :src="item.image" width="300px">
-                  </CCol>
-</CRow>
+                    <CCol lg="4"
+                          v-for="item in serviceProductImages"
+                          :key="item.image"
+                    >
+                      <img class="img-responsive" :src="item.image" width="100%">
+                    </CCol>
+                  </CRow>
                 </div>
 
               </CCardBody>
+
+              <CCardFooter>
+
+                <CButton color="success" class="float-right" style="margin-bottom: 10px;" @click="acceptOrCanceledService(true)">
+                  <CIcon :content="$options.freeSet.cilSave" name="cil-save"/>
+                  Onayla
+                </CButton>
+                <CButton color="danger" class="float-right" style="margin-right:10px;margin-bottom: 10px;"
+                         @click="acceptOrCanceledService(false)">
+                  <CIcon :content="$options.freeSet.cilDelete" name="cil-delete"/>
+                  İptal Et
+                </CButton>
+              </CCardFooter>
 
 
             </CCollapse>
@@ -195,182 +208,6 @@
         </transition>
       </CCol>
     </CRow>
-
-
-    <CModal
-        :show.sync="showAddProduct"
-        :no-close-on-backdrop="true"
-        :centered="true"
-        title="Modal title 2"
-        size="xl"
-        color="dark"
-    >
-      <CRow>
-        <CCol lg="12">
-          <transition name="fade">
-            <CCard v-if="showAddProduct">
-              <template>
-                <CCardBody>
-                  <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Ürün başarıyla kaydedildi.
-                    </CAlert>
-
-                    <CAlert
-                        v-for="item in errorsCar"
-                        :key="item.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      E-mail: {{ item }}
-                    </CAlert>
-                  </div>
-
-
-                  <CRow>
-
-
-                    <CCol lg="6">
-                      <CInput
-                          label="Barkod Numarası"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.barcode_number"
-
-                      />
-                      <CInput
-                          label="Ürün Adı."
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.name"
-
-                      />
-                      <CInput
-                          label="Net Ücret"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.netPrice"
-                          type="number"
-
-                      />
-                      <CInput
-                          label="KDV Oranı(%)"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.taxRate"
-                          type="number"
-
-                      />
-
-
-                    </CCol>
-                    <CCol lg="6">
-                      <CSelect
-                          :options="selectCategories"
-                          label="Üst Kategori"
-                          v-model="product.categories"
-                          :value.sync="product.categories"
-
-                      />
-
-                      <CInput
-                          label="Stok"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.quantity"
-                          type="number"
-
-
-                      />
-
-                      <CInput
-                          label="Raf Numarası"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.shelf"
-
-                      />
-                      <CInputFile
-                          label="Resim Ekle"
-                          horizontal
-                          @change="getBase64"
-                          custom
-                          multiple
-                          :placeholder="selectedFile"
-
-                      />
-
-
-                    </CCol>
-
-
-                  </CRow>
-
-
-                </CCardBody>
-              </template>
-
-            </CCard>
-          </transition>
-        </CCol>
-      </CRow>
-      <template #header>
-        <h6 class="modal-title">Ürün EKle</h6>
-        <CButtonClose @click="showAddProduct = false" class="text-white"/>
-      </template>
-      <template #footer>
-        <CButton @click="showAddProduct = false" color="danger">Kapat</CButton>
-        <CButton @click="addProduct()" color="success">Kaydet</CButton>
-      </template>
-    </CModal>
-
-    <CModal
-        :show.sync="showServiceDetail"
-        :no-close-on-backdrop="true"
-        :centered="true"
-        title="Modal title 2"
-        size="xl"
-        color="dark"
-    >
-      <CRow>
-        <CCol lg="12">
-          <transition name="fade">
-            <CCard v-if="showServiceDetail">
-              <template>
-                <CCardBody>
-                  <h5>Müşteri : {{ carPlate }}</h5>
-                  <hr>
-                  <h5>Plaka : {{ serviceDetail.plate }}</h5>
-                  <hr>
-                  <h5>Servis Tipi : {{ serviceDetail.serviceType }}</h5>
-                  <hr>
-                  <h5>KM : {{ serviceDetail.serviceKM }} KM</h5>
-                  <hr>
-                  <h5>Servise Getiren Kişi : {{ serviceDetail.responsiblePerson }} </h5>
-                  <hr>
-                  <h5>Usta : {{ serviceDetail.serviceman }}</h5>
-                  <hr>
-                  <h5>Giriş Zamanı : {{ serviceDetail.creationDate }} </h5>
-                  <hr>
-                  <h5>Şikayet : {{ serviceDetail.complaint }} </h5>
-
-
-                </CCardBody>
-              </template>
-
-            </CCard>
-          </transition>
-        </CCol>
-      </CRow>
-      <template #header>
-        <h6 class="modal-title">Servis Detay</h6>
-        <CButtonClose @click="showServiceDetail = false" class="text-white"/>
-      </template>
-      <template #footer>
-        <CButton @click="showServiceDetail = false" color="danger">Kapat</CButton>
-
-      </template>
-    </CModal>
 
 
   </div>
@@ -563,6 +400,24 @@ export default {
     async addDetermination() {
 
       let response = await new ServiceService().addServiceDetermination(this.$route.params.serviceId, this.imagesPost, this.carts, this.determination);
+      //console.log(response)
+
+      if (response.status === 200) {
+
+        this.dismissCountDown = 3
+
+
+        setTimeout(() => this.$router.push({
+          name: 'ServiceList',
+          params: {message: "Arıza tespiti başarıyla yapıldı"}
+        }), 3000);
+      }
+
+
+    },
+    async acceptOrCanceledService(isAccept) {
+
+      let response = await new ServiceService().acceptService(this.$route.params.serviceId, isAccept);
       //console.log(response)
 
       if (response.status === 200) {

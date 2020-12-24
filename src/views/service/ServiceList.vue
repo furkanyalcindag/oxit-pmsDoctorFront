@@ -8,7 +8,7 @@
             <CCardHeader>
               <CRow>
                 <CCol lg="3" class="text-left mt-3">
-                  <h3>Servis Listesi {{this.message}}</h3>
+                  <h3>Servis Listesi {{ this.message }}</h3>
 
                 </CCol>
 
@@ -52,7 +52,8 @@
                         </CButton>
                         <CButton color="primary" @click="goServiceDetermation(item.uuid)">İşlem Yap</CButton>
 
-                        <CButton color="info" @click="goServiceDetail(item.uuid)" variant="outline">Servis Bilgi</CButton>
+                        <CButton color="info" @click="goServiceDetail(item.uuid)" variant="outline">Servis Bilgi
+                        </CButton>
 
                       </CButtonGroup>
 
@@ -245,6 +246,10 @@ export default {
           return "danger";
         case "İşlemde":
           return "info";
+        case "Müşteri Onayı Alındı":
+          return "success";
+        case "İptal Edildi":
+          return "danger";
         default:
           "primary";
       }
@@ -354,8 +359,8 @@ export default {
       this.$router.push({name: 'ServiceDetermination', params: {serviceId: serviceId}});
     },
 
-    goServiceDetail(serviceId){
-       this.$router.push({name: 'ServiceDetail', params: {serviceId: serviceId}});
+    goServiceDetail(serviceId) {
+      this.$router.push({name: 'ServiceDetail', params: {serviceId: serviceId}});
     }
 
 

@@ -125,6 +125,25 @@ class ServiceService {
 
     }
 
+    acceptService(uuid, isAccept) {
+        return axios.post(process.env.VUE_APP_API_URL + '/car-service/service-approve-api/',
+            {
+                uuid: uuid,
+                isAccept: isAccept,
+
+
+            }, {headers: authHeader()}).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            console.log("hata", error)
+            return error
+        });
+
+
+    }
+
 
 }
 
