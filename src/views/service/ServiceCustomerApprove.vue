@@ -94,19 +94,12 @@
         <transition name="fade">
           <CCard v-if="show">
             <CCardHeader>
-              <CRow>
-                <CCol lg="3" class="text-left mt-3">
-                  <b>Servis Tespit Ekranı</b>
+
+              <CIcon name="cil-list"/>
+
+              Servis Ürün Listesi
 
 
-                </CCol>
-                <CCol lg="9">
-                  <CButton color="primary" class="float-right" @click="addProductModal">
-                    <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>&nbsp;Ürün Ekle
-                  </CButton>
-                </CCol>
-
-              </CRow>
               <CRow>
 
                 <CCol lg="12">
@@ -135,169 +128,32 @@
             <CCollapse :show="formCollapsed">
               <CCardBody>
                 <div>
-                  <div>
-                    <CAlert color="success" :show="isSuccess">
-                      Ürün başarıyla kaydedildi.
-                    </CAlert>
+                  <CDataTable
+                      :items="computedItems"
+                      :fields="fieldsTableProduct"
+                      column-filter
+                      :border="true"
+                      :items-per-page="5"
+                      :activePage="4"
+                      hover
+                      sorter
+                      pagination
+                      :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+                      clickableRows
 
-                    <CAlert
-                        v-for="item in errors"
-                        :key="item.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      E-mail: {{ item }}
-                    </CAlert>
-                  </div>
-                  <CRow></CRow>
-                  <CRow>
-                    <CCol lg="9">
-                      <CTextarea
-                          :rows="3"
-                          label="Arıza Tespiti"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="determination"
-
-                      />
+                  >
 
 
-                    </CCol>
-                    <CCol lg="3">
-
-
-                      <div id="my-strictly-unique-vue-upload-multiple-image"
-                           style="display: flex; justify-content: center;">
-                        <vue-upload-multiple-image
-                            @upload-success="uploadImageSuccess"
-                            @before-remove="beforeRemove"
-                            @edit-image="editImage"
-                            :data-images="images"
-                            idUpload="myIdUpload"
-                            editUpload="myIdEdit"
-                            :primary-text="primaryText"
-                            :browse-text="browseText"
-                            :drag-text="dragText"
-                            :markIsPrimaryText="markPrimary"
-                            :popupText="popupText"
-
-                        ></vue-upload-multiple-image>
-                      </div>
-
-
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol lg="12">
-
-                      <CRow>
-                        <CCol col="12">
-                          <CCard>
-                            <CCardHeader>
-                              <CRow lg="12">
-                                <CCol lg="4">
-                                  <CIcon name="cil-justify-center"/>
-                                  <strong> Parça Listesi </strong>
-
-                                </CCol>
-
-                                <CCol lg="8">
-                                  <CRow lg="12">
-
-                                    <CCol lg="6">
-                                      <CInput
-
-
-                                          v-model="barcodeSearch"
-                                          placeholder="Barkod Numarası"
-
-
-                                      />
-
-                                    </CCol>
-
-
-                                    <CCol lg="2">
-                                      <div class="form-actions">
-                                        <CButton type="submit" color="primary" @click="getSearchProduct"
-                                        >Ara
-                                        </CButton>
-
-                                      </div>
-
-                                    </CCol>
-
-                                  </CRow>
-                                </CCol>
-                              </CRow>
-
-                            </CCardHeader>
-                            <CCardBody>
-                              <CCardGroup deck>
-                                <CCard>
-                                  <CCardHeader>
-                                    <b>Ürünler</b>
-
-                                  </CCardHeader>
-                                  <CListGroup
-
-
-                                  >
-                                    <CListGroupItem class="d-flex justify-content-between align-items-center"
-                                                    v-for="product in products" :key="product" href="#">
-                                      <CButton align="right" size="sm" color="success"
-                                               @click="addCart(product.name,product.uuid,1,product.netPrice)">
-                                        <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
-                                      </CButton>
-                                      <span>{{ product.name }} | {{ product.netPrice }} ₺ |  %{{
-                                          product.taxRate
-                                        }}</span>
-
-                                      <CBadge color="primary" shape="pill">{{ product.quantity }}</CBadge>
-                                    </CListGroupItem>
-
-                                  </CListGroup>
-
-                                </CCard>
-                                <CCard>
-                                  <CCardHeader><b>Sepet</b> <span class="float-right">Toplam: {{ cartTotal }} ₺</span>
-                                  </CCardHeader>
-                                  <CListGroup flush>
-                                    <CListGroupItem class="d-flex justify-content-between align-items-center"
-                                                    v-for="(cart,index) in carts" :key="cart" href="#">
-                                      <CButton align="left" size="sm" color="danger" @click="removeCart(index)">
-                                        <CIcon :content="$options.freeSet.cilMinus" name="cil-minus"/>
-                                      </CButton>
-                                      <span>{{ cart.name }} | {{ cart.netPrice }} ₺</span>
-
-                                      <CBadge color="primary" shape="pill">{{ cart.quantity }}</CBadge>
-                                    </CListGroupItem>
-                                  </CListGroup>
-
-                                </CCard>
-                              </CCardGroup>
-
-                            </CCardBody>
-                          </CCard>
-                        </CCol>
-
-
-                      </CRow>
-
-                    </CCol>
-                    <CCol lg="12">
-                      <CButton color="success" class="float-right" @click="addDetermination">
-                        <CIcon :content="$options.freeSet.cilSave" name="cil-save"/>
-                        Kaydet
-                      </CButton>
-                    </CCol>
-
-                  </CRow>
-
+                  </CDataTable>
 
                 </div>
 
               </CCardBody>
+              <CCardFooter style="padding-bottom: 10px">
+
+                <b class="float-right">Toplam: {{ serviceDetail.totalPrice }} ₺</b>
+                <b class="float-right" style="margin-right: 10px">Net: {{ serviceDetail.price }} ₺</b>
+              </CCardFooter>
 
             </CCollapse>
           </CCard>
@@ -306,198 +162,53 @@
     </CRow>
 
 
-    <CModal
-        :show.sync="showAddProduct"
-        :no-close-on-backdrop="true"
-        :centered="true"
-        title="Modal title 2"
-        size="xl"
-        color="dark"
-    >
-      <CRow>
-        <CCol lg="12">
-          <transition name="fade">
-            <CCard v-if="showAddProduct">
-              <template>
-                <CCardBody>
-                  <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Ürün başarıyla kaydedildi.
-                    </CAlert>
+    <CRow>
+      <CCol lg="12">
+        <transition name="fade">
+          <CCard v-if="show">
+            <CCardHeader>
+
+              <CIcon name="cil-list"/>
+
+              Servis Araç Fotoğrafları
 
 
-                     <CAlert
-                      v-for="(value,key) in errors"
-                      :key="value.message"
-                      color="danger"
-                      :show="isError"
-                  >
-                    {{ key }}: {{ value[0] }}
-                  </CAlert>
-                  </div>
-
-
+            </CCardHeader>
+            <CCollapse :show="formCollapsed">
+              <CCardBody>
+                <div>
                   <CRow>
-
-
-                    <CCol lg="6">
-                      <CInput
-                          label="Barkod Numarası"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.barcode_number"
-
-                      />
-                      <CInput
-                          label="Ürün Adı."
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.name"
-
-                      />
-
-                      <CInput
-                          label="Alış Fiyatı"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.purchasePrice"
-                          type="number"
-
-                      />
-                      <CInput
-                          label="Net Ücret"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.netPrice"
-                          type="number"
-
-                      />
-                      <CInput
-                          label="KDV Oranı(%)"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.taxRate"
-                          type="number"
-
-                      />
-
-
+                    <CCol lg="4"
+                          v-for="item in serviceProductImages"
+                          :key="item.image"
+                    >
+                      <img class="img-responsive" :src="item.image" width="100%">
                     </CCol>
-                    <CCol lg="6">
-                      <CSelect
-                          :options="selectCategories"
-                          label="Üst Kategori"
-                          v-model="product.categories"
-                          :value.sync="product.categories"
-
-                      />
-
-                      <CSelect
-                          :options="selectBrands"
-                          label="Marka"
-                          v-model="product.brand"
-                          :value.sync="product.brand"
-
-                      />
-
-                      <CInput
-                          label="Stok"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.quantity"
-                          type="number"
-
-
-                      />
-
-                      <CInput
-                          label="Raf Numarası"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="product.shelf"
-
-                      />
-                      <CInputFile
-                          label="Resim Ekle"
-                          horizontal
-                          @change="getBase64"
-                          custom
-                          multiple
-                          :placeholder="selectedFile"
-
-                      />
-
-
-                    </CCol>
-
-
                   </CRow>
+                </div>
+
+              </CCardBody>
+
+              <CCardFooter>
+
+                <CButton color="success" class="float-right" style="margin-bottom: 10px;"
+                         @click="acceptOrCanceledService(true)">
+                  <CIcon :content="$options.freeSet.cilSave" name="cil-save"/>
+                  Onayla
+                </CButton>
+                <CButton color="danger" class="float-right" style="margin-right:10px;margin-bottom: 10px;"
+                         @click="acceptOrCanceledService(false)">
+                  <CIcon :content="$options.freeSet.cilDelete" name="cil-delete"/>
+                  İptal Et
+                </CButton>
+              </CCardFooter>
 
 
-                </CCardBody>
-              </template>
-
-            </CCard>
-          </transition>
-        </CCol>
-      </CRow>
-      <template #header>
-        <h6 class="modal-title">Ürün EKle</h6>
-        <CButtonClose @click="showAddProduct = false" class="text-white"/>
-      </template>
-      <template #footer>
-        <CButton @click="showAddProduct = false" color="danger">Kapat</CButton>
-        <CButton @click="addProduct()" color="success">Kaydet</CButton>
-      </template>
-    </CModal>
-
-    <CModal
-        :show.sync="showServiceDetail"
-        :no-close-on-backdrop="true"
-        :centered="true"
-        title="Modal title 2"
-        size="xl"
-        color="dark"
-    >
-      <CRow>
-        <CCol lg="12">
-          <transition name="fade">
-            <CCard v-if="showServiceDetail">
-              <template>
-                <CCardBody>
-                  <h5>Müşteri : {{ carPlate }}</h5>
-                  <hr>
-                  <h5>Plaka : {{ serviceDetail.plate }}</h5>
-                  <hr>
-                  <h5>Servis Tipi : {{ serviceDetail.serviceType }}</h5>
-                  <hr>
-                  <h5>KM : {{ serviceDetail.serviceKM }} KM</h5>
-                  <hr>
-                  <h5>Servise Getiren Kişi : {{ serviceDetail.responsiblePerson }} </h5>
-                  <hr>
-                  <h5>Usta : {{ serviceDetail.serviceman }}</h5>
-                  <hr>
-                  <h5>Giriş Zamanı : {{ serviceDetail.creationDate }} </h5>
-                  <hr>
-                  <h5>Şikayet : {{ serviceDetail.complaint }} </h5>
-
-
-                </CCardBody>
-              </template>
-
-            </CCard>
-          </transition>
-        </CCol>
-      </CRow>
-      <template #header>
-        <h6 class="modal-title">Servis Detay</h6>
-        <CButtonClose @click="showServiceDetail = false" class="text-white"/>
-      </template>
-      <template #footer>
-        <CButton @click="showServiceDetail = false" color="danger">Kapat</CButton>
-
-      </template>
-    </CModal>
+            </CCollapse>
+          </CCard>
+        </transition>
+      </CCol>
+    </CRow>
 
 
   </div>
@@ -521,7 +232,7 @@ import axios from "axios";
 import authHeader from "@/services/auth-header";
 
 export default {
-  name: "ServiceDetermination",
+  name: "ServiceCustomerApprove",
   freeSet,
 
 
@@ -538,6 +249,19 @@ export default {
         {key: "creationDate", label: "Tarih"},
         {key: "actions", label: "İşlemler"},
       ],
+      fieldsTableProduct: [
+
+        {key: 'barcodeNumber', label: "Barkod", _style: "min-width:100px"},
+
+        {key: "name", label: "Ürün Adı"},
+        {key: "brand", label: "Marka"},
+        {key: "quantity", label: "Adet"},
+        {key: "netPrice", label: "Net Fiyat"},
+        {key: "taxRate", label: "KDV"},
+        {key: "totalProduct", label: "Toplam Fiyat"},
+
+
+      ],
       pageLabel: {label: 'sasasa', external: true,},
       page: 1,
       numberOfPages: 0,
@@ -549,10 +273,9 @@ export default {
       pagination: {external: true},
       categories: [],
       selectCategories: [],
-      selectBrands: [],
       categoryUpdateModal: false,
       showUpdateCategory: true,
-      product: new Product("", "", "", "", "", "", "", "", "", "", "", "", ""),
+      product: new Product("", "", "", "", "", "", "", "", "", "", ""),
       products: [],
       category: new Category("", "", "0"),
       categoryUpdate: new Category("", "", "0"),
@@ -618,6 +341,8 @@ export default {
       imagesPost: [],
       dismissSecs: 3,
       dismissCountDown: 0,
+      serviceProducts: [],
+      serviceProductImages: []
 
 
     };
@@ -692,6 +417,24 @@ export default {
 
 
     },
+    async acceptOrCanceledService(isAccept) {
+
+      let response = await new ServiceService().acceptService(this.$route.params.serviceId, isAccept);
+      //console.log(response)
+
+      if (response.status === 200) {
+
+        this.dismissCountDown = 3
+
+
+        setTimeout(() => this.$router.push({
+          name: 'ServiceList',
+          params: {message: "Arıza tespiti başarıyla yapıldı"}
+        }), 3000);
+      }
+
+
+    },
 
 
     toggleDetails(item) {
@@ -735,6 +478,27 @@ export default {
 
     },
 
+    async getServicProducts(id) {
+
+      let response = await new ServiceService().getServiceProducts(id);
+      console.log(response)
+
+
+      this.serviceProducts = response.data
+
+
+    },
+
+    async getServiceImages(id) {
+
+      let response = await new ServiceService().getServiceImages(id);
+
+
+      this.serviceProductImages = response.data
+
+
+    },
+
 
     async getServiceDetail(id) {
 
@@ -760,26 +524,6 @@ export default {
       this.products = response.data
 
 
-    },
-    getSelectBrands() {
-
-      // get by search keyword
-
-      this.loading = true;
-      //const {page, itemsPerPage} = this.options;
-      // let pageNumber = page;
-
-
-      axios.get(process.env.VUE_APP_API_URL + "/car-service/brand-select-api/", {headers: authHeader()})
-          .then(res => {
-            this.selectBrands = res.data;
-            console.log("ssa", res)
-
-
-          })
-          .catch(err => console.log(err.response.data))
-          .finally(() => this.loading = false);
-      this.loading = false
     },
 
     addCart(name, uuid, quantity, netPrice) {
@@ -902,7 +646,7 @@ export default {
       } else {
         this.isError = false;
         this.isError = true;
-        this.errors = productResponse.response.data;
+        this.errors = productResponse.response.data["username"];
         this.errorHide();
       }
 
@@ -920,7 +664,8 @@ export default {
   mounted() {
     this.getServiceDetail(this.$route.params.serviceId)
     this.getSelectCategories()
-    this.getSelectBrands()
+    this.getServicProducts(this.$route.params.serviceId)
+    this.getServiceImages(this.$route.params.serviceId)
 
 
   },
@@ -931,9 +676,10 @@ export default {
 
     computedItems() {
 
-      return this.services.map(item => {
+      return this.serviceProducts.map(item => {
         return {
           ...item,
+          brand: item.brand != null ? item.brand.name : "",
 
 
         }
@@ -965,10 +711,10 @@ ul {
   padding: 0;
 }
 
-/*li {
+li {
   display: inline-block;
-  margin: 0 0px;
-}*/
+  margin: 0 10px;
+}
 
 a {
   color: #42b983;

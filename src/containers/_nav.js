@@ -246,6 +246,10 @@ export default [
                     {
                         name: 'Ürünler',
                         to: '/catalog/product-list'
+                    },
+                    {
+                        name: 'Marka',
+                        to: '/catalog/brand'
                     }
                 ]
             },

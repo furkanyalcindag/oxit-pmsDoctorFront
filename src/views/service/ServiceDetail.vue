@@ -188,21 +188,6 @@
                 </div>
 
               </CCardBody>
-
-              <CCardFooter>
-
-                <CButton color="success" class="float-right" style="margin-bottom: 10px;" @click="acceptOrCanceledService(true)">
-                  <CIcon :content="$options.freeSet.cilSave" name="cil-save"/>
-                  Onayla
-                </CButton>
-                <CButton color="danger" class="float-right" style="margin-right:10px;margin-bottom: 10px;"
-                         @click="acceptOrCanceledService(false)">
-                  <CIcon :content="$options.freeSet.cilDelete" name="cil-delete"/>
-                  İptal Et
-                </CButton>
-              </CCardFooter>
-
-
             </CCollapse>
           </CCard>
         </transition>
@@ -253,6 +238,7 @@ export default {
         {key: 'barcodeNumber', label: "Barkod", _style: "min-width:100px"},
 
         {key: "name", label: "Ürün Adı"},
+        {key: "brand", label: "Marka"},
         {key: "quantity", label: "Adet"},
         {key: "netPrice", label: "Net Fiyat"},
         {key: "taxRate", label: "KDV"},
@@ -677,6 +663,7 @@ export default {
       return this.serviceProducts.map(item => {
         return {
           ...item,
+           brand: item.brand!=null?item.brand.name:"",
 
 
         }
@@ -708,10 +695,10 @@ ul {
   padding: 0;
 }
 
-li {
+/*li {
   display: inline-block;
   margin: 0 10px;
-}
+}*/
 
 a {
   color: #42b983;

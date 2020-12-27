@@ -1,15 +1,15 @@
 import axios from 'axios';
 import authHeader from './auth-header';
+
 const API_URL = process.env.VUE_APP_API_URL;
 
 class ProductService {
 
-    getProducts()
-    {
-      
-       return  axios.get(API_URL + '/car-service/product-api/', { headers: authHeader() })
-        
-      
+    getProducts() {
+
+        return axios.get(API_URL + '/car-service/product-api/', {headers: authHeader()})
+
+
     }
 
     /*
@@ -31,15 +31,17 @@ class ProductService {
     addProduct(product) {
         return axios.post(process.env.VUE_APP_API_URL + '/car-service/product-api/',
             {
-                barcodeNumber : product.barcode_number,
-                name : product.name,
-                quantity : product.quantity,
-                netPrice : product.netPrice,
-                isOpen : product.isOpen,
-                taxRate : product.taxRate,
-                categories : product.categories,
-                productImage :product.productImages,
-                shelf :product.shelf
+                barcodeNumber: product.barcode_number,
+                name: product.name,
+                quantity: product.quantity,
+                netPrice: product.netPrice,
+                isOpen: product.isOpen,
+                taxRate: product.taxRate,
+                categories: product.categories,
+                productImage: product.productImages,
+                shelf: product.shelf,
+                purchasePrice: product.purchasePrice,
+                brand: product.brand
 
             }, {headers: authHeader()}).then(response => {
             console.log(response)
@@ -54,19 +56,19 @@ class ProductService {
 
     }
 
-     getSearchProduct(barcode) {
+    getSearchProduct(barcode) {
         const params = {
             barcode: barcode
 
         };
 
-        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-product-search-api/`,  {headers: authHeader(),params})
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-product-search-api/`, {
+            headers: authHeader(),
+            params
+        })
 
 
     }
-
-
-
 
 
 }

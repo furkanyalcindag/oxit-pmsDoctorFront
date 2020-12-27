@@ -47,15 +47,21 @@
                   <template #actions="{ item, index }">
                     <td class="py-2">
 
-                      <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton @click="getServiceDetail(item.uuid)" variant="outline" color="dark">Servis Detay
-                        </CButton>
-                        <CButton color="primary" @click="goServiceDetermation(item.uuid)">İşlem Yap</CButton>
 
-                        <CButton color="info" @click="goServiceDetail(item.uuid)" variant="outline">Servis Bilgi
-                        </CButton>
 
-                      </CButtonGroup>
+                      <CDropdown
+                          color="link"
+                          size="lg"
+                          :caret="false"
+                      >
+                        <template #toggler-content>
+                          &#x1F4C2;<span class="sr-only">sss</span>
+                        </template>
+                        <!--<CDropdownItem @click="getServiceDetail(item.uuid)">Servis Detay</CDropdownItem> -->
+                        <CDropdownItem @click="goServiceDetermation(item.uuid)">İşlem Yap</CDropdownItem>
+                        <CDropdownItem @click="goServiceDetail(item.uuid)">Servis Bilgi</CDropdownItem>
+                         <CDropdownItem @click="goServiceApprove(item.uuid)">Müşteri Onay</CDropdownItem>
+                      </CDropdown>
 
 
                     </td>
@@ -361,6 +367,10 @@ export default {
 
     goServiceDetail(serviceId) {
       this.$router.push({name: 'ServiceDetail', params: {serviceId: serviceId}});
+    },
+
+     goServiceApprove(serviceId) {
+      this.$router.push({name: 'ServiceApprove', params: {serviceId: serviceId}});
     }
 
 

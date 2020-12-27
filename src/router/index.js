@@ -66,6 +66,8 @@ const Customer = () => import('@/views/customer/Customer')
 
 const Category = () => import('@/views/catalog/Category')
 
+const Brand = () => import('@/views/catalog/Brand')
+
 
 const OpenServiceCard = () => import('@/views/customer/OpenServiceCard')
 
@@ -74,6 +76,8 @@ const ServiceList = () => import('@/views/service/ServiceList')
 const ServiceDetermination = () => import('@/views/service/ServiceDetermination')
 
 const ServiceDetail = () => import('@/views/service/ServiceDetail')
+
+const ServiceCustomerApprove = () => import('@/views/service/ServiceCustomerApprove')
 
 Vue.use(Router)
 
@@ -200,6 +204,11 @@ function configRoutes() {
                             name: 'ProductList',
                             component: ProductList
                         },
+                        {
+                            path: 'brand',
+                            name: 'Brand',
+                            component: Brand
+                        },
 
                     ]
                 },
@@ -245,7 +254,13 @@ function configRoutes() {
                             path: 'service-detail/:serviceId',
                             name: 'ServiceDetail',
                             component: ServiceDetail
+                        },
+                        {
+                            path: 'service-approve/:serviceId',
+                            name: 'ServiceApprove',
+                            component: ServiceCustomerApprove
                         }
+
 
                     ]
                 },

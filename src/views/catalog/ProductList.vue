@@ -97,14 +97,14 @@
                       Ürün başarıyla kaydedildi.
                     </CAlert>
 
-                    <CAlert
-                        v-for="item in errorsCar"
-                        :key="item.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      E-mail: {{ item }}
-                    </CAlert>
+                     <CAlert
+                      v-for="(value,key) in errorsCar"
+                      :key="value.message"
+                      color="danger"
+                      :show="isError"
+                  >
+                    {{ key }}: {{ value[0] }}
+                  </CAlert>
                   </div>
 
 
@@ -126,6 +126,16 @@
                           v-model="product.name"
 
                       />
+
+                      <CInput
+                          label="Alış Fiyatı"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.purchasePrice"
+                          type="number"
+
+                      />
+
                       <CInput
                           label="Net Ücret"
                           description=""
@@ -151,6 +161,15 @@
                           label="Üst Kategori"
                           v-model="product.categories"
                           :value.sync="product.categories"
+
+                      />
+
+
+                      <CSelect
+                          :options="selectBrands"
+                          label="Marka"
+                          v-model="product.brand"
+                          :value.sync="product.brand"
 
                       />
 
@@ -238,6 +257,8 @@ export default {
         {key: 'barcodeNumber', label: "Barkod", _style: "min-width:100px"},
         {key: 'shelf', label: "Raf", _style: "min-width:100px"},
         {key: "name", label: "Ürün Adı"},
+        {key: "brandName", label: "Marka"},
+        {key: "purchasePrice", label: "Alış Fiyatı"},
         {key: "netPrice", label: "Net Fiyat"},
         {key: "taxRate", label: "KDV"},
         {key: "totalProduct", label: "Toplam Fiyat"},
@@ -255,9 +276,10 @@ export default {
       pagination: {external: true},
       categories: [],
       selectCategories: [],
+      selectBrands :[],
       categoryUpdateModal: false,
       showUpdateCategory: true,
-      product: new Product("", "", "", "", "", "", "", "", "", "",""),
+      product: new Product("", "", "", "", "", "", "", "", "", "","","",""),
       products: [],
       category: new Category("", "", "0"),
       categoryUpdate: new Category("", "", "0"),
@@ -380,7 +402,7 @@ export default {
       } else {
         this.isError = false;
         this.isError = true;
-        this.errors = productResponse.response.data["username"];
+        this.errorsCar = productResponse.response.data;
         this.errorHide();
       }
 
@@ -485,6 +507,27 @@ export default {
       this.loading = false
     },
 
+    getSelectBrands() {
+
+      // get by search keyword
+
+      this.loading = true;
+      //const {page, itemsPerPage} = this.options;
+      // let pageNumber = page;
+
+
+      axios.get(process.env.VUE_APP_API_URL + "/car-service/brand-select-api/", {headers: authHeader()})
+          .then(res => {
+            this.selectBrands = res.data;
+            console.log("ssa", res)
+
+
+          })
+          .catch(err => console.log(err.response.data))
+          .finally(() => this.loading = false);
+      this.loading = false
+    },
+
 
   },
 
@@ -497,6 +540,7 @@ export default {
   async mounted() {
     await this.getProducts();
     await this.getSelectCategories();
+    await this.getSelectBrands()
 
   },
   computed: {
@@ -504,8 +548,11 @@ export default {
     computedItemsProduct() {
 
       return this.products.map(item => {
+         console.log("item",item)
         return {
           ...item,
+
+           brandName: item.brand!=null?item.brand.name:"",
 
 
         }
