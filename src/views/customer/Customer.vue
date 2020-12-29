@@ -79,27 +79,27 @@
                         v-model="customer.mobilePhone"
                     />
                     <CTextarea
-                        :rows="3"
+                        :rows="5"
                         label="Adres"
                         description=""
                         autocomplete="autocomplete"
                         v-model="customer.address"
                     />
 
-                    <CRow form class="form-group">
-                      <CCol tag="label" sm="4" class="col-form-label">
-                        Kurumsal
-                      </CCol>
+                    <!-- <CRow form class="form-group">
+                       <CCol tag="label" sm="4" class="col-form-label">
+                         Kurumsal
+                       </CCol>
 
-                      <CCol sm="8" :class="'form-inline'">
-                        <CInputCheckbox
-                            :label="'evet'"
-                            :value="'true'"
-                            :checked="isCorporate"
-                            v-on:change="isCorporateControl"
-                        />
-                      </CCol>
-                    </CRow>
+                       <CCol sm="8" :class="'form-inline'">
+                         <CInputCheckbox
+                             :label="'evet'"
+                             :value="'true'"
+                             :checked="isCorporate"
+                             v-on:change="isCorporateControl"
+                         />
+                       </CCol>
+                     </CRow>-->
                   </CCol>
 
                   <CCol lg="3">
@@ -115,6 +115,13 @@
                         description=""
                         autocomplete="autocomplete"
                         v-model="customer.taxNumber"
+                    />
+
+                    <CInput
+                        label="Vergi Dairesi"
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="customer.taxOffice"
                     />
                   </CCol>
                 </CRow>
@@ -402,7 +409,7 @@ import CarService from "@/services/car.service";
 
 export default {
   name: "Customer",
- props: {
+  props: {
     plate: String,
     customerName: String
   },
@@ -412,6 +419,8 @@ export default {
         {key: 'nameSurname', label: "Ad Soyad", _style: "min-width:200px"},
         {key: "firmName", label: "Firma"},
         {key: "mobilePhone", label: "Telefon"},
+        {key: "taxNumber", label: "VKN"},
+        {key: "taxOffice", label: "Vergi Dairesi"},
         {key: "actions", label: "İşlemler"},
       ],
       fieldsTableCar: [
@@ -434,8 +443,8 @@ export default {
       pagination: {external: true},
       customers: [],
       cars: [],
-      customer: new Customer("", "", "", "", "", "", "", ""),
-      car : new Car("","","","","","","","","","",""),
+      customer: new Customer("", "", "", "", "", "", "", "", ""),
+      car: new Car("", "", "", "", "", "", "", "", "", "", ""),
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
@@ -443,7 +452,7 @@ export default {
 
       details: [],
       errors: [],
-      errorsCar:[],
+      errorsCar: [],
       isCorporate: false,
       collapseDuration: 0,
       darkModal: false,
@@ -512,10 +521,10 @@ export default {
     },
     addCarModal(profileUuid) {
 
-      console.log("uuid",profileUuid)
-      this.carModal=true
-      this.car.profileUuid=profileUuid
-      console.log("car",this.car)
+      console.log("uuid", profileUuid)
+      this.carModal = true
+      this.car.profileUuid = profileUuid
+      console.log("car", this.car)
 
     },
 
@@ -570,7 +579,7 @@ export default {
       let pageNumber = page;
 
 
-      axios.get(process.env.VUE_APP_API_URL+`/car-service/customer-api/?search=${this.search}&page=1&per_page=10`, {headers: authHeader()})
+      axios.get(process.env.VUE_APP_API_URL + `/car-service/customer-api/?search=${this.search}&page=1&per_page=10`, {headers: authHeader()})
           .then(res => {
             this.customers = res.data.data;
             console.log("ssa", res.data.data)
@@ -596,7 +605,7 @@ export default {
       let pageNumber = page;
       console.log("uuid", uuid)
 
-      axios.get(process.env.VUE_APP_API_URL+`/car-service/car-api/?uuid=${uuid}`, {headers: authHeader()})
+      axios.get(process.env.VUE_APP_API_URL + `/car-service/car-api/?uuid=${uuid}`, {headers: authHeader()})
           .then(res => {
             this.cars = res.data;
             //this.total = res.data.recordsTotal;
@@ -609,10 +618,10 @@ export default {
       this.loading = false
     },
 
-   async addCar() {
+    async addCar() {
 
 
-      console.log("car",this.car)
+      console.log("car", this.car)
       let a = await new CarService().carAdd(this.car);
       console.log("status", a);
       if (a.status === 200) {
@@ -635,8 +644,8 @@ export default {
 
     },
 
-    goService(carId){
-      this.$router.push({name: 'OpenServiceCard', params: { carId: carId}});
+    goService(carId) {
+      this.$router.push({name: 'OpenServiceCard', params: {carId: carId}});
     }
 
   },
