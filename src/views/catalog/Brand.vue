@@ -48,7 +48,7 @@
                 <CRow>
                   <CCol lg="5">
                     <CInput
-                        label="Marka Adı"
+                        label="Marka Adı (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="brand.name"

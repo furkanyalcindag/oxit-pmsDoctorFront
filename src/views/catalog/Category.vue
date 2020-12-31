@@ -48,7 +48,7 @@
                 <CRow>
                   <CCol lg="5">
                     <CInput
-                        label="Kategori Adı"
+                        label="Kategori Adı (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="category.name"
@@ -61,7 +61,7 @@
                   <CCol lg="5">
                     <CSelect
                         :options="selectCategories"
-                        label="Üst Kategori"
+                        label="Üst Kategori (Zorunlu Alan)"
 
 
                         :value.sync="category.parent"

@@ -6,11 +6,9 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Personel
+              Personel İşlemleri
               <div class="card-header-actions">
-                <CLink href="#" class="card-header-action btn-setting">
-                  <CIcon name="cil-settings"/>
-                </CLink>
+            
                 <CLink
                     class="card-header-action btn-minimize"
                     @click="formCollapsed = !formCollapsed"
@@ -19,13 +17,7 @@
                       :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
                   />
                 </CLink>
-                <CLink
-                    href="#"
-                    class="card-header-action btn-close"
-                    v-on:click="show = !show"
-                >
-                  <CIcon name="cil-x-circle"/>
-                </CLink>
+              
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
@@ -50,21 +42,21 @@
                 <CRow>
                   <CCol lg="6">
                     <CInput
-                        label="İsim"
+                        label="Ad (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="staff.firstName"
                     />
 
                     <CInput
-                        label="Soyisim"
+                        label="Soyad (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="staff.lastName"
                     />
 
                     <CInput
-                        label="Email"
+                        label="Email (Zorunlu Alan)"
                         description=""
                         type="email"
                         autocomplete="email"
@@ -75,7 +67,7 @@
 
                   <CCol lg="6">
                     <CInput
-                        label="Telefon Numarası"
+                        label="Telefon Numarası (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="staff.mobilePhone"
@@ -84,7 +76,7 @@
 
                     <CSelect
                         :options="groups"
-                        label="Grup"
+                        label="Grup (Zorunlu Alan)"
                         v-model="staff.group"
                         :value.sync="staff.group"
 

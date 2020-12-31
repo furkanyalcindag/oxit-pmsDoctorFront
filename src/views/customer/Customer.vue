@@ -46,23 +46,23 @@
                 </div>
                 <CRow></CRow>
                 <CRow>
-                  <CCol lg="3">
+                  <CCol lg="4">
                     <CInput
-                        label="İsim"
+                        label="Ad (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="customer.firstName"
                     />
 
                     <CInput
-                        label="Soyisim"
+                        label="Soyad (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="customer.lastName"
                     />
 
                     <CInput
-                        label="Email"
+                        label="Email Adresi (Zorunlu Alan)"
                         description=""
                         type="email"
                         autocomplete="email"
@@ -71,9 +71,9 @@
                     />
                   </CCol>
 
-                  <CCol lg="3">
+                  <CCol lg="4">
                     <CInput
-                        label="Telefon Numarası"
+                        label="Telefon Numarası (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="customer.mobilePhone"
@@ -102,27 +102,30 @@
                      </CRow>-->
                   </CCol>
 
-                  <CCol lg="3">
+                  <CCol lg="4">
                     <CInput
-                        label="Firma Adı"
+                        label="Firma Adı (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="customer.firmName"
                     />
 
+
                     <CInput
-                        label="Vergi Numarası"
+                        label="Vergi Dairesi (Zorunlu Alan)"
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="customer.taxOffice"
+                    />
+
+                    <CInput
+                        label="Vergi Numarası (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="customer.taxNumber"
                     />
 
-                    <CInput
-                        label="Vergi Dairesi"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="customer.taxOffice"
-                    />
+                  
                   </CCol>
                 </CRow>
 
@@ -303,27 +306,27 @@
                   <CRow>
                     <CCol lg="6">
                       <CInput
-                          label="Plaka"
+                          label="Plaka (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
                           v-model="car.plate"
                       />
 
                       <CInput
-                          label="Marka"
+                          label="Marka (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
                           v-model="car.brand"
                       />
 
                       <CInput
-                          label="Model"
+                          label="Model (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
                           v-model="car.model"
                       />
                       <CInput
-                          label="Yıl"
+                          label="Yıl (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
                           v-model="car.year"
@@ -347,14 +350,14 @@
                       />
 
                       <CInput
-                          label="Şase Numarası"
+                          label="Şase Numarası (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
                           v-model="car.chassisNumber"
                       />
 
                       <CInput
-                          label="KM"
+                          label="KM (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
                           v-model="car.currentKM"

@@ -113,14 +113,15 @@
 
                     <CCol lg="6">
                       <CInput
-                          label="Barkod Numarası"
+                          label="Ürün Kodu (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
                           v-model="product.barcode_number"
+                          
 
                       />
                       <CInput
-                          label="Ürün Adı."
+                          label="Ürün Adı (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
                           v-model="product.name"
@@ -128,7 +129,7 @@
                       />
 
                       <CInput
-                          label="Alış Fiyatı"
+                          label="Alış Fiyatı (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
                           v-model="product.purchasePrice"
@@ -137,7 +138,7 @@
                       />
 
                       <CInput
-                          label="Net Ücret"
+                          label="Satış Fiyatı (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
                           v-model="product.netPrice"
@@ -145,7 +146,7 @@
 
                       />
                       <CInput
-                          label="KDV Oranı(%)"
+                          label="KDV Oranı(%) (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
                           v-model="product.taxRate"
@@ -158,7 +159,7 @@
                     <CCol lg="6">
                       <CSelect
                           :options="selectCategories"
-                          label="Üst Kategori"
+                          label="Üst Kategori (Zorunlu Alan)"
                           v-model="product.categories"
                           :value.sync="product.categories"
 
@@ -167,14 +168,14 @@
 
                       <CSelect
                           :options="selectBrands"
-                          label="Marka"
+                          label="Marka (Zorunlu Alan)"
                           v-model="product.brand"
                           :value.sync="product.brand"
 
                       />
 
                       <CInput
-                          label="Stok"
+                          label="Stok (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
                           v-model="product.quantity"
@@ -220,7 +221,7 @@
         <CButtonClose @click="showAddProduct = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="categoryUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="showAddProduct = false" color="danger">Kapat</CButton>
         <CButton @click="addProduct()" color="success">Kaydet</CButton>
       </template>
     </CModal>
