@@ -491,6 +491,33 @@ export default {
 
 
       this.serviceDetail = response.data
+ /*
+
+ {key: 'barcodeNumber', label: "Barkod", _style: "min-width:100px"},
+
+        {key: "name", label: "Ürün Adı"},
+        {key: "brand", label: "Marka"},
+        {key: "quantity", label: "Adet"},
+        {key: "netPrice", label: "Net Fiyat"},
+        {key: "taxRate", label: "KDV"},
+        {key: "totalProduct", label: "Toplam Fiyat"},
+
+
+  */
+
+
+      var my_object = {
+        barcodeNumber:'-',
+        name:this.serviceDetail.laborName,
+        brand:null,
+        quantity:1,
+        netPrice: this.serviceDetail.laborPrice,
+        taxRate: this.serviceDetail.laborTaxRate,
+        totalProduct:(parseFloat(this.serviceDetail.laborPrice) + (parseFloat(this.serviceDetail.laborPrice)*parseFloat(this.serviceDetail.laborTaxRate)/100)).toFixed(2)
+      };
+      this.serviceProducts.push(my_object)
+
+
       let responsePlate = await new CarService().getCarApi(this.serviceDetail.carUUID);
 
       this.carPlate = responsePlate.data.profile.firmName + '-' + responsePlate.data.profile.user.first_name + ' ' + responsePlate.data.profile.user.last_name
@@ -646,10 +673,10 @@ export default {
 
   },
   mounted() {
-    this.getServiceDetail(this.$route.params.serviceId)
     this.getSelectCategories()
     this.getServicProducts(this.$route.params.serviceId)
     this.getServiceImages(this.$route.params.serviceId)
+    this.getServiceDetail(this.$route.params.serviceId)
 
 
   },
@@ -663,7 +690,7 @@ export default {
       return this.serviceProducts.map(item => {
         return {
           ...item,
-           brand: item.brand!=null?item.brand.name:"",
+           brand: item.brand!=null?item.brand.name:"-",
 
 
         }

@@ -75,13 +75,16 @@ class ServiceService {
 
     }
 
-    addServiceDetermination(uuid, photos, products, determination) {
+    addServiceDetermination(uuid, photos, products, determination, laborPrice, laborTaxRate, laborName) {
         return axios.post(process.env.VUE_APP_API_URL + '/car-service/service-determination-api/',
             {
                 uuid: uuid,
                 photos: photos,
                 products: products,
                 determination: determination,
+                laborPrice: laborPrice,
+                laborTaxRate: laborTaxRate,
+                laborName: laborName
 
 
             }, {headers: authHeader()}).then(response => {
@@ -130,6 +133,25 @@ class ServiceService {
             {
                 uuid: uuid,
                 isAccept: isAccept,
+
+
+            }, {headers: authHeader()}).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            console.log("hata", error)
+            return error
+        });
+
+
+    }
+
+    ServiceProcessing(uuid, situationNo) {
+        return axios.post(process.env.VUE_APP_API_URL + '/car-service/service-processing-api/',
+            {
+                uuid: uuid,
+                situationNo: situationNo,
 
 
             }, {headers: authHeader()}).then(response => {

@@ -35,13 +35,14 @@
                     Müşteri başarıyla kaydedildi.
                   </CAlert>
 
+
                   <CAlert
-                      v-for="item in errors"
-                      :key="item.message"
+                      v-for="(value,key) in errors"
+                      :key="value.message"
                       color="danger"
                       :show="isError"
                   >
-                    E-mail: {{ item }}
+                    {{ key }}: {{ value[0] }}
                   </CAlert>
                 </div>
                 <CRow></CRow>
@@ -547,7 +548,7 @@ export default {
       } else {
         this.isError = false;
         this.isError = true;
-        this.errors = a.response.data["username"];
+        this.errors = a.response.data;
         this.errorHide();
       }
     },

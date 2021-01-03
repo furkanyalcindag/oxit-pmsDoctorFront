@@ -160,6 +160,44 @@
                           v-model="determination"
 
                       />
+                      <CRow>
+
+                        <CCol lg="4">
+                          <CInput
+                              label="Hizmet Adı"
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="laborName"
+
+                          />
+                        </CCol>
+
+                        <CCol lg="4">
+                          <CInput
+                              label="Hizmet Net Fiyat"
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="laborPrice"
+                              type="number"
+
+                          />
+                        </CCol>
+
+
+                        <CCol lg="4">
+                          <CInput
+                              label="Hizmet KDV Oranı(%)"
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="laborTaxRate"
+                              type="number"
+
+                          />
+                        </CCol>
+
+
+
+                      </CRow>
 
 
                     </CCol>
@@ -607,6 +645,9 @@ export default {
       carPlate: '',
       barcodeSearch: '',
       carts: [],
+      laborPrice:0,
+      laborTaxRate:0,
+      laborName:'İşcilik Hizmeti',
 
       primaryText: "Fotoğraf Yükle",
       browseText: "Fotoğraf Yükle",
@@ -676,7 +717,7 @@ export default {
 
     async addDetermination() {
 
-      let response = await new ServiceService().addServiceDetermination(this.$route.params.serviceId, this.imagesPost, this.carts, this.determination);
+      let response = await new ServiceService().addServiceDetermination(this.$route.params.serviceId, this.imagesPost, this.carts, this.determination,this.laborPrice,this.laborTaxRate,this.laborName);
       //console.log(response)
 
       if (response.status === 200) {

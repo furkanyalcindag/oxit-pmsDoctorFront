@@ -176,14 +176,9 @@
 
 <script>
 import Customer from "../../models/customer";
-import CustomerService from "@/services/customer.service";
-
-import axios from "axios";
-import authHeader from "@/services/auth-header";
 import Car from "@/models/car";
 import CarService from "@/services/car.service";
 import Service from "@/models/service";
-import GeneralService from "@/services/general.service";
 import ServiceService from "@/services/service.service";
 import StaffService from "@/services/staff.service";
 

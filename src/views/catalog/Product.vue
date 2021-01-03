@@ -409,7 +409,7 @@ export default {
     },
     successHide() {
       setTimeout(() => (this.isSuccess = false), 5000);
-      console.log("naber");
+
     },
     errorHideCar() {
       setTimeout(() => (this.isErrorCar = false), 5000);

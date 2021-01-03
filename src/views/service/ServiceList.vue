@@ -18,7 +18,7 @@
               <CCardBody>
                 <div>
                   <CAlert color="success" :show="isSuccess">
-                    Ürün başarıyla kaydedildi.
+                    Servis Durumu Başarıyla Değiştirildi
                   </CAlert>
 
                 </div>
@@ -44,9 +44,8 @@
                     </td>
                   </template>
 
-                  <template #actions="{ item, index }">
+                  <template #buttons="{ item, index }">
                     <td class="py-2">
-
 
 
                       <CDropdown
@@ -58,9 +57,12 @@
                           &#x1F4C2;<span class="sr-only">sss</span>
                         </template>
                         <!--<CDropdownItem @click="getServiceDetail(item.uuid)">Servis Detay</CDropdownItem> -->
-                        <CDropdownItem @click="goServiceDetermation(item.uuid)">İşlem Yap</CDropdownItem>
-                        <CDropdownItem @click="goServiceDetail(item.uuid)">Servis Bilgi</CDropdownItem>
-                         <CDropdownItem @click="goServiceApprove(item.uuid)">Müşteri Onay</CDropdownItem>
+                        <CDropdownItem v-for="button in item.buttons" :key="button"
+                                       @click="generalService(item.uuid,button.buttonFunction)">{{
+                            button.buttonName
+                          }}
+                        </CDropdownItem>
+
                       </CDropdown>
 
 
@@ -165,7 +167,7 @@ export default {
         {key: "serviceSituation", label: "Durum"},
         {key: "serviceman", label: "Usta"},
         {key: "creationDate", label: "Tarih"},
-        {key: "actions", label: "İşlemler"},
+        {key: "buttons", label: "İşlemler"},
       ],
       pageLabel: {label: 'sasasa', external: true,},
       page: 1,
@@ -257,7 +259,7 @@ export default {
         case "İptal Edildi":
           return "danger";
         default:
-          "primary";
+          return "warning";
       }
     },
 
@@ -369,8 +371,59 @@ export default {
       this.$router.push({name: 'ServiceDetail', params: {serviceId: serviceId}});
     },
 
-     goServiceApprove(serviceId) {
+    goServiceApprove(serviceId) {
       this.$router.push({name: 'ServiceApprove', params: {serviceId: serviceId}});
+    },
+
+    async serviceProcess(serviceId, situationNo) {
+
+      let response = await new ServiceService().ServiceProcessing(serviceId, situationNo);
+      //console.log(response)
+
+      if (response.status === 200) {
+        this.isSuccess = true
+        this.successHide()
+        await this.getServiceList()
+      }
+
+    },
+
+    generalService(serviceId, functionName) {
+
+
+      if (functionName === 'goServiceDetail') {
+        this.goServiceDetail(serviceId)
+      } else if (functionName === 'goServiceApprove') {
+
+        this.goServiceApprove(serviceId)
+
+      } else if (functionName === 'goServiceDetermination') {
+
+        this.goServiceDetermation(serviceId)
+
+      } else if (functionName === 'goServiceDetermination') {
+
+        this.goServiceDetermation(serviceId)
+
+      } else if (functionName === 'serviceGetProcess') {
+
+        this.serviceProcess(serviceId,1)
+
+      }
+      else if (functionName === 'serviceProcessComplete') {
+
+        this.serviceProcess(serviceId,2)
+
+      }
+
+      else if (functionName === 'serviceDeliver') {
+
+        this.serviceProcess(serviceId,3)
+
+      }
+
+
+
     }
 
 

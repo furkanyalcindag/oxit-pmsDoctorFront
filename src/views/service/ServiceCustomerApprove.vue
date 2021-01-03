@@ -509,6 +509,19 @@ export default {
       this.serviceDetail = response.data
       let responsePlate = await new CarService().getCarApi(this.serviceDetail.carUUID);
 
+
+      var my_object = {
+        barcodeNumber: '-',
+        name: this.serviceDetail.laborName,
+        brand: null,
+        quantity: 1,
+        netPrice: this.serviceDetail.laborPrice,
+        taxRate: this.serviceDetail.laborTaxRate,
+        totalProduct: (parseFloat(this.serviceDetail.laborPrice) + (parseFloat(this.serviceDetail.laborPrice) * parseFloat(this.serviceDetail.laborTaxRate) / 100)).toFixed(2)
+      };
+      this.serviceProducts.push(my_object)
+
+
       this.carPlate = responsePlate.data.profile.firmName + '-' + responsePlate.data.profile.user.first_name + ' ' + responsePlate.data.profile.user.last_name
 
 
@@ -713,7 +726,7 @@ ul {
 
 li {
   display: inline-block;
-  margin: 0 10px;
+  /*margin: 0 10px; */
 }
 
 a {
