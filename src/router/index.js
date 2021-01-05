@@ -79,6 +79,8 @@ const ServiceDetail = () => import('@/views/service/ServiceDetail')
 
 const ServiceCustomerApprove = () => import('@/views/service/ServiceCustomerApprove')
 
+const CheckingAccountList = () => import('@/views/checkingAccount/CheckingAccountList')
+
 Vue.use(Router)
 
 export default new Router({
@@ -413,6 +415,24 @@ function configRoutes() {
                             name: 'Flags',
                             component: Flags
                         }
+                    ]
+                },
+                {
+                    path: 'Checking-account',
+                    redirect: '/checkging-account-list',
+                    name: 'CheckingAccount',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'checkging-account-list',
+                            name: 'CheckingAccountList',
+                            component: CheckingAccountList
+                        },
+
                     ]
                 },
                 {

@@ -200,12 +200,12 @@ export default [
             {
                 _name: 'CSidebarNavDropdown',
                 name: 'Cari',
-                route: '/pages',
+                route: '/checking-account',
                 icon: 'cil-calculator',
                 items: [
                     {
-                        name: 'Login',
-                        to: '/pages/login'
+                        name: 'Cari İşlemler',
+                        to: '/checking-account/list'
                     },
                     {
                         name: 'Register',
