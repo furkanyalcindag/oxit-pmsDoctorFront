@@ -8,7 +8,7 @@
             <CCardHeader>
               <CRow>
                 <CCol lg="3" class="text-left mt-3">
-                  <h3>Servis Listesi {{ this.message }}</h3>
+                  <h3>Cari Liste {{ this.message }}</h3>
 
                 </CCol>
 
@@ -38,9 +38,9 @@
 
                 >
 
-                  <template #serviceSituation="{item}">
+                  <template #paymentSituation="{item}">
                     <td>
-                      <CBadge :color="getBadge(item.serviceSituation)">{{ item.serviceSituation }}</CBadge>
+                      <CBadge :color="getBadge(item.paymentSituation)">{{ item.paymentSituation }}</CBadge>
                     </td>
                   </template>
 
@@ -150,6 +150,7 @@ import {freeSet} from '@coreui/icons'
 import Service from "@/models/service";
 import ServiceService from "@/services/service.service";
 import CarService from "@/services/car.service";
+import CheckingAccountService from "@/services/checkingAccount.service";
 
 export default {
   name: "CheckingAccountList",
@@ -161,12 +162,12 @@ export default {
     return {
 
       fieldsTable: [
-        {key: 'serviceType', label: "Servis Tipi", _style: "min-width:200px"},
+        {key: 'customerName', label: "Müşteri", _style: "min-width:200px"},
         {key: "plate", label: "Plaka"},
-        {key: "serviceKM", label: "KM"},
-        {key: "serviceSituation", label: "Durum"},
-        {key: "serviceman", label: "Usta"},
-        {key: "creationDate", label: "Tarih"},
+        {key: "serviceDate", label: "Servis Tarihi"},
+        {key: "totalPrice", label: "Toplam Ücret"},
+        {key: "remainingPrice", label: "Kalan Ücret"},
+        {key: "paymentSituation", label: "Ödeme Durumu"},
         {key: "buttons", label: "İşlemler"},
       ],
       pageLabel: {label: 'sasasa', external: true,},
@@ -231,7 +232,7 @@ export default {
       showServiceDetail: false,
       service: new Service(),
       services: [],
-      checkingAccounts : [],
+      checkingAccounts: [],
       serviceDetail: null,
       carPlate: ''
     };
@@ -245,19 +246,11 @@ export default {
     },
     getBadge(status) {
       switch (status) {
-        case "Tamamlandı":
+        case "Ödendi":
           return "success";
-        case "İşlem Bekleniyor":
-          return "secondary";
-        case "Müşteri Onayı Bekleniyor":
+        case "Kısmi Ödendi":
           return "warning";
-        case "Banned":
-          return "danger";
-        case "İşlemde":
-          return "info";
-        case "Müşteri Onayı Alındı":
-          return "success";
-        case "İptal Edildi":
+        case "Ödenmedi":
           return "danger";
         default:
           return "warning";
@@ -280,7 +273,7 @@ export default {
     getBase64(event) {
       var reader = new FileReader();
       reader.readAsDataURL(event[0]);
-      console.log("sdsd", product)
+
       this.selectedFile = event.length + ' dosya seçildi'
       var x = this
       reader.onload = function () {
@@ -300,9 +293,17 @@ export default {
     async getServiceList() {
 
       let response = await new ServiceService().getServicesList();
-      console.log(response)
+
 
       this.services = response.data.data
+
+    },
+
+    async getCheckingAccountList() {
+
+      let response = await new CheckingAccountService().checkingAccountList();
+
+      this.checkingAccounts = response.data.data
 
     },
 
@@ -343,14 +344,14 @@ export default {
     },
     successHide() {
       setTimeout(() => (this.isSuccess = false), 5000);
-      console.log("naber");
+
     },
     errorHideCar() {
       setTimeout(() => (this.isErrorCar = false), 5000);
     },
     successHideCar() {
       setTimeout(() => (this.isSuccessCar = false), 5000);
-      console.log("naber");
+
     },
     async getCustomers() {
       let customersRes = await new CustomerService().customerGet('', '', '');
@@ -408,21 +409,17 @@ export default {
 
       } else if (functionName === 'serviceGetProcess') {
 
-        this.serviceProcess(serviceId,1)
+        this.serviceProcess(serviceId, 1)
+
+      } else if (functionName === 'serviceProcessComplete') {
+
+        this.serviceProcess(serviceId, 2)
+
+      } else if (functionName === 'serviceDeliver') {
+
+        this.serviceProcess(serviceId, 3)
 
       }
-      else if (functionName === 'serviceProcessComplete') {
-
-        this.serviceProcess(serviceId,2)
-
-      }
-
-      else if (functionName === 'serviceDeliver') {
-
-        this.serviceProcess(serviceId,3)
-
-      }
-
 
 
     }
@@ -437,7 +434,7 @@ export default {
 
   },
   mounted() {
-    this.getServiceList()
+    this.getCheckingAccountList()
     this.intervalFetchData()
 
 
@@ -446,7 +443,7 @@ export default {
 
     computedItems() {
 
-      return this.services.map(item => {
+      return this.checkingAccounts.map(item => {
         return {
           ...item,
 

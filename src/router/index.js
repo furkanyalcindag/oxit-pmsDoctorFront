@@ -418,8 +418,8 @@ function configRoutes() {
                     ]
                 },
                 {
-                    path: 'Checking-account',
-                    redirect: '/checkging-account-list',
+                    path: 'checking-account',
+                    redirect: '/checking-account/checking-account-list',
                     name: 'CheckingAccount',
                     component: {
                         render(c) {
@@ -428,7 +428,7 @@ function configRoutes() {
                     },
                     children: [
                         {
-                            path: 'checkging-account-list',
+                            path: 'checking-account-list',
                             name: 'CheckingAccountList',
                             component: CheckingAccountList
                         },

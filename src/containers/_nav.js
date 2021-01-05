@@ -205,7 +205,11 @@ export default [
                 items: [
                     {
                         name: 'Cari İşlemler',
-                        to: '/checking-account/list'
+                        to: '/checking-account/checking-account-list'
+                    },
+                    {
+                        name: 'login',
+                        to: '/pages/login'
                     },
                     {
                         name: 'Register',
