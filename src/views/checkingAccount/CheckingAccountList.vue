@@ -136,6 +136,45 @@
     </CModal>
 
 
+    <CModal
+        :show.sync="showServiceDetail"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="showServiceDetail">
+              <template>
+                <CCardBody>
+                  <CRow>
+                    <CCol lg="4"></CCol>
+
+
+
+                  </CRow>
+
+                </CCardBody>
+              </template>
+
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Servis Detay</h6>
+        <CButtonClose @click="showServiceDetail = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="showServiceDetail = false" color="danger">Kapat</CButton>
+
+      </template>
+    </CModal>
+
+
   </div>
 </template>
 
