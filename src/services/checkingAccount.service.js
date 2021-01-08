@@ -10,6 +10,12 @@ class CheckingAccountService {
 
     }
 
+    getPaymentType() {
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/payment-type-select-api/`, {headers: authHeader()})
+
+
+    }
+
 
 }
 
