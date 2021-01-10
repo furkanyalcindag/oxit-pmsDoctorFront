@@ -41,20 +41,6 @@
                   <template #paymentSituation="{item}">
                     <td>
                       <CBadge :color="getBadge(item.paymentSituation)">{{ item.paymentSituation }}</CBadge>
-                      <CDropdown
-                          color="link"
-                          size="lg"
-                          :caret="false"
-                      >
-                        <template #toggler-content>
-                          &#x1F4C2;<span class="sr-only">sss</span>
-                        </template>
-                        <!--<CDropdownItem @click="getServiceDetail(item.uuid)">Servis Detay</CDropdownItem> -->
-                        <CDropdownItem
-                            @click="generalService(2121212121,'makePayment')">Ödeme Yap
-                        </CDropdownItem>
-
-                      </CDropdown>
 
                     </td>
                   </template>
@@ -73,7 +59,7 @@
                         </template>
                         <!--<CDropdownItem @click="getServiceDetail(item.uuid)">Servis Detay</CDropdownItem> -->
                         <CDropdownItem v-for="button in item.buttons" :key="button"
-                                       @click="generalService(item.uuid,'makePayment')">Ödeme Yap
+                                       @click="generalService(item.checkingAccountId,button.buttonFunction)">{{button.buttonName}}
                         </CDropdownItem>
 
                       </CDropdown>
@@ -165,6 +151,18 @@
             <CCard v-if="showMakePayment">
               <template>
                 <CCardBody>
+                  <div>
+
+
+                    <CAlert
+                        v-for="(value,key) in errors"
+                        :key="value.message"
+                        color="danger"
+                        :show="isError"
+                    >
+                      {{ key }}: {{ value[0] }}
+                    </CAlert>
+                  </div>
                   <CRow>
                     <CCol lg="12">
                       <CInput
@@ -203,13 +201,77 @@
       </CRow>
       <template #header>
         <h6 class="modal-title">Ödeme Yap</h6>
-        <CButtonClose @click="showServiceDetail = false" class="text-white"/>
+        <CButtonClose @click="showMakePayment = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="showServiceDetail = false" color="danger">Kaydet</CButton>
+        <CButton @click="showMakePayment = false" color="danger">Kapat</CButton>
+        <CButton @click="addPayment" color="success">Kaydet</CButton>
 
       </template>
     </CModal>
+
+
+
+
+
+    <CModal
+        :show.sync="paymentsModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="show">
+              <template>
+                <CCardBody>
+
+                  <CDataTable
+                      :items="computedItemPaymentMovement"
+                      :fields="fieldsTablePayment"
+                      column-filter
+
+
+                      :items-per-page="5"
+                      :activePage="4"
+                      hover
+                      sorter
+                      pagination
+                      :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+
+                      clickableRows
+
+                  >
+
+
+
+                  </CDataTable>
+
+
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Ödeme Hareketleri</h6>
+        <CButtonClose @click="paymentsModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="paymentsModal = false" color="danger">Kapat</CButton>
+
+      </template>
+    </CModal>
+
+
+
+
+
 
 
   </div>
@@ -245,6 +307,12 @@ export default {
         {key: "remainingPrice", label: "Kalan Ücret"},
         {key: "paymentSituation", label: "Ödeme Durumu"},
         {key: "buttons", label: "İşlemler"},
+      ],
+      fieldsTablePayment: [
+        {key: 'paymentAmount', label: "Ödeme Miktarı", _style: "min-width:200px"},
+        {key: "paymentDate", label: "Tarih"},
+        {key: "paymentTypeDesc", label: "Ödeme Tipi"},
+
       ],
       pageLabel: {label: 'sasasa', external: true,},
       page: 1,
@@ -311,7 +379,9 @@ export default {
       services: [],
       checkingAccounts: [],
       serviceDetail: null,
-      carPlate: ''
+      carPlate: '',
+      paymentMovements :[],
+      paymentsModal:false
     };
   },
 
@@ -362,6 +432,17 @@ export default {
       let response = await new CheckingAccountService().checkingAccountList();
 
       this.checkingAccounts = response.data.data
+
+    },
+
+    async getPaymentMovementsList(id) {
+
+
+
+      let response = await new CheckingAccountService().getPaymentMovement(id);
+
+      this.paymentMovements = response.data
+      this.paymentsModal = true
 
     },
 
@@ -454,43 +535,46 @@ export default {
 
     },
 
-    generalService(serviceId, functionName) {
+    generalService(checkingId, functionName) {
 
       console.log("deneme")
 
-      if (functionName === 'goServiceDetail') {
-        this.goServiceDetail(serviceId)
-      } else if (functionName === 'goServiceApprove') {
-
-        this.goServiceApprove(serviceId)
-
-      } else if (functionName === 'goServiceDetermination') {
-
-        this.goServiceDetermation(serviceId)
-
-      } else if (functionName === 'goServiceDetermination') {
-
-        this.goServiceDetermation(serviceId)
-
-      } else if (functionName === 'serviceGetProcess') {
-
-        this.serviceProcess(serviceId, 1)
-
-      } else if (functionName === 'serviceProcessComplete') {
-
-        this.serviceProcess(serviceId, 2)
-
-      } else if (functionName === 'serviceDeliver') {
-
-        this.serviceProcess(serviceId, 3)
-
+      if (functionName === 'getPaymentMovementsList') {
+        this.getPaymentMovementsList(checkingId)
       } else if (functionName === 'makePayment') {
 
         this.showMakePayment = true
+        this.payment.uuid = checkingId
 
       }
 
 
+    },
+
+    async addPayment() {
+
+      let a = await new CheckingAccountService().addPayment(this.payment);
+      console.log("status", a);
+      if (a.status === 200) {
+        this.isSuccess = false;
+        this.showMakePayment=false
+        this.isSuccess = true;
+        await this.getCheckingAccountList()
+        this.successHide();
+
+
+      } else if (a.response.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        console.log("error", a.response.data)
+        this.errors = a.response.data;
+        this.errorHide();
+      }
     }
 
 
@@ -514,6 +598,16 @@ export default {
     computedItems() {
 
       return this.checkingAccounts.map(item => {
+        return {
+          ...item,
+
+
+        }
+      })
+    },
+    computedItemPaymentMovement() {
+
+      return this.paymentMovements.map(item => {
         return {
           ...item,
 
