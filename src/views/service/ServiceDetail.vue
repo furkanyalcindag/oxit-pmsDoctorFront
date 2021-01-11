@@ -50,6 +50,10 @@
                                 <h6>Servis Tipi : {{ serviceDetail.serviceType }}</h6>
                                 <hr>
                                 <h6>KM : {{ serviceDetail.serviceKM }} KM</h6>
+
+
+                                <hr>
+                                <h6>Şikayet : {{ serviceDetail.complaint }} </h6>
                                 <hr>
 
                               </CCol>
@@ -61,9 +65,13 @@
                                 <h6>Usta : {{ serviceDetail.serviceman }}</h6>
                                 <hr>
                                 <h6>Giriş Zamanı : {{ serviceDetail.creationDate }} </h6>
+
                                 <hr>
-                                <h6>Şikayet : {{ serviceDetail.complaint }} </h6>
+                                <h6>
+                                  Tespit: {{serviceDetail.description}}
+                                </h6>
                                 <hr>
+
 
 
                               </CCol>

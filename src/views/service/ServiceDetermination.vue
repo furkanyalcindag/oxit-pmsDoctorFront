@@ -247,7 +247,7 @@
 
 
                                           v-model="barcodeSearch"
-                                          placeholder="Barkod Numarası"
+                                          placeholder="Ürün Adı"
 
 
                                       />
@@ -284,10 +284,10 @@
                                     <CListGroupItem class="d-flex justify-content-between align-items-center"
                                                     v-for="product in products" :key="product" href="#">
                                       <CButton align="right" size="sm" color="success"
-                                               @click="addCart(product.name,product.uuid,1,product.netPrice)">
+                                               @click="addCart(product.name,product.uuid,1,product.netPrice,product.barcodeNumber)">
                                         <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
                                       </CButton>
-                                      <span>{{ product.name }} | {{ product.netPrice }} ₺ |  %{{
+                                      <span>{{ product.barcodeNumber }}  | {{ product.name }} | {{ product.netPrice }} ₺ |  %{{
                                           product.taxRate
                                         }}</span>
 
@@ -306,7 +306,7 @@
                                       <CButton align="left" size="sm" color="danger" @click="removeCart(index)">
                                         <CIcon :content="$options.freeSet.cilMinus" name="cil-minus"/>
                                       </CButton>
-                                      <span>{{ cart.name }} | {{ cart.netPrice }} ₺</span>
+                                      <span>{{ cart.barcodeNumber }} | {{ cart.name }} | {{ cart.netPrice }} ₺</span>
 
                                       <CBadge color="primary" shape="pill">{{ cart.quantity }}</CBadge>
                                     </CListGroupItem>
@@ -823,10 +823,10 @@ export default {
       this.loading = false
     },
 
-    addCart(name, uuid, quantity, netPrice) {
+    addCart(name, uuid, quantity, netPrice,barcodeNumber) {
       console.log("netPrice", netPrice)
 
-      let cartItem = new Cart(uuid, name, quantity, netPrice)
+      let cartItem = new Cart(uuid, name, quantity, netPrice,barcodeNumber)
 
       console.log("item", cartItem)
       this.carts.push(cartItem)

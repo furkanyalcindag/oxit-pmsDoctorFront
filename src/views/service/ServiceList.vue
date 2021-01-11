@@ -161,6 +161,7 @@ export default {
     return {
 
       fieldsTable: [
+        {key: 'id', label: "Servis No"},
         {key: 'serviceType', label: "Servis Tipi", _style: "min-width:200px"},
         {key: "plate", label: "Plaka"},
         {key: "serviceKM", label: "KM"},

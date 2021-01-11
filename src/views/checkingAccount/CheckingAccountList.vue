@@ -302,6 +302,7 @@ export default {
       fieldsTable: [
         {key: 'customerName', label: "Müşteri", _style: "min-width:200px"},
         {key: "plate", label: "Plaka"},
+        {key: "serviceNo", label: "Servis Numarası"},
         {key: "serviceDate", label: "Servis Tarihi"},
         {key: "totalPrice", label: "Toplam Ücret"},
         {key: "remainingPrice", label: "Kalan Ücret"},
