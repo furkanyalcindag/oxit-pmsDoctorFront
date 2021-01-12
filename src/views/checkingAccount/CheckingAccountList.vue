@@ -300,10 +300,13 @@ export default {
     return {
 
       fieldsTable: [
+        {key: "serviceNo", label: "Servis Numarası"},
         {key: 'customerName', label: "Müşteri", _style: "min-width:200px"},
         {key: "plate", label: "Plaka"},
-        {key: "serviceNo", label: "Servis Numarası"},
+
         {key: "serviceDate", label: "Servis Tarihi"},
+        {key: "netPrice", label: "Net Ücret"},
+        {key: "taxPrice", label: "KDV"},
         {key: "totalPrice", label: "Toplam Ücret"},
         {key: "remainingPrice", label: "Kalan Ücret"},
         {key: "paymentSituation", label: "Ödeme Durumu"},
