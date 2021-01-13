@@ -51,6 +51,8 @@
                                 <hr>
                                 <h6>KM : {{ serviceDetail.serviceKM }} KM</h6>
                                 <hr>
+                                <h6>Şikayet : {{ serviceDetail.complaint }} </h6>
+                                <hr>
 
                               </CCol>
 
@@ -62,7 +64,9 @@
                                 <hr>
                                 <h6>Giriş Zamanı : {{ serviceDetail.creationDate }} </h6>
                                 <hr>
-                                <h6>Şikayet : {{ serviceDetail.complaint }} </h6>
+                                <h6>
+                                  Tespit: {{serviceDetail.description}}
+                                </h6>
                                 <hr>
 
 

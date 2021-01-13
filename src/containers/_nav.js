@@ -206,23 +206,20 @@ export default [
                     {
                         name: 'Cari İşlemler',
                         to: '/checking-account/checking-account-list'
-                    },
+                    }
+                ]
+            },
+            {
+                _name: 'CSidebarNavDropdown',
+                name: 'Kullanıcı İşlemleri',
+                route: '/login',
+                icon: 'cil-user',
+                items: [
                     {
-                        name: 'login',
+                        name: 'Login',
                         to: '/pages/login'
                     },
-                    {
-                        name: 'Register',
-                        to: '/pages/register'
-                    },
-                    {
-                        name: 'Error 404',
-                        to: '/pages/404'
-                    },
-                    {
-                        name: 'Error 500',
-                        to: '/pages/500'
-                    }
+
                 ]
             },
             {

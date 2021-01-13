@@ -294,13 +294,14 @@
                     </CAlert>
 
                     <CAlert
-                        v-for="item in errorsCar"
-                        :key="item.message"
+                        v-for="(value,key) in errorsCar"
+                        :key="value.message"
                         color="danger"
-                        :show="isError"
+                        :show="isErrorCar"
                     >
-                      E-mail: {{ item }}
+                      {{ key }}: {{ value[0] }}
                     </CAlert>
+
                   </div>
 
 
@@ -641,7 +642,7 @@ export default {
       } else {
         this.isErrorCar = false;
         this.isErrorCar = true;
-        this.errorsCar = a.response.data["username"];
+        this.errorsCar = a.response.data;
         this.errorHideCar();
       }
 
