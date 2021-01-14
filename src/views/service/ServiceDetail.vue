@@ -499,22 +499,8 @@ export default {
 
 
       this.serviceDetail = response.data
- /*
-
- {key: 'barcodeNumber', label: "Barkod", _style: "min-width:100px"},
-
-        {key: "name", label: "Ürün Adı"},
-        {key: "brand", label: "Marka"},
-        {key: "quantity", label: "Adet"},
-        {key: "netPrice", label: "Net Fiyat"},
-        {key: "taxRate", label: "KDV"},
-        {key: "totalProduct", label: "Toplam Fiyat"},
-
-
-  */
-
-
-      var my_object = {
+      let responsePlate = await new CarService().getCarApi(this.serviceDetail.carUUID);
+      let my_object = {
         barcodeNumber:'-',
         name:this.serviceDetail.laborName,
         brand:null,
@@ -526,7 +512,7 @@ export default {
       this.serviceProducts.push(my_object)
 
 
-      let responsePlate = await new CarService().getCarApi(this.serviceDetail.carUUID);
+
 
       this.carPlate = responsePlate.data.profile.firmName + '-' + responsePlate.data.profile.user.first_name + ' ' + responsePlate.data.profile.user.last_name
 
