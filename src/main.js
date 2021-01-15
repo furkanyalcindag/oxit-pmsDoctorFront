@@ -9,6 +9,7 @@ import store from './store/store'
 //import VeeValidate from 'vee-validate';
 import VueLazyload from 'vue-lazyload'
 import VueUploadMultipleImage from 'vue-upload-multiple-image'
+import CxltToastr from "cxlt-vue2-toastr";
 
 
 Vue.use(VueLazyload)
@@ -27,6 +28,7 @@ Vue.config.performance = true
 
 Vue.use(CoreuiVue)
 //Vue.use(VeeValidate)
+Vue.use(CxltToastr)
 
 
 

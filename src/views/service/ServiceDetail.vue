@@ -68,10 +68,9 @@
 
                                 <hr>
                                 <h6>
-                                  Tespit: {{serviceDetail.description}}
+                                  Tespit: {{ serviceDetail.description }}
                                 </h6>
                                 <hr>
-
 
 
                               </CCol>
@@ -501,17 +500,15 @@ export default {
       this.serviceDetail = response.data
       let responsePlate = await new CarService().getCarApi(this.serviceDetail.carUUID);
       let my_object = {
-        barcodeNumber:'-',
-        name:this.serviceDetail.laborName,
-        brand:null,
-        quantity:1,
+        barcodeNumber: '-',
+        name: this.serviceDetail.laborName,
+        brand: null,
+        quantity: 1,
         netPrice: this.serviceDetail.laborPrice,
         taxRate: this.serviceDetail.laborTaxRate,
-        totalProduct:(parseFloat(this.serviceDetail.laborPrice) + (parseFloat(this.serviceDetail.laborPrice)*parseFloat(this.serviceDetail.laborTaxRate)/100)).toFixed(2)
+        totalProduct: (parseFloat(this.serviceDetail.laborPrice) + (parseFloat(this.serviceDetail.laborPrice) * parseFloat(this.serviceDetail.laborTaxRate) / 100)).toFixed(2)
       };
       this.serviceProducts.push(my_object)
-
-
 
 
       this.carPlate = responsePlate.data.profile.firmName + '-' + responsePlate.data.profile.user.first_name + ' ' + responsePlate.data.profile.user.last_name
@@ -684,7 +681,7 @@ export default {
       return this.serviceProducts.map(item => {
         return {
           ...item,
-           brand: item.brand!=null?item.brand.name:"-",
+          brand: item.brand != null ? item.brand.name : "-",
 
 
         }

@@ -150,6 +150,7 @@ import {freeSet} from '@coreui/icons'
 import Service from "@/models/service";
 import ServiceService from "@/services/service.service";
 import CarService from "@/services/car.service";
+import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 
 export default {
   name: "ServiceList",
@@ -233,7 +234,8 @@ export default {
       service: new Service(),
       services: [],
       serviceDetail: null,
-      carPlate: ''
+      carPlate: '',
+      messages:'dhjksdjhsjkdhjkshdj'
     };
   },
 
@@ -297,7 +299,17 @@ export default {
     }
     ,
 
+    denemes(){
+
+      console.log("kjjkhsjkak")
+      return this.messages
+    },
     async getServiceList() {
+
+      this.$toast.success({
+        title:'',
+        message:this.denemes()
+      })
 
       let response = await new ServiceService().getServicesList();
       console.log(response)
@@ -437,6 +449,9 @@ export default {
 
   },
   mounted() {
+    console.log("546546")
+
+    console.log("546546")
     this.getServiceList()
     this.intervalFetchData()
 
