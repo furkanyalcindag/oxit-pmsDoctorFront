@@ -81,6 +81,8 @@ const ServiceCustomerApprove = () => import('@/views/service/ServiceCustomerAppr
 
 const CheckingAccountList = () => import('@/views/checkingAccount/CheckingAccountList')
 
+const CheckingAccountByCustomerList = () => import('@/views/checkingAccount/CheckingAccounByCustomerList')
+
 Vue.use(Router)
 
 export default new Router({
@@ -431,6 +433,11 @@ function configRoutes() {
                             path: 'checking-account-list',
                             name: 'CheckingAccountList',
                             component: CheckingAccountList
+                        },
+                        {
+                            path: 'checking-account/customer:customerId',
+                            name: 'CheckingAccountByCustomer',
+                            component: CheckingAccountByCustomerList
                         },
 
                     ]

@@ -306,10 +306,10 @@ export default {
     },
     async getServiceList() {
 
-      this.$toast.success({
+      /*this.$toast.success({
         title:'',
         message:this.denemes()
-      })
+      })*/
 
       let response = await new ServiceService().getServicesList();
       console.log(response)

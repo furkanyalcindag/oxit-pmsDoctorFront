@@ -5,6 +5,7 @@
 
 
 <script>
+
 export default {
   name: 'App'
 }
@@ -13,6 +14,7 @@ export default {
 <style lang="scss">
   // Import Main styles for this application
   @import 'assets/scss/style';
+
 
 </style>
 

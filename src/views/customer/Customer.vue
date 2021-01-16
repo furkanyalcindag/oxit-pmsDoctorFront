@@ -105,7 +105,7 @@
 
                   <CCol lg="4">
                     <CInput
-                        label="Firma Adı (Zorunlu Alan)"
+                        label="Firma Adı"
                         description=""
                         autocomplete="autocomplete"
                         v-model="customer.firmName"
@@ -113,20 +113,20 @@
 
 
                     <CInput
-                        label="Vergi Dairesi (Zorunlu Alan)"
+                        label="Vergi Dairesi"
                         description=""
                         autocomplete="autocomplete"
                         v-model="customer.taxOffice"
                     />
 
                     <CInput
-                        label="Vergi Numarası (Zorunlu Alan)"
+                        label="Vergi Numarası"
                         description=""
                         autocomplete="autocomplete"
                         v-model="customer.taxNumber"
                     />
 
-                  
+
                   </CCol>
                 </CRow>
 
@@ -172,7 +172,7 @@
                       <CButtonGroup class="mx-1 d-sm-down-none">
                         <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
                         <CButton @click="addCarModal(item.uuid)" color="info">Araç Ekle</CButton>
-                        <CButton color="success">Cari</CButton>
+                        <CButton @click="getAccountList(item.uuid)" color="success">Cari</CButton>
                         <CButton color="danger">Sil</CButton>
                         <CButton color="warning">Güncelle</CButton>
                       </CButtonGroup>
@@ -267,8 +267,8 @@
         <CButtonClose @click="darkModal = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="darkModal = false" color="danger">Discard</CButton>
-        <CButton @click="darkModal = false" color="success">Accept</CButton>
+        <CButton @click="darkModal = false" color="danger">Kapat</CButton>
+
       </template>
     </CModal>
 
@@ -651,7 +651,16 @@ export default {
 
     goService(carId) {
       this.$router.push({name: 'OpenServiceCard', params: {carId: carId}});
+    },
+
+    getAccountList(uuid) {
+
+
+      this.$router.push({name: 'CheckingAccountByCustomer', params: {customerId: uuid}});
+
+
     }
+
 
   },
 

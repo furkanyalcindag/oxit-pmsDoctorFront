@@ -28,7 +28,7 @@
                     :fields="fieldsTable"
                     column-filter
                     :border="true"
-                    :items-per-page="5"
+                    :items-per-page="10"
                     :activePage="4"
                     hover
                     sorter
@@ -495,7 +495,7 @@ export default {
 
     async getCheckingAccountList() {
 
-      let response = await new CheckingAccountService().checkingAccountList();
+      let response = await new CheckingAccountService().checkingAccountListByCustomer(this.$route.params.customerId);
 
       this.checkingAccounts = response.data.data
 
@@ -686,7 +686,6 @@ export default {
 
   },
   mounted() {
-
     this.getCheckingAccountList()
     this.intervalFetchData()
     this.getPaymentType()

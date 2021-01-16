@@ -28,7 +28,13 @@ Vue.config.performance = true
 
 Vue.use(CoreuiVue)
 //Vue.use(VeeValidate)
-Vue.use(CxltToastr)
+
+var toastrConfigs = {
+  position: 'top right',
+  timeOut: 10000,
+  progressBar:true
+}
+Vue.use(CxltToastr,toastrConfigs)
 
 
 
