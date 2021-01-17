@@ -9,58 +9,42 @@
       <CHeaderNavLink>
         <div class="c-avatar">
           <img
-            src="img/avatars/6.jpg"
+            src="https://www.oxit.com.tr/wp-content/themes/oxit/default/logo.png"
             class="c-avatar-img "
           />
         </div>
       </CHeaderNavLink>
     </template>
     <CDropdownHeader tag="div" class="text-center" color="light">
-      <strong>Account</strong>
+      <strong>Bildirimler</strong>
     </CDropdownHeader>
     <CDropdownItem>
-      <CIcon name="cil-bell"/> Updates
+      <CIcon name="cil-bell"/> Bildirimler
       <CBadge color="info" class="ml-auto">{{ itemsCount }}</CBadge>
     </CDropdownItem>
     <CDropdownItem>
-      <CIcon name="cil-envelope-open" /> Messages
-      <CBadge color="success" class="ml-auto">{{ itemsCount }}</CBadge>
+      <CIcon name="cil-envelope-open" /> Mesajlar
+      <CBadge color="success" class="ml-auto">{{ itemsCount2 }}</CBadge>
     </CDropdownItem>
-    <CDropdownItem>
-      <CIcon name="cil-task" /> Tasks
-      <CBadge color="danger" class="ml-auto">{{ itemsCount }}</CBadge>
-    </CDropdownItem>
-    <CDropdownItem>
-      <CIcon name="cil-comment-square" /> Comments
-      <CBadge color="warning" class="ml-auto">{{ itemsCount }}</CBadge>
-    </CDropdownItem>
+  
     <CDropdownHeader
       tag="div"
       class="text-center"
       color="light"
     >
-      <strong>Settings</strong>
+      <strong>Ayarlar</strong>
     </CDropdownHeader>
     <CDropdownItem>
-      <CIcon name="cil-user" /> Profile
+      <CIcon name="cil-user" /> Profil
     </CDropdownItem>
     <CDropdownItem>
-      <CIcon name="cil-settings" /> Settings
+      <CIcon name="cil-settings" /> Ayarlar
     </CDropdownItem>
-    <CDropdownItem>
-      <CIcon name="cil-dollar" /> Payments
-      <CBadge color="secondary" class="ml-auto">{{ itemsCount }}</CBadge>
-    </CDropdownItem>
-    <CDropdownItem>
-      <CIcon name="cil-file" /> Projects
-      <CBadge color="primary" class="ml-auto">{{ itemsCount }}</CBadge>
-    </CDropdownItem>
+    
     <CDropdownDivider/>
+   
     <CDropdownItem>
-      <CIcon name="cil-shield-alt" /> Lock Account
-    </CDropdownItem>
-    <CDropdownItem>
-      <CIcon name="cil-lock-locked" /> Logout
+      <CIcon name="cil-lock-locked" /> Çıkış Yap
     </CDropdownItem>
   </CDropdown>
 </template>

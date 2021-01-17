@@ -1,144 +1,203 @@
 <template>
-  <CRow>
-    <CCol sm="6" lg="3">
-      <CWidgetDropdown color="primary"  v-bind:header="cars"  text="Members online">
-        <template #default>
-          <CDropdown
-            color="transparent p-0"
-            placement="bottom-end"
-          >
-            <template #toggler-content>
-              <CIcon name="cil-settings"/>
-            </template>
-            <CDropdownItem>Action</CDropdownItem>
-            <CDropdownItem>Another action</CDropdownItem>
-            <CDropdownItem>Something else here...</CDropdownItem>
-            <CDropdownItem disabled>Disabled action</CDropdownItem>
-          </CDropdown>
-        </template>
-        <template #footer>
-          <CChartLineSimple
-            pointed
-            class="mt-3 mx-3"
-            style="height:70px"
-            :data-points="[65, 59, 84, 84, 51, 55, 40]"
-            point-hover-background-color="primary"
-            label="Members"
-            labels="months"
-          />
-        </template>
-      </CWidgetDropdown>
-    </CCol>
-    <CCol sm="6" lg="3">
-      <CWidgetDropdown color="info" header="9.823" text="Members online">
-        <template #default>
-          <CDropdown
-            color="transparent p-0"
-            placement="bottom-end"
-            :caret="false"
-          >
-            <template #toggler-content>
-              <CIcon name="cil-location-pin"/>
-            </template>
-            <CDropdownItem>Action</CDropdownItem>
-            <CDropdownItem>Another action</CDropdownItem>
-            <CDropdownItem>Something else here...</CDropdownItem>
-            <CDropdownItem disabled>Disabled action</CDropdownItem>
-          </CDropdown>
-        </template>
-        <template #footer>
-          <CChartLineSimple
-            pointed
-            class="mt-3 mx-3"
-            style="height:70px"
-            :data-points="[1, 18, 9, 17, 34, 22, 11]"
-            point-hover-background-color="info"
-            :options="{ elements: { line: { tension: 0.00001 }}}"
-            label="Members"
-            labels="months"
-          />
-        </template>
-      </CWidgetDropdown>
-    </CCol>
-    <CCol sm="6" lg="3">
-      <CWidgetDropdown
-        color="warning"
-        header="9.823"
-        text="Members online"
-      >
-        <template #default>
-          <CDropdown
-            color="transparent p-0"
-            placement="bottom-end"
-          >
-            <template #toggler-content>
-              <CIcon name="cil-settings"/>
-            </template>
-            <CDropdownItem>Action</CDropdownItem>
-            <CDropdownItem>Another action</CDropdownItem>
-            <CDropdownItem>Something else here...</CDropdownItem>
-            <CDropdownItem disabled>Disabled action</CDropdownItem>
-          </CDropdown>
-        </template>
-        <template #footer>
-          <CChartLineSimple
-            class="mt-3"
-            style="height:70px"
-            background-color="rgba(255,255,255,.2)"
-            :data-points="[78, 81, 80, 45, 34, 12, 40]"
-            :options="{ elements: { line: { borderWidth: 2.5 }}}"
-            point-hover-background-color="warning"
-            label="Members"
-            labels="months"
-          />
-        </template>
-      </CWidgetDropdown>
-    </CCol>
-    <CCol sm="6" lg="3">
-      <CWidgetDropdown
-        color="danger"
-        header="9.823"
-        text="Members online"
-      >
-        <template #default>
-          <CDropdown
-            color="transparent p-0"
-            placement="bottom-end"
-          >
-            <template #toggler-content>
-             <CIcon name="cil-settings"/>
-            </template>
-            <CDropdownItem>Action</CDropdownItem>
-            <CDropdownItem>Another action</CDropdownItem>
-            <CDropdownItem>Something else here...</CDropdownItem>
-            <CDropdownItem disabled>Disabled action</CDropdownItem>
-          </CDropdown>
-        </template>
-        <template #footer>
-          <CChartBarSimple
-            class="mt-3 mx-3"
-            style="height:70px"
-            background-color="rgb(250, 152, 152)"
-            label="Members"
-            labels="months"
-          />
-        </template>
-      </CWidgetDropdown>
-    </CCol>
-  </CRow>
+<div>
+
+
+
+ <CRow>
+      <CCol col="12" sm="6" lg="3">
+        <CWidgetIcon
+          header="180.000 TL"
+          text="CARİ (AYLIK)"
+          color="primary"
+          :icon-padding="false"
+        >
+          <CIcon name="cil-settings" class="mx-2 " width="24"/>
+        </CWidgetIcon>
+      </CCol>
+      <CCol col="12" sm="6" lg="3">
+        <CWidgetIcon
+           header="80.000 TL"
+          text="CARİ (HAFTALIK)"
+          color="info"
+          :icon-padding="false"
+        >
+          <CIcon name="cil-laptop" class="mx-2 " width="24"/>
+        </CWidgetIcon>
+      </CCol>
+      <CCol col="12" sm="6" lg="3">
+        <CWidgetIcon
+           header="10.000 TL"
+          text="CARİ (GÜNLÜK)"
+          color="warning"
+          :icon-padding="false"
+        >
+          <CIcon name="cil-moon" class="mx-2 " width="24"/>
+          <template #footer>
+            <CCardFooter class="card-footer px-3 py-2">
+              <CLink
+                class="font-weight-bold font-xs btn-block text-muted"
+                href="https://coreui.io/"
+              >
+                View more
+                <CIcon name="cil-arrowRight" class="float-right" width="16"/>
+              </CLink>
+            </CCardFooter>
+          </template>
+        </CWidgetIcon>
+      </CCol>
+
+
+
+
+    <CCol col="12" sm="6" lg="3">
+        <CWidgetIcon
+           header="44.000 TL"
+          text="VADESİ GEÇMİŞ"
+          color="danger"
+          :icon-padding="false"
+        >
+          <CIcon name="cil-people" class="mx-2 " width="24"/>
+          <template #footer>
+            <CCardFooter class="card-footer px-3 py-2">
+              <CLink
+                class="font-weight-bold font-xs btn-block text-muted"
+                href="https://coreui.io/"
+              >
+                View more
+                <CIcon name="cil-arrowRight" class="float-right" width="16"/>
+              </CLink>
+            </CCardFooter>
+          </template>
+        </CWidgetIcon>
+      </CCol>
+
+
+    </CRow>
+
+
+
+    <CRow>
+      <CCol sm="6" md="2">
+        <CWidgetProgressIcon
+          header="155"
+          text="FİRMA SAYISI"
+          color="info"
+          inverse
+          :value="100"
+        >
+          <CIcon name="cil-people" height="36"/>
+        </CWidgetProgressIcon>
+      </CCol>
+      
+      <CCol sm="6" md="2">
+        <CWidgetProgressIcon
+          header="385"
+          text="ARAÇ SAYISI"
+          color="success"
+          inverse
+        >
+          <CIcon name="cil-userFollow" height="36"/>
+        </CWidgetProgressIcon>
+      </CCol>
+      <CCol sm="6" md="2">
+        <CWidgetProgressIcon
+          header="5"
+          text="DEVAM EDEN İŞLER"
+          color="warning"
+          inverse
+        >
+          <CIcon name="cil-basket" height="36"/>
+        </CWidgetProgressIcon>
+      </CCol>
+      <CCol sm="6" md="2">
+        <CWidgetProgressIcon
+          header="2"
+          text="ONAY BEKLEYEN İŞLER"
+          color="primary"
+          inverse
+        >
+          <CIcon name="cil-chartPie" height="36"/>
+        </CWidgetProgressIcon>
+      </CCol>
+      <CCol sm="6" md="2">
+        <CWidgetProgressIcon
+          header="954"
+          text="ÜRÜN SAYISI"
+          color="danger"
+          inverse
+        >
+          <CIcon name="cil-speedometer" height="36"/>
+        </CWidgetProgressIcon>
+      </CCol>
+      <CCol sm="6" md="2">
+        <CWidgetProgressIcon
+          header="15"
+          text="STOK BİTENLER"
+          color="info"
+          inverse
+        >
+          <CIcon name="cil-speech" height="36"/>
+        </CWidgetProgressIcon>
+      </CCol>
+    </CRow>
+
+
+
+
+
+
+   
+
+
+ <CRow>
+      <CCol col="12" sm="6" lg="4">
+        <CWidgetIcon
+          header="5"
+          text="TAMAMLANAN İŞ (GÜNLÜK)"
+          color="primary"
+          :icon-padding="false"
+        >
+          <CIcon name="cil-settings" class="mx-2 " width="24"/>
+        </CWidgetIcon>
+      </CCol>
+      <CCol col="12" sm="6" lg="4">
+        <CWidgetIcon
+           header="36"
+          text="TAMAMLANAN İŞ (HAFTALIK)"
+          color="info"
+          :icon-padding="false"
+        >
+          <CIcon name="cil-laptop" class="mx-2 " width="24"/>
+        </CWidgetIcon>
+      </CCol>
+      <CCol col="12" sm="6" lg="4">
+        <CWidgetIcon
+           header="63"
+           text="TAMAMLANAN İŞ (AYLIK)"
+          color="warning"
+          :icon-padding="false"
+        >
+          <CIcon name="cil-moon" class="mx-2 " width="24"/>
+          <template #footer>
+            <CCardFooter class="card-footer px-3 py-2">
+              <CLink
+                class="font-weight-bold font-xs btn-block text-muted"
+                href="https://coreui.io/"
+              >
+                View more
+                <CIcon name="cil-arrowRight" class="float-right" width="16"/>
+              </CLink>
+            </CCardFooter>
+          </template>
+        </CWidgetIcon>
+      </CCol>
+    </CRow>
+
+
+
+</div>
+
+
+
+
 </template>
-
-<script>
-import { CChartLineSimple, CChartBarSimple } from '../charts/index.js'
-
-export default {
-  name: 'WidgetsDropdown',
-  components: { CChartLineSimple, CChartBarSimple },
- 
-  props: {
-  cars: String,
- 
-}
-  
-}
-</script>
