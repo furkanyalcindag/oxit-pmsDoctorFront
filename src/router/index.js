@@ -435,7 +435,7 @@ function configRoutes() {
                             component: CheckingAccountList
                         },
                         {
-                            path: 'checking-account/customer:customerId',
+                            path: 'customer/:customerId',
                             name: 'CheckingAccountByCustomer',
                             component: CheckingAccountByCustomerList
                         },

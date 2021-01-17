@@ -17,7 +17,7 @@ class CheckingAccountService {
 
         };
 
-        return axios.get(process.env.VUE_APP_API_URL + `/car-service/customer-checking-account-api/`, {headers: authHeader(),params})
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/checking-customer-account-api/`, {headers: authHeader(),params})
 
 
     }
