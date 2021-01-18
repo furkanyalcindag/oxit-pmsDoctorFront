@@ -148,6 +148,7 @@ class ServiceService {
     }
 
     ServiceProcessing(uuid, situationNo) {
+        if(situationNo===3)
         return axios.post(process.env.VUE_APP_API_URL + '/car-service/service-processing-api/',
             {
                 uuid: uuid,

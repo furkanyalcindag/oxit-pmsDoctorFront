@@ -136,6 +136,74 @@
     </CModal>
 
 
+
+    <CModal
+        :show.sync="receivingModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        :draggable="false"
+        title="Modal title 2"
+        :backdrop="true"
+        size="s"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="receivingModal">
+              <template>
+                <CCardBody>
+                  <div>
+
+
+                    <CAlert
+                        v-for="(value,key) in errors"
+                        :key="value.message"
+                        color="danger"
+                        :show="isError"
+                    >
+                      {{ key }}: {{ value[0] }}
+                    </CAlert>
+                  </div>
+                  <CRow>
+                    <CCol lg="12">
+                      <CInput
+                          label="Teslim Alan Kişi (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="receivingPerson"
+                          type="text"
+
+                      />
+                    </CCol>
+                  </CRow>
+
+
+                  <CCol lg="2"></CCol>
+
+
+                </CCardBody>
+              </template>
+
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Ödeme Yap</h6>
+        <CButtonClose @click="discountModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="discountModal = false" color="danger">Kapat</CButton>
+        <CButton @click="makeDiscount" color="success">Kaydet</CButton>
+
+      </template>
+    </CModal>
+
+
+
+
+
   </div>
 </template>
 
@@ -235,7 +303,9 @@ export default {
       services: [],
       serviceDetail: null,
       carPlate: '',
-      messages:'dhjksdjhsjkdhjkshdj'
+      messages:'dhjksdjhsjkdhjkshdj',
+      receivingPerson:'',
+      receivingModal:false
     };
   },
 
@@ -388,9 +458,9 @@ export default {
       this.$router.push({name: 'ServiceApprove', params: {serviceId: serviceId}});
     },
 
-    async serviceProcess(serviceId, situationNo) {
+    async serviceProcess(serviceId, situationNo,receivingPerson) {
 
-      let response = await new ServiceService().ServiceProcessing(serviceId, situationNo);
+      let response = await new ServiceService().ServiceProcessing(serviceId, situationNo,receivingPerson);
       //console.log(response)
 
       if (response.status === 200) {
@@ -420,23 +490,30 @@ export default {
 
       } else if (functionName === 'serviceGetProcess') {
 
-        this.serviceProcess(serviceId,1)
+        this.serviceProcess(serviceId,1,"")
 
       }
       else if (functionName === 'serviceProcessComplete') {
 
-        this.serviceProcess(serviceId,2)
+        this.serviceProcess(serviceId,2,"")
 
       }
 
       else if (functionName === 'serviceDeliver') {
 
-        this.serviceProcess(serviceId,3)
+        this.receivingModal=true
+        //this.serviceProcess(serviceId,3,this.receivingPerson)
+        this.serviceProcessDeliver(serviceId,this.receivingPerson)
 
       }
 
 
 
+    },
+
+    serviceProcessDeliver(serviceId,receivingPerson){
+      this.serviceProcess(serviceId,3,receivingPerson)
+      this.receivingPerson=''
     }
 
 
@@ -449,9 +526,7 @@ export default {
 
   },
   mounted() {
-    console.log("546546")
 
-    console.log("546546")
     this.getServiceList()
     this.intervalFetchData()
 
