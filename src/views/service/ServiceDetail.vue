@@ -508,7 +508,9 @@ export default {
         taxRate: this.serviceDetail.laborTaxRate,
         totalProduct: (parseFloat(this.serviceDetail.laborPrice) + (parseFloat(this.serviceDetail.laborPrice) * parseFloat(this.serviceDetail.laborTaxRate) / 100)).toFixed(2)
       };
-      this.serviceProducts.push(my_object)
+
+      if (my_object.name!=null)
+        this.serviceProducts.push(my_object)
 
 
       this.carPlate = responsePlate.data.profile.firmName + '-' + responsePlate.data.profile.user.first_name + ' ' + responsePlate.data.profile.user.last_name
