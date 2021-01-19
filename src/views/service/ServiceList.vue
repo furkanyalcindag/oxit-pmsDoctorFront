@@ -2,6 +2,10 @@
   <div>
 
     <CRow>
+
+      <video id="test_video" controls autoplay>
+        <source src="rtsp://uzak:atakul1453@85.105.9.65:554/1/1">
+      </video>
       <CCol lg="12">
         <transition name="fade">
           <CCard v-if="show">
