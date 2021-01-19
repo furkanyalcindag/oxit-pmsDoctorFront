@@ -147,22 +147,42 @@ class ServiceService {
 
     }
 
-    ServiceProcessing(uuid, situationNo) {
-        if(situationNo===3)
-        return axios.post(process.env.VUE_APP_API_URL + '/car-service/service-processing-api/',
-            {
-                uuid: uuid,
-                situationNo: situationNo,
+    ServiceProcessing(uuid, situationNo, receiverPerson) {
+        if (situationNo === 3) {
+
+            return axios.post(process.env.VUE_APP_API_URL + '/car-service/service-processing-api/',
+                {
+                    uuid: uuid,
+                    situationNo: situationNo,
+                    receiverPerson: receiverPerson
 
 
-            }, {headers: authHeader()}).then(response => {
+                }, {headers: authHeader()}).then(response => {
 
 
-            return response;
-        }).catch(error => {
-            console.log("hata", error)
-            return error
-        });
+                return response;
+            }).catch(error => {
+                console.log("hata", error)
+                return error
+            });
+
+
+        } else {
+            return axios.post(process.env.VUE_APP_API_URL + '/car-service/service-processing-api/',
+                {
+                    uuid: uuid,
+                    situationNo: situationNo,
+
+
+                }, {headers: authHeader()}).then(response => {
+
+
+                return response;
+            }).catch(error => {
+                console.log("hata", error)
+                return error
+            });
+        }
 
 
     }

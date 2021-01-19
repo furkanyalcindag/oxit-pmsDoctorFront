@@ -71,7 +71,10 @@
                                   Tespit: {{ serviceDetail.description }}
                                 </h6>
                                 <hr>
-
+                                <h6>
+                                  Teslim Edilen Kişi: {{ serviceDetail.receiverPerson }}
+                                </h6>
+                                <hr>
 
                               </CCol>
 
@@ -509,7 +512,7 @@ export default {
         totalProduct: (parseFloat(this.serviceDetail.laborPrice) + (parseFloat(this.serviceDetail.laborPrice) * parseFloat(this.serviceDetail.laborTaxRate) / 100)).toFixed(2)
       };
 
-      if (my_object.name!=null)
+      if (my_object.name != null)
         this.serviceProducts.push(my_object)
 
 

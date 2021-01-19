@@ -28,8 +28,10 @@
                     :fields="fieldsTable"
                     column-filter
                     :border="true"
-                    :items-per-page="5"
+                    :items-per-page="10"
                     :activePage="4"
+                    :footer="true"
+
                     hover
                     sorter
                     pagination
@@ -190,12 +192,12 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Ödeme Yap</h6>
-        <CButtonClose @click="discountModal = false" class="text-white"/>
+        <h6 class="modal-title">Teslim Et</h6>
+        <CButtonClose @click="receivingModal = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="discountModal = false" color="danger">Kapat</CButton>
-        <CButton @click="makeDiscount" color="success">Kaydet</CButton>
+        <CButton @click="receivingModal = false" color="danger">Kapat</CButton>
+        <CButton @click="serviceProcessDeliver(serviceId,receivingPerson)" color="success">Kaydet</CButton>
 
       </template>
     </CModal>
@@ -305,7 +307,8 @@ export default {
       carPlate: '',
       messages:'dhjksdjhsjkdhjkshdj',
       receivingPerson:'',
-      receivingModal:false
+      receivingModal:false,
+      serviceId:''
     };
   },
 
@@ -467,6 +470,7 @@ export default {
         this.isSuccess = true
         this.successHide()
         await this.getServiceList()
+        this.receivingModal=false
       }
 
     },
@@ -501,9 +505,11 @@ export default {
 
       else if (functionName === 'serviceDeliver') {
 
+        this.serviceId = serviceId
         this.receivingModal=true
         //this.serviceProcess(serviceId,3,this.receivingPerson)
-        this.serviceProcessDeliver(serviceId,this.receivingPerson)
+
+        //this.serviceProcessDeliver(serviceId,this.receivingPerson)
 
       }
 

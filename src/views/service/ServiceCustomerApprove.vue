@@ -68,6 +68,10 @@
                                   Tespit: {{serviceDetail.description}}
                                 </h6>
                                 <hr>
+                                <h6>
+                                  Teslim Edilen Kişi: {{ serviceDetail.receiverPerson }}
+                                </h6>
+                                <hr>
 
 
                               </CCol>
