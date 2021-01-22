@@ -10,7 +10,7 @@
                 <CCol lg="3" class="text-left mt-3">
                   <h2>Ürünler</h2>
 
-                  </CCol>
+                </CCol>
                 <CCol lg="9" class="text-right mt-3">
                   <CButton color="success" @click="addProductModal">
                     <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>&nbsp;Ürün Ekle
@@ -45,7 +45,7 @@
 
                   <template #productImage="{ item, index }">
                     <td class="py-2">
-                      <img :src="item.productImage" width="50px" alt="" />
+                      <img :src="item.productImage" width="50px" alt=""/>
                     </td>
                   </template>
                   <template #actions="{ item, index }">
@@ -53,7 +53,7 @@
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
                         <CButton color="danger">Sil</CButton>
-                        <CButton color="warning" @click="updateCategoryModal(item.id)">Güncelle</CButton>
+                        <CButton color="warning" @click="getSingleProduct(item.uuid)">Güncelle</CButton>
                       </CButtonGroup>
 
 
@@ -97,14 +97,14 @@
                       Ürün başarıyla kaydedildi.
                     </CAlert>
 
-                     <CAlert
-                      v-for="(value,key) in errorsCar"
-                      :key="value.message"
-                      color="danger"
-                      :show="isError"
-                  >
-                    {{ key }}: {{ value[0] }}
-                  </CAlert>
+                    <CAlert
+                        v-for="(value,key) in errorsCar"
+                        :key="value.message"
+                        color="danger"
+                        :show="isError"
+                    >
+                      {{ key }}: {{ value[0] }}
+                    </CAlert>
                   </div>
 
 
@@ -116,8 +116,8 @@
                           label="Ürün Kodu (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="product.barcode_number"
-                          
+                          v-model="product.barcodeNumber"
+
 
                       />
                       <CInput
@@ -202,7 +202,6 @@
                       />
 
 
-
                     </CCol>
 
 
@@ -225,6 +224,158 @@
         <CButton @click="addProduct()" color="success">Kaydet</CButton>
       </template>
     </CModal>
+
+
+
+
+
+    <CModal
+        :show.sync="showUpdateProduct"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="showUpdateProduct">
+              <template>
+                <CCardBody>
+                  <div>
+                    <CAlert color="success" :show="isSuccessCar">
+                      Ürün başarıyla kaydedildi.
+                    </CAlert>
+
+                    <CAlert
+                        v-for="(value,key) in errorsCar"
+                        :key="value.message"
+                        color="danger"
+                        :show="isError"
+                    >
+                      {{ key }}: {{ value[0] }}
+                    </CAlert>
+                  </div>
+
+
+                  <CRow>
+
+
+                    <CCol lg="6">
+                      <CInput
+                          label="Ürün Kodu (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.barcodeNumber"
+
+
+                      />
+                      <CInput
+                          label="Ürün Adı (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.name"
+
+                      />
+
+                      <CInput
+                          label="Alış Fiyatı (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.purchasePrice"
+                          type="number"
+
+                      />
+
+                      <CInput
+                          label="Satış Fiyatı (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.netPrice"
+                          type="number"
+
+                      />
+                      <CInput
+                          label="KDV Oranı(%) (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.taxRate"
+                          type="number"
+
+                      />
+
+
+                    </CCol>
+                    <CCol lg="6">
+                      <CSelect
+                          :options="selectCategories"
+                          label="Üst Kategori (Zorunlu Alan)"
+                          v-model="product.categories"
+                          :value.sync="product.categories"
+
+                      />
+
+
+                      <CSelect
+                          :options="selectBrands"
+                          label="Marka (Zorunlu Alan)"
+                          v-model="product.brand"
+                          :value.sync="product.brand"
+
+                      />
+
+                      <CInput
+                          label="Stok (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.quantity"
+                          type="number"
+
+
+                      />
+
+                      <CInput
+                          label="Raf Numarası"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="product.shelf"
+
+                      />
+                      <CInputFile
+                          label="Resim Ekle"
+                          horizontal
+                          @change="getBase64"
+                          custom
+                          multiple
+                          :placeholder="selectedFile"
+
+                      />
+
+
+                    </CCol>
+
+
+                  </CRow>
+
+
+                </CCardBody>
+              </template>
+
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Ürün Güncelle</h6>
+        <CButtonClose @click="showUpdateProduct = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="showUpdateProduct = false" color="danger">Kapat</CButton>
+        <CButton @click="updateProduct()" color="success">Güncelle</CButton>
+      </template>
+    </CModal>
+
 
 
   </div>
@@ -258,6 +409,7 @@ export default {
         {key: 'barcodeNumber', label: "Barkod", _style: "min-width:100px"},
         {key: 'shelf', label: "Raf", _style: "min-width:100px"},
         {key: "name", label: "Ürün Adı"},
+        {key: "quantity", label: "Adet"},
         {key: "brandName", label: "Marka"},
         {key: "purchasePrice", label: "Alış Fiyatı"},
         {key: "netPrice", label: "Net Fiyat"},
@@ -277,10 +429,10 @@ export default {
       pagination: {external: true},
       categories: [],
       selectCategories: [],
-      selectBrands :[],
+      selectBrands: [],
       categoryUpdateModal: false,
       showUpdateCategory: true,
-      product: new Product("", "", "", "", "", "", "", "", "", "","","",""),
+      product: new Product("", "", "", "", "", "", "", "", "", "", "", "", ""),
       products: [],
       category: new Category("", "", "0"),
       categoryUpdate: new Category("", "", "0"),
@@ -326,7 +478,8 @@ export default {
         "Radios - custom",
         "Inline Radios - custom",
       ],
-      showAddProduct: false
+      showAddProduct: false,
+      showUpdateProduct:false
     };
   },
 
@@ -382,7 +535,7 @@ export default {
 
     async addProduct() {
 
-      console.log("deneme", this.product)
+
 
       this.product.isOpen = true
 
@@ -394,7 +547,7 @@ export default {
         this.showAddProduct = false;
         this.successHide();
         this.getProducts();
-
+        this.product = new Product()
       } else if (productResponse.response.status === 401) {
         this.isError = false;
         this.isError = true;
@@ -406,6 +559,49 @@ export default {
         this.errorsCar = productResponse.response.data;
         this.errorHide();
       }
+
+
+    },
+
+    async updateProduct() {
+
+
+
+      this.product.isOpen = true
+
+      let productResponse = await new ProductService().updateProduct(this.product);
+
+      if (productResponse.status === 200) {
+        this.isSuccess = false;
+        this.isSuccess = true;
+        this.showUpdateProduct = false;
+        this.successHide();
+        this.getProducts();
+        this.product = new Product()
+      } else if (productResponse.response.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        this.errorsCar = productResponse.response.data;
+        this.errorHide();
+      }
+
+
+    },
+
+    async getSingleProduct(uuid) {
+
+
+      let response = await new ProductService().getProduct(uuid);
+      console.log(response.data)
+
+      this.product = response.data
+      console.log("product",this.product)
+      this.showUpdateProduct = true
 
     },
 
@@ -445,6 +641,7 @@ export default {
       this.showAddProduct = true
     },
 
+
     errorHide() {
       setTimeout(() => (this.isError = false), 5000);
     },
@@ -478,7 +675,7 @@ export default {
       axios.get(process.env.VUE_APP_API_URL + "/car-service/product-api/", {headers: authHeader()})
           .then(res => {
             this.products = res.data;
-            console.log("ürünler",this.products)
+            console.log("ürünler", this.products)
             this.total = res.data.recordsTotal;
             this.numberOfPages = 2;
 
@@ -549,11 +746,11 @@ export default {
     computedItemsProduct() {
 
       return this.products.map(item => {
-         console.log("item",item)
+        console.log("item", item)
         return {
           ...item,
 
-           brandName: item.brand!=null?item.brand.name:"",
+          brandName: item.brand != null ? item.brand.name : "",
 
 
         }

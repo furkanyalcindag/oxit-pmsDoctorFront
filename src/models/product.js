@@ -1,7 +1,7 @@
 export default class Product {
-    constructor(name, barcode_number, uuid, quantity, netPrice, isOpen, totalProduct, taxRate, categories, productImages, shelf, purchasePrice, brand) {
+    constructor(name, barcodeNumber, uuid, quantity, netPrice, isOpen, totalProduct, taxRate, categories, productImages, shelf, purchasePrice, brand) {
         this.name = name;
-        this.barcode_number = barcode_number;
+        this.barcodeNumber = barcodeNumber;
         this.uuid = uuid
         this.quantity = quantity
         this.isOpen = isOpen

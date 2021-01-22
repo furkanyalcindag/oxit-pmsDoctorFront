@@ -391,7 +391,7 @@
                           label="Barkod Numarası"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="product.barcode_number"
+                          v-model="product.barcodeNumber"
 
                       />
                       <CInput
