@@ -80,6 +80,13 @@
                         :value.sync="service.serviceman"
 
                     />
+                    <CSelect
+                        :options="cameras"
+                        label="Kamera"
+                        v-model="service.camera"
+                        :value.sync="service.camera"
+
+                    />
 
 
                   </CCol>
@@ -216,6 +223,7 @@ export default {
       pagination: {external: true},
       servicemen: [],
       cars: [],
+      cameras:[],
 
       service: new Service(),
       customer: new Customer("", "", "", "", "", "", "", ""),
@@ -336,6 +344,12 @@ export default {
       this.servicemen = response.data
     },
 
+    async getCamerasSelect() {
+      let response = await new ServiceService().getServiceCameraSelect();
+
+      this.cameras = response.data
+    },
+
     async getCar() {
       let response = await new CarService().getCarApi(this.$route.params.carId);
 
@@ -396,6 +410,7 @@ export default {
     this.getServicemanSelect()
     this.getCar()
     this.getCarServices()
+    this.getCamerasSelect()
     console.log(this.$route.params.carId)
 
 

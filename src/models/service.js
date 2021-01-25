@@ -1,7 +1,7 @@
 export default class Service {
 
 
-    constructor(carUUID, serviceType, serviceKM, complaint, serviceSituation, responsiblePerson, creationDate, serviceman) {
+    constructor(carUUID, serviceType, serviceKM, complaint, serviceSituation, responsiblePerson, creationDate, serviceman,camera) {
 
         this.carUUID = carUUID
         this.serviceType = serviceType
@@ -11,6 +11,8 @@ export default class Service {
         this.responsiblePerson = responsiblePerson
         this.creationDate = creationDate
         this.serviceman = serviceman
+        this.camera = camera
+
     }
 
 

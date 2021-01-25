@@ -209,6 +209,54 @@
 
 
 
+    <CModal
+        :show.sync="cameraModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        :draggable="false"
+        title="Modal title 2"
+        :backdrop="true"
+        size="s"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="cameraModal">
+              <template>
+                <CCardBody>
+
+                  <CRow>
+                    <CCol lg="12">
+                      {{camera}}
+                    </CCol>
+                  </CRow>
+
+
+                  <CCol lg="2"></CCol>
+
+
+                </CCardBody>
+              </template>
+
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Teslim Et</h6>
+        <CButtonClose @click="receivingModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="receivingModal = false" color="danger">Kapat</CButton>
+        <CButton @click="serviceProcessDeliver(serviceId,receivingPerson)" color="success">Kaydet</CButton>
+
+      </template>
+    </CModal>
+
+
+
+
 
   </div>
 </template>
@@ -312,7 +360,9 @@ export default {
       messages:'dhjksdjhsjkdhjkshdj',
       receivingPerson:'',
       receivingModal:false,
-      serviceId:''
+      serviceId:'',
+      cameraModal:false,
+      camera:''
     };
   },
 

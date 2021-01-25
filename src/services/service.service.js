@@ -147,6 +147,12 @@ class ServiceService {
 
     }
 
+    getServiceCameraSelect() {
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/camera-select-api/`, {headers: authHeader()})
+
+
+    }
+
     ServiceProcessing(uuid, situationNo, receiverPerson) {
         if (situationNo === 3) {
 
