@@ -6,6 +6,9 @@
       <!--<video id="test_video" controls autoplay>
         <source src="rtsp://uzak:atakul1453@85.105.9.65:554/1/1">
       </video>-->
+      <!--<video id="test_video" controls autoplay>
+        <source src="rtsp://uzak:Atakul1453@85.105.9.65:554/6/2">
+      </video>-->
       <CCol lg="12">
         <transition name="fade">
           <CCard v-if="show">
@@ -208,7 +211,6 @@
 
 
 
-
     <CModal
         :show.sync="cameraModal"
         :no-close-on-backdrop="true"
@@ -216,7 +218,7 @@
         :draggable="false"
         title="Modal title 2"
         :backdrop="true"
-        size="s"
+        size="lg"
         color="dark"
     >
       <CRow>
@@ -228,7 +230,11 @@
 
                   <CRow>
                     <CCol lg="12">
-                      {{camera}}
+
+
+                      <iframe width="640" height="480" v-bind:src="this.camera" frameborder="0" allowfullscreen></iframe>
+
+
                     </CCol>
                   </CRow>
 
@@ -244,19 +250,15 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Teslim Et</h6>
-        <CButtonClose @click="receivingModal = false" class="text-white"/>
+        <h6 class="modal-title">İzle</h6>
+        <CButtonClose @click="cameraModal = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="receivingModal = false" color="danger">Kapat</CButton>
-        <CButton @click="serviceProcessDeliver(serviceId,receivingPerson)" color="success">Kaydet</CButton>
+        <CButton @click="cameraModal = false" color="danger">Kapat</CButton>
+
 
       </template>
     </CModal>
-
-
-
-
 
   </div>
 </template>
@@ -507,6 +509,15 @@ export default {
       this.$router.push({name: 'ServiceDetermination', params: {serviceId: serviceId}});
     },
 
+    async goWatchCamera(serviceId){
+      let cameraRes = await new ServiceService().getServiceCamera(serviceId)
+
+      console.log("camera",cameraRes)
+      this.camera = cameraRes.data.camera
+
+      this.cameraModal=true
+    },
+
     goServiceDetail(serviceId) {
       this.$router.push({name: 'ServiceDetail', params: {serviceId: serviceId}});
     },
@@ -557,6 +568,7 @@ export default {
 
       }
 
+
       else if (functionName === 'serviceDeliver') {
 
         this.serviceId = serviceId
@@ -564,6 +576,12 @@ export default {
         //this.serviceProcess(serviceId,3,this.receivingPerson)
 
         //this.serviceProcessDeliver(serviceId,this.receivingPerson)
+
+      }
+
+      else if (functionName === 'goWatchCamera') {
+
+        this.goWatchCamera(serviceId)
 
       }
 

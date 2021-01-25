@@ -12,7 +12,8 @@ class ServiceService {
                 serviceKM: service.serviceKM,
                 complaint: service.complaint,
                 responsiblePerson: service.responsiblePerson,
-                serviceman: service.serviceman
+                serviceman: service.serviceman,
+                camera:service.camera
 
 
             }, {headers: authHeader()}).then(response => {
@@ -36,6 +37,17 @@ class ServiceService {
 
     getServiceType() {
         return axios.get(process.env.VUE_APP_API_URL + `/car-service/service-type-select-api/`, {headers: authHeader()})
+
+
+    }
+
+    getServiceCamera(id) {
+        const params = {
+            uuid: id
+
+        };
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-camera-api/`, {headers: authHeader(),
+        params})
 
 
     }

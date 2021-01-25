@@ -28,7 +28,7 @@
                     :fields="fieldsTable"
                     column-filter
                     :border="true"
-                    :items-per-page="5"
+                    :items-per-page="10"
                     :activePage="4"
                     hover
                     sorter
