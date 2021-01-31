@@ -110,7 +110,7 @@
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
                         <CButton color="danger">Sil</CButton>
-                        <CButton color="warning" @click="updateCategoryModal(item.id)">Güncelle</CButton>
+                        <CButton color="warning" @click="getSingleBrand(item.id)">Güncelle</CButton>
                       </CButtonGroup>
 
 
@@ -135,6 +135,74 @@
     </CRow>
 
 
+    <CModal
+        :show.sync="showUpdateBrand"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="showUpdateBrand">
+              <template>
+                <CCardBody>
+                  <div>
+                    <CAlert color="success" :show="isSuccessCar">
+                      Marka kaydedildi.
+                    </CAlert>
+
+                    <CAlert
+                        v-for="(value,key) in errorsCar"
+                        :key="value.message"
+                        color="danger"
+                        :show="isError"
+                    >
+                      {{ key }}: {{ value[0] }}
+                    </CAlert>
+                  </div>
+
+
+                  <CRow>
+
+
+                    <CCol lg="12">
+                      <CInput
+                          label="Marka Adı (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="updateBrand.name"
+
+
+                      />
+
+
+                    </CCol>
+
+
+                  </CRow>
+
+
+                </CCardBody>
+              </template>
+
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Marka Güncelle</h6>
+        <CButtonClose @click="showUpdateBrand = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="showUpdateBrand = false" color="danger">Kapat</CButton>
+        <CButton @click="updateBrands()" color="success">Güncelle</CButton>
+      </template>
+    </CModal>
+
+
   </div>
 </template>
 
@@ -149,8 +217,7 @@ import Category from "@/models/category";
 import CategoryService from "@/services/category.service";
 import Brand from "@/models/brand";
 import BrandService from "@/services/brand.service";
-
-
+import ProductService from "@/services/product.service";
 
 
 export default {
@@ -179,6 +246,7 @@ export default {
       showUpdateCategory: true,
       category: new Category("", "", "0"),
       brand: new Brand("", ""),
+      updateBrand: new Brand("", ""),
       categoryUpdate: new Category("", "", "0"),
       isSuccess: false,
       isSuccessCar: false,
@@ -193,6 +261,7 @@ export default {
       collapseDuration: 0,
       darkModal: false,
       carModal: false,
+      showUpdateBrand: false,
       show: true,
       showAddCar: true,
       horizontal: {label: "col-3", input: "col-9"},
@@ -298,13 +367,49 @@ export default {
       }
     },
 
-    updateCategoryModal(categoryId) {
+    updateCa(categoryId) {
 
 
       this.categoryUpdateModal = true
       this.categoryUpdate.id = categoryId
       this.categoryUpdate.parent = 5
 
+
+    },
+
+    async updateBrands() {
+
+      console.log(this.updateBrand)
+      let a = await new BrandService().updateBrand(this.updateBrand);
+      console.log("status", a);
+      if (a.status === 200) {
+        this.isSuccess = false;
+        this.isSuccess = true;
+        this.showUpdateBrand = false;
+        this.successHide();
+        await this.getBrands();
+        this.updateBrand = new Brand()
+
+
+      } else if (a.response.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        this.errors = a.response.data["username"];
+        this.errorHide();
+      }
+    },
+
+    async getSingleBrand(id) {
+
+
+      let response = await new BrandService().getBrand(id);
+      this.updateBrand = response.data
+      this.showUpdateBrand = true
 
     },
 
@@ -389,8 +494,8 @@ export default {
   },
   async mounted() {
     await this.getBrands()
-    await this.getCategories();
-    await this.getSelectCategories();
+    //await this.getCategories();
+    //await this.getSelectCategories();
 
   },
   computed: {
