@@ -24,6 +24,36 @@ class CategoryService {
 
     }
 
+    categoryUpdate(category) {
+
+        const params = {
+            id: category.id
+
+        };
+
+
+        return axios.put(process.env.VUE_APP_API_URL + '/car-service/category-api/',
+            {
+
+                name: category.name,
+                parent : category.parent
+
+            }, {
+                headers: authHeader(),
+                params
+            }).then(response => {
+            console.log(response)
+
+
+            return response;
+        }).catch(error => {
+            console.log("hata", error)
+            return error
+        });
+
+
+    }
+
 
 }
 
