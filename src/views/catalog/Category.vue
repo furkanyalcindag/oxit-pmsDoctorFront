@@ -67,7 +67,6 @@
                         :value.sync="category.parent"
 
 
-
                     />
 
 
@@ -124,7 +123,7 @@
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
                         <CButton color="danger">Sil</CButton>
-                        <CButton color="warning" @click="updateCategoryModal(item.id)" >Güncelle</CButton>
+                        <CButton color="warning" @click="updateCategoryModal(item.id)">Güncelle</CButton>
                       </CButtonGroup>
 
 
@@ -149,7 +148,6 @@
     </CRow>
 
 
-
     <CModal
         :show.sync="categoryUpdateModal"
         :no-close-on-backdrop="true"
@@ -161,7 +159,7 @@
       <CRow>
         <CCol lg="12">
           <transition name="fade">
-            <CCard v-if="showUpdateCategory">
+            <CCard v-if="categoryUpdateModal">
               <template>
                 <CCardBody>
 
@@ -184,48 +182,42 @@
                   <CRow>
 
 
-                     <CCol lg="5">
-                    <CInput
-                        label="Kategori Adı"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="categoryUpdate.name"
+                    <CCol lg="5">
+                      <CInput
+                          label="Kategori Adı"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="categoryUpdate.name"
 
-                    />
-
-
-                  </CCol>
-
-                  <CCol lg="5">
-                    <CSelect
-                        :options="selectCategories"
-                        label="Üst Kategori"
-                        v-model="categoryUpdate.parent"
-                        :value.sync="categoryUpdate.parent"
+                      />
 
 
+                    </CCol>
 
-                    />
-
-
-                  </CCol>
-
-                  <CCol lg="2">
-
-                    <div class="form-actions" style="margin-top: 29px">
-                      <CButton type="submit" color="primary" @click="addCategory"
-                      >Kaydet
-                      </CButton>
-
-                    </div>
+                    <CCol lg="5">
+                      <CSelect
+                          :options="selectCategories"
+                          label="Üst Kategori"
+                          v-model="categoryUpdate.parent"
+                          :value.sync="categoryUpdate.parent"
 
 
-                  </CCol>
+                      />
 
 
+                    </CCol>
+
+                    <CCol lg="2">
+
+                      <div class="form-actions" style="margin-top: 29px">
+                        <CButton type="submit" color="primary" @click="addCategory"
+                        >Kaydet
+                        </CButton>
+
+                      </div>
 
 
-
+                    </CCol>
 
 
                   </CRow>
@@ -246,16 +238,6 @@
         <CButton @click="addCar()" color="success">Kaydet</CButton>
       </template>
     </CModal>
-
-
-
-
-
-
-
-
-
-
 
 
   </div>
@@ -294,12 +276,12 @@ export default {
       pagination: {external: true},
       categories: [],
       selectCategories: [],
-      categoryUpdateModal:false,
-      showUpdateCategory:true,
+      categoryUpdateModal: false,
+      showUpdateCategory: true,
 
 
-      category: new Category("","", "0"),
-      categoryUpdate: new Category("","", "0"),
+      category: new Category("", "", "0"),
+      categoryUpdate: new Category("", "", ""),
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
@@ -369,8 +351,8 @@ export default {
       });
     },
 
-    deneme(){
-      console.log("ghg",this.category)
+    deneme() {
+      console.log("ghg", this.category)
     },
 
     async addCategory() {
@@ -395,12 +377,13 @@ export default {
       }
     },
 
-     updateCategoryModal(categoryId) {
+    async updateCategoryModal(categoryId) {
 
 
-      this.categoryUpdateModal=true
-      this.categoryUpdate.id=categoryId
-      this.categoryUpdate.parent=5
+      let response = await new CategoryService().getCategory(categoryId)
+      this.categoryUpdate = response.data
+      console.log("xxx",this.categoryUpdate)
+      this.categoryUpdateModal = true
 
 
     },
@@ -427,7 +410,7 @@ export default {
     getCategories() {
 
       // get by search keyword
-     // console.log("search", this.search)
+      // console.log("search", this.search)
       //console.log("pagination", this.pagination.page)
       //console.log("pagination", this.pagination.rowsPerPage)
       this.loading = true;

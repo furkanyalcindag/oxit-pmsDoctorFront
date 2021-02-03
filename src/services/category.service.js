@@ -54,6 +54,16 @@ class CategoryService {
 
     }
 
+    getCategory(id) {
+        const params = {
+            id: id
+
+        };
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/category-api/`, {headers: authHeader(), params})
+
+
+    }
+
 
 }
 
