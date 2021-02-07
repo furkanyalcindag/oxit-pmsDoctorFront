@@ -116,6 +116,22 @@ class ProductService {
     }
 
 
+    deleteProduct(id) {
+        const params = {
+            id: id
+
+        };
+        return axios.delete(process.env.VUE_APP_API_URL + `/car-service/product-api/`, {
+            headers: authHeader(),
+            params
+        }).then(response => {
+            console.log(response)
+            return response;
+        })
+
+
+    }
+
 }
 
 export default ProductService

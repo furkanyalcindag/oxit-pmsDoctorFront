@@ -215,6 +215,10 @@
               <template>
                 <CCardBody>
 
+                  <CAlert color="success" :show="isSuccessCarDelete">
+                    Araç başarıyla silindi.
+                  </CAlert>
+
                   <CDataTable
                       :items="computedItemsCar"
                       :fields="fieldsTableCar"
@@ -239,7 +243,7 @@
                           <CButton color="success" @click="goService(item.uuid)">Servis</CButton>
 
                           <CButton color="warning">Güncelle</CButton>
-                          <CButton color="danger">Sil</CButton>
+                          <CButton color="danger" @click="setDeleteModalCar(item.uuid)">Sil</CButton>
                         </CButtonGroup>
 
 
@@ -399,6 +403,28 @@
     </CModal>
 
 
+    <CModal
+        title="Modal title"
+        color="danger"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        :show.sync="deleteModal"
+    >
+      Araç silmek istediğinizden emin misiniz?
+
+
+      <template #header>
+        <h6 class="modal-title">Uyarı</h6>
+        <CButtonClose @click="deleteModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="deleteModal = false" color="danger">Hayır</CButton>
+        <CButton @click="deleteCar" color="success">Evet</CButton>
+      </template>
+
+
+    </CModal>
+
   </div>
 </template>
 
@@ -410,6 +436,7 @@ import axios from "axios";
 import authHeader from "@/services/auth-header";
 import Car from "@/models/car";
 import CarService from "@/services/car.service";
+import CategoryService from "@/services/category.service";
 
 
 export default {
@@ -453,6 +480,9 @@ export default {
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
+      errorsCarDelete:[],
+      isErrorCarDelete:false,
+      isSuccessCarDelete:false,
 
 
       details: [],
@@ -466,6 +496,9 @@ export default {
       showAddCar: true,
       horizontal: {label: "col-3", input: "col-9"},
       options: ["Option 1", "Option 2", "Option 3"],
+      deleteModal:false,
+      deleteId:0,
+      lastCustomerUUid:'',
       selectOptions: [
         "Option 1",
         "Option 2",
@@ -561,6 +594,10 @@ export default {
       setTimeout(() => (this.isSuccess = false), 5000);
       console.log("naber");
     },
+    successHideCarDelete() {
+      setTimeout(() => (this.isSuccessCarDelete = false), 5000);
+      console.log("naber");
+    },
     errorHideCar() {
       setTimeout(() => (this.isErrorCar = false), 5000);
     },
@@ -597,9 +634,57 @@ export default {
       this.loading = false
     },
 
+    setDeleteModalCar(id) {
+
+      this.deleteId = id
+      this.deleteModal = true
+
+    },
+
+    async deleteCar() {
+
+      console.log(this.updateBrand)
+      let a = await new CarService().deleteCar(this.deleteId);
+
+      if (a.status === 200) {
+        this.isSuccessCarDelete = false;
+        this.isSuccessCarDelete = true;
+        this.deleteModal = false;
+        this.successHideCarDelete();
+        await this.getCarPagination(this.lastCustomerUUid);
+
+
+      }else if (a.status === 300) {
+        this.isError = false;
+        this.isError = true;
+        let x = a.data
+        this.errors = x;
+        this.errorHide();
+      }
+      else if (a.status === 204) {
+        this.isError = false;
+        this.isError = true;
+        let x = a.data
+        this.errors = x;
+        this.errorHide();
+      } else if (a.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        this.errors = a.data;
+        this.errorHide();
+      }
+    },
+
+
     getCarPagination(uuid) {
 
       this.darkModal = true
+      this.lastCustomerUUid =uuid
 
       // get by search keyword
       console.log("search", this.search)

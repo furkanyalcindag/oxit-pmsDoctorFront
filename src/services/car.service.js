@@ -11,7 +11,10 @@ class CarService {
 
         };
 
-        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-car-by-id-api/`,  {headers: authHeader(),params})
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-car-by-id-api/`, {
+            headers: authHeader(),
+            params
+        })
 
 
     }
@@ -20,17 +23,17 @@ class CarService {
     carAdd(car) {
         return axios.post(process.env.VUE_APP_API_URL + '/car-service/car-api/',
             {
-                profileUuid : car.profileUuid,
-                plate : car.plate,
-                brand : car.brand,
-                model : car.model,
-                year : car.year,
-                engine : car.engine,
-                oilType : car.oilType,
-                chassisNumber : car.chassisNumber,
-                currentKM : car.currentKM,
-                engineNumber : car.engineNumber,
-                color : car.color
+                profileUuid: car.profileUuid,
+                plate: car.plate,
+                brand: car.brand,
+                model: car.model,
+                year: car.year,
+                engine: car.engine,
+                oilType: car.oilType,
+                chassisNumber: car.chassisNumber,
+                currentKM: car.currentKM,
+                engineNumber: car.engineNumber,
+                color: car.color
 
             }, {headers: authHeader()}).then(response => {
             console.log(response)
@@ -44,5 +47,32 @@ class CarService {
 
 
     }
+
+    deleteCar(id) {
+        const params = {
+            id: id
+
+        };
+        return axios.delete(process.env.VUE_APP_API_URL + `/car-service/car-api/`, {
+            headers: authHeader(),
+            params
+        }).then(response => {
+            console.log(response)
+            return response;
+        }).catch((err) => {
+            if (err.response) {
+                console.log("resp", err.response)
+                return err.response
+            } else if (err.request) {
+                // client never received a response, or request never left
+                console.log("req", err.request)
+            } else {
+                // anything else
+            }
+        })
+
+
+    }
 }
-export default  CarService
+
+export default CarService

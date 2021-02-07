@@ -32,7 +32,7 @@
                     :fields="fieldsTableProduct"
                     column-filter
                     :border="true"
-                    :items-per-page="5"
+                    :items-per-page="20"
                     :activePage="4"
                     hover
                     sorter
@@ -52,7 +52,7 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton color="danger">Sil</CButton>
+                        <CButton color="danger" @click="setDeleteModal(item.uuid)">Sil</CButton>
                         <CButton color="warning" @click="getSingleProduct(item.uuid)">Güncelle</CButton>
                       </CButtonGroup>
 
@@ -226,9 +226,6 @@
     </CModal>
 
 
-
-
-
     <CModal
         :show.sync="showUpdateProduct"
         :no-close-on-backdrop="true"
@@ -377,6 +374,26 @@
     </CModal>
 
 
+    <CModal
+        title="Modal title"
+        color="danger"
+        :show.sync="deleteModel"
+    >
+      Ürünü silmek istediğinizden emin misiniz?
+
+
+      <template #header>
+        <h6 class="modal-title">Uyarı</h6>
+        <CButtonClose @click="deleteModel = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
+        <CButton @click="deleteProduct" color="success">Evet</CButton>
+      </template>
+
+
+    </CModal>
+
 
   </div>
 </template>
@@ -394,6 +411,8 @@ import Product from "@/models/product";
 import {freeSet} from '@coreui/icons'
 import ProductService from "@/services/product.service";
 import product from "@/models/product";
+import BrandService from "@/services/brand.service";
+import Brand from "@/models/brand";
 
 export default {
   name: "ProductList",
@@ -446,7 +465,8 @@ export default {
       details: [],
       errors: [],
       errorsCar: [],
-
+      deleteId: 0,
+      deleteModel: false,
       collapseDuration: 0,
       darkModal: false,
       carModal: false,
@@ -479,7 +499,7 @@ export default {
         "Inline Radios - custom",
       ],
       showAddProduct: false,
-      showUpdateProduct:false
+      showUpdateProduct: false
     };
   },
 
@@ -532,9 +552,45 @@ export default {
       this.product.productImages = x
     }
     ,
+    setDeleteModal(id) {
 
+      this.deleteId = id
+      this.deleteModel = true
+
+    },
+
+    async deleteProduct() {
+
+      console.log(this.updateBrand)
+      let a = await new ProductService().deleteProduct(this.deleteId);
+      console.log("statusDelete", a);
+      if (a.status === 200) {
+        this.isSuccess = false;
+        this.isSuccess = true;
+        this.deleteModel = false;
+        this.successHide();
+        await this.getProducts();
+
+
+      } else if (a.status === 204) {
+        this.isError = false;
+        this.isError = true;
+        let x = [{'1': 'Bu ürün, kaydedilen bir ürünle ilişkili olduğu için silinemez'}]
+        this.errors = x;
+        this.errorHide();
+      } else if (a.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        this.errors = a.data;
+        this.errorHide();
+      }
+    },
     async addProduct() {
-
 
 
       this.product.isOpen = true
@@ -548,7 +604,7 @@ export default {
         this.successHide();
         this.getProducts();
         this.product = new Product()
-      } else if (productResponse.response.status === 401) {
+      } else if (productResponse.status === 401) {
         this.isError = false;
         this.isError = true;
         this.errorHide();
@@ -564,7 +620,6 @@ export default {
     },
 
     async updateProduct() {
-
 
 
       this.product.isOpen = true
@@ -600,7 +655,7 @@ export default {
       console.log(response.data)
 
       this.product = response.data
-      console.log("product",this.product)
+      console.log("product", this.product)
       this.showUpdateProduct = true
 
     },

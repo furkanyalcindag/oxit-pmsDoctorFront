@@ -35,13 +35,15 @@
                     Marka başarıyla kaydedildi.
                   </CAlert>
 
+
                   <CAlert
-                      v-for="item in errors"
-                      :key="item.message"
+                      v-for="(value,key) in errors"
+                      :key="value.message"
                       color="danger"
                       :show="isError"
                   >
-                    E-mail: {{ item }}
+                 {{ value }}
+
                   </CAlert>
                 </div>
                 <CRow></CRow>
@@ -95,7 +97,7 @@
                     :fields="fieldsTableBrands"
                     column-filter
                     :border="true"
-                    :items-per-page="5"
+                    :items-per-page="10"
                     :activePage="4"
                     hover
                     sorter
@@ -109,7 +111,7 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton color="danger">Sil</CButton>
+                        <CButton color="danger" @click="setDeleteModal(item.id)">Sil</CButton>
                         <CButton color="warning" @click="getSingleBrand(item.id)">Güncelle</CButton>
                       </CButtonGroup>
 
@@ -203,6 +205,27 @@
     </CModal>
 
 
+    <CModal
+        title="Modal title"
+        color="danger"
+        :show.sync="deleteModel"
+    >
+      Markayı silmek istediğinizden emin misiniz?
+
+
+      <template #header>
+        <h6 class="modal-title">Uyarı</h6>
+        <CButtonClose @click="deleteModel = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
+        <CButton @click="deleteBrand" color="success">Evet</CButton>
+      </template>
+
+
+    </CModal>
+
+
   </div>
 </template>
 
@@ -265,6 +288,8 @@ export default {
       show: true,
       showAddCar: true,
       horizontal: {label: "col-3", input: "col-9"},
+      deleteId: 0,
+      deleteModel: false,
 
       selectOptions: [
         "Option 1",
@@ -362,7 +387,8 @@ export default {
       } else {
         this.isError = false;
         this.isError = true;
-        this.errors = a.response.data["username"];
+
+        this.errors = a.response.data;
         this.errorHide();
       }
     },
@@ -391,7 +417,7 @@ export default {
         this.updateBrand = new Brand()
 
 
-      } else if (a.response.status === 401) {
+      } else if (a.status === 401) {
         this.isError = false;
         this.isError = true;
         this.errorHide();
@@ -404,12 +430,53 @@ export default {
       }
     },
 
+    async deleteBrand() {
+
+      console.log(this.updateBrand)
+      let a = await new BrandService().deleteBrand(this.deleteId);
+      console.log("statusDelete", a);
+      if (a.status === 200) {
+        this.isSuccess = false;
+        this.isSuccess = true;
+        this.deleteModel = false;
+        this.successHide();
+        await this.getBrands();
+        this.updateBrand = new Brand()
+
+      }  else if (a.status === 204) {
+        this.isError = false;
+        this.isError = true;
+        let x = [{'1':'Bu marka, kaydedilen bir ürünle ilişkili olduğu için silinemez'}]
+        this.errors =x;
+        this.errorHide();
+      }
+
+      else if (a.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        this.errors = a.data;
+        this.errorHide();
+      }
+    },
+
     async getSingleBrand(id) {
 
 
       let response = await new BrandService().getBrand(id);
       this.updateBrand = response.data
       this.showUpdateBrand = true
+
+    },
+
+    setDeleteModal(id) {
+
+      this.deleteId = id
+      this.deleteModel = true
 
     },
 

@@ -36,12 +36,12 @@
                   </CAlert>
 
                   <CAlert
-                      v-for="item in errors"
-                      :key="item.message"
+                      v-for="value in errors"
+                      :key="value.message"
                       color="danger"
                       :show="isError"
                   >
-                    E-mail: {{ item }}
+                    {{ value.value }}
                   </CAlert>
                 </div>
                 <CRow></CRow>
@@ -108,7 +108,7 @@
                     :fields="fieldsTableCategory"
                     column-filter
                     :border="true"
-                    :items-per-page="5"
+                    :items-per-page="20"
                     :activePage="4"
                     hover
                     sorter
@@ -122,7 +122,7 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton color="danger">Sil</CButton>
+                        <CButton color="danger" @click="setDeleteModal(item.id)">Sil</CButton>
                         <CButton color="warning" @click="updateCategoryModal(item.id)">Güncelle</CButton>
                       </CButtonGroup>
 
@@ -235,10 +235,31 @@
       </template>
       <template #footer>
         <CButton @click="categoryUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="addCar()" color="success">Kaydet</CButton>
+        <CButton @click="updateCategory" color="success">Kaydet</CButton>
       </template>
     </CModal>
 
+
+
+    <CModal
+        title="Modal title"
+        color="danger"
+        :show.sync="deleteModal"
+    >
+      Kategoriyi silmek istediğinizden emin misiniz?
+
+
+      <template #header>
+        <h6 class="modal-title">Uyarı</h6>
+        <CButtonClose @click="deleteModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="deleteModal = false" color="danger">Hayır</CButton>
+        <CButton @click="deleteCategory" color="success">Evet</CButton>
+      </template>
+
+
+    </CModal>
 
   </div>
 </template>
@@ -252,6 +273,8 @@ import authHeader from "@/services/auth-header";
 
 import Category from "@/models/category";
 import CategoryService from "@/services/category.service";
+import ProductService from "@/services/product.service";
+import Product from "@/models/product";
 
 
 export default {
@@ -281,10 +304,12 @@ export default {
 
 
       category: new Category("", "", "0"),
-      categoryUpdate: new Category("", "", ""),
+      categoryUpdate: new Category("", "", "0"),
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
+      deleteModal:false,
+      deleteId:0,
 
 
       details: [],
@@ -377,12 +402,82 @@ export default {
       }
     },
 
+    async updateCategory() {
+
+      let categoryResponse = await new CategoryService().categoryUpdate(this.categoryUpdate);
+
+      if (categoryResponse.status === 200) {
+        this.isSuccess = false;
+        this.isSuccess = true;
+        this.categoryUpdateModal = false;
+        this.successHide();
+        this.getCategories();
+        this.categoryUpdate = new Category()
+      } else if (categoryResponse.response.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        this.errors = categoryResponse.response.data;
+        this.errorHide();
+      }
+
+
+    },
+    setDeleteModal(id) {
+
+      this.deleteId = id
+      this.deleteModal = true
+
+    },
+
+    async deleteCategory() {
+
+      console.log(this.updateBrand)
+      let a = await new CategoryService().deleteCategory(this.deleteId);
+      console.log("statusDelete", a);
+      if (a.status === 200) {
+        this.isSuccess = false;
+        this.isSuccess = true;
+        this.deleteModal = false;
+        this.successHide();
+        await this.getCategories();
+
+
+      }else if (a.status === 300) {
+        this.isError = false;
+        this.isError = true;
+        let x = a.data
+        this.errors = x;
+        this.errorHide();
+      }
+      else if (a.status === 204) {
+        this.isError = false;
+        this.isError = true;
+        let x = a.data
+        this.errors = x;
+        this.errorHide();
+      } else if (a.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        this.errors = a.data;
+        this.errorHide();
+      }
+    },
     async updateCategoryModal(categoryId) {
 
 
       let response = await new CategoryService().getCategory(categoryId)
       this.categoryUpdate = response.data
-      console.log("xxx",this.categoryUpdate)
+      console.log("xxx", this.categoryUpdate)
       this.categoryUpdateModal = true
 
 

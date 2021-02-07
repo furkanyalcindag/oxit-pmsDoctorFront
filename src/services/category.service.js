@@ -65,6 +65,33 @@ class CategoryService {
     }
 
 
+    deleteCategory(id) {
+        const params = {
+            id: id
+
+        };
+        return axios.delete(process.env.VUE_APP_API_URL + `/car-service/category-api/`, {
+            headers: authHeader(),
+            params
+        }).then(response => {
+            console.log(response)
+            return response;
+        }).catch((err) => {
+            if (err.response) {
+               console.log("resp",err.response)
+                return err.response
+            } else if (err.request) {
+                // client never received a response, or request never left
+                console.log("req",err.request)
+            } else {
+                // anything else
+            }
+        })
+
+
+    }
+
+
 }
 
 export default CategoryService
