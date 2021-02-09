@@ -408,11 +408,9 @@ import authHeader from "@/services/auth-header";
 import Category from "@/models/category";
 import CategoryService from "@/services/category.service";
 import Product from "@/models/product";
+import product from "@/models/product";
 import {freeSet} from '@coreui/icons'
 import ProductService from "@/services/product.service";
-import product from "@/models/product";
-import BrandService from "@/services/brand.service";
-import Brand from "@/models/brand";
 
 export default {
   name: "ProductList",
@@ -735,83 +733,95 @@ export default {
             this.numberOfPages = 2;
 
           })
-          .catch(err => console.log(err.response.data))
-          .finally(() => this.loading = false);
-      this.loading = false
-    },
-    getSelectCategories() {
-
-      // get by search keyword
-
-      this.loading = true;
-      //const {page, itemsPerPage} = this.options;
-      // let pageNumber = page;
-
-
-      axios.get(process.env.VUE_APP_API_URL + "/car-service/category-select-api/", {headers: authHeader()})
-          .then(res => {
-            this.selectCategories = res.data;
-            console.log("ssa", res)
-
-
-          })
-          .catch(err => console.log(err.response.data))
-          .finally(() => this.loading = false);
-      this.loading = false
-    },
-
-    getSelectBrands() {
-
-      // get by search keyword
-
-      this.loading = true;
-      //const {page, itemsPerPage} = this.options;
-      // let pageNumber = page;
-
-
-      axios.get(process.env.VUE_APP_API_URL + "/car-service/brand-select-api/", {headers: authHeader()})
-          .then(res => {
-            this.selectBrands = res.data;
-            console.log("ssa", res)
-
-
-          })
-          .catch(err => console.log(err.response.data))
-          .finally(() => this.loading = false);
+          .catch(err => {
+            console.log(err.response.data)
+            this.$router.push("/pages/login");
+          }).finally(() => this.loading = false);
       this.loading = false
     },
 
 
+  getSelectCategories() {
+
+    // get by search keyword
+
+    this.loading = true;
+    //const {page, itemsPerPage} = this.options;
+    // let pageNumber = page;
+
+
+    axios.get(process.env.VUE_APP_API_URL + "/car-service/category-select-api/", {headers: authHeader()})
+        .then(res => {
+          this.selectCategories = res.data;
+          console.log("ssa", res)
+
+
+        })
+        .catch(err => console.log(err.response.data))
+        .finally(() => this.loading = false);
+    this.loading = false
   },
 
-  watch: {},
+  getSelectBrands() {
 
-  created() {
+    // get by search keyword
+
+    this.loading = true;
+    //const {page, itemsPerPage} = this.options;
+    // let pageNumber = page;
 
 
+    axios.get(process.env.VUE_APP_API_URL + "/car-service/brand-select-api/", {headers: authHeader()})
+        .then(res => {
+          this.selectBrands = res.data;
+          console.log("ssa", res)
+
+
+        })
+        .catch(err => console.log(err.response.data))
+        .finally(() => this.loading = false);
+    this.loading = false
   },
-  async mounted() {
-    await this.getProducts();
-    await this.getSelectCategories();
-    await this.getSelectBrands()
-
-  },
-  computed: {
-
-    computedItemsProduct() {
-
-      return this.products.map(item => {
-        console.log("item", item)
-        return {
-          ...item,
-
-          brandName: item.brand != null ? item.brand.name : "",
 
 
-        }
-      })
-    }
+},
+
+watch: {
+}
+,
+
+created()
+{
+
+
+}
+,
+async mounted()
+{
+  await this.getProducts();
+  await this.getSelectCategories();
+  await this.getSelectBrands()
+
+}
+,
+computed: {
+
+  computedItemsProduct()
+  {
+
+    return this.products.map(item => {
+      console.log("item", item)
+      return {
+        ...item,
+
+        brandName: item.brand != null ? item.brand.name : "",
+
+
+      }
+    })
   }
+}
 
-};
+}
+;
 </script>

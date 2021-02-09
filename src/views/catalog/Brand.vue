@@ -503,7 +503,14 @@ export default {
       let response = await new BrandService().getBrands();
       console.log(response)
 
-      this.brands = response.data.data
+      if(response.status===200){
+        this.brands = response.data.data
+      }
+      else {
+        await this.$router.push("/pages/login");
+      }
+
+
     },
 
     getCategories() {

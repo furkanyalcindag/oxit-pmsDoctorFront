@@ -240,7 +240,6 @@
     </CModal>
 
 
-
     <CModal
         title="Modal title"
         color="danger"
@@ -273,8 +272,6 @@ import authHeader from "@/services/auth-header";
 
 import Category from "@/models/category";
 import CategoryService from "@/services/category.service";
-import ProductService from "@/services/product.service";
-import Product from "@/models/product";
 
 
 export default {
@@ -308,8 +305,8 @@ export default {
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
-      deleteModal:false,
-      deleteId:0,
+      deleteModal: false,
+      deleteId: 0,
 
 
       details: [],
@@ -447,14 +444,13 @@ export default {
         await this.getCategories();
 
 
-      }else if (a.status === 300) {
+      } else if (a.status === 300) {
         this.isError = false;
         this.isError = true;
         let x = a.data
         this.errors = x;
         this.errorHide();
-      }
-      else if (a.status === 204) {
+      } else if (a.status === 204) {
         this.isError = false;
         this.isError = true;
         let x = a.data
@@ -521,9 +517,12 @@ export default {
             this.numberOfPages = 2;
 
           })
-          .catch(err => console.log(err.response.data))
-          .finally(() => this.loading = false);
+          .catch(err => {
+            console.log(err.response.data)
+            this.$router.push("/pages/login");
+          }).finally(() => this.loading = false);
       this.loading = false
+
     },
     getSelectCategories() {
 
@@ -547,19 +546,23 @@ export default {
     },
 
 
-  },
+  }
+  ,
 
-  watch: {},
+  watch: {}
+  ,
 
   created() {
 
 
-  },
+  }
+  ,
   async mounted() {
     await this.getCategories();
     await this.getSelectCategories();
 
-  },
+  }
+  ,
   computed: {
 
     computedItemsCategory() {
@@ -574,5 +577,6 @@ export default {
     }
   }
 
-};
+}
+;
 </script>

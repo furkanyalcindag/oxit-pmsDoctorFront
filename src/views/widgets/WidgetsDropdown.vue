@@ -75,8 +75,8 @@
     <CRow>
       <CCol sm="6" md="2">
         <CWidgetProgressIcon
-            header="155"
-            text="FİRMA SAYISI"
+            :header="this.dashData.customerCount"
+            text="MÜŞTERİ SAYISI"
             color="info"
             inverse
             :value="100"
@@ -87,17 +87,18 @@
 
       <CCol sm="6" md="2">
         <CWidgetProgressIcon
-            header="385"
+            :header="this.dashData.carCount"
             text="ARAÇ SAYISI"
             color="success"
             inverse
+            :value="100"
         >
           <CIcon :content="$options.freeSet.cilCarAlt"  name="cil-userFollow" height="36"/>
         </CWidgetProgressIcon>
       </CCol>
       <CCol sm="6" md="2">
         <CWidgetProgressIcon
-            header="5"
+            :header="this.dashData.uncompletedServiceCount"
             text="DEVAM EDEN İŞLER"
             color="warning"
             inverse
@@ -107,7 +108,7 @@
       </CCol>
       <CCol sm="6" md="2">
         <CWidgetProgressIcon
-            header="2"
+            :header="this.dashData.waitingApproveServiceCount"
             text="ONAY BEKLEYEN İŞLER"
             color="primary"
             inverse
@@ -117,7 +118,7 @@
       </CCol>
       <CCol sm="6" md="2">
         <CWidgetProgressIcon
-            header="954"
+            :header="this.dashData.productCount"
             text="ÜRÜN SAYISI"
             color="danger"
             inverse
@@ -127,7 +128,7 @@
       </CCol>
       <CCol sm="6" md="2">
         <CWidgetProgressIcon
-            header="15"
+            :header="this.dashData.outOfStockCount"
             text="STOK BİTENLER"
             color="info"
             inverse
@@ -138,49 +139,7 @@
     </CRow>
 
 
-    <CRow>
-      <CCol col="12" sm="6" lg="4">
-        <CWidgetIcon
-            header="5"
-            text="TAMAMLANAN İŞ (GÜNLÜK)"
-            color="primary"
-            :icon-padding="false"
-        >
-          <CIcon name="cil-settings" class="mx-2 " width="24"/>
-        </CWidgetIcon>
-      </CCol>
-      <CCol col="12" sm="6" lg="4">
-        <CWidgetIcon
-            header="36"
-            text="TAMAMLANAN İŞ (HAFTALIK)"
-            color="info"
-            :icon-padding="false"
-        >
-          <CIcon name="cil-laptop" class="mx-2 " width="24"/>
-        </CWidgetIcon>
-      </CCol>
-      <CCol col="12" sm="6" lg="4">
-        <CWidgetIcon
-            header="63"
-            text="TAMAMLANAN İŞ (AYLIK)"
-            color="warning"
-            :icon-padding="false"
-        >
-          <CIcon :content="$options.freeSet.cilPlus" name="cil-money" class="mx-2 " width="24"/>
-          <template #footer>
-            <CCardFooter class="card-footer px-3 py-2">
-              <CLink
-                  class="font-weight-bold font-xs btn-block text-muted"
-                  href="https://coreui.io/"
-              >
-                View more
-                <CIcon name="cil-arrowRight" class="float-right" width="16"/>
-              </CLink>
-            </CCardFooter>
-          </template>
-        </CWidgetIcon>
-      </CCol>
-    </CRow>
+
 
 
   </div>

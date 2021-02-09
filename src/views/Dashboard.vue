@@ -1,6 +1,16 @@
 <template>
   <div>
     <WidgetsDropdown :dashData="data"/>
+    <CRow>
+      <CCol lg="6">
+        <CCard>
+          <CCardHeader>Servis Durumları</CCardHeader>
+          <CCardBody>
+            <CChartPieExample :dashData="data"/>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
 
 
   </div>
@@ -13,6 +23,7 @@ import WidgetsBrand from "./widgets/WidgetsBrand";
 import AuthService from "../services/auth.service"
 import DashboardService from "@/services/dashboard.service";
 import {freeSet} from "@coreui/icons";
+import * as Charts from "@/views/charts";
 
 
 export default {
@@ -21,12 +32,29 @@ export default {
     MainChartExample,
     WidgetsDropdown,
     WidgetsBrand,
+    ...Charts,
   },
   freeSet,
   data() {
     return {
 
-      data: {}
+      data: {
+
+
+        productCount: 0,
+        outOfStockCount: 0,
+        carCount: 0,
+        customerCount: 0,
+        remainingDebt: 0,
+        uncompletedServiceCount: 0,
+        completedServiceCount: "0",
+        waitingApproveServiceCount: 0,
+        totalCheckingAccountDaily: 0,
+        totalCheckingAccountMonthly: 0,
+        totalCheckingAccountYearly: 0
+
+
+      }
 
 
     }
@@ -41,8 +69,14 @@ export default {
       })*/
 
       let response = await new DashboardService().getAdminDashboard();
+      if(response.status===200){
+        this.data = response.data
+      }
+      else {
+        await this.$router.push("/pages/login");
+      }
       console.log(response)
-      this.data = response.data
+
 
 
     },
