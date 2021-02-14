@@ -43,8 +43,8 @@
     
     <CDropdownDivider/>
    
-    <CDropdownItem>
-      <CIcon name="cil-lock-locked" /> Çıkış Yap
+    <CDropdownItem @click="logout">
+      <CIcon  name="cil-lock-locked" /> Çıkış Yap
     </CDropdownItem>
   </CDropdown>
 </template>
@@ -56,6 +56,15 @@ export default {
     return { 
       itemsCount: 42
     }
+  },
+
+  methods :{
+
+    logout(){
+      localStorage.clear()
+      this.$router.push("/pages/login");
+    }
+
   }
 }
 </script>

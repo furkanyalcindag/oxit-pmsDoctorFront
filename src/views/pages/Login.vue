@@ -58,6 +58,8 @@
 <script>
 
 import User from '../../models/user';
+import ServiceService from "@/services/service.service";
+import AuthService from "@/services/auth.service";
 
 export default {
   name: 'Login',
@@ -82,6 +84,10 @@ export default {
     }*/
   },
   methods: {
+
+
+
+
     handleLogin() {
       //console.log(this.$store);
       this.loading = true;
@@ -91,6 +97,8 @@ export default {
           
           this.$store.dispatch('auth/login', this.user).then(
             () => {
+
+              console.log("deneme",localStorage)
               this.$router.push('/dashboard');
             },
             error => {
