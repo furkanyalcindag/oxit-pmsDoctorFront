@@ -203,6 +203,7 @@
         </transition>
       </CCol>
     </CRow>
+    <button @click="getServicePdf()" v-if="serviceDetail.serviceSituation == 'Teslim Edildi'" class="download-button"><a> Pdf İndir</a></button>
 
 
   </div>
@@ -520,7 +521,10 @@ export default {
 
 
     },
-
+    async getServicePdf(id=this.$route.params.serviceId) {
+      let response = await new ServiceService().getServicePdf(id);
+      console.log(response)
+    },
 
     async getSearchProduct() {
 
@@ -673,8 +677,6 @@ export default {
     this.getServicProducts(this.$route.params.serviceId)
     this.getServiceImages(this.$route.params.serviceId)
     this.getServiceDetail(this.$route.params.serviceId)
-
-
   },
   components: {
     VueUploadMultipleImage
@@ -725,5 +727,18 @@ ul {
 
 a {
   color: #42b983;
+}
+.download-button{
+  background-color: #303c54;
+}
+.download-button:hover{
+  background-color: #3c4b64;
+}
+.download-button a{
+  color: #fff;
+  font-size: 15px;
+}
+.download-button a:hover{
+  color: #fff;
 }
 </style>

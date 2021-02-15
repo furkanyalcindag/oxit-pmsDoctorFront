@@ -2,6 +2,7 @@ import axios from "axios";
 import authHeader from "@/services/auth-header";
 
 
+
 class ServiceService {
 
     addService(service) {
@@ -135,6 +136,28 @@ class ServiceService {
         return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-service-images-api/`, {
             headers: authHeader(),
             params
+        })
+
+
+    }
+
+    getServicePdf(id) {
+        const params = {
+            uuid: id
+
+        };
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-service-pdf-api/`,
+        {
+            responseType: 'arraybuffer',
+            headers: authHeader(),
+            params
+        }).then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'report.pdf');
+            document.body.appendChild(link);
+            link.click();
         })
 
 
