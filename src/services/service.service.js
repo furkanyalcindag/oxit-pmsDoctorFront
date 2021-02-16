@@ -2,6 +2,7 @@ import axios from "axios";
 import authHeader from "@/services/auth-header";
 
 
+
 class ServiceService {
 
     addService(service) {
@@ -140,6 +141,28 @@ class ServiceService {
 
     }
 
+    getServicePdf(id) {
+        const params = {
+            uuid: id
+
+        };
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-service-pdf-api/`,
+        {
+            responseType: 'arraybuffer',
+            headers: authHeader(),
+            params
+        }).then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'report.pdf');
+            document.body.appendChild(link);
+            link.click();
+        })
+
+
+    }
+
     acceptService(uuid, isAccept) {
         return axios.post(process.env.VUE_APP_API_URL + '/car-service/service-approve-api/',
             {
@@ -151,9 +174,16 @@ class ServiceService {
 
 
             return response;
-        }).catch(error => {
-            console.log("hata", error)
-            return error
+        }).catch((err) => {
+            if (err.response) {
+                console.log("resp", err.response)
+                return err.response
+            } else if (err.request) {
+                // client never received a response, or request never left
+                console.log("req", err.request)
+            } else {
+                // anything else
+            }
         });
 
 

@@ -390,6 +390,8 @@ export default {
           return "success";
         case "İptal Edildi":
           return "danger";
+        case "Teslim Edildi":
+          return "danger";
         default:
           return "warning";
       }

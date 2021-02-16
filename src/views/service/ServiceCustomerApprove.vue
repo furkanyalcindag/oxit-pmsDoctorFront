@@ -238,6 +238,7 @@ import Cart from "@/models/cart";
 import VueUploadMultipleImage from 'vue-upload-multiple-image';
 import axios from "axios";
 import authHeader from "@/services/auth-header";
+import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 
 export default {
   name: "ServiceCustomerApprove",
@@ -439,6 +440,16 @@ export default {
           name: 'ServiceList',
           params: {message: "Arıza tespiti başarıyla yapıldı"}
         }), 3000);
+      }
+      else {
+
+        this.$toast.error({
+          title: 'Hata',
+          message: response.data
+        })
+
+
+
       }
 
 
