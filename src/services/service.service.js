@@ -174,9 +174,16 @@ class ServiceService {
 
 
             return response;
-        }).catch(error => {
-            console.log("hata", error)
-            return error
+        }).catch((err) => {
+            if (err.response) {
+                console.log("resp", err.response)
+                return err.response
+            } else if (err.request) {
+                // client never received a response, or request never left
+                console.log("req", err.request)
+            } else {
+                // anything else
+            }
         });
 
 

@@ -22,19 +22,12 @@
     <CHeaderNav class="mr-4">
       <CHeaderNavItem class="d-md-down-none mx-2">
         <CHeaderNavLink>
-          <CIcon name="cil-bell"/>
+           <CIcon name="cil-person"/>
+          {{username}}
+
         </CHeaderNavLink>
       </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-list"/>
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-envelope-open"/>
-        </CHeaderNavLink>
-      </CHeaderNavItem>
+
       <TheHeaderDropdownAccnt/>
     </CHeaderNav>
     <!--<CSubheader class="px-3">
@@ -50,6 +43,28 @@ export default {
   name: 'TheHeader',
   components: {
     TheHeaderDropdownAccnt
+  },
+  data(){
+    return {
+    username:'',
+    nameSurname:''}
+  },
+
+  mounted() {
+
+    console.log(localStorage)
+
+    this.username = localStorage.getItem('username')
+    this.nameSurname = localStorage.getItem('user_name_surname')
+
+
+  },
+  watch: {
+   nameSurname() {
+      console.log('Data Değişti');
+       this.nameSurname = localStorage.getItem('user_name_surname')
+      // isOpen datasındaki değişliği yakaladık.
+   }
   }
 }
 </script>

@@ -60,6 +60,11 @@ export default {
     }
   },
   methods: {
+     async setUser(){
+       let response = await  AuthService.getUserInfo()
+      console.log(response)
+      localStorage.setItem('user_name_surname',response.data)
+    },
 
     async getDashboardData() {
 
@@ -69,6 +74,7 @@ export default {
       })*/
 
       let response = await new DashboardService().getAdminDashboard();
+      console.log(response)
       if(response.status===200){
         this.data = response.data
       }
@@ -89,11 +95,14 @@ export default {
       this.$router.push('/pages/login');
     }
 
+    await this.setUser()
+
 
   },
 
   async mounted() {
     await this.getDashboardData();
+
 
 
   },
