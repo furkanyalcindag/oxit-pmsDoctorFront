@@ -8,7 +8,6 @@
               <CCardBody>
                 <CForm name="login-form" >
                   <h1>Giriş Yap</h1>
-                  <p class="text-muted">Sign In to your account</p>
                   <CInput
                     placeholder="E-mail"
                     autocomplete="username email"
@@ -30,7 +29,6 @@
                     </CCol>
                     <CCol col="6" class="text-right">
                       <CButton color="link" class="px-0">Şifremi Unuttum</CButton>
-                      <CButton color="link" class="d-lg-none">Register now!</CButton>
                     </CCol>
                   </CRow>
                 </CForm>
@@ -60,7 +58,7 @@
 import User from '../../models/user';
 import ServiceService from "@/services/service.service";
 import AuthService from "@/services/auth.service";
-
+import UserService from "../../services/UserService"
 export default {
   name: 'Login',
   data(){
@@ -87,9 +85,35 @@ export default {
 
 
 
-
     handleLogin() {
       //console.log(this.$store);
+      const user_group = UserService.getUserGroup()
+      const groups = {
+          admin:"Admin",
+          serviceman:"Tamirci",
+          customer:"Customer",
+          accountant:"Muhasebe"
+      }
+
+      var dashboard_link = ""
+      switch (user_group) {
+          case groups.admin:
+              dashboard_link = "admin-dashboard"
+              break;
+          case groups.customer:
+              dashboard_link = "customer-dashboard"
+              break;
+          case groups.serviceman:
+              dashboard_link = "serviceman-dashboard"
+              break;
+          case groups.accountant:
+              dashboard_link = "accountant-dashboard"
+              break;
+          
+          default:
+              break;
+      }
+
       this.loading = true;
 
         if (this.user.username && this.user.password) {
@@ -99,7 +123,7 @@ export default {
             () => {
 
               console.log("deneme",localStorage)
-              this.$router.push('/dashboard');
+              this.$router.push(`/${dashboard_link}`);
             },
             error => {
               console.log(error.response);
