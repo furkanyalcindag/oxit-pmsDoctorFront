@@ -13,7 +13,7 @@ class AuthService {
             .then(response => {
                
                 if (response.data.access) {
-
+                    localStorage.setItem('user_group',response.data.group)
                     localStorage.setItem('username', user.username)
                     localStorage.setItem('user_token', response.data.access)
                     localStorage.setItem('user_refresh_token', response.data.refresh)
