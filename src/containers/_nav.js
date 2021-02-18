@@ -1,7 +1,5 @@
-const getUserGroup = ()=>{
-    return localStorage.getItem("user_group")
-}
-const user_group = getUserGroup()
+import UserService from "../services/UserService"
+const user_group = UserService.getUserGroup()
 const groups = {
     admin:"Admin",
     serviceman:"Tamirci",
@@ -9,10 +7,29 @@ const groups = {
     accountant:"Muhasebe"
 }
 
+var dashboard_link = ""
+switch (user_group) {
+    case groups.admin:
+        dashboard_link = "admin-dashboard"
+        break;
+    case groups.customer:
+        dashboard_link = "customer-dashboard"
+        break;
+    case groups.serviceman:
+        dashboard_link = "serviceman-dashboard"
+        break;
+    case groups.accountant:
+        dashboard_link = "accountant-dashboard"
+        break;
+    
+    default:
+        break;
+}
+
 const home = {
     _name: 'CSidebarNavItem',
     name: 'Anasayfa',
-    to: '/dashboard',
+    to: `/${dashboard_link}`,
     icon: 'cil-speedometer',
 }
 const actions = {

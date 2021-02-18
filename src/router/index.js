@@ -3,13 +3,16 @@ import Router from 'vue-router'
 import ProductList from "@/views/catalog/ProductList";
 import Repairman from "@/views/staff/Staff";
 import Staff from "@/views/staff/Staff";
+import UserService from "../services/UserService"
 
 
 // Containers
 const TheContainer = () => import('@/containers/TheContainer')
 
 // Views
-const Dashboard = () => import('@/views/Dashboard')
+const AdminDashboard = () => import('@/views/AdminDashboard')
+const ServicemanDashboard = () => import('@/views/ServicemanDashboard')
+const CustomerDashboard = () => import('@/views/CustomerDashboard')
 
 const Colors = () => import('@/views/theme/Colors')
 const Typography = () => import('@/views/theme/Typography')
@@ -93,17 +96,54 @@ export default new Router({
 })
 
 function configRoutes() {
+    const user_group = UserService.getUserGroup()
+    const groups = {
+        admin:"Admin",
+        serviceman:"Tamirci",
+        customer:"Customer",
+        accountant:"Muhasebe"
+    }
+
+    var dashboard_link = ""
+    switch (user_group) {
+        case groups.admin:
+            dashboard_link = "/admin-dashboard"
+            break;
+        case groups.customer:
+            dashboard_link = "/customer-dashboard"
+            break;
+        case groups.serviceman:
+            dashboard_link = "/serviceman-dashboard"
+            break;
+        case groups.accountant:
+            dashboard_link = "/accountant-dashboard"
+            break;
+        
+        default:
+            dashboard_link = "/pages/login"
+            break;
+    }
     return [
         {
             path: '/',
-            redirect: '/dashboard',
+            redirect:`${dashboard_link}`,
             name: 'Home',
             component: TheContainer,
             children: [
                 {
-                    path: 'dashboard',
-                    name: 'Dashboard',
-                    component: Dashboard
+                    path: 'admin-dashboard',
+                    name: 'AdminDashboard',
+                    component: AdminDashboard
+                },
+                {
+                    path: 'serviceman-dashboard',
+                    name: 'ServicemanDashboard',
+                    component: ServicemanDashboard
+                },
+                {
+                    path: 'customer-dashboard',
+                    name: 'CustomerDashboard',
+                    component: CustomerDashboard
                 },
                 {
                     path: 'theme',

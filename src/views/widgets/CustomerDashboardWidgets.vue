@@ -3,30 +3,30 @@
 
 
     <CRow>
-      <CCol col="12" sm="6" lg="3">
+      <CCol col="12" sm="4" lg="4">
         <CWidgetIcon
-            :header="this.dashData.totalCheckingAccountDaily + ` ₺`"
-            text="CARİ (Günlük)"
+            :header="this.dashData.totalCheckingAccount + ` ₺`"
+            text="ÖDENEN TUTAR"
             color="primary"
             :icon-padding="false"
         >
           <CIcon :content="$options.freeSet.cilMoney"  class="mx-2 " width="24"/>
         </CWidgetIcon>
       </CCol>
-      <CCol col="12" sm="6" lg="3">
+      <CCol col="12" sm="4" lg="4">
         <CWidgetIcon
-            :header="this.dashData.totalCheckingAccountMonthly + ` ₺`"
-            text="CARİ (Aylık)"
+            :header="this.dashData.remainingDebt + ` ₺`"
+            text="KALAN TUTAR"
             color="info"
             :icon-padding="false"
         >
           <CIcon :content="$options.freeSet.cilMoney"  class="mx-2 " width="24"/>
         </CWidgetIcon>
       </CCol>
-      <CCol col="12" sm="6" lg="3">
+      <CCol col="12" sm="4" lg="4">
         <CWidgetIcon
-            :header="this.dashData.totalCheckingAccountYearly + ` ₺`"
-            text="CARİ (Yıllık)"
+            :header="(Number(this.dashData.totalCheckingAccount)+Number(this.dashData.remainingDebt)) + ` ₺`"
+            text="TOPLAM TUTAR"
             color="warning"
             :icon-padding="false"
         >
@@ -46,46 +46,11 @@
       </CCol>
 
 
-      <CCol col="12" sm="6" lg="3">
-        <CWidgetIcon
-            :header="this.dashData.remainingDebt + ` ₺`"
-            text="Toplam Alacak"
-            color="danger"
-            :icon-padding="false"
-        >
-          <CIcon :content="$options.freeSet.cilMoney" name="cil-chartPie" class="mx-2 " width="24"/>
-          <template #footer>
-            <CCardFooter class="card-footer px-3 py-2">
-              <CLink
-                  class="font-weight-bold font-xs btn-block text-muted"
-                  href="https://coreui.io/"
-              >
-                View more
-                <CIcon name="cil-arrowRight" class="float-right" width="16"/>
-              </CLink>
-            </CCardFooter>
-          </template>
-        </CWidgetIcon>
-      </CCol>
-
-
     </CRow>
 
 
     <CRow>
-      <CCol sm="6" md="2">
-        <CWidgetProgressIcon
-            :header="this.dashData.customerCount"
-            text="MÜŞTERİ SAYISI"
-            color="info"
-            inverse
-            :value="100"
-        >
-          <CIcon name="cil-people" height="36"/>
-        </CWidgetProgressIcon>
-      </CCol>
-
-      <CCol sm="6" md="2">
+      <CCol sm="6" md="3">
         <CWidgetProgressIcon
             :header="this.dashData.carCount"
             text="ARAÇ SAYISI"
@@ -96,21 +61,10 @@
           <CIcon :content="$options.freeSet.cilCarAlt"  name="cil-userFollow" height="36"/>
         </CWidgetProgressIcon>
       </CCol>
-      <CCol sm="6" md="2">
-        <CWidgetProgressIcon
-            :header="this.dashData.uncompletedServiceCount"
-            text="DEVAM EDEN"
-            color="warning"
-            :value="100"
-            inverse
-        >
-          <CIcon :content="$options.freeSet.cilListRich"  name="cil-basket" height="36"/>
-        </CWidgetProgressIcon>
-      </CCol>
-      <CCol sm="6" md="2">
+      <CCol sm="6" md="3">
         <CWidgetProgressIcon
             :header="this.dashData.waitingApproveServiceCount"
-            text="ONAY BEKLEYEN"
+            text="BEKLEYEN SERVİSLER"
             color="primary"
             :value="100"
             inverse
@@ -118,26 +72,26 @@
           <CIcon :content="$options.freeSet.cilCheck"  name="cil-chartPie" height="36"/>
         </CWidgetProgressIcon>
       </CCol>
-      <CCol sm="6" md="2">
+      <CCol sm="6" md="3">
         <CWidgetProgressIcon
-            :header="this.dashData.productCount"
-            text="ÜRÜN SAYISI"
-            color="danger"
+            :header="this.dashData.uncompletedServiceCount"
+            text="DEVAM EDEN SERVİSLER"
+            color="warning"
             :value="100"
             inverse
         >
-          <CIcon :content="$options.freeSet.cilBlur" name="cil-speedometer" height="36"/>
+          <CIcon :content="$options.freeSet.cilListRich"  name="cil-basket" height="36"/>
         </CWidgetProgressIcon>
       </CCol>
-      <CCol sm="6" md="2">
+      <CCol sm="6" md="3">
         <CWidgetProgressIcon
-            :header="this.dashData.outOfStockCount"
-            text="STOK BİTENLER"
-            color="info"
+            :header="this.dashData.completedServiceCount"
+            text="TAMAMLANAN SERVİSLER"
+            color="success"
             :value="100"
             inverse
         >
-          <CIcon :content="$options.freeSet.cil-level-down" name="cil-speech" height="36"/>
+          <CIcon :content="$options.freeSet.cilCheck"  name="cil-chartPie" height="36"/>
         </CWidgetProgressIcon>
       </CCol>
     </CRow>
