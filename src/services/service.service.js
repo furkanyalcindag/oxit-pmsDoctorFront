@@ -73,6 +73,22 @@ class ServiceService {
 
     }
 
+    deleteService(id) {
+        const params = {
+            id: id
+
+        };
+        return axios.delete(process.env.VUE_APP_API_URL + `/car-service/service-api/`, {
+            headers: authHeader(),
+            params
+        }).then(response => {
+            console.log(response)
+            return response;
+        })
+
+
+    }
+
 
     getServiceDetail(id) {
         const params = {
