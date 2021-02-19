@@ -145,7 +145,6 @@
     </CModal>
 
 
-
     <CModal
         :show.sync="receivingModal"
         :no-close-on-backdrop="true"
@@ -210,7 +209,6 @@
     </CModal>
 
 
-
     <CModal
         :show.sync="cameraModal"
         :no-close-on-backdrop="true"
@@ -232,7 +230,8 @@
                     <CCol lg="12">
 
 
-                      <iframe width="640" height="480" v-bind:src="this.camera" frameborder="0" allowfullscreen></iframe>
+                      <iframe width="640" height="480" v-bind:src="this.camera" frameborder="0"
+                              allowfullscreen></iframe>
 
 
                     </CCol>
@@ -260,6 +259,27 @@
       </template>
     </CModal>
 
+
+    <CModal
+        title="Modal title"
+        color="danger"
+        :show.sync="deleteModal"
+    >
+      Servisi silmek istediğinizden emin misiniz?
+
+
+      <template #header>
+        <h6 class="modal-title">Uyarı</h6>
+        <CButtonClose @click="deleteModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="deleteModal = false" color="danger">Hayır</CButton>
+        <CButton @click="deleteService" color="success">Evet</CButton>
+      </template>
+
+
+    </CModal>
+
   </div>
 </template>
 
@@ -275,6 +295,7 @@ import Service from "@/models/service";
 import ServiceService from "@/services/service.service";
 import CarService from "@/services/car.service";
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
+import ProductService from "@/services/product.service";
 
 export default {
   name: "ServiceList",
@@ -359,12 +380,14 @@ export default {
       services: [],
       serviceDetail: null,
       carPlate: '',
-      messages:'dhjksdjhsjkdhjkshdj',
-      receivingPerson:'',
-      receivingModal:false,
-      serviceId:'',
-      cameraModal:false,
-      camera:''
+      messages: 'dhjksdjhsjkdhjkshdj',
+      receivingPerson: '',
+      receivingModal: false,
+      serviceId: '',
+      cameraModal: false,
+      camera: '',
+      deleteId : '',
+      deleteModal : false
     };
   },
 
@@ -430,7 +453,7 @@ export default {
     }
     ,
 
-    denemes(){
+    denemes() {
 
       console.log("kjjkhsjkak")
       return this.messages
@@ -511,13 +534,46 @@ export default {
       this.$router.push({name: 'ServiceDetermination', params: {serviceId: serviceId}});
     },
 
-    async goWatchCamera(serviceId){
+    serviceDeleteModal(id) {
+
+      this.deleteId = id
+      this.deleteModal = true
+
+    },
+
+    async deleteService() {
+
+
+      let a = await new ServiceService().deleteService(this.deleteId);
+      console.log("statusDelete", a);
+      if (a.status === 200) {
+        this.isSuccess = false;
+        this.isSuccess = true;
+        this.deleteModal = false;
+        this.successHide();
+        await this.getProducts();
+
+
+      } else if (a.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        this.errors = a.data;
+        this.errorHide();
+      }
+    },
+
+    async goWatchCamera(serviceId) {
       let cameraRes = await new ServiceService().getServiceCamera(serviceId)
 
-      console.log("camera",cameraRes)
+      console.log("camera", cameraRes)
       this.camera = cameraRes.data.camera
 
-      this.cameraModal=true
+      this.cameraModal = true
     },
 
     goServiceDetail(serviceId) {
@@ -528,16 +584,16 @@ export default {
       this.$router.push({name: 'ServiceApprove', params: {serviceId: serviceId}});
     },
 
-    async serviceProcess(serviceId, situationNo,receivingPerson) {
+    async serviceProcess(serviceId, situationNo, receivingPerson) {
 
-      let response = await new ServiceService().ServiceProcessing(serviceId, situationNo,receivingPerson);
+      let response = await new ServiceService().ServiceProcessing(serviceId, situationNo, receivingPerson);
       //console.log(response)
 
       if (response.status === 200) {
         this.isSuccess = true
         this.successHide()
         await this.getServiceList()
-        this.receivingModal=false
+        this.receivingModal = false
       }
 
     },
@@ -561,39 +617,37 @@ export default {
 
       } else if (functionName === 'serviceGetProcess') {
 
-        this.serviceProcess(serviceId,1,"")
+        this.serviceProcess(serviceId, 1, "")
 
-      }
-      else if (functionName === 'serviceProcessComplete') {
+      } else if (functionName === 'serviceProcessComplete') {
 
-        this.serviceProcess(serviceId,2,"")
+        this.serviceProcess(serviceId, 2, "")
 
-      }
-
-
-      else if (functionName === 'serviceDeliver') {
+      } else if (functionName === 'serviceDeliver') {
 
         this.serviceId = serviceId
-        this.receivingModal=true
+        this.receivingModal = true
         //this.serviceProcess(serviceId,3,this.receivingPerson)
 
         //this.serviceProcessDeliver(serviceId,this.receivingPerson)
 
-      }
-
-      else if (functionName === 'goWatchCamera') {
+      } else if (functionName === 'goWatchCamera') {
 
         this.goWatchCamera(serviceId)
 
       }
+       else if (functionName === 'serviceDelete') {
 
+        this.serviceDeleteModal(serviceId)
+
+      }
 
 
     },
 
-    serviceProcessDeliver(serviceId,receivingPerson){
-      this.serviceProcess(serviceId,3,receivingPerson)
-      this.receivingPerson=''
+    serviceProcessDeliver(serviceId, receivingPerson) {
+      this.serviceProcess(serviceId, 3, receivingPerson)
+      this.receivingPerson = ''
     }
 
 

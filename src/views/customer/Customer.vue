@@ -242,7 +242,7 @@
                         <CButtonGroup class="mx-1 d-sm-down-none">
                           <CButton color="success" @click="goService(item.uuid)">Servis</CButton>
 
-                          <CButton color="warning">Güncelle</CButton>
+                          <CButton color="warning" @click="updateCarModalFunc(item.uuid)">Güncelle</CButton>
                           <CButton color="danger" @click="setDeleteModalCar(item.uuid)">Sil</CButton>
                         </CButtonGroup>
 
@@ -425,6 +425,132 @@
 
     </CModal>
 
+
+    <CModal
+        :show.sync="carUpdateModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="carUpdateModal">
+              <template>
+                <CCardBody>
+
+                  <div>
+                    <CAlert color="success" :show="isSuccessCar">
+                      Araba başarıyla kaydedildi.
+                    </CAlert>
+
+                    <CAlert
+                        v-for="item in errorsCar"
+                        :key="item.message"
+                        color="danger"
+                        :show="isError"
+                    >
+                      E-mail: {{ item }}
+                    </CAlert>
+                  </div>
+
+
+                  <CRow>
+                    <CCol lg="6">
+                      <CInput
+                          label="Plaka (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="carUpdate.plate"
+                      />
+
+                      <CInput
+                          label="Marka (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="carUpdate.brand"
+                      />
+
+                      <CInput
+                          label="Model (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="carUpdate.model"
+                      />
+                      <CInput
+                          label="Yıl (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="carUpdate.year"
+                      />
+
+                      <CInput
+                          label="Motor Tipi"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="carUpdate.engine"
+                      />
+                    </CCol>
+
+
+                    <CCol lg="6">
+                      <CInput
+                          label="Yakıt"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="carUpdate.oilType"
+                      />
+
+                      <CInput
+                          label="Şase Numarası (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="carUpdate.chassisNumber"
+                      />
+
+                      <CInput
+                          label="KM (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="carUpdate.currentKM"
+                      />
+                      <CInput
+                          label="Motor Numarası"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="carUpdate.engineNumber"
+                      />
+
+                      <CInput
+                          label="Renk"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="carUpdate.color"
+                      />
+                    </CCol>
+
+                  </CRow>
+
+
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Araç Güncelle</h6>
+        <CButtonClose @click="carUpdateModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="carUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="updateCar" color="success">Güncelle</CButton>
+      </template>
+    </CModal>
+
+
   </div>
 </template>
 
@@ -437,6 +563,7 @@ import authHeader from "@/services/auth-header";
 import Car from "@/models/car";
 import CarService from "@/services/car.service";
 import CategoryService from "@/services/category.service";
+import Category from "@/models/category";
 
 
 export default {
@@ -477,12 +604,13 @@ export default {
       cars: [],
       customer: new Customer("", "", "", "", "", "", "", "", ""),
       car: new Car("", "", "", "", "", "", "", "", "", "", ""),
+      carUpdate: new Car("", "", "", "", "", "", "", "", "", "", ""),
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
-      errorsCarDelete:[],
-      isErrorCarDelete:false,
-      isSuccessCarDelete:false,
+      errorsCarDelete: [],
+      isErrorCarDelete: false,
+      isSuccessCarDelete: false,
 
 
       details: [],
@@ -496,9 +624,9 @@ export default {
       showAddCar: true,
       horizontal: {label: "col-3", input: "col-9"},
       options: ["Option 1", "Option 2", "Option 3"],
-      deleteModal:false,
-      deleteId:0,
-      lastCustomerUUid:'',
+      deleteModal: false,
+      deleteId: 0,
+      lastCustomerUUid: '',
       selectOptions: [
         "Option 1",
         "Option 2",
@@ -523,6 +651,8 @@ export default {
         "Radios - custom",
         "Inline Radios - custom",
       ],
+      carUpdateModal: false,
+      carUpdateUUID:''
     };
   },
 
@@ -654,14 +784,13 @@ export default {
         await this.getCarPagination(this.lastCustomerUUid);
 
 
-      }else if (a.status === 300) {
+      } else if (a.status === 300) {
         this.isError = false;
         this.isError = true;
         let x = a.data
         this.errors = x;
         this.errorHide();
-      }
-      else if (a.status === 204) {
+      } else if (a.status === 204) {
         this.isError = false;
         this.isError = true;
         let x = a.data
@@ -684,7 +813,7 @@ export default {
     getCarPagination(uuid) {
 
       this.darkModal = true
-      this.lastCustomerUUid =uuid
+      this.lastCustomerUUid = uuid
 
       // get by search keyword
       console.log("search", this.search)
@@ -744,7 +873,48 @@ export default {
       this.$router.push({name: 'CheckingAccountByCustomer', params: {customerId: uuid}});
 
 
-    }
+    },
+
+    async updateCarModalFunc(categoryId) {
+
+
+      let response = await new CarService().getCarApi(categoryId)
+      this.carUpdate = response.data
+      console.log("xxx", this.carUpdate)
+      this.carUpdateUUID=categoryId
+      this.carUpdateModal = true
+
+
+
+    },
+
+    async updateCar() {
+
+      let carResponse = await new CarService().carUpdate(this.carUpdate, this.carUpdateUUID);
+
+      if (carResponse.status === 200) {
+        this.isSuccess = false;
+        this.isSuccess = true;
+        this.carUpdateModal = false;
+
+        this.getCarPagination(this.carUpdate.profileUuid)
+        this.successHide();
+        this.carModal =false
+        this.carUpdate = new Car()
+      } else if (carResponse.response.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        this.errors = carResponse.response.data;
+        this.errorHide();
+      }
+
+
+    },
 
 
   },
