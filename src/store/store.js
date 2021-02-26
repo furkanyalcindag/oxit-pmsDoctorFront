@@ -6,7 +6,8 @@ Vue.use(Vuex)
 
 const state = {
   sidebarShow: 'responsive',
-  sidebarMinimize: false
+  sidebarMinimize: false,
+  settings: null,
 }
 
 const mutations = {
@@ -26,15 +27,22 @@ const mutations = {
   },
   getUsers (state){
     return state.users;
-  }
-
+  },
+  setSettings (state,settings){
+    state.settings = settings;
+  },
+  getSettings (state){
+    return state.settings;
+  },
 }
 const actions = {
 
   authentication(){
       deneme.authentication();
     },
-
+  getSettings:() => {
+    return Promise.resolve(state.settings);
+  }
 }
 export default new Vuex.Store({
   state,

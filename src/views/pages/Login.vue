@@ -41,14 +41,19 @@
               body-wrapper
             >
               <CCardBody>
-                <h2>OXIT BİLİŞİM TEKNOLOJİLERİ</h2>
-                <p>Servis Yazılımı</p>
-
-              </CCardBody>
+                <img class="menu-logo" v-bind:src="settings.logo">
+      
+                  <div class="info">
+                    <span class="mr-1">Powered by</span>
+                    <a class="text-white font-weight-bold" href="https://www.oxit.com.tr" target="_blank">OXIT</a>
+                  </div>
+                </CCardBody>
             </CCard>
           </CCardGroup>
-        </CCol>
+        </CCol>              
       </CRow>
+
+      <TheFooter></TheFooter>
     </CContainer>
   </div>
 </template>
@@ -59,13 +64,15 @@ import User from '../../models/user';
 import ServiceService from "@/services/service.service";
 import AuthService from "@/services/auth.service";
 import UserService from "../../services/UserService"
+import { mapState } from 'vuex'
 export default {
   name: 'Login',
   data(){
     return {
       user: new User("","","","","",""),
       loading: false,
-      message:''
+      settings:null,
+      message:'',
     };
   },
   computed:{
@@ -74,7 +81,12 @@ export default {
         return this.$store.state.auth.status.loggedIn;
       else
         return null
-    }
+    },
+  },
+  mounted(){
+      this.$store.dispatch('getSettings').then(result=>{
+        this.settings = result
+    })
   },
   created() {
    /* if (this.loggedIn) {
@@ -82,9 +94,6 @@ export default {
     }*/
   },
   methods: {
-
-
-
     handleLogin() {
       //console.log(this.$store);
       const user_group = UserService.getUserGroup()
@@ -141,3 +150,12 @@ export default {
 };
 
 </script>
+<style scoped>
+.menu-logo{
+  width: 270px;
+}
+.info{
+  margin-left: auto;
+  padding-top: 30px;
+}
+</style>

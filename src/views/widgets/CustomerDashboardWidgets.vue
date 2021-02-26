@@ -15,7 +15,7 @@
       </CCol>
       <CCol col="12" sm="4" lg="4">
         <CWidgetIcon
-            :header="this.dashData.remainingDebt + ` ₺`"
+            :header="this.dashData.remainingDebt ? this.dashData.remainingDebt : '0.00' + ` ₺`"
             text="KALAN TUTAR"
             color="info"
             :icon-padding="false"

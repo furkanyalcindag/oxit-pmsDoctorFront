@@ -432,7 +432,6 @@ export default {
         {key: "netPrice", label: "Net Fiyat"},
         {key: "taxRate", label: "KDV"},
         {key: "totalProduct", label: "Toplam Fiyat"},
-        {key: "isOpen", label: "Aktif"},
         {key: "actions", label: "İşlemler"}
       ],
       pageLabel: {label: 'sasasa', external: true,},

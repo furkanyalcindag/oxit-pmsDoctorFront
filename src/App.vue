@@ -5,9 +5,13 @@
 
 
 <script>
-
+import SettingService from "./services/setting.service"
 export default {
-  name: 'App'
+  name: 'App',
+  mounted(){
+    const service = new SettingService;
+    this.$store.commit("setSettings",service.getSettings());
+  },
 }
 </script>
 

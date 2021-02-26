@@ -48,19 +48,6 @@ const current = {
         }
     ]
 }
-const user_actions = {
-    _name: 'CSidebarNavDropdown',
-    name: 'Kullanıcı İşlemleri',
-    route: '/login',
-    icon: 'cil-user',
-    items: [
-        {
-            name: 'Login',
-            to: '/pages/login'
-        },
-
-    ]
-}
 const customer ={
     _name: 'CSidebarNavDropdown',
     name: 'Müşteri',
@@ -77,7 +64,7 @@ const catalog ={
     _name: 'CSidebarNavDropdown',
     name: 'Katalog',
     route: '/category',
-    icon: 'cil-star',
+    icon: 'cil-playlist-add',
     items: [
         {
             name: 'Kategori',
@@ -97,7 +84,7 @@ const staff = {
     _name: 'CSidebarNavDropdown',
     name: 'Personel',
     route: '/staff',
-    icon: 'cil-star',
+    icon: 'cil-people',
     items: [
         {
             name: 'Personel İşlemleri',
@@ -109,7 +96,7 @@ const services = {
     _name: 'CSidebarNavDropdown',
     name: 'Servis',
     route: '/service',
-    icon: 'cil-star',
+    icon: 'cil-file',
     items: [
         {
             name: 'Servis Listesi',
@@ -125,7 +112,6 @@ if(user_group === groups.admin || user_group === groups.accountant)
 {
     items.push(current)
 }
-items.push(user_actions)
 if(user_group === groups.admin || user_group === groups.accountant || user_group===groups.customer)
 {
     items.push(customer)
