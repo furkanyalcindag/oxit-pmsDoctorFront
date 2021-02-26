@@ -6,12 +6,16 @@
           <CCardGroup>
             <CCard class="p-4">
               <CCardBody>
+                <CAlert color="danger" :show="isError">
+                   Bu bilgilerle aktif bir hesap bulunamadı
+                </CAlert>
                 <CForm name="login-form" >
                   <h1>Giriş Yap</h1>
                   <CInput
                     placeholder="E-mail"
                     autocomplete="username email"
                     v-model="user.username"
+                    required
                   >
                     <template #prepend-content><CIcon name="cil-user"/></template>
                   </CInput>
@@ -28,7 +32,7 @@
                       <CButton @click="handleLogin" color="primary" class="px-4">Giriş</CButton>
                     </CCol>
                     <CCol col="6" class="text-right">
-                      <CButton color="link" class="px-0">Şifremi Unuttum</CButton>
+                      <CButton @click="redirectUser" color="link" class="px-0">Şifremi Unuttum</CButton>
                     </CCol>
                   </CRow>
                 </CForm>
@@ -52,8 +56,6 @@
           </CCardGroup>
         </CCol>              
       </CRow>
-
-      <TheFooter></TheFooter>
     </CContainer>
   </div>
 </template>
@@ -73,6 +75,7 @@ export default {
       loading: false,
       settings:null,
       message:'',
+      isError:false,
     };
   },
   computed:{
@@ -94,6 +97,9 @@ export default {
     }*/
   },
   methods: {
+    errorHide() {
+      setTimeout(() => (this.isError = false), 5000);
+    },
     handleLogin() {
       //console.log(this.$store);
       const user_group = UserService.getUserGroup()
@@ -126,25 +132,27 @@ export default {
       this.loading = true;
 
         if (this.user.username && this.user.password) {
-        
-          
           this.$store.dispatch('auth/login', this.user).then(
             () => {
-
-              console.log("deneme",localStorage)
               this.$router.push(`/${dashboard_link}`);
             },
-            error => {
-              console.log(error.response);
+            error => { 
               this.loading = false;
               this.message =
                 (error.response && error.response.data) ||
                 error.message ||
                 error.toString();
+              this.isError = false;
+              this.isError = true;
+              this.errorHide();
+              
             }
           );
         }
      
+    },
+    redirectUser(){
+      this.$router.push("/pages/forgot-password")
     }
   }
 };
