@@ -20,15 +20,13 @@
      
     </CHeaderNav>
     <CHeaderNav class="mr-4">
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-           <CIcon name="cil-person"/>
-          {{username}}
-
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-
       <TheHeaderDropdownAccnt/>
+      <CHeaderNavItem class="d-md-down-none mx-2">
+        <CButton  @click="logout"> 
+           <CIcon name="cil-lock-locked"/>
+            Çıkış Yap
+        </CButton>
+      </CHeaderNavItem>
     </CHeaderNav>
     <!--<CSubheader class="px-3">
       <CBreadcrumbRouter class="border-0 mb-0"/>
@@ -44,12 +42,17 @@ export default {
   components: {
     TheHeaderDropdownAccnt
   },
+  methods: {
+    logout(){
+      localStorage.clear()
+      this.$router.push("/pages/login");
+    },
+  },
   data(){
     return {
     username:'',
     nameSurname:''}
   },
-
   mounted() {
 
     console.log(localStorage)

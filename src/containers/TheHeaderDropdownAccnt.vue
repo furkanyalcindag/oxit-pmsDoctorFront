@@ -7,11 +7,8 @@
   >
     <template #toggler>
       <CHeaderNavLink>
-        <div class="c-avatar">
-          <img
-            src="https://www.oxit.com.tr/wp-content/themes/oxit/default/logo.png"
-            class="c-avatar-img "
-          />
+        <div>
+          {{username}}
         </div>
       </CHeaderNavLink>
     </template>
@@ -41,11 +38,6 @@
       <CIcon name="cil-settings" /> Ayarlar
     </CDropdownItem>
     
-    <CDropdownDivider/>
-   
-    <CDropdownItem @click="logout">
-      <CIcon  name="cil-lock-locked" /> Çıkış Yap
-    </CDropdownItem>
   </CDropdown>
 </template>
 
@@ -54,17 +46,27 @@ export default {
   name: 'TheHeaderDropdownAccnt',
   data () {
     return { 
-      itemsCount: 42
+      itemsCount: 42,
+      username:'',
+      nameSurname:''
     }
   },
 
-  methods :{
+   mounted() {
 
-    logout(){
-      localStorage.clear()
-      this.$router.push("/pages/login");
-    }
+    console.log(localStorage)
 
+    this.username = localStorage.getItem('username')
+    this.nameSurname = localStorage.getItem('user_name_surname')
+
+
+  },
+  watch: {
+   nameSurname() {
+      console.log('Data Değişti');
+       this.nameSurname = localStorage.getItem('user_name_surname')
+      // isOpen datasındaki değişliği yakaladık.
+   }
   }
 }
 </script>
