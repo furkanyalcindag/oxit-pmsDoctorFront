@@ -90,7 +90,7 @@ const CheckingAccountByCustomerList = () => import('@/views/checkingAccount/Chec
 Vue.use(Router)
 
 export default new Router({
-    mode: 'history', // https://router.vuejs.org/api/#mode
+    mode: 'hash', // https://router.vuejs.org/api/#mode
     linkActiveClass: 'active',
     scrollBehavior: () => ({y: 0}),
     routes: configRoutes()

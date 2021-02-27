@@ -173,7 +173,7 @@
                         <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
                         <CButton @click="addCarModal(item.uuid)" color="info">Araç Ekle</CButton>
                         <CButton @click="getAccountList(item.uuid)" color="success">Cari</CButton>
-                        <CButton color="danger">Sil</CButton>
+                        <CButton @click="setDeleteModalCustomer(item.uuid)" color="danger">Sil</CButton>
                         <CButton color="warning">Güncelle</CButton>
                       </CButtonGroup>
 
@@ -551,6 +551,28 @@
     </CModal>
 
 
+    <CModal
+        title="Modal title"
+        color="danger"
+        :show.sync="deleteCustomerModal"
+
+    >
+      Müşteriyi silmek istediğinizden emin misiniz?
+
+
+      <template #header>
+        <h6 class="modal-title">Uyarı</h6>
+        <CButtonClose @click="deleteCustomerModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="deleteCustomerModal = false" color="danger">Hayır</CButton>
+        <CButton @click="deleteCustomer" color="success">Evet</CButton>
+      </template>
+
+
+    </CModal>
+
+
   </div>
 </template>
 
@@ -562,8 +584,7 @@ import axios from "axios";
 import authHeader from "@/services/auth-header";
 import Car from "@/models/car";
 import CarService from "@/services/car.service";
-import CategoryService from "@/services/category.service";
-import Category from "@/models/category";
+import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 
 
 export default {
@@ -627,6 +648,8 @@ export default {
       options: ["Option 1", "Option 2", "Option 3"],
       deleteModal: false,
       deleteId: 0,
+      deleteCustomerModal: false,
+      deleteCustomerId: '',
       lastCustomerUUid: '',
       selectOptions: [
         "Option 1",
@@ -653,7 +676,7 @@ export default {
         "Inline Radios - custom",
       ],
       carUpdateModal: false,
-      carUpdateUUID:''
+      carUpdateUUID: ''
     };
   },
 
@@ -772,6 +795,57 @@ export default {
 
     },
 
+
+    setDeleteModalCustomer(id) {
+
+      this.deleteCustomerId = id
+      this.deleteCustomerModal = true
+
+    },
+
+
+    async deleteCustomer() {
+
+      console.log(this.updateBrand)
+      let a = await new CustomerService().deleteCustomer(this.deleteCustomerId);
+
+      if (a.status === 200) {
+
+        this.deleteCustomerModal = false;
+        await this.getCustomersPagination();
+         this.$toast.success({
+          title: 'Başarılı',
+          message: "Başarıyla Silindi"
+        })
+
+      } else if (a.status === 300) {
+        this.deleteCustomerModal = false;
+        let x = a.data[0]
+        this.$toast.error({
+          title: 'Hata',
+          message: x.value
+        })
+      } else if (a.status === 204) {
+        this.deleteCustomerModal = false;
+        let x = a.data[0]
+        this.$toast.error({
+          title: 'Hata',
+          message: x.value
+        })
+      } else if (a.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isError = false;
+        this.isError = true;
+        this.errors = a.data;
+        this.errorHide();
+      }
+    },
+
+
     async deleteCar() {
 
       console.log(this.updateBrand)
@@ -786,17 +860,18 @@ export default {
 
 
       } else if (a.status === 300) {
-        this.isError = false;
-        this.isError = true;
-        let x = a.data
-        this.errors = x;
-        this.errorHide();
+
+        let x = a.data[0]
+        this.$toast.error({
+          title: 'Hata',
+          message: x.value
+        })
       } else if (a.status === 204) {
-        this.isError = false;
-        this.isError = true;
-        let x = a.data
-        this.errors = x;
-        this.errorHide();
+        let x = a.data[0]
+        this.$toast.error({
+          title: 'Hata',
+          message: x.value
+        })
       } else if (a.status === 401) {
         this.isError = false;
         this.isError = true;
@@ -882,9 +957,8 @@ export default {
       let response = await new CarService().getCarApi(categoryId)
       this.carUpdate = response.data
       console.log("xxx", this.carUpdate)
-      this.carUpdateUUID=categoryId
+      this.carUpdateUUID = categoryId
       this.carUpdateModal = true
-
 
 
     },
@@ -900,7 +974,7 @@ export default {
 
         this.getCarPagination(this.carUpdate.profileUuid)
         this.successHide();
-        this.carModal =false
+        this.carModal = false
         this.carUpdate = new Car()
       } else if (carResponse.response.status === 401) {
         this.isError = false;
