@@ -207,18 +207,6 @@
 
                     </CCol>
 
-                    <CCol lg="2">
-
-                      <div class="form-actions" style="margin-top: 29px">
-                        <CButton type="submit" color="primary" @click="addCategory"
-                        >Kaydet
-                        </CButton>
-
-                      </div>
-
-
-                    </CCol>
-
 
                   </CRow>
 
@@ -235,7 +223,7 @@
       </template>
       <template #footer>
         <CButton @click="categoryUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="updateCategory" color="success">Kaydet</CButton>
+        <CButton @click="updateCategory" color="success">Güncelle</CButton>
       </template>
     </CModal>
 

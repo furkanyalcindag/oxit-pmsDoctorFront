@@ -48,7 +48,7 @@
 
       <CCol col="12" sm="6" lg="3">
         <CWidgetIcon
-            :header="this.dashData.remainingDebt + ` ₺`"
+            :header="this.dashData.remainingDebt ? this.dashData.remainingDebt : '0.00'  + ` ₺`"
             text="Toplam Alacak"
             color="danger"
             :icon-padding="false"
@@ -57,9 +57,7 @@
           <template #footer>
             <CCardFooter class="card-footer px-3 py-2">
               <CLink
-                  class="font-weight-bold font-xs btn-block text-muted"
-                  href="https://coreui.io/"
-              >
+                  class="font-weight-bold font-xs btn-block text-muted">
                 View more
                 <CIcon name="cil-arrowRight" class="float-right" width="16"/>
               </CLink>

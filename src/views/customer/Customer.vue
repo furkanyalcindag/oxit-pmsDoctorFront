@@ -589,6 +589,7 @@ export default {
         {key: "year", label: "Yıl"},
         {key: "chassisNumber", label: "Şase No"},
         {key: "engineNumber", label: "Motor No"},
+        {key: "currentKM", label: "Kilometre"},
         {key: "actions", label: "İşlemler"}
       ],
       pageLabel: {label: 'sasasa', external: true,},

@@ -50,7 +50,7 @@
 
                     <CSelect
                         :options="serviceTypes"
-                        label="Servis Tipi"
+                        label="Servis Tipi (Zorunlu Alan)"
                         v-model="service.serviceType"
                         :value.sync="service.serviceType"
 
@@ -58,7 +58,7 @@
 
 
                     <CInput
-                        label="Araç KM"
+                        label="Araç KM (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="service.serviceKM"
@@ -68,21 +68,21 @@
 
                   <CCol lg="4">
                     <CInput
-                        label="Teslim Eden Kişi"
+                        label="Teslim Eden Kişi (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="service.responsiblePerson"
                     />
                     <CSelect
                         :options="servicemen"
-                        label="Usta"
+                        label="Usta (Zorunlu Alan)"
                         v-model="service.serviceman"
                         :value.sync="service.serviceman"
 
                     />
                     <CSelect
                         :options="cameras"
-                        label="Kamera"
+                        label="Kamera (Zorunlu Alan)"
                         v-model="service.camera"
                         :value.sync="service.camera"
 
@@ -94,7 +94,7 @@
                   <CCol lg="4">
                     <CTextarea
                         :rows="5"
-                        label="Şikayet"
+                        label="Şikayet (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
                         v-model="service.complaint"
@@ -152,7 +152,7 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton @click="getCarPagination(item.uuid)" color="primary">Servis Detay</CButton>
+                        <CButton @click="redirectUser()" color="primary">Servis Detay</CButton>
 
                       </CButtonGroup>
 
@@ -277,6 +277,9 @@ export default {
   methods: {
     validator(val) {
       return val ? val.length >= 4 : false;
+    },
+    redirectUser(){
+      this.$router.push("/service/service-list")
     },
     getBadge(status) {
       switch (status) {

@@ -58,6 +58,7 @@ const Modals = () => import('@/views/notifications/Modals')
 const Page404 = () => import('@/views/pages/Page404')
 const Page500 = () => import('@/views/pages/Page500')
 const Login = () => import('@/views/pages/Login')
+const ForgotPassword = () => import('@/views/pages/ForgotPassword')
 const Register = () => import('@/views/pages/Register')
 
 // Users
@@ -535,6 +536,11 @@ function configRoutes() {
                     path: 'login',
                     name: 'Login',
                     component: Login
+                },
+                {
+                    path: 'forgot-password',
+                    name: 'ForgotPassword',
+                    component: ForgotPassword
                 },
                 {
                     path: 'register',
