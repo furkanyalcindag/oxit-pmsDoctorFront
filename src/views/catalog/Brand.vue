@@ -42,7 +42,7 @@
                       color="danger"
                       :show="isError"
                   >
-                 {{ value }}
+                    {{ value }}
 
                   </CAlert>
                 </div>
@@ -242,7 +242,6 @@ import Brand from "@/models/brand";
 import BrandService from "@/services/brand.service";
 
 
-
 export default {
   name: "Brand",
 
@@ -357,6 +356,7 @@ export default {
         this.successHide();
         this.getCategories();
         this.getSelectCategories();
+        this.category = new Category()
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
@@ -443,15 +443,13 @@ export default {
         await this.getBrands();
         this.updateBrand = new Brand()
 
-      }  else if (a.status === 204) {
+      } else if (a.status === 204) {
         this.isError = false;
         this.isError = true;
-        let x = [{'1':'Bu marka, kaydedilen bir ürünle ilişkili olduğu için silinemez'}]
-        this.errors =x;
+        let x = [{'1': 'Bu marka, kaydedilen bir ürünle ilişkili olduğu için silinemez'}]
+        this.errors = x;
         this.errorHide();
-      }
-
-      else if (a.status === 401) {
+      } else if (a.status === 401) {
         this.isError = false;
         this.isError = true;
         this.errorHide();
@@ -503,10 +501,9 @@ export default {
       let response = await new BrandService().getBrands();
       console.log(response)
 
-      if(response.status===200){
+      if (response.status === 200) {
         this.brands = response.data.data
-      }
-      else {
+      } else {
         await this.$router.push("/pages/login");
       }
 

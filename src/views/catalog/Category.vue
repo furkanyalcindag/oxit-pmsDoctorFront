@@ -374,6 +374,7 @@ export default {
         this.successHide();
         this.getCategories();
         this.getSelectCategories();
+        this.category = new Category()
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;

@@ -728,6 +728,7 @@ export default {
         this.isSuccess = true;
         this.successHide();
         this.getCustomersPagination();
+        this.customer = new Customer()
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
@@ -813,7 +814,7 @@ export default {
 
         this.deleteCustomerModal = false;
         await this.getCustomersPagination();
-         this.$toast.success({
+        this.$toast.success({
           title: 'Başarılı',
           message: "Başarıyla Silindi"
         })
@@ -924,6 +925,7 @@ export default {
         this.isSuccessCar = true;
         this.successHideCar();
         //this.getCustomersPagination();
+        this.car = new Car();
       } else if (a.response.status === 401) {
         this.isErrorCar = false;
         this.isErrorCar = true;
