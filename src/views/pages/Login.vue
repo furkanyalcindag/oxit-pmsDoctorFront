@@ -136,12 +136,14 @@ export default {
             () => {
               this.$router.push(`/${dashboard_link}`);
             },
-            error => { 
+            error => {
+              console.log(error)
               this.loading = false;
               this.message =
                 (error.response && error.response.data) ||
                 error.message ||
                 error.toString();
+              this.message="djshdjshds"
               this.isError = false;
               this.isError = true;
               this.errorHide();

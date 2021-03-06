@@ -65,7 +65,7 @@
                                 <h6>Giriş Zamanı : {{ serviceDetail.creationDate }} </h6>
                                 <hr>
                                 <h6>
-                                  Tespit: {{serviceDetail.description}}
+                                  Tespit: {{ serviceDetail.description }}
                                 </h6>
                                 <hr>
                                 <h6>
@@ -204,7 +204,6 @@
                         </CCol>
 
 
-
                       </CRow>
 
 
@@ -292,7 +291,7 @@
                                     <CListGroupItem class="d-flex justify-content-between align-items-center"
                                                     v-for="product in products" :key="product" href="#">
                                       <CButton align="right" size="sm" color="success"
-                                               @click="addCart(product.name,product.uuid,1,product.netPrice,product.barcodeNumber)">
+                                               @click="addCart(product.name,product.uuid,1,product.netPrice,product.barcodeNumber, product.quantity)">
                                         <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
                                       </CButton>
                                       <span>{{ product.barcodeNumber }}  | {{ product.name }} | {{ product.netPrice }} ₺ |  %{{
@@ -372,14 +371,14 @@
                     </CAlert>
 
 
-                     <CAlert
-                      v-for="(value,key) in errors"
-                      :key="value.message"
-                      color="danger"
-                      :show="isError"
-                  >
-                    {{ key }}: {{ value[0] }}
-                  </CAlert>
+                    <CAlert
+                        v-for="(value,key) in errors"
+                        :key="value.message"
+                        color="danger"
+                        :show="isError"
+                    >
+                      {{ key }}: {{ value[0] }}
+                    </CAlert>
                   </div>
 
 
@@ -565,6 +564,7 @@ import Cart from "@/models/cart";
 import VueUploadMultipleImage from 'vue-upload-multiple-image';
 import axios from "axios";
 import authHeader from "@/services/auth-header";
+import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 
 export default {
   name: "ServiceDetermination",
@@ -653,9 +653,9 @@ export default {
       carPlate: '',
       barcodeSearch: '',
       carts: [],
-      laborPrice:0,
-      laborTaxRate:0,
-      laborName:'İşcilik Hizmeti',
+      laborPrice: 0,
+      laborTaxRate: 0,
+      laborName: 'İşcilik Hizmeti',
 
       primaryText: "Fotoğraf Yükle",
       browseText: "Fotoğraf Yükle",
@@ -725,7 +725,7 @@ export default {
 
     async addDetermination() {
 
-      let response = await new ServiceService().addServiceDetermination(this.$route.params.serviceId, this.imagesPost, this.carts, this.determination,this.laborPrice,this.laborTaxRate,this.laborName);
+      let response = await new ServiceService().addServiceDetermination(this.$route.params.serviceId, this.imagesPost, this.carts, this.determination, this.laborPrice, this.laborTaxRate, this.laborName);
       //console.log(response)
 
       if (response.status === 200) {
@@ -831,13 +831,34 @@ export default {
       this.loading = false
     },
 
-    addCart(name, uuid, quantity, netPrice,barcodeNumber) {
+    addCart(name, uuid, quantity, netPrice, barcodeNumber,originalStock) {
       console.log("netPrice", netPrice)
 
-      let cartItem = new Cart(uuid, name, quantity, netPrice,barcodeNumber)
+      let cartItem = new Cart(uuid, name, quantity, netPrice, barcodeNumber)
+      var isExist = false
+
+      for (var i = 0; i < this.carts.length; i++) {
+        if (this.carts[i].uuid === uuid) {
+          if(originalStock<parseInt(this.carts[i].quantity) + parseInt(quantity)){
+               this.$toast.error({
+          title: 'Hata',
+          message: "Ürün Stokta Yok"
+        })
+          }
+          else {
+             this.carts[i].quantity = parseInt(this.carts[i].quantity) + parseInt(quantity)
+          }
+
+          isExist = true
+        }
+
+      }
+      if (!isExist){
+        this.carts.push(cartItem)
+      }
 
       console.log("item", cartItem)
-      this.carts.push(cartItem)
+
       console.log(this.carts)
       this.calculateCartTotal()
 
@@ -859,7 +880,7 @@ export default {
       console.log("asasasa", this.carts)
       for (let i = 0; i < this.carts.length; i++) {
 
-        x = parseFloat(x) + parseFloat(this.carts[i].netPrice);
+        x = parseFloat(x) + (parseFloat(this.carts[i].netPrice)*parseInt(this.carts[i].quantity));
 
       }
 
@@ -874,7 +895,6 @@ export default {
       this.categoryUpdateModal = true
       this.categoryUpdate.id = categoryId
       this.categoryUpdate.parent = 5
-
 
     },
 

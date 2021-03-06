@@ -81,6 +81,11 @@
 
 
               </CCardBody>
+              <CCardFooter style="padding-bottom: 10px">
+
+                <b class="float-right">Kalan Borç: {{ remainCheckout }} ₺</b>
+                <b class="float-right" style="margin-right: 10px">Ödenen: {{ totalCheckout }} ₺</b>
+              </CCardFooter>
             </template>
           </CCard>
         </transition>
@@ -447,7 +452,9 @@ export default {
       carPlate: '',
       paymentMovements: [],
       paymentsModal: false,
-      discountModal: false
+      discountModal: false,
+      remainCheckout:0,
+      totalCheckout:0
     };
   },
 
@@ -497,6 +504,8 @@ export default {
 
       let response = await new CheckingAccountService().checkingAccountListByCustomer(this.$route.params.customerId);
 
+      this.remainCheckout = response.data.remainCheckout
+      this.totalCheckout = response.data.totalCheckout
       this.checkingAccounts = response.data.data
 
     },
