@@ -225,6 +225,7 @@
                             :drag-text="dragText"
                             :markIsPrimaryText="markPrimary"
                             :popupText="popupText"
+                            :max-image="100"
 
                         ></vue-upload-multiple-image>
                       </div>
@@ -313,7 +314,11 @@
                                       <CButton align="left" size="sm" color="danger" @click="removeCart(index)">
                                         <CIcon :content="$options.freeSet.cilMinus" name="cil-minus"/>
                                       </CButton>
+                                      <CButton align="left" size="sm" color="danger" @click="removeCart(index)">
+                                        <CIcon :content="$options.freeSet.cilMoney" name="cil-minus"/>
+                                      </CButton>
                                       <span>{{ cart.barcodeNumber }} | {{ cart.name }} | {{ cart.netPrice }} ₺</span>
+
 
                                       <CBadge color="primary" shape="pill">{{ cart.quantity }}</CBadge>
                                     </CListGroupItem>
@@ -854,7 +859,20 @@ export default {
 
       }
       if (!isExist){
-        this.carts.push(cartItem)
+
+         if(originalStock===0){
+               this.$toast.error({
+          title: 'Hata',
+          message: "Ürün Stokta Yok"
+        })
+          }
+          else {
+             this.carts.push(cartItem)
+          }
+
+
+
+
       }
 
       console.log("item", cartItem)
