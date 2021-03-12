@@ -314,7 +314,7 @@
                                       <CButton align="left" size="sm" color="danger" @click="removeCart(index)">
                                         <CIcon :content="$options.freeSet.cilMinus" name="cil-minus"/>
                                       </CButton>
-                                      <CButton align="left" size="sm" color="danger" @click="removeCart(index)">
+                                      <CButton align="left" size="sm" color="danger" @click="editCart(index,cart.netPrice)">
                                         <CIcon :content="$options.freeSet.cilMoney" name="cil-minus"/>
                                       </CButton>
                                       <span>{{ cart.barcodeNumber }} | {{ cart.name }} | {{ cart.netPrice }} ₺</span>
@@ -550,6 +550,61 @@
     </CModal>
 
 
+
+
+
+
+
+
+    <CModal
+        :show.sync="showCartEditPrice"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="m"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="showCartEditPrice">
+              <template>
+                <CCardBody>
+                  <CInput
+                          label="Raf Numarası"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="editPrice"
+
+                      />
+
+
+                </CCardBody>
+              </template>
+
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Ürün Fiyatı</h6>
+        <CButtonClose @click="showCartEditPrice = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="showCartEditPrice = false" color="danger">Kapat</CButton>
+
+      </template>
+    </CModal>
+
+
+
+
+
+
+
+
+
+
   </div>
 </template>
 
@@ -626,6 +681,8 @@ export default {
       showAddCar: true,
       showAddProduct: false,
       horizontal: {label: "col-3", input: "col-9"},
+      showCartEditPrice:false,
+      editPrice:0,
 
       selectOptions: [
         "Option 1",
@@ -889,6 +946,28 @@ export default {
       this.carts.splice(index, 1)
       console.log(this.carts)
       this.calculateCartTotal()
+
+
+    },
+    editCartModal(index,price) {
+      this.showCartEditPrice=true
+      this.editPrice = price
+      this.activeIndex = index
+    },
+    editCartPrice(){
+
+      if(this.editPrice!=null){
+
+
+        this.carts[this.activeIndex].netPrice=this.editPrice
+         this.showCartEditPrice=false
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Ürün Stokta Yok"
+        })
+
+      }
+
 
 
     },
