@@ -309,15 +309,15 @@
                                   <CCardHeader><b>Sepet</b> <span class="float-right">Toplam: {{ cartTotal }} ₺</span>
                                   </CCardHeader>
                                   <CListGroup flush>
-                                    <CListGroupItem class="d-flex justify-content-between align-items-center"
+                                    <CListGroupItem class="d-flex  align-items-center"
                                                     v-for="(cart,index) in carts" :key="cart" href="#">
-                                      <CButton align="left" size="sm" color="danger" @click="removeCart(index)">
+                                      <CButton align="left" style="margin-right: 10px" size="sm" color="danger" @click="removeCart(index)">
                                         <CIcon :content="$options.freeSet.cilMinus" name="cil-minus"/>
                                       </CButton>
-                                      <CButton align="left" size="sm" color="danger" @click="editCart(index,cart.netPrice)">
+                                      <CButton align="left"  style="margin-right: 10px"  size="sm" color="success" @click="editCartModal(index,cart.netPrice)">
                                         <CIcon :content="$options.freeSet.cilMoney" name="cil-minus"/>
                                       </CButton>
-                                      <span>{{ cart.barcodeNumber }} | {{ cart.name }} | {{ cart.netPrice }} ₺</span>
+                                      <span  style="margin-right: 10px" >{{ cart.barcodeNumber }} | {{ cart.name }} | {{ cart.netPrice }} ₺</span>
 
 
                                       <CBadge color="primary" shape="pill">{{ cart.quantity }}</CBadge>
@@ -592,6 +592,7 @@
       </template>
       <template #footer>
         <CButton @click="showCartEditPrice = false" color="danger">Kapat</CButton>
+         <CButton @click="editCartPrice" color="success">Düzenle</CButton>
 
       </template>
     </CModal>
@@ -963,8 +964,9 @@ export default {
          this.showCartEditPrice=false
         this.$toast.success({
           title: 'Başarılı',
-          message: "Ürün Stokta Yok"
+          message: "Ürün Fiyatı Düzenlendi"
         })
+        this.calculateCartTotal()
 
       }
 
