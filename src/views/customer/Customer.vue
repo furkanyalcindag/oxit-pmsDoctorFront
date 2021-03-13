@@ -3,7 +3,7 @@
     <CRow>
       <CCol lg="12">
         <transition name="fade">
-          <CCard v-if="show">
+          <CCard v-if="showCustomerForm">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
               Müşteri
@@ -169,8 +169,8 @@
                   <template #actions="{ item, index }">
                     <td class="py-2">
 
-                      <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton @click="sendPassword(item.uuid)" color="dark">Şifre</CButton>
+                      <CButtonGroup class="mx-1 d-sm-down-none" v-if="showCustomerForm">
+                        <CButton @click="sendPassword(item.uuid)" color="dark">Mail Gönder</CButton>
                         <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
                         <CButton @click="addCarModal(item.uuid)" color="info">Araç Ekle</CButton>
                         <CButton @click="getAccountList(item.uuid)" color="success">Cari</CButton>
@@ -818,7 +818,8 @@ export default {
       carUpdateModal: false,
       carUpdateUUID: '',
       isErrorCustomerUpdate: false,
-      errorsCustomer: []
+      errorsCustomer: [],
+      showCustomerForm: false
     };
   },
 
@@ -861,6 +862,11 @@ export default {
       console.log("car", this.car)
 
     },
+    groupControl(){
+      if(localStorage.getItem("user_group")==="Admin"){
+        this.showCustomerForm = true
+      }
+    },
 
     async addCustomer() {
       let a = await new CustomerService().customerAdd(this.customer);
@@ -888,7 +894,7 @@ export default {
 
       this.$toast.info({
           title: 'Bilgi',
-          message: "Şifre gönderiliyor"
+          message: "Şifre gönderiliyor ve mail ayarları açılıyor"
         });
       let a = await new CustomerService().customerSendPassword(id);
       console.log("status", a);
@@ -1216,6 +1222,7 @@ export default {
 
   },
   async mounted() {
+    this.groupControl()
     await this.getCustomersPagination();
 
   },
