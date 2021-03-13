@@ -170,11 +170,12 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
+                        <CButton @click="sendPassword(item.uuid)" color="dark">Şifre</CButton>
                         <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
                         <CButton @click="addCarModal(item.uuid)" color="info">Araç Ekle</CButton>
                         <CButton @click="getAccountList(item.uuid)" color="success">Cari</CButton>
                         <CButton @click="setDeleteModalCustomer(item.uuid)" color="danger">Sil</CButton>
-                        <CButton color="warning">Güncelle</CButton>
+                        <CButton @click="getSingleCustomer(item.uuid)" color="warning">Güncelle</CButton>
                       </CButtonGroup>
 
 
@@ -573,6 +574,142 @@
     </CModal>
 
 
+    <CModal
+        :show.sync="customerUpdateModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="customerUpdateModal">
+              <template>
+                <CCardBody>
+
+                  <div>
+                    <CAlert color="success" :show="isSuccessCar">
+                      Müşteri başarıyla kaydedildi.
+                    </CAlert>
+
+
+                    <CAlert
+                        v-for="(value,key) in errorsCustomer"
+                        :key="value.message"
+                        color="danger"
+                        :show="isErrorCustomerUpdate"
+                    >
+                      {{ key }}: {{ value[0] }}
+                    </CAlert>
+
+
+                  </div>
+
+
+                  <CRow>
+                    <CCol lg="4">
+                      <CInput
+                          label="Ad (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="customerUpdate.firstName"
+                      />
+
+                      <CInput
+                          label="Soyad (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="customerUpdate.lastName"
+                      />
+
+                      <CInput
+                          label="Email Adresi (Zorunlu Alan)"
+                          description=""
+                          type="email"
+                          autocomplete="email"
+                          prepend="@"
+                          v-model="customerUpdate.username"
+                      />
+                    </CCol>
+
+                    <CCol lg="4">
+                      <CInput
+                          label="Telefon Numarası (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="customerUpdate.mobilePhone"
+                      />
+                      <CTextarea
+                          :rows="5"
+                          label="Adres"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="customerUpdate.address"
+                      />
+
+                      <!-- <CRow form class="form-group">
+                         <CCol tag="label" sm="4" class="col-form-label">
+                           Kurumsal
+                         </CCol>
+
+                         <CCol sm="8" :class="'form-inline'">
+                           <CInputCheckbox
+                               :label="'evet'"
+                               :value="'true'"
+                               :checked="isCorporate"
+                               v-on:change="isCorporateControl"
+                           />
+                         </CCol>
+                       </CRow>-->
+                    </CCol>
+
+                    <CCol lg="4">
+                      <CInput
+                          label="Firma Adı"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="customerUpdate.firmName"
+                      />
+
+
+                      <CInput
+                          label="Vergi Dairesi"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="customerUpdate.taxOffice"
+                      />
+
+                      <CInput
+                          label="Vergi Numarası"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="customerUpdate.taxNumber"
+                      />
+
+
+                    </CCol>
+                  </CRow>
+
+
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Müşteri Güncelle</h6>
+        <CButtonClose @click="customerUpdateModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="customerUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="updateCustomer" color="success">Güncelle</CButton>
+      </template>
+    </CModal>
+
+
   </div>
 </template>
 
@@ -585,6 +722,7 @@ import authHeader from "@/services/auth-header";
 import Car from "@/models/car";
 import CarService from "@/services/car.service";
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
+import BrandService from "@/services/brand.service";
 
 
 export default {
@@ -633,6 +771,7 @@ export default {
       errorsCarDelete: [],
       isErrorCarDelete: false,
       isSuccessCarDelete: false,
+      customerUpdate: new Customer("", "", "", "", "", "", "", "", ""),
 
 
       details: [],
@@ -647,6 +786,7 @@ export default {
       horizontal: {label: "col-3", input: "col-9"},
       options: ["Option 1", "Option 2", "Option 3"],
       deleteModal: false,
+      customerUpdateModal: false,
       deleteId: 0,
       deleteCustomerModal: false,
       deleteCustomerId: '',
@@ -676,7 +816,9 @@ export default {
         "Inline Radios - custom",
       ],
       carUpdateModal: false,
-      carUpdateUUID: ''
+      carUpdateUUID: '',
+      isErrorCustomerUpdate: false,
+      errorsCustomer: []
     };
   },
 
@@ -742,8 +884,64 @@ export default {
       }
     },
 
+    async sendPassword(id) {
+
+      this.$toast.info({
+          title: 'Bilgi',
+          message: "Şifre gönderiliyor"
+        });
+      let a = await new CustomerService().customerSendPassword(id);
+      console.log("status", a);
+      if (a.status === 200) {
+        this.$toast.removeAll()
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Şifre Başarıyla Gönderildi"
+        });
+
+      } else if (a.response.status === 401) {
+        this.isErrorCustomerUpdate = false;
+        this.isErrorCustomerUpdate = true;
+        this.errorHideUpdateCustomer();
+        await this.$router.push("/pages/login");
+      } else {
+       this.$toast.error({
+          title: 'Hata',
+          message: "Lütfen daha sonra tekrar deneyin."
+        });
+      }
+    },
+    async updateCustomer() {
+      let a = await new CustomerService().updateCustomer(this.customerUpdate);
+      console.log("status", a);
+      if (a.status === 200) {
+        this.isSuccess = false;
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Başarıyla Güncellendi"
+        });
+        this.customerUpdateModal = false
+        this.getCustomersPagination();
+        this.customer = new Customer()
+      } else if (a.response.status === 401) {
+        this.isErrorCustomerUpdate = false;
+        this.isErrorCustomerUpdate = true;
+        this.errorHideUpdateCustomer();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isErrorCustomerUpdate = false;
+        this.isErrorCustomerUpdate = true;
+        this.errorsCustomer = a.response.data;
+        this.errorHideUpdateCustomer();
+      }
+    },
+
+
     errorHide() {
       setTimeout(() => (this.isError = false), 5000);
+    },
+    errorHideUpdateCustomer() {
+      setTimeout(() => (this.isErrorCustomerUpdate = false), 5000);
     },
     successHide() {
       setTimeout(() => (this.isSuccess = false), 5000);
@@ -764,6 +962,18 @@ export default {
       let customersRes = await new CustomerService().customerGet('', '', '');
       this.customers = customersRes;
     },
+
+
+    async getSingleCustomer(id) {
+
+
+      let response = await new CustomerService().getSingleCustomer(id);
+
+      this.customerUpdate = response.data
+      this.customerUpdateModal = true
+
+    },
+
 
     getCustomersPagination() {
 
@@ -973,7 +1183,10 @@ export default {
         this.isSuccess = false;
         this.isSuccess = true;
         this.carUpdateModal = false;
-
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Başarıyla Güncellendi"
+        });
         this.getCarPagination(this.carUpdate.profileUuid)
         this.successHide();
         this.carModal = false

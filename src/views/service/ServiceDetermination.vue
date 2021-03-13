@@ -571,7 +571,7 @@
               <template>
                 <CCardBody>
                   <CInput
-                          label="Raf Numarası"
+                          label="Fiyat"
                           description=""
                           autocomplete="autocomplete"
                           v-model="editPrice"

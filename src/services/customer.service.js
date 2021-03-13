@@ -34,6 +34,86 @@ class CustomerService {
 
     }
 
+    getSingleCustomer(id) {
+        const params = {
+            id: id
+
+        };
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/customer-get-api/`, {headers: authHeader(), params})
+
+
+    }
+    updateCustomer(customer) {
+
+        const params = {
+            id: customer.uuid
+
+        };
+
+
+        return axios.put(process.env.VUE_APP_API_URL + '/car-service/customer-api/',
+            {
+
+                firstName: customer.firstName,
+                lastName: customer.lastName,
+                username: customer.username,
+                mobilePhone: customer.mobilePhone,
+                address: customer.address,
+                isCorporate: customer.isCorporate,
+                firmName: customer.firmName,
+                taxNumber: customer.taxNumber,
+                taxOffice: customer.taxOffice
+
+            }, {
+                headers: authHeader(),
+                params
+            }).then(response => {
+            console.log(response)
+
+
+            return response;
+        }).catch(error => {
+            console.log("hata", error)
+            return error
+        });
+
+
+    }
+
+
+
+    customerSendPassword(uuid) {
+
+        const params = {
+            id: uuid
+
+        };
+
+
+        return axios.post(process.env.VUE_APP_API_URL + '/car-service/customer-send-password-api/',
+            {
+
+
+
+            }, {
+                headers: authHeader(),
+                params
+            }).then(response => {
+            console.log(response)
+
+
+            return response;
+        }).catch(error => {
+            console.log("hata", error)
+            return error
+        });
+
+
+    }
+
+
+
+
     customerGet(search, page, per_page) {
 
         axios.get(`http://localhost:8000/car-service/customer-api/?search=${search}&page=1&per_page=10`, {headers: authHeader()})

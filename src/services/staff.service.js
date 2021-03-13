@@ -4,6 +4,27 @@ import authHeader from "@/services/auth-header";
 
 class StaffService {
 
+
+    deleteStaff(id) {
+        const params = {
+            id: id
+
+        };
+        return axios.delete(process.env.VUE_APP_API_URL + `/car-service/staff-api/`, {
+            headers: authHeader(),
+            params
+        }).then(response => {
+            console.log(response)
+            return response;
+        }).catch(error => {
+            console.log("hata", error.data)
+            return error;
+        });
+
+
+    }
+
+
     addStaff(staff) {
         return axios.post(process.env.VUE_APP_API_URL + '/car-service/staff-api/',
             {
@@ -29,8 +50,55 @@ class StaffService {
     }
 
 
+    updateStaff(staff) {
+
+        const params = {
+            id: staff.uuid
+
+        };
+
+
+        return axios.put(process.env.VUE_APP_API_URL + '/car-service/staff-api/',
+            {
+
+               firstName: staff.firstName,
+                lastName: staff.lastName,
+                username: staff.username,
+                mobilePhone: staff.mobilePhone,
+                address: staff.address,
+                group: staff.group
+
+
+            }, {
+                headers: authHeader(),
+                params
+            }).then(response => {
+            console.log(response)
+
+
+            return response;
+        }).catch(error => {
+            console.log("hata", error)
+            return error
+        });
+
+
+    }
+
+
+
     getStaffs() {
         return axios.get(process.env.VUE_APP_API_URL + `/car-service/staff-api/`, {headers: authHeader()})
+
+
+    }
+
+    getStaff(id) {
+        const params = {
+            id: id
+
+        };
+        return axios.get(process.env.VUE_APP_API_URL + `/car-service/staff-api/`, {headers: authHeader(), params})
 
 
     }
