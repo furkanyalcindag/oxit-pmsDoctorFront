@@ -258,9 +258,11 @@
       </CRow>
       <template #header>
         <h6 class="modal-title">Ödeme Hareketleri</h6>
+
         <CButtonClose @click="paymentsModal = false" class="text-white"/>
       </template>
       <template #footer>
+         <CButton @click="getPaymentMovementPdf" color="primary" class="float-right">Ekstre</CButton>
         <CButton @click="paymentsModal = false" color="danger">Kapat</CButton>
 
       </template>
@@ -447,7 +449,8 @@ export default {
       carPlate: '',
       paymentMovements: [],
       paymentsModal: false,
-      discountModal: false
+      discountModal: false,
+      checkingAccountUUID:''
     };
   },
 
@@ -471,6 +474,12 @@ export default {
     },
 
 
+    async getPaymentMovementPdf() {
+      let response = await new CheckingAccountService().getPaymentMovementPdf(this.checkingAccountUUID);
+      console.log(response)
+    },
+
+
     toggleDetails(item) {
       this.$set(this.items[item.id], "_toggled", !item._toggled);
       this.collapseDuration = 300;
@@ -479,9 +488,6 @@ export default {
       });
     },
 
-    deneme() {
-      console.log("ghg", this.category)
-    },
 
 
     async getServiceList() {
@@ -503,7 +509,7 @@ export default {
 
     async getPaymentMovementsList(id) {
 
-
+      this.checkingAccountUUID=id
       let response = await new CheckingAccountService().getPaymentMovement(id);
 
       this.paymentMovements = response.data

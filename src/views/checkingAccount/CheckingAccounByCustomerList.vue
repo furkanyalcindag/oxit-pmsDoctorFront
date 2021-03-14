@@ -266,6 +266,7 @@
         <CButtonClose @click="paymentsModal = false" class="text-white"/>
       </template>
       <template #footer>
+          <CButton @click="getPaymentMovementPdf" color="primary" class="float-right">Ekstre</CButton>
         <CButton @click="paymentsModal = false" color="danger">Kapat</CButton>
 
       </template>
@@ -486,8 +487,9 @@ export default {
       });
     },
 
-    deneme() {
-      console.log("ghg", this.category)
+    async getPaymentMovementPdf() {
+      let response = await new CheckingAccountService().getPaymentMovementPdf(this.checkingAccountUUID);
+      console.log(response)
     },
 
 
