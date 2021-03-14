@@ -8,7 +8,7 @@
               <CIcon name="cil-pencil"/>
               Personel İşlemleri
               <div class="card-header-actions">
-            
+
                 <CLink
                     class="card-header-action btn-minimize"
                     @click="formCollapsed = !formCollapsed"
@@ -17,7 +17,7 @@
                       :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
                   />
                 </CLink>
-              
+
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
@@ -136,8 +136,8 @@
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
 
-                        <CButton color="danger">Sil</CButton>
-                        <CButton color="warning">Güncelle</CButton>
+                        <CButton @click="setDeleteModal(item.uuid)" color="danger">Sil</CButton>
+                        <CButton @click="getSingleStaff(item.uuid)" color="warning">Güncelle</CButton>
                       </CButtonGroup>
 
 
@@ -162,12 +162,141 @@
     </CRow>
 
 
+    <CModal
+        title="Modal title"
+        color="danger"
+        :show.sync="deleteModel"
+    >
+      Personeli silmek istediğinizden emin misiniz?
+
+
+      <template #header>
+        <h6 class="modal-title">Uyarı</h6>
+        <CButtonClose @click="deleteModel = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
+        <CButton @click="deleteStaff" color="success">Evet</CButton>
+      </template>
+
+
+    </CModal>
+
+
+    <CModal
+        :show.sync="staffUpdateModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="staffUpdateModal">
+              <template>
+                <CCardBody>
+
+                  <div>
+                    <CAlert color="success" :show="isSuccessCar">
+                      Personel başarıyla kaydedildi.
+                    </CAlert>
+
+
+                    <CAlert
+                        v-for="(value,key) in errorsStaff"
+                        :key="value.message"
+                        color="danger"
+                        :show="isErrorStaffUpdate"
+                    >
+                      {{ key }}: {{ value[0] }}
+                    </CAlert>
+
+
+                  </div>
+
+
+                  <CRow>
+                    <CCol lg="6">
+                      <CInput
+                          label="Ad (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="staffUpdate.firstName"
+                      />
+
+                      <CInput
+                          label="Soyad (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="staffUpdate.lastName"
+                      />
+
+                      <CInput
+                          label="Email (Zorunlu Alan)"
+                          description=""
+                          type="email"
+                          autocomplete="email"
+                          prepend="@"
+                          v-model="staffUpdate.username"
+                      />
+                    </CCol>
+
+                    <CCol lg="6">
+                      <CInput
+                          label="Telefon Numarası (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="staffUpdate.mobilePhone"
+                      />
+
+
+                      <CSelect
+                          :options="groups"
+                          label="Grup (Zorunlu Alan)"
+                          v-model="staffUpdate.group"
+                          :value.sync="staffUpdate.group"
+
+                      />
+
+                      <CTextarea
+                          :rows="3"
+                          label="Adres"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="staffUpdate.address"
+                      />
+
+                    </CCol>
+
+
+                  </CRow>
+
+
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Personel Güncelle</h6>
+        <CButtonClose @click="staffUpdateModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="updateStaffFunc" color="success">Güncelle</CButton>
+      </template>
+    </CModal>
+
+
   </div>
 </template>
 
 <script>
 import Customer from "../../models/customer";
-import CustomerService from "@/services/customer.service";
+
 
 import axios from "axios";
 import authHeader from "@/services/auth-header";
@@ -176,6 +305,8 @@ import Car from "@/models/car";
 import Staff from "@/models/Staff";
 import StaffService from "@/services/staff.service";
 import GeneralService from "@/services/general.service";
+import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
+import CustomerService from "@/services/customer.service";
 
 
 export default {
@@ -203,14 +334,16 @@ export default {
       cars: [],
       staffs: [],
       staff: new Staff("", "", "", "", "", ""),
+      staffUpdate: new Customer("", "", "", "", "", "", "", ""),
       customer: new Customer("", "", "", "", "", "", "", ""),
       car: new Car("", "", "", "", "", "", "", "", "", "", ""),
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
+      errorsStaff: [],
+      isErrorCustomerUpdate: false,
       groups: [],
-
-
+      staffUpdateModal: false,
       details: [],
       errors: [],
       errorsCar: [],
@@ -246,6 +379,8 @@ export default {
         "Radios - custom",
         "Inline Radios - custom",
       ],
+      deleteModel: false,
+      deleteId: ''
     };
   },
 
@@ -290,6 +425,42 @@ export default {
     },
 
 
+    setDeleteModal(id) {
+
+      this.deleteId = id
+      this.deleteModel = true
+
+    },
+
+
+    async deleteStaff() {
+
+      console.log(this.updateBrand)
+      let a = await new StaffService().deleteStaff(this.deleteId);
+      console.log("statusDelete", a);
+      if (a.status === 200) {
+
+        this.deleteModel = false;
+        this.successHide();
+        this.getStaffs()
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Başarıyla Silindi"
+        });
+
+      } else if (a.status === 401) {
+        this.isError = false;
+        this.isError = true;
+        this.errorHide();
+        await this.$router.push("/pages/login");
+      } else {
+        this.$toast.error({
+          title: 'Hata',
+          message: "Kayıt Silinemedi"
+        });
+      }
+    },
+
     errorHide() {
       setTimeout(() => (this.isError = false), 5000);
     },
@@ -303,6 +474,16 @@ export default {
     successHideCar() {
       setTimeout(() => (this.isSuccessCar = false), 5000);
       console.log("naber");
+    },
+
+
+    async getSingleStaff(id) {
+
+      let response = await new StaffService().getStaff(id);
+      this.staffUpdate = response.data
+      console.log(response.data)
+      this.staffUpdateModal = true
+
     },
 
 
@@ -337,8 +518,38 @@ export default {
         this.errorHide();
       }
     },
-  },
 
+
+    async updateStaffFunc() {
+      let a = await new StaffService().updateStaff(this.staffUpdate);
+      console.log("status", a);
+      if (a.status === 200) {
+        this.isSuccess = false;
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Başarıyla Güncellendi"
+        });
+        this.staffUpdateModal = false
+        this.getStaffs();
+        this.customer = new Customer()
+      } else if (a.response.status === 401) {
+        this.isErrorCustomerUpdate = false;
+        this.isErrorCustomerUpdate = true;
+        this.errorHideUpdateCustomer();
+        await this.$router.push("/pages/login");
+      } else {
+        this.isErrorCustomerUpdate = false;
+        this.isErrorCustomerUpdate = true;
+        this.$toast.err({
+          title: 'Hata',
+          message: a.response.data
+        });
+
+
+      }
+
+    }
+  },
 
   watch: {},
 

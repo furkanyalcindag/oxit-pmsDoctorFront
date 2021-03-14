@@ -225,6 +225,7 @@
                             :drag-text="dragText"
                             :markIsPrimaryText="markPrimary"
                             :popupText="popupText"
+                            :max-image="100"
 
                         ></vue-upload-multiple-image>
                       </div>
@@ -308,12 +309,16 @@
                                   <CCardHeader><b>Sepet</b> <span class="float-right">Toplam: {{ cartTotal }} ₺</span>
                                   </CCardHeader>
                                   <CListGroup flush>
-                                    <CListGroupItem class="d-flex justify-content-between align-items-center"
+                                    <CListGroupItem class="d-flex  align-items-center"
                                                     v-for="(cart,index) in carts" :key="cart" href="#">
-                                      <CButton align="left" size="sm" color="danger" @click="removeCart(index)">
+                                      <CButton align="left" style="margin-right: 10px" size="sm" color="danger" @click="removeCart(index)">
                                         <CIcon :content="$options.freeSet.cilMinus" name="cil-minus"/>
                                       </CButton>
-                                      <span>{{ cart.barcodeNumber }} | {{ cart.name }} | {{ cart.netPrice }} ₺</span>
+                                      <CButton align="left"  style="margin-right: 10px"  size="sm" color="success" @click="editCartModal(index,cart.netPrice)">
+                                        <CIcon :content="$options.freeSet.cilMoney" name="cil-minus"/>
+                                      </CButton>
+                                      <span  style="margin-right: 10px" >{{ cart.barcodeNumber }} | {{ cart.name }} | {{ cart.netPrice }} ₺</span>
+
 
                                       <CBadge color="primary" shape="pill">{{ cart.quantity }}</CBadge>
                                     </CListGroupItem>
@@ -545,6 +550,62 @@
     </CModal>
 
 
+
+
+
+
+
+
+    <CModal
+        :show.sync="showCartEditPrice"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="m"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="showCartEditPrice">
+              <template>
+                <CCardBody>
+                  <CInput
+                          label="Fiyat"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="editPrice"
+
+                      />
+
+
+                </CCardBody>
+              </template>
+
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Ürün Fiyatı</h6>
+        <CButtonClose @click="showCartEditPrice = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="showCartEditPrice = false" color="danger">Kapat</CButton>
+         <CButton @click="editCartPrice" color="success">Düzenle</CButton>
+
+      </template>
+    </CModal>
+
+
+
+
+
+
+
+
+
+
   </div>
 </template>
 
@@ -621,6 +682,8 @@ export default {
       showAddCar: true,
       showAddProduct: false,
       horizontal: {label: "col-3", input: "col-9"},
+      showCartEditPrice:false,
+      editPrice:0,
 
       selectOptions: [
         "Option 1",
@@ -854,7 +917,20 @@ export default {
 
       }
       if (!isExist){
-        this.carts.push(cartItem)
+
+         if(originalStock===0){
+               this.$toast.error({
+          title: 'Hata',
+          message: "Ürün Stokta Yok"
+        })
+          }
+          else {
+             this.carts.push(cartItem)
+          }
+
+
+
+
       }
 
       console.log("item", cartItem)
@@ -871,6 +947,29 @@ export default {
       this.carts.splice(index, 1)
       console.log(this.carts)
       this.calculateCartTotal()
+
+
+    },
+    editCartModal(index,price) {
+      this.showCartEditPrice=true
+      this.editPrice = price
+      this.activeIndex = index
+    },
+    editCartPrice(){
+
+      if(this.editPrice!=null){
+
+
+        this.carts[this.activeIndex].netPrice=this.editPrice
+         this.showCartEditPrice=false
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Ürün Fiyatı Düzenlendi"
+        })
+        this.calculateCartTotal()
+
+      }
+
 
 
     },
