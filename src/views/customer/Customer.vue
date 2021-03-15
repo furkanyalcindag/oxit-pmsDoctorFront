@@ -8,9 +8,9 @@
               <CIcon name="cil-pencil"/>
               Müşteri
               <div class="card-header-actions">
-                <CLink href="#" class="card-header-action btn-setting">
-                  <CIcon name="cil-settings"/>
-                </CLink>
+<!--                <CLink href="#" class="card-header-action btn-setting">-->
+<!--                  <CIcon name="cil-settings"/>-->
+<!--                </CLink>-->
                 <CLink
                     class="card-header-action btn-minimize"
                     @click="formCollapsed = !formCollapsed"
@@ -19,32 +19,32 @@
                       :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
                   />
                 </CLink>
-                <CLink
-                    href="#"
-                    class="card-header-action btn-close"
-                    v-on:click="show = !show"
-                >
-                  <CIcon name="cil-x-circle"/>
-                </CLink>
+<!--                <CLink-->
+<!--                    href="#"-->
+<!--                    class="card-header-action btn-close"-->
+<!--                    v-on:click="show = !show"-->
+<!--                >-->
+<!--                  <CIcon name="cil-x-circle"/>-->
+<!--                </CLink>-->
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                <div>
-                  <CAlert color="success" :show="isSuccess">
-                    Müşteri başarıyla kaydedildi.
-                  </CAlert>
+<!--                  <div>-->
+<!--                  <CAlert color="success" :show="isSuccess">-->
+<!--                    Müşteri başarıyla kaydedildi.-->
+<!--                  </CAlert>-->
 
 
-                  <CAlert
-                      v-for="(value,key) in errors"
-                      :key="value.message"
-                      color="danger"
-                      :show="isError"
-                  >
-                    {{ key }}: {{ value[0] }}
-                  </CAlert>
-                </div>
+<!--                  <CAlert-->
+<!--                      v-for="(value,key) in errors"-->
+<!--                      :key="value.message"-->
+<!--                      color="danger"-->
+<!--                      :show="isError"-->
+<!--                  >-->
+<!--                    {{ key }}: {{ value[0] }}-->
+<!--                  </CAlert>-->
+<!--                </div>-->
                 <CRow></CRow>
                 <CRow>
                   <CCol lg="4">
@@ -216,9 +216,9 @@
               <template>
                 <CCardBody>
 
-                  <CAlert color="success" :show="isSuccessCarDelete">
-                    Araç başarıyla silindi.
-                  </CAlert>
+<!--                  <CAlert color="success" :show="isSuccessCarDelete">-->
+<!--                    Araç başarıyla silindi.-->
+<!--                  </CAlert>-->
 
                   <CDataTable
                       :items="computedItemsCar"
@@ -293,21 +293,21 @@
               <template>
                 <CCardBody>
 
-                  <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Araba başarıyla kaydedildi.
-                    </CAlert>
+<!--                  <div>-->
+<!--                    <CAlert color="success" :show="isSuccessCar">-->
+<!--                      Araba başarıyla kaydedildi.-->
+<!--                    </CAlert>-->
 
-                    <CAlert
-                        v-for="(value,key) in errorsCar"
-                        :key="value.message"
-                        color="danger"
-                        :show="isErrorCar"
-                    >
-                      {{ key }}: {{ value[0] }}
-                    </CAlert>
+<!--                    <CAlert-->
+<!--                        v-for="(value,key) in errorsCar"-->
+<!--                        :key="value.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isErrorCar"-->
+<!--                    >-->
+<!--                      {{ key }}: {{ value[0] }}-->
+<!--                    </CAlert>-->
 
-                  </div>
+<!--                  </div>-->
 
 
                   <CRow>
@@ -442,20 +442,20 @@
               <template>
                 <CCardBody>
 
-                  <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Araba başarıyla kaydedildi.
-                    </CAlert>
+<!--                  <div>-->
+<!--                    <CAlert color="success" :show="isSuccessCar">-->
+<!--                      Araba başarıyla kaydedildi.-->
+<!--                    </CAlert>-->
 
-                    <CAlert
-                        v-for="item in errorsCar"
-                        :key="item.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      E-mail: {{ item }}
-                    </CAlert>
-                  </div>
+<!--                    <CAlert-->
+<!--                        v-for="item in errorsCar"-->
+<!--                        :key="item.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isError"-->
+<!--                    >-->
+<!--                      E-mail: {{ item }}-->
+<!--                    </CAlert>-->
+<!--                  </div>-->
 
 
                   <CRow>
@@ -589,23 +589,23 @@
               <template>
                 <CCardBody>
 
-                  <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Müşteri başarıyla kaydedildi.
-                    </CAlert>
+<!--                  <div>-->
+<!--                    <CAlert color="success" :show="isSuccessCar">-->
+<!--                      Müşteri başarıyla kaydedildi.-->
+<!--                    </CAlert>-->
 
 
-                    <CAlert
-                        v-for="(value,key) in errorsCustomer"
-                        :key="value.message"
-                        color="danger"
-                        :show="isErrorCustomerUpdate"
-                    >
-                      {{ key }}: {{ value[0] }}
-                    </CAlert>
+<!--                    <CAlert-->
+<!--                        v-for="(value,key) in errorsCustomer"-->
+<!--                        :key="value.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isErrorCustomerUpdate"-->
+<!--                    >-->
+<!--                      {{ key }}: {{ value[0] }}-->
+<!--                    </CAlert>-->
 
 
-                  </div>
+<!--                  </div>-->
 
 
                   <CRow>
@@ -877,15 +877,30 @@ export default {
         this.successHide();
         this.getCustomersPagination();
         this.customer = new Customer()
+        this.$toast.success({
+          title:'Bilgi',
+          message:'Müşteri başarıyla eklendi'
+        })
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
         this.errorHide();
+        this.$toast.error({
+          title:'Uyarı',
+          message:'Yetkiniz bulunmamaktadır'
+        })
         await this.$router.push("/pages/login");
       } else {
-        this.isError = false;
-        this.isError = true;
+        // this.isError = false;
+        // this.isError = true;
         this.errors = a.response.data;
+        console.log("eroors",this.errors)
+        for (const [key, value] of Object.entries(this.errors)){
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+        })
+        }
         this.errorHide();
       }
     },
@@ -921,23 +936,33 @@ export default {
       let a = await new CustomerService().updateCustomer(this.customerUpdate);
       console.log("status", a);
       if (a.status === 200) {
-        this.isSuccess = false;
+        // this.isSuccess = false;
         this.$toast.success({
           title: 'Başarılı',
-          message: "Başarıyla Güncellendi"
+          message: "Müşteri başarıyla güncellendi"
         });
         this.customerUpdateModal = false
         this.getCustomersPagination();
         this.customer = new Customer()
       } else if (a.response.status === 401) {
-        this.isErrorCustomerUpdate = false;
-        this.isErrorCustomerUpdate = true;
+        // this.isErrorCustomerUpdate = false;
+        // this.isErrorCustomerUpdate = true;
+        this.$toast.error({
+          title: 'Uyarı',
+          message: "Lütfen daha sonra tekrar deneyiniz"
+        });
         this.errorHideUpdateCustomer();
         await this.$router.push("/pages/login");
       } else {
-        this.isErrorCustomerUpdate = false;
-        this.isErrorCustomerUpdate = true;
+        // this.isErrorCustomerUpdate = false;
+        // this.isErrorCustomerUpdate = true;
         this.errorsCustomer = a.response.data;
+        for (const [key,value] of Object.entries(this.errorsCustomer)){
+          this.$toast.error({
+          title: 'Başarılı',
+          message: `${key}: ${value}`
+        });
+        }
         this.errorHideUpdateCustomer();
       }
     },
@@ -1032,7 +1057,7 @@ export default {
         await this.getCustomersPagination();
         this.$toast.success({
           title: 'Başarılı',
-          message: "Başarıyla Silindi"
+          message: "Müşteri başarıyla silindi"
         })
 
       } else if (a.status === 300) {
@@ -1074,6 +1099,10 @@ export default {
         this.deleteModal = false;
         this.successHideCarDelete();
         await this.getCarPagination(this.lastCustomerUUid);
+        this.$toast.success({
+          title:'Bilgi',
+          message:'Müşteri başarıyla silindi'
+        })
 
 
       } else if (a.status === 300) {
@@ -1098,6 +1127,12 @@ export default {
         this.isError = false;
         this.isError = true;
         this.errors = a.data;
+        for (const [key, value] of Object.entries(this.errors)){
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+        })
+        }
         this.errorHide();
       }
     },
@@ -1137,20 +1172,34 @@ export default {
       let a = await new CarService().carAdd(this.car);
       console.log("status", a);
       if (a.status === 200) {
-        this.isSuccessCar = false;
-        this.isSuccessCar = true;
+        // this.isSuccessCar = false;
+        // this.isSuccessCar = true;
         this.successHideCar();
+        this.$toast.success({
+          title:'Bilgi',
+          message:'Kayıt başarıyla oluşturuldu'
+        })
         //this.getCustomersPagination();
         this.car = new Car();
       } else if (a.response.status === 401) {
         this.isErrorCar = false;
         this.isErrorCar = true;
         this.errorHideCar();
+        this.$toast.error({
+          title:'Uyarı',
+          message:'Yetkiniz bulunmamaktadır'
+        })
         await this.$router.push("/pages/login");
       } else {
         this.isErrorCar = false;
         this.isErrorCar = true;
         this.errorsCar = a.response.data;
+        for (const [key, value] of Object.entries(this.errorsCar)){
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+        })
+        }
         this.errorHideCar();
       }
 
@@ -1186,9 +1235,9 @@ export default {
       let carResponse = await new CarService().carUpdate(this.carUpdate, this.carUpdateUUID);
 
       if (carResponse.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
         this.carUpdateModal = false;
+        // this.isSuccess = false;
+        // this.isSuccess = true;
         this.$toast.success({
           title: 'Başarılı',
           message: "Başarıyla Güncellendi"
@@ -1201,11 +1250,21 @@ export default {
         this.isError = false;
         this.isError = true;
         this.errorHide();
+        this.$toast.error({
+          title:'Uyarı',
+          message:'Lütfen daha sonra tekrar deneyiniz'
+        })
         await this.$router.push("/pages/login");
       } else {
         this.isError = false;
         this.isError = true;
         this.errors = carResponse.response.data;
+        for (const [key, value] of Object.entries(this.errors)){
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+        })
+        }
         this.errorHide();
       }
 

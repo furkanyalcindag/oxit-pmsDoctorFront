@@ -11,9 +11,9 @@
               <CIcon name="cil-pencil"/>
               Servis Bilgileri
               <div class="card-header-actions">
-                <CLink href="#" class="card-header-action btn-setting">
-                  <CIcon name="cil-settings"/>
-                </CLink>
+<!--                <CLink href="#" class="card-header-action btn-setting">-->
+<!--                  <CIcon name="cil-settings"/>-->
+<!--                </CLink>-->
                 <CLink
                     class="card-header-action btn-minimize"
                     @click="formCollapsed = !formCollapsed"
@@ -22,13 +22,13 @@
                       :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
                   />
                 </CLink>
-                <CLink
-                    href="#"
-                    class="card-header-action btn-close"
-                    v-on:click="show = !show"
-                >
-                  <CIcon name="cil-x-circle"/>
-                </CLink>
+<!--                <CLink-->
+<!--                    href="#"-->
+<!--                    class="card-header-action btn-close"-->
+<!--                    v-on:click="show = !show"-->
+<!--                >-->
+<!--                  <CIcon name="cil-x-circle"/>-->
+<!--                </CLink>-->
               </div>
             </CCardHeader>
             <template>
@@ -119,20 +119,20 @@
 
                 <CCol lg="12">
 
-                  <CAlert
-                      :show.sync="dismissCountDown"
-                      closeButton
-                      color="success"
-                  >
-                    Servis işlemi gerçekleştirildi. {{ dismissCountDown }} saniye sonra Servis Listesine
-                    yönlendiriliceksiniz.
-                    <CProgress
-                        color="success"
-                        :max="dismissSecs"
-                        :value="dismissCountDown"
-                        height="4px"
-                    />
-                  </CAlert>
+<!--                  <CAlert-->
+<!--                      :show.sync="dismissCountDown"-->
+<!--                      closeButton-->
+<!--                      color="success"-->
+<!--                  >-->
+<!--                    Servis işlemi gerçekleştirildi. {{ dismissCountDown }} saniye sonra Servis Listesine-->
+<!--                    yönlendiriliceksiniz.-->
+<!--                    <CProgress-->
+<!--                        color="success"-->
+<!--                        :max="dismissSecs"-->
+<!--                        :value="dismissCountDown"-->
+<!--                        height="4px"-->
+<!--                    />-->
+<!--                  </CAlert>-->
 
 
                 </CCol>
@@ -143,20 +143,20 @@
             <CCollapse :show="formCollapsed">
               <CCardBody>
                 <div>
-                  <div>
-                    <CAlert color="success" :show="isSuccess">
-                      Ürün başarıyla kaydedildi.
-                    </CAlert>
+<!--                  <div>-->
+<!--                    <CAlert color="success" :show="isSuccess">-->
+<!--                      Ürün başarıyla kaydedildi.-->
+<!--                    </CAlert>-->
 
-                    <CAlert
-                        v-for="item in errors"
-                        :key="item.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      E-mail: {{ item }}
-                    </CAlert>
-                  </div>
+<!--                    <CAlert-->
+<!--                        v-for="item in errors"-->
+<!--                        :key="item.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isError"-->
+<!--                    >-->
+<!--                      E-mail: {{ item }}-->
+<!--                    </CAlert>-->
+<!--                  </div>-->
                   <CRow></CRow>
                   <CRow>
                     <CCol lg="9">
@@ -370,21 +370,21 @@
             <CCard v-if="showAddProduct">
               <template>
                 <CCardBody>
-                  <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Ürün başarıyla kaydedildi.
-                    </CAlert>
+<!--                  <div>-->
+<!--                    <CAlert color="success" :show="isSuccessCar">-->
+<!--                      Ürün başarıyla kaydedildi.-->
+<!--                    </CAlert>-->
 
 
-                    <CAlert
-                        v-for="(value,key) in errors"
-                        :key="value.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      {{ key }}: {{ value[0] }}
-                    </CAlert>
-                  </div>
+<!--                    <CAlert-->
+<!--                        v-for="(value,key) in errors"-->
+<!--                        :key="value.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isError"-->
+<!--                    >-->
+<!--                      {{ key }}: {{ value[0] }}-->
+<!--                    </CAlert>-->
+<!--                  </div>-->
 
 
                   <CRow>
@@ -792,8 +792,10 @@ export default {
       //console.log(response)
 
       if (response.status === 200) {
-
-        this.dismissCountDown = 3
+        this.$toast.success({
+          title:'Bilgi',
+          message:'Servis işlemi başarılı servis listesine yönlendiriliyorsununz'
+        })
 
 
         setTimeout(() => this.$router.push({
@@ -1056,12 +1058,15 @@ export default {
       let productResponse = await new ProductService().addProduct(this.product);
 
       if (productResponse.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
+        // this.isSuccess = false;
+        // this.isSuccess = true;
         this.showAddProduct = false;
         this.successHide();
         this.getProducts();
-
+        this.$toast.success({
+          title:'Bilgi',
+          message:'Ürün başarıyla kaydedildi'
+        })
       } else if (productResponse.response.status === 401) {
         this.isError = false;
         this.isError = true;
@@ -1071,6 +1076,12 @@ export default {
         this.isError = false;
         this.isError = true;
         this.errors = productResponse.response.data;
+        for (const [key, value] of Object.entries(this.errors)){
+           this.$toast.error({
+          title:'Bilgi',
+          message:`${key}: ${value}`
+        })
+        }
         this.errorHide();
       }
 
