@@ -416,7 +416,6 @@ export default {
     },
     successHideCar() {
       setTimeout(() => (this.isSuccessCar = false), 5000);
-      console.log("naber");
     },
     async getCustomers() {
       let customersRes = await new CustomerService().customerGet('', '', '');

@@ -8,9 +8,9 @@
               <CIcon name="cil-pencil"/>
               Marka
               <div class="card-header-actions">
-                <CLink href="#" class="card-header-action btn-setting">
-                  <CIcon name="cil-settings"/>
-                </CLink>
+<!--                <CLink href="#" class="card-header-action btn-setting">-->
+<!--                  <CIcon name="cil-settings"/>-->
+<!--                </CLink>-->
                 <CLink
                     class="card-header-action btn-minimize"
                     @click="formCollapsed = !formCollapsed"
@@ -19,33 +19,33 @@
                       :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
                   />
                 </CLink>
-                <CLink
-                    href="#"
-                    class="card-header-action btn-close"
-                    v-on:click="show = !show"
-                >
-                  <CIcon name="cil-x-circle"/>
-                </CLink>
+<!--                <CLink-->
+<!--                    href="#"-->
+<!--                    class="card-header-action btn-close"-->
+<!--                    v-on:click="show = !show"-->
+<!--                >-->
+<!--                  <CIcon name="cil-x-circle"/>-->
+<!--                </CLink>-->
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                <div>
-                  <CAlert color="success" :show="isSuccess">
-                    Marka başarıyla kaydedildi.
-                  </CAlert>
+<!--                <div>-->
+<!--                  <CAlert color="success" :show="isSuccess">-->
+<!--                    Marka başarıyla kaydedildi.-->
+<!--                  </CAlert>-->
 
 
-                  <CAlert
-                      v-for="(value,key) in errors"
-                      :key="value.message"
-                      color="danger"
-                      :show="isError"
-                  >
-                    {{ value }}
+<!--                  <CAlert-->
+<!--                      v-for="(value,key) in errors"-->
+<!--                      :key="value.message"-->
+<!--                      color="danger"-->
+<!--                      :show="isError"-->
+<!--                  >-->
+<!--                    {{ value }}-->
 
-                  </CAlert>
-                </div>
+<!--                  </CAlert>-->
+<!--                </div>-->
                 <CRow></CRow>
                 <CRow>
                   <CCol lg="5">
@@ -152,18 +152,18 @@
               <template>
                 <CCardBody>
                   <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Marka kaydedildi.
-                    </CAlert>
+<!--                    <CAlert color="success" :show="isSuccessCar">-->
+<!--                      Marka kaydedildi.-->
+<!--                    </CAlert>-->
 
-                    <CAlert
-                        v-for="(value,key) in errorsCar"
-                        :key="value.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      {{ key }}: {{ value[0] }}
-                    </CAlert>
+<!--                    <CAlert-->
+<!--                        v-for="(value,key) in errorsCar"-->
+<!--                        :key="value.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isError"-->
+<!--                    >-->
+<!--                      {{ key }}: {{ value[0] }}-->
+<!--                    </CAlert>-->
                   </div>
 
 
@@ -374,21 +374,35 @@ export default {
       let a = await new BrandService().addBrand(this.brand);
       console.log("status", a);
       if (a.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
+        // this.isSuccess = false;
+        // this.isSuccess = true;
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Marka ekleme işlemi başarıyla gerçekleşti"
+        })
+        this.brand.name=''
         this.successHide();
         await this.getBrands();
 
       } else if (a.response.status === 401) {
-        this.isError = false;
-        this.isError = true;
+        // this.isError = false;
+        // this.isError = true;
+        this.$toast.error({
+          title: 'Hata',
+          message: "Yetkiniz bulunmamaktadır."
+        })
         this.errorHide();
         await this.$router.push("/pages/login");
       } else {
-        this.isError = false;
-        this.isError = true;
-
+        // this.isError = false;
+        // this.isError = true;
         this.errors = a.response.data;
+        for (const [key, value] of Object.entries(this.errors)){
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+        })
+        }
         this.errorHide();
       }
     },
@@ -409,23 +423,36 @@ export default {
       let a = await new BrandService().updateBrand(this.updateBrand);
       console.log("status", a);
       if (a.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
+        // this.isSuccess = false;
+        // this.isSuccess = true;
         this.showUpdateBrand = false;
         this.successHide();
         await this.getBrands();
         this.updateBrand = new Brand()
-
+        this.$toast.success({
+          title: 'Bilgi',
+          message: 'Marka güncelleme işi başarı ile gerçekleşti'
+        })
 
       } else if (a.status === 401) {
         this.isError = false;
         this.isError = true;
         this.errorHide();
+        this.$toast.error({
+          title: 'Hata',
+          message: 'Yetkiniz Bulunmamaktadır.'
+        })
         await this.$router.push("/pages/login");
       } else {
         this.isError = false;
         this.isError = true;
-        this.errors = a.response.data["username"];
+        this.errors = a.response.data;
+        for (const [key, value] of Object.entries(this.errors)){
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+        })
+        }
         this.errorHide();
       }
     },
@@ -436,28 +463,47 @@ export default {
       let a = await new BrandService().deleteBrand(this.deleteId);
       console.log("statusDelete", a);
       if (a.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
+        // this.isSuccess = false;
+        // this.isSuccess = true;
         this.deleteModel = false;
         this.successHide();
         await this.getBrands();
         this.updateBrand = new Brand()
+        this.$toast.success({
+          title: 'Bilgi',
+          message: 'Marka başarıyla silindi'
+        })
 
       } else if (a.status === 204) {
-        this.isError = false;
-        this.isError = true;
+        // this.isError = false;
+        // this.isError = true;
         let x = [{'1': 'Bu marka, kaydedilen bir ürünle ilişkili olduğu için silinemez'}]
         this.errors = x;
+        this.errors.forEach((mess)=>{
+          this.$toast.error({
+            title:'Uyarı',
+            message:mess[1]
+          })
+
+        })
         this.errorHide();
       } else if (a.status === 401) {
-        this.isError = false;
-        this.isError = true;
+        // this.isError = false;
+        // this.isError = true;
+        this.$toast.error({
+          title:'Uyarı',
+          message:'Lütfen daha sonra tekrar deneyiniz'
+        })
         this.errorHide();
         await this.$router.push("/pages/login");
       } else {
-        this.isError = false;
-        this.isError = true;
+        // this.isError = false;
+        // this.isError = true;
         this.errors = a.data;
+        this.$toast.error({
+          title:'Uyarı',
+          message:'Lütfen daha sonra tekrar deneyiniz'
+        })
         this.errorHide();
       }
     },
@@ -533,7 +579,7 @@ export default {
           .finally(() => this.loading = false);
       this.loading = false
     },
-    getSelectCategories() {
+      getSelectCategories() {
 
       // get by search keyword
 

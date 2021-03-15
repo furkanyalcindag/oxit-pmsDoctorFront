@@ -16,12 +16,12 @@
             </CCardHeader>
             <template>
               <CCardBody>
-                <div>
-                  <CAlert color="success" :show="isSuccess">
-                    Servis Durumu Başarıyla Değiştirildi
-                  </CAlert>
+<!--                <div>-->
+<!--                  <CAlert color="success" :show="isSuccess">-->
+<!--                    Servis Durumu Başarıyla Değiştirildi-->
+<!--                  </CAlert>-->
 
-                </div>
+<!--                </div>-->
 
                 <CDataTable
                     :items="computedItems"
@@ -153,18 +153,18 @@
             <CCard v-if="showMakePayment">
               <template>
                 <CCardBody>
-                  <div>
+<!--                  <div>-->
 
 
-                    <CAlert
-                        v-for="(value,key) in errors"
-                        :key="value.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      {{ key }}: {{ value[0] }}
-                    </CAlert>
-                  </div>
+<!--                    <CAlert-->
+<!--                        v-for="(value,key) in errors"-->
+<!--                        :key="value.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isError"-->
+<!--                    >-->
+<!--                      {{ key }}: {{ value[0] }}-->
+<!--                    </CAlert>-->
+<!--                  </div>-->
                   <CRow>
                     <CCol lg="12">
                       <CInput
@@ -283,18 +283,18 @@
             <CCard v-if="discountModal">
               <template>
                 <CCardBody>
-                  <div>
+<!--                  <div>-->
 
 
-                    <CAlert
-                        v-for="(value,key) in errors"
-                        :key="value.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      {{ key }}: {{ value[0] }}
-                    </CAlert>
-                  </div>
+<!--                    <CAlert-->
+<!--                        v-for="(value,key) in errors"-->
+<!--                        :key="value.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isError"-->
+<!--                    >-->
+<!--                      {{ key }}: {{ value[0] }}-->
+<!--                    </CAlert>-->
+<!--                  </div>-->
                   <CRow>
                     <CCol lg="12">
                       <CInput
@@ -630,6 +630,11 @@ export default {
         this.isSuccess = true;
         await this.getCheckingAccountList()
         this.successHide();
+        this.$toast.success({
+          title: 'Bilgi',
+          message: 'Ödeme şekli başarıyla eklendi'
+        })
+
 
 
       } else if (a.response.status === 401) {
@@ -642,6 +647,12 @@ export default {
         this.isError = true;
         console.log("error", a.response.data)
         this.errors = a.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
         this.errorHide();
       }
     },
@@ -672,6 +683,12 @@ export default {
         this.isError = true;
         console.log("error", a.response.data)
         this.errors = a.response.data;
+        for (const [key, value] of Object.entries(this.errors)){
+          this.$toast.error({
+          title:'Hata',
+          message:`${key}: ${value}`
+        })
+        }
         this.errorHide();
       }
     }

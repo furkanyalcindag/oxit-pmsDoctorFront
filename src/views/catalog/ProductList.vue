@@ -20,12 +20,12 @@
             </CCardHeader>
             <template>
               <CCardBody>
-                <div>
-                  <CAlert color="success" :show="isSuccess">
-                    Ürün başarıyla kaydedildi.
-                  </CAlert>
+<!--                <div>-->
+<!--                  <CAlert color="success" :show="isSuccess">-->
+<!--                    Ürün başarıyla kaydedildi.-->
+<!--                  </CAlert>-->
 
-                </div>
+<!--                </div>-->
 
                 <CDataTable
                     :items="computedItemsProduct"
@@ -92,20 +92,20 @@
             <CCard v-if="showAddProduct">
               <template>
                 <CCardBody>
-                  <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Ürün başarıyla kaydedildi.
-                    </CAlert>
+<!--                  <div>-->
+<!--                    <CAlert color="success" :show="isSuccessCar">-->
+<!--                      Ürün başarıyla kaydedildi.-->
+<!--                    </CAlert>-->
 
-                    <CAlert
-                        v-for="(value,key) in errorsCar"
-                        :key="value.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      {{ key }}: {{ value[0] }}
-                    </CAlert>
-                  </div>
+<!--                    <CAlert-->
+<!--                        v-for="(value,key) in errorsCar"-->
+<!--                        :key="value.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isError"-->
+<!--                    >-->
+<!--                      {{ key }}: {{ value[0] }}-->
+<!--                    </CAlert>-->
+<!--                  </div>-->
 
 
                   <CRow>
@@ -240,20 +240,20 @@
             <CCard v-if="showUpdateProduct">
               <template>
                 <CCardBody>
-                  <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Ürün başarıyla kaydedildi.
-                    </CAlert>
+<!--                  <div>-->
+<!--                    <CAlert color="success" :show="isSuccessCar">-->
+<!--                      Ürün başarıyla kaydedildi.-->
+<!--                    </CAlert>-->
 
-                    <CAlert
-                        v-for="(value,key) in errorsCar"
-                        :key="value.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      {{ key }}: {{ value[0] }}
-                    </CAlert>
-                  </div>
+<!--                    <CAlert-->
+<!--                        v-for="(value,key) in errorsCar"-->
+<!--                        :key="value.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isError"-->
+<!--                    >-->
+<!--                      {{ key }}: {{ value[0] }}-->
+<!--                    </CAlert>-->
+<!--                  </div>-->
 
 
                   <CRow>
@@ -567,6 +567,10 @@ export default {
         this.deleteModel = false;
         this.successHide();
         await this.getProducts();
+        this.$toast.success({
+          title:'Bilgi',
+          message:'Ürün başarıyla silindi'
+        })
 
 
       } else if (a.status === 204) {
@@ -574,16 +578,30 @@ export default {
         this.isError = true;
         let x = [{'1': 'Bu ürün, kaydedilen bir ürünle ilişkili olduğu için silinemez'}]
         this.errors = x;
+        this.errors.forEach((mess)=>{
+          this.$toast.error({
+            title:'Uyarı',
+            message:mess[1]
+          })
+        })
         this.errorHide();
       } else if (a.status === 401) {
         this.isError = false;
         this.isError = true;
+        this.$toast.error({
+          title:'Uyarı',
+          message:'Lütfen daha sonra tekrar deneyiniz'
+        })
         this.errorHide();
         await this.$router.push("/pages/login");
       } else {
         this.isError = false;
         this.isError = true;
         this.errors = a.data;
+        this.$toast.error({
+          title:'Uyarı',
+          message:'Lütfen daha sonra tekrar deneyiniz'
+        })
         this.errorHide();
       }
     },
@@ -595,21 +613,36 @@ export default {
       let productResponse = await new ProductService().addProduct(this.product);
 
       if (productResponse.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
+        // this.isSuccess = false;
+        // this.isSuccess = true;
         this.showAddProduct = false;
         this.successHide();
         this.getProducts();
         this.product = new Product()
+        this.$toast.success({
+          title:'Bilgi',
+          message:'Ürün başarıyla eklendi'
+        })
       } else if (productResponse.status === 401) {
-        this.isError = false;
-        this.isError = true;
+        // this.isError = false;
+        // this.isError = true;
         this.errorHide();
+        this.$toast.error({
+          title:'Uyarı',
+          message:'Lütfen daha sonra tekrar deneyiniz'
+        })
         await this.$router.push("/pages/login");
       } else {
-        this.isError = false;
-        this.isError = true;
+        // this.isError = false;
+        // this.isError = true;
         this.errorsCar = productResponse.response.data;
+        for (const [key,value] of Object.entries(this.errorsCar)){
+          this.$toast.error({
+          title:'Uyarı',
+          message:`${key}: ${value}`
+        })
+        }
+
         this.errorHide();
       }
 
@@ -624,21 +657,35 @@ export default {
       let productResponse = await new ProductService().updateProduct(this.product);
 
       if (productResponse.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
+        // this.isSuccess = false;
+        // this.isSuccess = true;
         this.showUpdateProduct = false;
         this.successHide();
         this.getProducts();
         this.product = new Product()
+        this.$toast.success({
+          title: 'Bilgi',
+          message: 'Ürün başarıyla güncellendi'
+        })
       } else if (productResponse.response.status === 401) {
         this.isError = false;
         this.isError = true;
         this.errorHide();
+        this.$toast.error({
+          title:'Uyarı',
+          message:'Lütfen daha sonra tekrar deneyiniz'
+        })
         await this.$router.push("/pages/login");
       } else {
         this.isError = false;
         this.isError = true;
         this.errorsCar = productResponse.response.data;
+        for (const [key,value] of Object.entries(this.errorsCar)){
+          this.$toast.error({
+          title:'Uyarı',
+          message:`${key}: ${value}`
+        })
+        }
         this.errorHide();
       }
 
