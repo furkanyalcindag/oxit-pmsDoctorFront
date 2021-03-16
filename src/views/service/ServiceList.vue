@@ -386,7 +386,8 @@ export default {
       cameraModal: false,
       camera: '',
       deleteId : '',
-      deleteModal : false
+      deleteModal : false,
+      deleteButton:false
     };
   },
 
@@ -416,6 +417,12 @@ export default {
           return "danger";
         default:
           return "warning";
+      }
+    },
+
+    groupControl(){
+      if(localStorage.getItem("user_group")==="Admin"){
+        this.deleteButton = true
       }
     },
 
@@ -670,7 +677,7 @@ export default {
 
   },
   mounted() {
-
+    this.groupControl()
     this.getServiceList()
     this.intervalFetchData()
 

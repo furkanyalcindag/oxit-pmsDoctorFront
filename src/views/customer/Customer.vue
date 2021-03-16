@@ -174,7 +174,7 @@
                         <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
                         <CButton @click="addCarModal(item.uuid)" color="info">Araç Ekle</CButton>
                         <CButton @click="getAccountList(item.uuid)" color="success">Cari</CButton>
-                        <CButton @click="setDeleteModalCustomer(item.uuid)" color="danger">Sil</CButton>
+                        <CButton v-if="showCustomerForm" @click="setDeleteModalCustomer(item.uuid)" color="danger">Sil</CButton>
                         <CButton @click="getSingleCustomer(item.uuid)" color="warning">Güncelle</CButton>
                       </CButtonGroup>
 
@@ -244,7 +244,7 @@
                           <CButton color="success" @click="goService(item.uuid)">Servis</CButton>
 
                           <CButton color="warning" @click="updateCarModalFunc(item.uuid)">Güncelle</CButton>
-                          <CButton color="danger" @click="setDeleteModalCar(item.uuid)">Sil</CButton>
+                          <CButton color="danger" v-if="showCustomerForm" @click="setDeleteModalCar(item.uuid)">Sil</CButton>
                         </CButtonGroup>
 
 

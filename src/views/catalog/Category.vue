@@ -122,7 +122,7 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton color="danger" @click="setDeleteModal(item.id)">Sil</CButton>
+                        <CButton v-if="deleteButton" color="danger" @click="setDeleteModal(item.id)">Sil</CButton>
                         <CButton color="warning" @click="updateCategoryModal(item.id)">Güncelle</CButton>
                       </CButtonGroup>
 
@@ -307,7 +307,7 @@ export default {
       show: true,
       showAddCar: true,
       horizontal: {label: "col-3", input: "col-9"},
-
+      deleteButton:false,
       selectOptions: [
         "Option 1",
         "Option 2",
@@ -434,6 +434,12 @@ export default {
       }
 
 
+    },
+
+    groupControl(){
+      if(localStorage.getItem("user_group")==="Admin"){
+        this.deleteButton = true
+      }
     },
     setDeleteModal(id) {
 
@@ -586,6 +592,7 @@ export default {
   }
   ,
   async mounted() {
+    this.groupControl()
     await this.getCategories();
     await this.getSelectCategories();
 

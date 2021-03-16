@@ -52,7 +52,7 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton color="danger" @click="setDeleteModal(item.uuid)">Sil</CButton>
+                        <CButton v-if="deleteButton" color="danger" @click="setDeleteModal(item.uuid)">Sil</CButton>
                         <CButton color="warning" @click="getSingleProduct(item.uuid)">Güncelle</CButton>
                       </CButtonGroup>
 
@@ -496,7 +496,8 @@ export default {
         "Inline Radios - custom",
       ],
       showAddProduct: false,
-      showUpdateProduct: false
+      showUpdateProduct: false,
+      deleteButton:false
     };
   },
 
@@ -516,6 +517,11 @@ export default {
           return "danger";
         default:
           "primary";
+      }
+    },
+    groupControl(){
+      if(localStorage.getItem("user_group")==="Admin"){
+        this.deleteButton = true
       }
     },
     toggleDetails(item) {
@@ -844,6 +850,7 @@ created()
 ,
 async mounted()
 {
+  this.groupControl()
   await this.getProducts();
   await this.getSelectCategories();
   await this.getSelectBrands()

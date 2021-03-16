@@ -111,7 +111,7 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton color="danger" @click="setDeleteModal(item.id)">Sil</CButton>
+                        <CButton v-if="deleteButton" color="danger" @click="setDeleteModal(item.id)">Sil</CButton>
                         <CButton color="warning" @click="getSingleBrand(item.id)">Güncelle</CButton>
                       </CButtonGroup>
 
@@ -289,6 +289,7 @@ export default {
       horizontal: {label: "col-3", input: "col-9"},
       deleteId: 0,
       deleteModel: false,
+      deleteButton:false,
 
       selectOptions: [
         "Option 1",
@@ -343,9 +344,7 @@ export default {
       });
     },
 
-    deneme() {
-      console.log("ghg", this.category)
-    },
+
 
     async addCategory() {
       let a = await new CategoryService().categoryAdd(this.category);
@@ -508,6 +507,12 @@ export default {
       }
     },
 
+    groupControl(){
+      if(localStorage.getItem("user_group")==="Admin"){
+        this.deleteButton = true
+      }
+    },
+
     async getSingleBrand(id) {
 
 
@@ -610,6 +615,7 @@ export default {
 
   },
   async mounted() {
+    this.groupControl()
     await this.getBrands()
     //await this.getCategories();
     //await this.getSelectCategories();
