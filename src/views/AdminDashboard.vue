@@ -10,6 +10,31 @@
           </CCardBody>
         </CCard>
       </CCol>
+      <CCol lg="6">
+
+        <CCard>
+          <CCardHeader>
+           Ciro Çizgi Grafiği
+            <div class="card-header-actions">
+              <a
+                  href="https://coreui.io/vue/docs/components/charts"
+                  class="card-header-action"
+                  rel="noreferrer noopener"
+                  target="_blank"
+              >
+
+              </a>
+            </div>
+          </CCardHeader>
+          <CCardBody>
+            <CChartLineExample :dashData="data"/>
+          </CCardBody>
+        </CCard>
+
+
+
+
+      </CCol>
     </CRow>
 
 
@@ -51,7 +76,8 @@ export default {
         waitingApproveServiceCount: 0,
         totalCheckingAccountDaily: 0,
         totalCheckingAccountMonthly: 0,
-        totalCheckingAccountYearly: 0
+        totalCheckingAccountYearly: 0,
+        lineChartIncome:[]
 
 
       }

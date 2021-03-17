@@ -114,20 +114,20 @@
 
                 <CCol lg="12">
 
-                  <CAlert
-                      :show.sync="dismissCountDown"
-                      closeButton
-                      color="success"
-                  >
-                    Servis işlemi gerçekleştirildi. {{ dismissCountDown }} saniye sonra Servis Listesine
-                    yönlendiriliceksiniz.
-                    <CProgress
-                        color="success"
-                        :max="dismissSecs"
-                        :value="dismissCountDown"
-                        height="4px"
-                    />
-                  </CAlert>
+<!--                  <CAlert-->
+<!--                      :show.sync="dismissCountDown"-->
+<!--                      closeButton-->
+<!--                      color="success"-->
+<!--                  >-->
+<!--                    Servis işlemi gerçekleştirildi. {{ dismissCountDown }} saniye sonra Servis Listesine-->
+<!--                    yönlendiriliceksiniz.-->
+<!--                    <CProgress-->
+<!--                        color="success"-->
+<!--                        :max="dismissSecs"-->
+<!--                        :value="dismissCountDown"-->
+<!--                        height="4px"-->
+<!--                    />-->
+<!--                  </CAlert>-->
 
 
                 </CCol>
@@ -225,6 +225,7 @@ import Cart from "@/models/cart";
 import VueUploadMultipleImage from 'vue-upload-multiple-image';
 import axios from "axios";
 import authHeader from "@/services/auth-header";
+import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 
 export default {
   name: "ServiceDetail",
@@ -401,7 +402,11 @@ export default {
 
       if (response.status === 200) {
 
-        this.dismissCountDown = 3
+        // this.dismissCountDown = 3
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarı ile gerçekleşti"
+        })
 
 
         setTimeout(() => this.$router.push({
@@ -419,9 +424,12 @@ export default {
 
       if (response.status === 200) {
 
-        this.dismissCountDown = 3
+        // this.dismissCountDown = 3
 
-
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarıyla gerçekleşti"
+        })
         setTimeout(() => this.$router.push({
           name: 'ServiceList',
           params: {message: "Arıza tespiti başarıyla yapıldı"}

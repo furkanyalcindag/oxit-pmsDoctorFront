@@ -8,9 +8,9 @@
               <CIcon name="cil-pencil"/>
               Kategori
               <div class="card-header-actions">
-                <CLink href="#" class="card-header-action btn-setting">
-                  <CIcon name="cil-settings"/>
-                </CLink>
+<!--                <CLink href="#" class="card-header-action btn-setting">-->
+<!--                  <CIcon name="cil-settings"/>-->
+<!--                </CLink>-->
                 <CLink
                     class="card-header-action btn-minimize"
                     @click="formCollapsed = !formCollapsed"
@@ -19,31 +19,31 @@
                       :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
                   />
                 </CLink>
-                <CLink
-                    href="#"
-                    class="card-header-action btn-close"
-                    v-on:click="show = !show"
-                >
-                  <CIcon name="cil-x-circle"/>
-                </CLink>
+<!--                <CLink-->
+<!--                    href="#"-->
+<!--                    class="card-header-action btn-close"-->
+<!--                    v-on:click="show = !show"-->
+<!--                >-->
+<!--                  <CIcon name="cil-x-circle"/>-->
+<!--                </CLink>-->
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                <div>
-                  <CAlert color="success" :show="isSuccess">
-                    Kategori başarıyla kaydedildi.
-                  </CAlert>
+<!--                <div>-->
+<!--                  <CAlert color="success" :show="isSuccess">-->
+<!--                    Kategori başarıyla kaydedildi.-->
+<!--                  </CAlert>-->
 
-                  <CAlert
-                      v-for="value in errors"
-                      :key="value.message"
-                      color="danger"
-                      :show="isError"
-                  >
-                    {{ value.value }}
-                  </CAlert>
-                </div>
+<!--                  <CAlert-->
+<!--                      v-for="value in errors"-->
+<!--                      :key="value.message"-->
+<!--                      color="danger"-->
+<!--                      :show="isError"-->
+<!--                  >-->
+<!--                    {{ value.value }}-->
+<!--                  </CAlert>-->
+<!--                </div>-->
                 <CRow></CRow>
                 <CRow>
                   <CCol lg="5">
@@ -122,7 +122,7 @@
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none">
-                        <CButton color="danger" @click="setDeleteModal(item.id)">Sil</CButton>
+                        <CButton v-if="deleteButton" color="danger" @click="setDeleteModal(item.id)">Sil</CButton>
                         <CButton color="warning" @click="updateCategoryModal(item.id)">Güncelle</CButton>
                       </CButtonGroup>
 
@@ -163,20 +163,20 @@
               <template>
                 <CCardBody>
 
-                  <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Araba başarıyla kaydedildi.
-                    </CAlert>
+<!--                  <div>-->
+<!--                    <CAlert color="success" :show="isSuccessCar">-->
+<!--                      Araba başarıyla kaydedildi.-->
+<!--                    </CAlert>-->
 
-                    <CAlert
-                        v-for="item in errorsCar"
-                        :key="item.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      E-mail: {{ item }}
-                    </CAlert>
-                  </div>
+<!--                    <CAlert-->
+<!--                        v-for="item in errorsCar"-->
+<!--                        :key="item.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isError"-->
+<!--                    >-->
+<!--                      E-mail: {{ item }}-->
+<!--                    </CAlert>-->
+<!--                  </div>-->
 
 
                   <CRow>
@@ -307,7 +307,7 @@ export default {
       show: true,
       showAddCar: true,
       horizontal: {label: "col-3", input: "col-9"},
-
+      deleteButton:false,
       selectOptions: [
         "Option 1",
         "Option 2",
@@ -369,21 +369,32 @@ export default {
       let a = await new CategoryService().categoryAdd(this.category);
       console.log("status", a);
       if (a.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
+        // this.isSuccess = false;
+        // this.isSuccess = true;
         this.successHide();
         this.getCategories();
         this.getSelectCategories();
         this.category = new Category()
+        this.$toast.success({
+          title:'Bilgi',
+          message:'Kategori başarıyla eklendi'
+        })
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
         this.errorHide();
         await this.$router.push("/pages/login");
       } else {
-        this.isError = false;
-        this.isError = true;
-        this.errors = a.response.data["username"];
+        // this.isError = false;
+        // this.isError = true;
+        this.errors = a.response.data;
+        console.log("eroors",this.errors)
+        for (const [key, value] of Object.entries(this.errors)){
+          this.$toast.error({
+          title:'Hata',
+          message:`${key}:${value}`
+        })
+        }
         this.errorHide();
       }
     },
@@ -399,6 +410,10 @@ export default {
         this.successHide();
         this.getCategories();
         this.categoryUpdate = new Category()
+        this.$toast.success({
+          title:'Bilgi',
+          message:'Kategori başarıyla güncellendi'
+        })
       } else if (categoryResponse.response.status === 401) {
         this.isError = false;
         this.isError = true;
@@ -408,10 +423,23 @@ export default {
         this.isError = false;
         this.isError = true;
         this.errors = categoryResponse.response.data;
+        console.log("errors",categoryResponse.response)
+        for (const [key, value] of Object.entries(this.errors)){
+          this.$toast.error({
+          title:'Hata',
+          message:`${key}: ${value}`
+        })
+        }
         this.errorHide();
       }
 
 
+    },
+
+    groupControl(){
+      if(localStorage.getItem("user_group")==="Admin"){
+        this.deleteButton = true
+      }
     },
     setDeleteModal(id) {
 
@@ -426,24 +454,35 @@ export default {
       let a = await new CategoryService().deleteCategory(this.deleteId);
       console.log("statusDelete", a);
       if (a.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
+        // this.isSuccess = false;
+        // this.isSuccess = true;
         this.deleteModal = false;
         this.successHide();
         await this.getCategories();
-
+        this.$toast.success({
+          title: 'Bilgi',
+          message: 'Kategori başarıyla güncellendi'
+        })
 
       } else if (a.status === 300) {
-        this.isError = false;
-        this.isError = true;
-        let x = a.data
+        // this.isError = false;
+        // this.isError = true;
+        let x = 'Bu kategori, kaydedilen bir kategoriyle ilişkili olduğu için silinemez'
         this.errors = x;
+        this.$toast.error({
+            title: 'Hata',
+            message: `${this.errors}`
+          })
         this.errorHide();
       } else if (a.status === 204) {
-        this.isError = false;
-        this.isError = true;
-        let x = a.data
+        // this.isError = false;
+        // this.isError = true;
+        let x = 'Bu kategori, kaydedilen bir ürünle ilişkili olduğu için silinemez'
         this.errors = x;
+        this.$toast.error({
+            title: 'Hata',
+            message: `${this.errors}`
+          })
         this.errorHide();
       } else if (a.status === 401) {
         this.isError = false;
@@ -454,6 +493,12 @@ export default {
         this.isError = false;
         this.isError = true;
         this.errors = a.data;
+        for (const [key, value] of Object.entries(this.errors)){
+          this.$toast.error({
+          title:'Hata',
+          message:`${key}: ${value}`
+        })
+        }
         this.errorHide();
       }
     },
@@ -547,6 +592,7 @@ export default {
   }
   ,
   async mounted() {
+    this.groupControl()
     await this.getCategories();
     await this.getSelectCategories();
 

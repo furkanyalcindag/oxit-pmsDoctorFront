@@ -8,9 +8,9 @@
               <CIcon name="cil-pencil"/>
               Servis <span v-text="this.carPlate"></span>
               <div class="card-header-actions">
-                <CLink href="#" class="card-header-action btn-setting">
-                  <CIcon name="cil-settings"/>
-                </CLink>
+<!--                <CLink href="#" class="card-header-action btn-setting">-->
+<!--                  <CIcon name="cil-settings"/>-->
+<!--                </CLink>-->
                 <CLink
                     class="card-header-action btn-minimize"
                     @click="formCollapsed = !formCollapsed"
@@ -19,30 +19,30 @@
                       :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
                   />
                 </CLink>
-                <CLink
-                    href="#"
-                    class="card-header-action btn-close"
-                    v-on:click="show = !show"
-                >
-                  <CIcon name="cil-x-circle"/>
+<!--                <CLink-->
+<!--                    href="#"-->
+<!--                    class="card-header-action btn-close"-->
+<!--                    v-on:click="show = !show"-->
+<!--                >-->
+<!--                  <CIcon name="cil-x-circle"/>-->
                 </CLink>
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
                 <div>
-                  <CAlert color="success" :show="isSuccess">
-                    Servis kartı başarıyla kaydedildi.
-                  </CAlert>
+<!--                  <CAlert color="success" :show="isSuccess">-->
+<!--                    Servis kartı başarıyla kaydedildi.-->
+<!--                  </CAlert>-->
 
-                  <CAlert
-                      v-for="(value,key) in errors"
-                      :key="value.message"
-                      color="danger"
-                      :show="isError"
-                  >
-                    {{ key }}: {{ value[0] }}
-                  </CAlert>
+<!--                  <CAlert-->
+<!--                      v-for="(value,key) in errors"-->
+<!--                      :key="value.message"-->
+<!--                      color="danger"-->
+<!--                      :show="isError"-->
+<!--                  >-->
+<!--                    {{ key }}: {{ value[0] }}-->
+<!--                  </CAlert>-->
                 </div>
                 <CRow></CRow>
                 <CRow>
@@ -188,6 +188,8 @@ import CarService from "@/services/car.service";
 import Service from "@/models/service";
 import ServiceService from "@/services/service.service";
 import StaffService from "@/services/staff.service";
+import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
+
 
 
 export default {
@@ -380,20 +382,40 @@ export default {
       let a = await new ServiceService().addService(this.service);
       console.log("status", a);
       if (a.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
+        // this.isSuccess = false;
+        // this.isSuccess = true;
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Servis kaydı başarıyla oluşturuldu"
+        })
+        this.service.serviceType=''
+        this.service.camera=''
+        this.service.responsiblePerson=''
+        this.service.serviceKM=''
+        this.service.serviceman=''
+        this.service.complaint=''
         this.successHide();
         this.getCarServices()
       } else if (a.response.status === 401) {
-        this.isError = false;
-        this.isError = true;
+        // this.isError = false;
+        // this.isError = true;
+        this.$toast.error({
+          title: 'Hata',
+          message: "Yetkiniz Bulunmamaktadır"
+        })
         this.errorHide();
         await this.$router.push("/pages/login");
       } else {
-        this.isError = false;
-        this.isError = true;
-        console.log("error", a.response.data)
+        /*this.isError = false;
+        this.isError = true;*/
+        console.log("error son", a.response)
         this.errors = a.response.data;
+        for (const [key, value] of Object.entries(this.errors)){
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+        })
+        }
         this.errorHide();
       }
     }

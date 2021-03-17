@@ -24,9 +24,9 @@
             <template>
               <CCardBody>
                 <div>
-                  <CAlert color="success" :show="isSuccess">
-                    Servis Durumu Başarıyla Değiştirildi
-                  </CAlert>
+<!--                  <CAlert color="success" :show="isSuccess">-->
+<!--                    Servis Durumu Başarıyla Değiştirildi-->
+<!--                  </CAlert>-->
 
                 </div>
 
@@ -67,9 +67,8 @@
                         </template>
                         <!--<CDropdownItem @click="getServiceDetail(item.uuid)">Servis Detay</CDropdownItem> -->
                         <CDropdownItem v-for="button in item.buttons" :key="button"
-                                       @click="generalService(item.uuid,button.buttonFunction)">{{
-                            button.buttonName
-                          }}
+                                       @click="generalService(item.uuid,button.buttonFunction)">
+                          {{ button.buttonName }}
                         </CDropdownItem>
 
                       </CDropdown>
@@ -161,18 +160,18 @@
             <CCard v-if="receivingModal">
               <template>
                 <CCardBody>
-                  <div>
+<!--                  <div>-->
 
 
-                    <CAlert
-                        v-for="(value,key) in errors"
-                        :key="value.message"
-                        color="danger"
-                        :show="isError"
-                    >
-                      {{ key }}: {{ value[0] }}
-                    </CAlert>
-                  </div>
+<!--                    <CAlert-->
+<!--                        v-for="(value,key) in errors"-->
+<!--                        :key="value.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isError"-->
+<!--                    >-->
+<!--                      {{ key }}: {{ value[0] }}-->
+<!--                    </CAlert>-->
+<!--                  </div>-->
                   <CRow>
                     <CCol lg="12">
                       <CInput
@@ -295,7 +294,7 @@ import Service from "@/models/service";
 import ServiceService from "@/services/service.service";
 import CarService from "@/services/car.service";
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
-import ProductService from "@/services/product.service";
+// import ProductService from "@/services/product.service";
 
 export default {
   name: "ServiceList",
@@ -387,7 +386,8 @@ export default {
       cameraModal: false,
       camera: '',
       deleteId : '',
-      deleteModal : false
+      deleteModal : false,
+      deleteButton:false
     };
   },
 
@@ -417,6 +417,12 @@ export default {
           return "danger";
         default:
           return "warning";
+      }
+    },
+
+    groupControl(){
+      if(localStorage.getItem("user_group")==="Admin"){
+        this.deleteButton = true
       }
     },
 
@@ -545,14 +551,17 @@ export default {
 
 
       let a = await new ServiceService().deleteService(this.deleteId);
-      console.log("statusDelete", a);
       if (a.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
+        // this.isSuccess = false;
+        // this.isSuccess = true;
         this.deleteModal = false;
         this.successHide();
+        this.$toast.success({
+          title: 'Bilgi',
+          message: 'Servis silme işlemi başarıyla gerçekleşti'
+        })
+        console.log("statusDelete", a);
         await this.getProducts();
-
 
       } else if (a.status === 401) {
         this.isError = false;
@@ -563,6 +572,10 @@ export default {
         this.isError = false;
         this.isError = true;
         this.errors = a.data;
+        this.$toast.error({
+          title: 'Uyarı',
+          message: 'Lütfen daha sonra tekrar deneyiniz'
+        })
         this.errorHide();
       }
     },
@@ -594,6 +607,10 @@ export default {
         this.successHide()
         await this.getServiceList()
         this.receivingModal = false
+        this.$toast.success({
+          title: 'Bilgi',
+          message: 'İşlem başarılı'
+        })
       }
 
     },
@@ -660,7 +677,7 @@ export default {
 
   },
   mounted() {
-
+    this.groupControl()
     this.getServiceList()
     this.intervalFetchData()
 

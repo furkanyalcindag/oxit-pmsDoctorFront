@@ -23,20 +23,20 @@
             <CCollapse :show="formCollapsed">
               <CCardBody>
                 <div>
-                  <CAlert color="success" :show="isSuccess">
-                    Personel başarıyla kaydedildi.
-                  </CAlert>
+<!--                  <CAlert color="success" :show="isSuccess">-->
+<!--                    Personel başarıyla kaydedildi.-->
+<!--                  </CAlert>-->
 
-                  <CAlert
+<!--                  <CAlert-->
 
-                      v-for="(value,key) in errors"
-                      :key="value.message"
-                      color="danger"
-                      :show="isError"
-                  >
+<!--                      v-for="(value,key) in errors"-->
+<!--                      :key="value.message"-->
+<!--                      color="danger"-->
+<!--                      :show="isError"-->
+<!--                  >-->
 
-                    {{ key }}: {{ value[0] }}
-                  </CAlert>
+<!--                    {{ key }}: {{ value[0] }}-->
+<!--                  </CAlert>-->
                 </div>
                 <CRow></CRow>
                 <CRow>
@@ -199,19 +199,19 @@
                 <CCardBody>
 
                   <div>
-                    <CAlert color="success" :show="isSuccessCar">
-                      Personel başarıyla kaydedildi.
-                    </CAlert>
+<!--                    <CAlert color="success" :show="isSuccessCar">-->
+<!--                      Personel başarıyla kaydedildi.-->
+<!--                    </CAlert>-->
 
 
-                    <CAlert
-                        v-for="(value,key) in errorsStaff"
-                        :key="value.message"
-                        color="danger"
-                        :show="isErrorStaffUpdate"
-                    >
-                      {{ key }}: {{ value[0] }}
-                    </CAlert>
+<!--                    <CAlert-->
+<!--                        v-for="(value,key) in errorsStaff"-->
+<!--                        :key="value.message"-->
+<!--                        color="danger"-->
+<!--                        :show="isErrorStaffUpdate"-->
+<!--                    >-->
+<!--                      {{ key }}: {{ value[0] }}-->
+<!--                    </CAlert>-->
 
 
                   </div>
@@ -456,7 +456,7 @@ export default {
       } else {
         this.$toast.error({
           title: 'Hata',
-          message: "Kayıt Silinemedi"
+          message: "Yetkiniz bulunmamaktadır"
         });
       }
     },
@@ -505,16 +505,36 @@ export default {
         this.isSuccess = true;
         this.successHide();
         this.getStaffs();
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Personel başarıyla eklendi"
+        })
+        this.staff.firstName=''
+        this.staff.lastName=''
+        this.staff.username=''
+        this.staff.mobilePhone=''
+        this.staff.address=''
+        this.staff.group=''
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
         this.errorHide();
+        this.$toast.error({
+          title: 'Hata',
+          message: "Yetkiniz bulunmamaktadır"
+        })
         await this.$router.push("/pages/login");
       } else {
         this.isError = false;
         this.isError = true;
         console.log("error", a.response.data)
         this.errors = a.response.data;
+        for (const [key, value] of Object.entries(this.errors)){
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+        })
+        }
         this.errorHide();
       }
     },
@@ -527,7 +547,7 @@ export default {
         this.isSuccess = false;
         this.$toast.success({
           title: 'Başarılı',
-          message: "Başarıyla Güncellendi"
+          message: "Personel başarıyla güncellendi"
         });
         this.staffUpdateModal = false
         this.getStaffs();
@@ -540,10 +560,17 @@ export default {
       } else {
         this.isErrorCustomerUpdate = false;
         this.isErrorCustomerUpdate = true;
-        this.$toast.err({
-          title: 'Hata',
-          message: a.response.data
-        });
+        this.errors = a.response.data
+        // this.$toast.err({
+        //   title: 'Hata',
+        //   message: a.response.data
+        // });
+        for (const [key, value] of Object.entries(this.errors)){
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+        })
+        }
 
 
       }

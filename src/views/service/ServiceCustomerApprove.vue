@@ -112,20 +112,20 @@
 
                 <CCol lg="12">
 
-                  <CAlert
-                      :show.sync="dismissCountDown"
-                      closeButton
-                      color="success"
-                  >
-                    Servis işlemi gerçekleştirildi. {{ dismissCountDown }} saniye sonra Servis Listesine
-                    yönlendiriliceksiniz.
-                    <CProgress
-                        color="success"
-                        :max="dismissSecs"
-                        :value="dismissCountDown"
-                        height="4px"
-                    />
-                  </CAlert>
+<!--                  <CAlert-->
+<!--                      :show.sync="dismissCountDown"-->
+<!--                      closeButton-->
+<!--                      color="success"-->
+<!--                  >-->
+<!--                    Servis işlemi gerçekleştirildi. {{ dismissCountDown }} saniye sonra Servis Listesine-->
+<!--                    yönlendiriliceksiniz.-->
+<!--                    <CProgress-->
+<!--                        color="success"-->
+<!--                        :max="dismissSecs"-->
+<!--                        :value="dismissCountDown"-->
+<!--                        height="4px"-->
+<!--                    />-->
+<!--                  </CAlert>-->
 
 
                 </CCol>
@@ -358,12 +358,12 @@ export default {
   },
 
   methods: {
-    countDownChanged(dismissCountDown) {
-      this.dismissCountDown = dismissCountDown
-    },
-    showAlert() {
-      this.dismissCountDown = this.dismissSecs
-    },
+    // countDownChanged(dismissCountDown) {
+    //   this.dismissCountDown = dismissCountDown
+    // },
+    // showAlert() {
+    //   this.dismissCountDown = this.dismissSecs
+    // },
     validator(val) {
       return val ? val.length >= 4 : false;
     },
@@ -415,8 +415,11 @@ export default {
 
       if (response.status === 200) {
 
-        this.dismissCountDown = 3
-
+        // this.dismissCountDown = 3
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarıyla gerçekleşti"
+        })
 
         setTimeout(() => this.$router.push({
           name: 'ServiceList',
@@ -433,8 +436,11 @@ export default {
 
       if (response.status === 200) {
 
-        this.dismissCountDown = 3
-
+        // this.dismissCountDown = 3
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarıyla gerçekleşti"
+        })
 
         setTimeout(() => this.$router.push({
           name: 'ServiceList',
