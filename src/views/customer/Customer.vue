@@ -165,12 +165,24 @@
                     clickableRows
 
                 >
+                  <template #mail="{ item, index }">
+                    <td class="py-2">
+
+                      <CButtonGroup class="mx-1 d-sm-down-none" v-if="showCustomerForm">
+                        <CSwitch  @update:checked="sendMailPreferences(item.uuid)"  class="mx-1" color="success" :checked="item.isSendMail" variant="3d" />
+
+                      </CButtonGroup>
+
+
+                    </td>
+                  </template>
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
 
                       <CButtonGroup class="mx-1 d-sm-down-none" v-if="showCustomerForm">
-                        <CButton @click="sendPassword(item.uuid)" color="dark">Mail Gönder</CButton>
+
+                        <CButton @click="sendPassword(item.uuid)" color="dark">Şifre Gönder</CButton>
                         <CButton @click="getCarPagination(item.uuid)" color="primary">Araç</CButton>
                         <CButton @click="addCarModal(item.uuid)" color="info">Araç Ekle</CButton>
                         <CButton @click="getAccountList(item.uuid)" color="success">Cari</CButton>
@@ -739,7 +751,9 @@ export default {
         {key: "mobilePhone", label: "Telefon"},
         {key: "taxNumber", label: "VKN"},
         {key: "taxOffice", label: "Vergi Dairesi"},
+        {key:"mail",label:"Mail Durumu"},
         {key: "actions", label: "İşlemler"},
+
       ],
       fieldsTableCar: [
         {key: 'plate', label: "Plaka", _style: "min-width:100px"},
@@ -904,6 +918,34 @@ export default {
         this.errorHide();
       }
     },
+    async sendMailPreferences(id) {
+
+      this.$toast.info({
+        title: 'Bilgi',
+        message: "Mail Ayarları Değiştiriliyor"
+      });
+      let a = await new CustomerService().customerSendPassword(id,'sendMail');
+      console.log("status", a);
+      if (a.status === 200) {
+        this.getCustomersPagination()
+        this.$toast.removeAll()
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Mail ayarları değiştirildi"
+        });
+
+      } else if (a.response.status === 401) {
+        this.isErrorCustomerUpdate = false;
+        this.isErrorCustomerUpdate = true;
+        this.errorHideUpdateCustomer();
+        await this.$router.push("/pages/login");
+      } else {
+        this.$toast.error({
+          title: 'Hata',
+          message: "Lütfen daha sonra tekrar deneyin."
+        });
+      }
+    },
 
     async sendPassword(id) {
 
@@ -911,7 +953,7 @@ export default {
           title: 'Bilgi',
           message: "Şifre gönderiliyor ve mail ayarları açılıyor"
         });
-      let a = await new CustomerService().customerSendPassword(id);
+      let a = await new CustomerService().customerSendPassword(id,'password');
       console.log("status", a);
       if (a.status === 200) {
         this.$toast.removeAll()
