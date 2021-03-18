@@ -11,9 +11,9 @@
               <CIcon name="cil-pencil"/>
               Servis Bilgileri
               <div class="card-header-actions">
-                <CLink href="#" class="card-header-action btn-setting">
-                  <CIcon name="cil-settings"/>
-                </CLink>
+<!--                <CLink href="#" class="card-header-action btn-setting">-->
+<!--                  <CIcon name="cil-settings"/>-->
+<!--                </CLink>-->
                 <CLink
                     class="card-header-action btn-minimize"
                     @click="formCollapsed = !formCollapsed"
@@ -22,13 +22,13 @@
                       :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
                   />
                 </CLink>
-                <CLink
-                    href="#"
-                    class="card-header-action btn-close"
-                    v-on:click="show = !show"
-                >
-                  <CIcon name="cil-x-circle"/>
-                </CLink>
+<!--                <CLink-->
+<!--                    href="#"-->
+<!--                    class="card-header-action btn-close"-->
+<!--                    v-on:click="show = !show"-->
+<!--                >-->
+<!--                  <CIcon name="cil-x-circle"/>-->
+<!--                </CLink>-->
               </div>
             </CCardHeader>
             <template>
@@ -203,7 +203,7 @@
         </transition>
       </CCol>
     </CRow>
-    <button @click="getServicePdf()" v-if="serviceDetail.serviceSituation == 'Teslim Edildi'" class="download-button"><a> Pdf İndir</a></button>
+    <button @click="getServicePdf()" v-if="pdfButton" class="download-button"><a> Pdf İndir</a></button>
 
 
   </div>
@@ -293,6 +293,7 @@ export default {
       show: true,
       showAddCar: true,
       showAddProduct: false,
+      pdfButton: false,
       horizontal: {label: "col-3", input: "col-9"},
 
       selectOptions: [
@@ -373,6 +374,11 @@ export default {
     addProductModal() {
 
       this.showAddProduct = true
+    },
+    groupControl(){
+      if(localStorage.getItem("user_group")==="Admin"){
+        this.pdfButton = true
+      }
     },
     getSelectCategories() {
 
@@ -685,6 +691,7 @@ export default {
     this.getServicProducts(this.$route.params.serviceId)
     this.getServiceImages(this.$route.params.serviceId)
     this.getServiceDetail(this.$route.params.serviceId)
+    this.groupControl()
   },
   components: {
     VueUploadMultipleImage

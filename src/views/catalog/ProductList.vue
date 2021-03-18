@@ -339,6 +339,8 @@
                           v-model="product.shelf"
 
                       />
+
+                      <img :src="product.productImage" width="50px" alt=""/>
                       <CInputFile
                           label="Resim Ekle"
                           horizontal

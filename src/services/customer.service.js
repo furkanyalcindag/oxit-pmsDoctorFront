@@ -82,10 +82,11 @@ class CustomerService {
 
 
 
-    customerSendPassword(uuid) {
+    customerSendPassword(uuid,type) {
 
         const params = {
-            id: uuid
+            id: uuid,
+            type:type
 
         };
 
