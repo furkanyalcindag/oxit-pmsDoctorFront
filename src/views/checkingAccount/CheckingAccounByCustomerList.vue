@@ -455,7 +455,8 @@ export default {
       paymentsModal: false,
       discountModal: false,
       remainCheckout:0,
-      totalCheckout:0
+      totalCheckout:0,
+      checkingAccountUUID:''
     };
   },
 
@@ -514,7 +515,7 @@ export default {
 
     async getPaymentMovementsList(id) {
 
-
+      this.checkingAccountUUID=id
       let response = await new CheckingAccountService().getPaymentMovement(id);
 
       this.paymentMovements = response.data
