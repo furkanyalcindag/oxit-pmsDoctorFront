@@ -290,7 +290,7 @@
 
                                   >
                                     <CListGroupItem class="d-flex justify-content-between align-items-center"
-                                                    v-for="product in products" :key="product" href="#">
+                                                    v-for="(product,key) in products" :key="key" href="#">
                                       <CButton align="right" size="sm" color="success"
                                                @click="addCart(product.name,product.uuid,1,product.netPrice,product.barcodeNumber, product.quantity)">
                                         <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
@@ -310,7 +310,7 @@
                                   </CCardHeader>
                                   <CListGroup flush>
                                     <CListGroupItem class="d-flex  align-items-center"
-                                                    v-for="(cart,index) in carts" :key="cart" href="#">
+                                                    v-for="(cart,index) in carts" :key="index" href="#">
                                       <CButton align="left" style="margin-right: 10px" size="sm" color="danger" @click="removeCart(index)">
                                         <CIcon :content="$options.freeSet.cilMinus" name="cil-minus"/>
                                       </CButton>
@@ -561,7 +561,7 @@
         :no-close-on-backdrop="true"
         :centered="true"
         title="Modal title 2"
-        size="m"
+        size="lg"
         color="dark"
     >
       <CRow>
@@ -712,7 +712,7 @@ export default {
       showServiceDetail: false,
       service: new Service(),
       services: [],
-      serviceDetail: null,
+      serviceDetail: [],
       carPlate: '',
       barcodeSearch: '',
       carts: [],

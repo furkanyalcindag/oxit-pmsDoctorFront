@@ -335,7 +335,7 @@ export default {
       showServiceDetail: false,
       service: new Service(),
       services: [],
-      serviceDetail: null,
+      serviceDetail: [],
       carPlate: '',
       barcodeSearch: '',
       carts: [],

@@ -1126,7 +1126,7 @@ export default {
         await this.getCarPagination(this.lastCustomerUUid);
         this.$toast.success({
           title:'Bilgi',
-          message:'Müşteri başarıyla silindi'
+          message:'Araç başarıyla silindi'
         })
 
 

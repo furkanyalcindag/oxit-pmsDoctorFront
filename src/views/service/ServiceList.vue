@@ -595,7 +595,7 @@ export default {
         this.receivingModal = false
         this.$toast.success({
           title: 'Bilgi',
-          message: 'İşlem başarılı'
+          message: 'İşlem başarıyla tamamlandı'
         })
       }
 
