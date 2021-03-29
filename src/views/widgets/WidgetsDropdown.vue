@@ -33,13 +33,7 @@
           <CIcon :content="$options.freeSet.cilMoney" name="cil-moon" class="mx-2 " width="24"/>
           <template #footer>
             <CCardFooter class="card-footer px-3 py-2">
-              <CLink
-                  class="font-weight-bold font-xs btn-block text-muted"
-                  href="https://coreui.io/"
-              >
-                View more
                 <CIcon  name="cil-arrowRight" class="float-right" width="16"/>
-              </CLink>
             </CCardFooter>
           </template>
         </CWidgetIcon>
@@ -135,7 +129,7 @@
             :value="100"
             inverse
         >
-          <CIcon :content="$options.freeSet.cil-level-down" name="cil-speech" height="36"/>
+          <CIcon :content="$options.freeSet.cilSpeech" name="cil-speech" height="36"/>
         </CWidgetProgressIcon>
       </CCol>
     </CRow>
@@ -167,8 +161,5 @@ export default {
 
     }
   },
-  mounted() {
-    console.log(this.dashData)
-  }
 }
 </script>

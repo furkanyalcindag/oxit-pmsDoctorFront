@@ -864,16 +864,13 @@ export default {
     },
 
     isCorporateControl() {
-      console.log(this.isCorporate);
       this.isCorporate = !this.isCorporate;
       this.customer.isCorporate = this.isCorporate;
     },
     addCarModal(profileUuid) {
 
-      console.log("uuid", profileUuid)
       this.carModal = true
       this.car.profileUuid = profileUuid
-      console.log("car", this.car)
 
     },
     groupControl(){
@@ -884,7 +881,6 @@ export default {
 
     async addCustomer() {
       let a = await new CustomerService().customerAdd(this.customer);
-      console.log("status", a);
       if (a.status === 200) {
         this.isSuccess = false;
         this.isSuccess = true;
@@ -908,7 +904,6 @@ export default {
         // this.isError = false;
         // this.isError = true;
         this.errors = a.response.data;
-        console.log("eroors",this.errors)
         for (const [key, value] of Object.entries(this.errors)){
           this.$toast.error({
             title: 'Hata',
@@ -925,7 +920,6 @@ export default {
         message: "Mail Ayarları Değiştiriliyor"
       });
       let a = await new CustomerService().customerSendPassword(id,'sendMail');
-      console.log("status", a);
       if (a.status === 200) {
         this.getCustomersPagination()
         this.$toast.removeAll()
@@ -954,7 +948,6 @@ export default {
           message: "Şifre gönderiliyor ve mail ayarları açılıyor"
         });
       let a = await new CustomerService().customerSendPassword(id,'password');
-      console.log("status", a);
       if (a.status === 200) {
         this.$toast.removeAll()
         this.$toast.success({
@@ -976,7 +969,6 @@ export default {
     },
     async updateCustomer() {
       let a = await new CustomerService().updateCustomer(this.customerUpdate);
-      console.log("status", a);
       if (a.status === 200) {
         // this.isSuccess = false;
         this.$toast.success({
@@ -1018,18 +1010,15 @@ export default {
     },
     successHide() {
       setTimeout(() => (this.isSuccess = false), 5000);
-      console.log("naber");
     },
     successHideCarDelete() {
       setTimeout(() => (this.isSuccessCarDelete = false), 5000);
-      console.log("naber");
     },
     errorHideCar() {
       setTimeout(() => (this.isErrorCar = false), 5000);
     },
     successHideCar() {
       setTimeout(() => (this.isSuccessCar = false), 5000);
-      console.log("naber");
     },
     async getCustomers() {
       let customersRes = await new CustomerService().customerGet('', '', '');
@@ -1051,9 +1040,6 @@ export default {
     getCustomersPagination() {
 
       // get by search keyword
-      console.log("search", this.search)
-      console.log("pagination", this.pagination.page)
-      console.log("pagination", this.pagination.rowsPerPage)
       this.loading = true;
       const {page, itemsPerPage} = this.options;
       let pageNumber = page;
@@ -1062,7 +1048,6 @@ export default {
       axios.get(process.env.VUE_APP_API_URL + `/car-service/customer-api/?search=${this.search}&page=1&per_page=10`, {headers: authHeader()})
           .then(res => {
             this.customers = res.data.data;
-            console.log("ssa", res.data.data)
             this.total = res.data.recordsTotal;
             this.numberOfPages = 2;
 
@@ -1090,7 +1075,6 @@ export default {
 
     async deleteCustomer() {
 
-      console.log(this.updateBrand)
       let a = await new CustomerService().deleteCustomer(this.deleteCustomerId);
 
       if (a.status === 200) {
@@ -1132,7 +1116,6 @@ export default {
 
     async deleteCar() {
 
-      console.log(this.updateBrand)
       let a = await new CarService().deleteCar(this.deleteId);
 
       if (a.status === 200) {
@@ -1186,20 +1169,15 @@ export default {
       this.lastCustomerUUid = uuid
 
       // get by search keyword
-      console.log("search", this.search)
-      console.log("pagination", this.pagination.page)
-      console.log("pagination", this.pagination.rowsPerPage)
       this.loading = true;
       const {page, itemsPerPage} = this.options;
       let pageNumber = page;
-      console.log("uuid", uuid)
 
       axios.get(process.env.VUE_APP_API_URL + `/car-service/car-api/?uuid=${uuid}`, {headers: authHeader()})
           .then(res => {
             this.cars = res.data;
             //this.total = res.data.recordsTotal;
             //this.numberOfPages = 2;
-            console.log(this.cars)
 
           })
           .catch(err => console.log(err.response.data))
@@ -1210,9 +1188,7 @@ export default {
     async addCar() {
 
 
-      console.log("car", this.car)
       let a = await new CarService().carAdd(this.car);
-      console.log("status", a);
       if (a.status === 200) {
         // this.isSuccessCar = false;
         // this.isSuccessCar = true;
@@ -1265,7 +1241,6 @@ export default {
 
       let response = await new CarService().getCarApi(categoryId)
       this.carUpdate = response.data
-      console.log("xxx", this.carUpdate)
       this.carUpdateUUID = categoryId
       this.carUpdateModal = true
 

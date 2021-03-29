@@ -106,7 +106,6 @@ export default {
       setTimeout(() => (this.isError = false), 5000);
     },
     handleLogin() {
-      //console.log(this.$store);
     //  const user_group = UserService.getUserGroup()
       const groups = {
         admin: "Admin",
@@ -163,7 +162,6 @@ export default {
               this.$router.push(`/${dashboard_link}`);
             },
             error => {
-              console.log(error)
               this.loading = false;
               this.message =
                   (error.response && error.response.data) ||

@@ -68,7 +68,6 @@ export default {
   methods: {
      async setUser(){
        let response = await  AuthService.getUserInfo()
-      console.log(response)
       localStorage.setItem('user_name_surname',response.data)
     },
 
@@ -80,14 +79,12 @@ export default {
       })*/
 
       let response = await new DashboardService().getCustomerDashboard();
-      console.log(response)
       if(response.status===200){
         this.data = response.data
       }
       else {
         await this.$router.push("/pages/login");
       }
-      console.log(response)
 
 
 

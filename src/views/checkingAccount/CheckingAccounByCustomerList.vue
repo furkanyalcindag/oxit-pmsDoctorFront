@@ -59,7 +59,7 @@
                           &#x1F4C2;<span class="sr-only">sss</span>
                         </template>
                         <!--<CDropdownItem @click="getServiceDetail(item.uuid)">Servis Detay</CDropdownItem> -->
-                        <CDropdownItem v-for="button in item.buttons" :key="button"
+                        <CDropdownItem v-for="(button,key) in item.buttons" :key="key"
                                        @click="generalService(item.checkingAccountId,button.buttonFunction)">
                           {{ button.buttonName }}
                         </CDropdownItem>
@@ -149,7 +149,7 @@
         :draggable="false"
         title="Modal title 2"
         :backdrop="true"
-        size="s"
+        size="sm"
         color="dark"
     >
       <CRow>
@@ -280,7 +280,7 @@
         :draggable="false"
         title="Modal title 2"
         :backdrop="true"
-        size="s"
+        size="sm"
         color="dark"
     >
       <CRow>
@@ -490,7 +490,6 @@ export default {
 
     async getPaymentMovementPdf() {
       let response = await new CheckingAccountService().getPaymentMovementPdf(this.checkingAccountUUID);
-      console.log(response)
     },
 
 
@@ -533,7 +532,6 @@ export default {
     async getServiceDetail(id) {
 
       let response = await new ServiceService().getServiceDetail(id);
-      console.log(response)
 
 
       this.serviceDetail = response.data
@@ -602,7 +600,6 @@ export default {
     async serviceProcess(serviceId, situationNo) {
 
       let response = await new ServiceService().ServiceProcessing(serviceId, situationNo);
-      //console.log(response)
 
       if (response.status === 200) {
         this.isSuccess = true
@@ -614,7 +611,6 @@ export default {
 
     generalService(checkingId, functionName) {
 
-      console.log("deneme")
 
       if (functionName === 'getPaymentMovementsList') {
         this.getPaymentMovementsList(checkingId)
@@ -635,7 +631,6 @@ export default {
     async addPayment() {
 
       let a = await new CheckingAccountService().addPayment(this.payment);
-      console.log("status", a);
       if (a.status === 200) {
         this.isSuccess = false;
         this.showMakePayment = false
@@ -652,7 +647,6 @@ export default {
       } else {
         this.isError = false;
         this.isError = true;
-        console.log("error", a.response.data)
         this.errors = a.response.data;
         this.errorHide();
       }
@@ -661,7 +655,6 @@ export default {
     async makeDiscount() {
 
       let a = await new CheckingAccountService().makeDiscount(this.discount);
-      console.log("status", a);
       if (a.status === 200) {
         //this.isSuccess = false;
         this.discountModal = false
@@ -682,7 +675,6 @@ export default {
       } else {
         this.isError = false;
         this.isError = true;
-        console.log("error", a.response.data)
         this.errors = a.response.data;
         this.errorHide();
       }
