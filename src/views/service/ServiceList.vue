@@ -33,15 +33,15 @@
                 <CDataTable
                     :items="computedItems"
                     :fields="fieldsTable"
-                    column-filter
+
                     :border="true"
-                    :items-per-page="10"
-                    :activePage="4"
+
                     :footer="true"
 
                     hover
-                    sorter
-                    pagination
+
+                    :loading="load"
+
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -84,7 +84,21 @@
 
                     </CCollapse>
                   </template>
+
+
                 </CDataTable>
+
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
 
 
               </CCardBody>
@@ -315,6 +329,8 @@ export default {
         {key: "creationDate", label: "Tarih"},
         {key: "buttons", label: "İşlemler"},
       ],
+      load:false,
+      pageCount:0,
       pageLabel: {label: 'sasasa', external: true,},
       page: 1,
       numberOfPages: 0,
@@ -457,16 +473,21 @@ export default {
     ,
 
 
-    async getServiceList() {
+    async getServiceList(activePage) {
 
+      this.load=true
       /*this.$toast.success({
         title:'',
         message:this.denemes()
       })*/
 
-      let response = await new ServiceService().getServicesList();
+      let response = await new ServiceService().getServicesList(activePage);
+
+      console.log(response.data)
 
       this.services = response.data.data
+      this.pageCount = response.data.activePage
+      this.load=false
 
     },
 
@@ -520,9 +541,9 @@ export default {
 
     intervalFetchData: async function () {
       setInterval(() => {
-        this.getServiceList();
+        this.getServiceList(this.page);
 
-      }, 10000);
+      }, 30000);
     },
 
     goServiceDetermation(serviceId) {
@@ -656,7 +677,14 @@ export default {
 
   },
 
-  watch: {},
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getServiceList(this.page)
+
+    },
+  },
 
   created() {
 
@@ -664,7 +692,7 @@ export default {
   },
   mounted() {
     this.groupControl()
-    this.getServiceList()
+    this.getServiceList(this.page)
     this.intervalFetchData()
 
 
