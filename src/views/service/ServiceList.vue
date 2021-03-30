@@ -66,7 +66,7 @@
                           &#x1F4C2;<span class="sr-only">sss</span>
                         </template>
                         <!--<CDropdownItem @click="getServiceDetail(item.uuid)">Servis Detay</CDropdownItem> -->
-                        <CDropdownItem v-for="button in item.buttons" :key="button"
+                        <CDropdownItem v-for="(button,key) in item.buttons" :key="key"
                                        @click="generalService(item.uuid,button.buttonFunction)">
                           {{ button.buttonName }}
                         </CDropdownItem>
@@ -151,7 +151,7 @@
         :draggable="false"
         title="Modal title 2"
         :backdrop="true"
-        size="s"
+        size="sm"
         color="dark"
     >
       <CRow>
@@ -435,14 +435,11 @@ export default {
       });
     },
 
-    deneme() {
-      console.log("ghg", this.category)
-    },
+
 
     getBase64(event) {
       var reader = new FileReader();
       reader.readAsDataURL(event[0]);
-      console.log("sdsd", product)
       this.selectedFile = event.length + ' dosya seçildi'
       var x = this
       reader.onload = function () {
@@ -459,11 +456,7 @@ export default {
     }
     ,
 
-    denemes() {
 
-      console.log("kjjkhsjkak")
-      return this.messages
-    },
     async getServiceList() {
 
       /*this.$toast.success({
@@ -472,7 +465,6 @@ export default {
       })*/
 
       let response = await new ServiceService().getServicesList();
-      console.log(response)
 
       this.services = response.data.data
 
@@ -482,7 +474,6 @@ export default {
     async getServiceDetail(id) {
 
       let response = await new ServiceService().getServiceDetail(id);
-      console.log(response)
 
 
       this.serviceDetail = response.data
@@ -515,14 +506,12 @@ export default {
     },
     successHide() {
       setTimeout(() => (this.isSuccess = false), 5000);
-      console.log("naber");
     },
     errorHideCar() {
       setTimeout(() => (this.isErrorCar = false), 5000);
     },
     successHideCar() {
       setTimeout(() => (this.isSuccessCar = false), 5000);
-      console.log("naber");
     },
     async getCustomers() {
       let customersRes = await new CustomerService().customerGet('', '', '');
@@ -560,7 +549,6 @@ export default {
           title: 'Bilgi',
           message: 'Servis silme işlemi başarıyla gerçekleşti'
         })
-        console.log("statusDelete", a);
         await this.getProducts();
 
       } else if (a.status === 401) {
@@ -583,7 +571,6 @@ export default {
     async goWatchCamera(serviceId) {
       let cameraRes = await new ServiceService().getServiceCamera(serviceId)
 
-      console.log("camera", cameraRes)
       this.camera = cameraRes.data.camera
 
       this.cameraModal = true
@@ -600,7 +587,6 @@ export default {
     async serviceProcess(serviceId, situationNo, receivingPerson) {
 
       let response = await new ServiceService().ServiceProcessing(serviceId, situationNo, receivingPerson);
-      //console.log(response)
 
       if (response.status === 200) {
         this.isSuccess = true
@@ -609,7 +595,7 @@ export default {
         this.receivingModal = false
         this.$toast.success({
           title: 'Bilgi',
-          message: 'İşlem başarılı'
+          message: 'İşlem başarıyla tamamlandı'
         })
       }
 
