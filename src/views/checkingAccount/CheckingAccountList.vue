@@ -650,7 +650,7 @@ export default {
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
             title: 'Hata',
-            message: `${key}: ${value}`
+            message: `${value}`
           })
         }
         this.errorHide();
