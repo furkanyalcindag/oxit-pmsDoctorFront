@@ -1297,7 +1297,7 @@ export default {
           title: 'Başarılı',
           message: "Başarıyla Güncellendi"
         });
-        this.getCarPagination(this.carUpdate.profileUuid)
+        this.getCarPagination(this.lastCustomerUUid)
         this.successHide();
         this.carModal = false
         this.carUpdate = new Car()
