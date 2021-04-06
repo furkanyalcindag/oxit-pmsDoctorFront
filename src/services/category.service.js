@@ -34,6 +34,7 @@ class CategoryService {
             {
 
                 name: category.name,
+                id: category.id,
                 parent : category.parent
 
             }, {
