@@ -150,8 +150,9 @@
           <CCard v-if="show">
             <template>
               <CCardBody>
-
+                <template>
                 <CDataTable
+                    v-if="!list"
                     :items="computedItems"
                     :fields="fieldsTable"
                     column-filter
@@ -202,6 +203,32 @@
                     </CCollapse>
                   </template>
                 </CDataTable>
+
+                <CDataTable
+                     v-else
+                    :items="computedItems"
+                    :fields="fieldsTableCustomer"
+                    column-filter
+                    :border="true"
+                    :items-per-page="5"
+                    :activePage="4"
+                    hover
+                    sorter
+                    pagination
+                    :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+                    clickableRows
+
+                >
+                  <template #details="{ item }">
+<!--                    <CCollapse-->
+<!--                        :show="Boolean(item._toggled)"-->
+<!--                        :duration="collapseDuration"-->
+<!--                    >-->
+
+<!--                    </CCollapse>-->
+                  </template>
+                </CDataTable>
+                  </template>
 
 
               </CCardBody>
@@ -755,6 +782,13 @@ export default {
         {key: "actions", label: "İşlemler"},
 
       ],
+      fieldsTableCustomer:[
+        {key: 'nameSurname', label: "Ad Soyad", _style: "min-width:200px"},
+        {key: "firmName", label: "Firma"},
+        {key: "mobilePhone", label: "Telefon"},
+        {key: "taxNumber", label: "VKN"},
+        {key: "taxOffice", label: "Vergi Dairesi"},
+      ],
       fieldsTableCar: [
         {key: 'plate', label: "Plaka", _style: "min-width:100px"},
         {key: "brand", label: "Marka"},
@@ -833,7 +867,8 @@ export default {
       carUpdateUUID: '',
       isErrorCustomerUpdate: false,
       errorsCustomer: [],
-      showCustomerForm: false
+      showCustomerForm: false,
+      list:false
     };
   },
 
@@ -876,6 +911,9 @@ export default {
     groupControl(){
       if(localStorage.getItem("user_group")==="Admin"){
         this.showCustomerForm = true
+      }
+      else if(localStorage.getItem("user_group") === "Customer"){
+        this.list = true
       }
     },
 
@@ -1259,7 +1297,7 @@ export default {
           title: 'Başarılı',
           message: "Başarıyla Güncellendi"
         });
-        this.getCarPagination(this.carUpdate.profileUuid)
+        this.getCarPagination(this.lastCustomerUUid)
         this.successHide();
         this.carModal = false
         this.carUpdate = new Car()
