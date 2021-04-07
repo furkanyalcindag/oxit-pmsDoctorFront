@@ -23,12 +23,35 @@
             </CCardHeader>
             <template>
               <CCardBody>
-                <div>
-<!--                  <CAlert color="success" :show="isSuccess">-->
-<!--                    Servis Durumu Başarıyla Değiştirildi-->
-<!--                  </CAlert>-->
+                <CRow>
 
-                </div>
+                  <!--                  <CAlert color="success" :show="isSuccess">-->
+                  <!--                    Servis Durumu Başarıyla Değiştirildi-->
+                  <!--                  </CAlert>-->
+
+                  <CCol lg="6" style="float: right">
+
+
+                    <CInput
+
+                        description=""
+                        autocomplete="autocomplete"
+                        placeholder="Plaka"
+
+
+                    />
+
+                  </CCol>
+
+                  <CCol lg="3">
+
+
+                    <CButton @click="editCartPrice" color="success">Düzenle</CButton>
+
+                  </CCol>
+
+
+                </CRow>
 
                 <CDataTable
                     :items="computedItems"
@@ -174,18 +197,18 @@
             <CCard v-if="receivingModal">
               <template>
                 <CCardBody>
-<!--                  <div>-->
+                  <!--                  <div>-->
 
 
-<!--                    <CAlert-->
-<!--                        v-for="(value,key) in errors"-->
-<!--                        :key="value.message"-->
-<!--                        color="danger"-->
-<!--                        :show="isError"-->
-<!--                    >-->
-<!--                      {{ key }}: {{ value[0] }}-->
-<!--                    </CAlert>-->
-<!--                  </div>-->
+                  <!--                    <CAlert-->
+                  <!--                        v-for="(value,key) in errors"-->
+                  <!--                        :key="value.message"-->
+                  <!--                        color="danger"-->
+                  <!--                        :show="isError"-->
+                  <!--                    >-->
+                  <!--                      {{ key }}: {{ value[0] }}-->
+                  <!--                    </CAlert>-->
+                  <!--                  </div>-->
                   <CRow>
                     <CCol lg="12">
                       <CInput
@@ -329,8 +352,8 @@ export default {
         {key: "creationDate", label: "Tarih"},
         {key: "buttons", label: "İşlemler"},
       ],
-      load:false,
-      pageCount:0,
+      load: false,
+      pageCount: 0,
       pageLabel: {label: 'sasasa', external: true,},
       page: 1,
       numberOfPages: 0,
@@ -401,9 +424,9 @@ export default {
       serviceId: '',
       cameraModal: false,
       camera: '',
-      deleteId : '',
-      deleteModal : false,
-      deleteButton:false
+      deleteId: '',
+      deleteModal: false,
+      deleteButton: false
     };
   },
 
@@ -436,8 +459,8 @@ export default {
       }
     },
 
-    groupControl(){
-      if(localStorage.getItem("user_group")==="Admin"){
+    groupControl() {
+      if (localStorage.getItem("user_group") === "Admin") {
         this.deleteButton = true
       }
     },
@@ -450,7 +473,6 @@ export default {
         this.collapseDuration = 0;
       });
     },
-
 
 
     getBase64(event) {
@@ -475,7 +497,7 @@ export default {
 
     async getServiceList(activePage) {
 
-      this.load=true
+      this.load = true
       /*this.$toast.success({
         title:'',
         message:this.denemes()
@@ -487,7 +509,7 @@ export default {
 
       this.services = response.data.data
       this.pageCount = response.data.activePage
-      this.load=false
+      this.load = false
 
     },
 
@@ -659,8 +681,7 @@ export default {
 
         this.goWatchCamera(serviceId)
 
-      }
-       else if (functionName === 'serviceDelete') {
+      } else if (functionName === 'serviceDelete') {
 
         this.serviceDeleteModal(serviceId)
 
