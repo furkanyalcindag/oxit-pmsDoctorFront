@@ -66,10 +66,14 @@ class ServiceService {
 
     }
 
-    getServicesList(activePage) {
+    getServicesList(activePage,plate) {
+        var x = plate
+        if(plate ==null){
+            x=''
+        }
         const params = {
             activePage: activePage,
-            plate:''
+            plate:x
 
         };
         return axios.get(process.env.VUE_APP_API_URL + `/car-service/get-services-api/`, {headers: authHeader(),params})

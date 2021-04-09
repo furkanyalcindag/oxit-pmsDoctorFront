@@ -37,6 +37,7 @@
                         description=""
                         autocomplete="autocomplete"
                         placeholder="Plaka"
+                        v-model="plateFilter"
 
 
                     />
@@ -46,7 +47,7 @@
                   <CCol lg="3">
 
 
-                    <CButton @click="editCartPrice" color="success">Düzenle</CButton>
+                    <CButton @click="filterServices" color="success">Ara</CButton>
 
                   </CCol>
 
@@ -426,7 +427,8 @@ export default {
       camera: '',
       deleteId: '',
       deleteModal: false,
-      deleteButton: false
+      deleteButton: false,
+      plateFilter:''
     };
   },
 
@@ -463,6 +465,10 @@ export default {
       if (localStorage.getItem("user_group") === "Admin") {
         this.deleteButton = true
       }
+    },
+
+    filterServices(){
+      this.getServiceFilterList(this.activePage)
     },
 
 
@@ -503,7 +509,30 @@ export default {
         message:this.denemes()
       })*/
 
+
       let response = await new ServiceService().getServicesList(activePage);
+
+      this.plateFilter=""
+      console.log(response.data)
+
+      this.services = response.data.data
+      this.pageCount = response.data.activePage
+      this.load = false
+
+    },
+
+    async getServiceFilterList(activePage) {
+
+      this.load = true
+      /*this.$toast.success({
+        title:'',
+        message:this.denemes()
+      })*/
+
+
+      console.log("plateFilter", this.plateFilter)
+
+      let response = await new ServiceService().getServicesList(activePage,this.plateFilter);
 
       console.log(response.data)
 
