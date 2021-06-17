@@ -97,7 +97,7 @@ export default {
         this.data = response.data
       }
       else {
-        await this.$router.push("/pages/login");
+        //await this.$router.push("/pages/login");
       }
 
 

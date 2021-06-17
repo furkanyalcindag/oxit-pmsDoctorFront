@@ -89,6 +89,11 @@ const staff = {
         {
             name: 'Personel İşlemleri',
             to: '/staff/staff-operations'
+        },
+
+         {
+            name: 'Personel İşlemleri PMS',
+            to: '/staff/staff'
         }
     ]
 }

@@ -6,6 +6,7 @@ import Staff from "@/views/staff/Staff";
 import UserService from "../services/UserService"
 
 
+
 // Containers
 const TheContainer = () => import('@/containers/TheContainer')
 
@@ -86,6 +87,11 @@ const ServiceCustomerApprove = () => import('@/views/service/ServiceCustomerAppr
 const CheckingAccountList = () => import('@/views/checkingAccount/CheckingAccountList')
 
 const CheckingAccountByCustomerList = () => import('@/views/checkingAccount/CheckingAccounByCustomerList')
+
+
+const Group = () => import('@/views/pms-management/staff/Group')
+
+
 
 Vue.use(Router)
 
@@ -271,7 +277,14 @@ function configRoutes() {
                             path: 'staff-operations',
                             name: 'Staff',
                             component: Staff
+                        },
+                        {
+                            path: 'staff',
+                            name: 'Group',
+                            component: Group
                         }
+
+
 
                     ]
                 },
