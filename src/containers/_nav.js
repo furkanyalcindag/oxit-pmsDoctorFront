@@ -1,10 +1,11 @@
 import UserService from "../services/UserService"
+
 const user_group = UserService.getUserGroup()
 const groups = {
-    admin:"Admin",
-    serviceman:"Tamirci",
-    customer:"Customer",
-    accountant:"Muhasebe"
+    admin: "Admin",
+    serviceman: "Tamirci",
+    customer: "Customer",
+    accountant: "Muhasebe"
 }
 
 var dashboard_link = ""
@@ -21,7 +22,7 @@ switch (user_group) {
     case groups.accountant:
         dashboard_link = "accountant-dashboard"
         break;
-    
+
     default:
         break;
 }
@@ -48,7 +49,7 @@ const current = {
         }
     ]
 }
-const customer ={
+const customer = {
     _name: 'CSidebarNavDropdown',
     name: 'Müşteri',
     route: '/customer',
@@ -60,7 +61,7 @@ const customer ={
         }
     ]
 }
-const catalog ={
+const catalog = {
     _name: 'CSidebarNavDropdown',
     name: 'Katalog',
     route: '/category',
@@ -91,12 +92,28 @@ const staff = {
             to: '/staff/staff-operations'
         },
 
-         {
+        {
             name: 'Personel İşlemleri PMS',
             to: '/staff/staff'
         }
     ]
 }
+
+
+const clinic = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Klinik',
+    route: '/clinic',
+    icon: 'cil-people',
+    items: [
+        {
+            name: 'Klinik İşlemleri',
+            to: '/clinic/clinic'
+        }
+    ]
+}
+
+
 const services = {
     _name: 'CSidebarNavDropdown',
     name: 'Servis',
@@ -110,29 +127,25 @@ const services = {
     ]
 }
 
-var items =[]
+var items = []
 items.push(home)
 items.push(actions)
-if(user_group === groups.admin || user_group === groups.accountant)
-{
+if (user_group === groups.admin || user_group === groups.accountant) {
     items.push(current)
 }
-if(user_group === groups.admin || user_group === groups.accountant || user_group===groups.customer)
-{
+if (user_group === groups.admin || user_group === groups.accountant || user_group === groups.customer) {
     items.push(customer)
 }
-if(user_group === groups.admin || user_group === groups.serviceman)
-{
+if (user_group === groups.admin || user_group === groups.serviceman) {
     items.push(catalog)
 }
 
-if(user_group === groups.admin)
-{
+if (user_group === groups.admin) {
     items.push(staff)
 }
-if(user_group === groups.admin || user_group === groups.serviceman || user_group===groups.customer)
-{
+if (user_group === groups.admin || user_group === groups.serviceman || user_group === groups.customer) {
     items.push(services)
+    items.push(clinic)
 }
 export default [
     {

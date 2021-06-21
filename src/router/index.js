@@ -6,7 +6,6 @@ import Staff from "@/views/staff/Staff";
 import UserService from "../services/UserService"
 
 
-
 // Containers
 const TheContainer = () => import('@/containers/TheContainer')
 
@@ -91,6 +90,7 @@ const CheckingAccountByCustomerList = () => import('@/views/checkingAccount/Chec
 
 const Group = () => import('@/views/pms-management/staff/Group')
 
+const Clinic = () => import('@/views/pms-management/clinic/Clinic')
 
 
 Vue.use(Router)
@@ -105,10 +105,10 @@ export default new Router({
 function configRoutes() {
     const user_group = UserService.getUserGroup()
     const groups = {
-        admin:"Admin",
-        serviceman:"Tamirci",
-        customer:"Customer",
-        accountant:"Muhasebe"
+        admin: "Admin",
+        serviceman: "Tamirci",
+        customer: "Customer",
+        accountant: "Muhasebe"
     }
 
     var dashboard_link = ""
@@ -125,7 +125,7 @@ function configRoutes() {
         case groups.accountant:
             dashboard_link = "/accountant-dashboard"
             break;
-        
+
         default:
             dashboard_link = "/pages/login"
             break;
@@ -133,7 +133,7 @@ function configRoutes() {
     return [
         {
             path: '/',
-            redirect:`${dashboard_link}`,
+            redirect: `${dashboard_link}`,
             name: 'Home',
             component: TheContainer,
             children: [
@@ -263,6 +263,28 @@ function configRoutes() {
 
                     ]
                 },
+
+                {
+                    path: '/clinic',
+                    redirect: '/clinic/clinic',
+                    name: 'Clinic',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'clinic',
+                            name: 'Clinic',
+                            component: Clinic
+                        }
+
+
+                    ]
+                },
+
+
                 {
                     path: '/staff',
                     redirect: '/staff/staff-operations',
@@ -283,7 +305,6 @@ function configRoutes() {
                             name: 'Group',
                             component: Group
                         }
-
 
 
                     ]
