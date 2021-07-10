@@ -28,21 +28,20 @@
                 <CRow>
                   <CCol lg="6">
                     <CInput
-                        label="Ad (Zorunlu Alan)"
+                        label="Ad *"
                         description=""
                         autocomplete="autocomplete"
                         v-model="staff.firstName"
                     />
 
                     <CInput
-                        label="Soyad (Zorunlu Alan)"
+                        label="Soyad *"
                         description=""
                         autocomplete="autocomplete"
                         v-model="staff.lastName"
                     />
-
                     <CInput
-                        label="Email (Zorunlu Alan)"
+                        label="Email *"
                         description=""
                         type="email"
                         autocomplete="email"
@@ -53,7 +52,7 @@
 
                   <CCol lg="6">
                     <CInput
-                        label="Telefon Numarası (Zorunlu Alan)"
+                        label="Telefon Numarası *"
                         description=""
                         autocomplete="autocomplete"
                         v-model="staff.mobilePhone"
@@ -62,7 +61,7 @@
 
                     <CSelect
                         :options="groups"
-                        label="Grup (Zorunlu Alan)"
+                        label="Grup *"
                         v-model="staff.group"
                         :value.sync="staff.group"
 
@@ -195,21 +194,21 @@
                   <CRow>
                     <CCol lg="6">
                       <CInput
-                          label="Ad (Zorunlu Alan)"
+                          label="Ad *"
                           description=""
                           autocomplete="autocomplete"
                           v-model="staffUpdate.firstName"
                       />
 
                       <CInput
-                          label="Soyad (Zorunlu Alan)"
+                          label="Soyad *"
                           description=""
                           autocomplete="autocomplete"
                           v-model="staffUpdate.lastName"
                       />
 
                       <CInput
-                          label="Email (Zorunlu Alan)"
+                          label="Email *"
                           description=""
                           type="email"
                           autocomplete="email"
@@ -220,7 +219,7 @@
 
                     <CCol lg="6">
                       <CInput
-                          label="Telefon Numarası (Zorunlu Alan)"
+                          label="Telefon Numarası *"
                           description=""
                           autocomplete="autocomplete"
                           v-model="staffUpdate.mobilePhone"
@@ -229,7 +228,7 @@
 
                       <CSelect
                           :options="groups"
-                          label="Grup (Zorunlu Alan)"
+                          label="Grup *"
                           v-model="staffUpdate.group"
                           :value.sync="staffUpdate.group"
 

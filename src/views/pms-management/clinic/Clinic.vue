@@ -28,27 +28,27 @@
                 <CRow>
                   <CCol lg="6">
                     <CInput
-                        label="Klinik Adı (Zorunlu Alan)"
+                        label="Klinik Adı *"
                         description=""
                         autocomplete="autocomplete"
                         v-model="clinic.clinicName"
                     />
 
                     <CInput
-                        label="Vergi Numarası (Zorunlu Alan)"
+                        label="Vergi Numarası *"
                         description=""
                         autocomplete="autocomplete"
                         v-model="clinic.taxNumber"
                     />
 
                     <CInput
-                        label="Vergi Dairesi (Zorunlu Alan)"
+                        label="Vergi Dairesi *"
                         description=""
                         v-model="clinic.taxOffice"
                     />
 
                     <CInput
-                        label="Telefon Numarası (Zorunlu Alan)"
+                        label="Telefon Numarası *"
                         description=""
                         autocomplete="autocomplete"
                         v-model="clinic.telephoneNumber"
@@ -58,7 +58,7 @@
                   <CCol lg="6">
 
                     <CInput
-                        label="Email (Zorunlu Alan)"
+                        label="Email *"
                         description=""
                         type="email"
                         autocomplete="email"
@@ -69,7 +69,7 @@
 
                     <CSelect
                         :options="cities"
-                        label="İl (Zorunlu Alan)"
+                        label="İl *"
                         v-model="clinic.cityId"
                         :value.sync="clinic.cityId"
 
@@ -79,7 +79,7 @@
 
                     <CSelect
                         :options="districts"
-                        label="İlçe (Zorunlu Alan)"
+                        label="İlçe *"
                         v-model="clinic.districtId"
                         :value.sync="clinic.districtId"
 
@@ -213,21 +213,21 @@
                   <CRow>
                     <CCol lg="6">
                       <CInput
-                          label="Ad (Zorunlu Alan)"
+                          label="Ad *"
                           description=""
                           autocomplete="autocomplete"
                           v-model="staffUpdate.firstName"
                       />
 
                       <CInput
-                          label="Soyad (Zorunlu Alan)"
+                          label="Soyad *"
                           description=""
                           autocomplete="autocomplete"
                           v-model="staffUpdate.lastName"
                       />
 
                       <CInput
-                          label="Email (Zorunlu Alan)"
+                          label="Email *"
                           description=""
                           type="email"
                           autocomplete="email"
@@ -238,7 +238,7 @@
 
                     <CCol lg="6">
                       <CInput
-                          label="Telefon Numarası (Zorunlu Alan)"
+                          label="Telefon Numarası *"
                           description=""
                           autocomplete="autocomplete"
                           v-model="staffUpdate.mobilePhone"
@@ -247,7 +247,7 @@
 
                       <CSelect
                           :options="groups"
-                          label="Grup (Zorunlu Alan)"
+                          label="Grup *"
                           v-model="staffUpdate.group"
                           :value.sync="staffUpdate.group"
 

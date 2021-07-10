@@ -126,6 +126,30 @@ const services = {
         }
     ]
 }
+const group = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Grup',
+    route: '/group',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Group',
+            to: '/group'
+        }
+    ]
+}
+const permission = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Yetkilendirme',
+    route: '/permission',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Yetkilendirme',
+            to: '/permission'
+        }
+    ]
+}
 
 var items = []
 items.push(home)
@@ -144,8 +168,12 @@ if (user_group === groups.admin) {
     items.push(staff)
 }
 if (user_group === groups.admin || user_group === groups.serviceman || user_group === groups.customer) {
-    items.push(services)
+    //items.push(services)
     items.push(clinic)
+} else {
+     items.push(clinic)
+    items.push(group)
+    items.push(permission)
 }
 export default [
     {

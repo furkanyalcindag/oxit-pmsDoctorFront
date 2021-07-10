@@ -92,6 +92,7 @@ const Group = () => import('@/views/pms-management/staff/Group')
 
 const Clinic = () => import('@/views/pms-management/clinic/Clinic')
 
+const Permission = () => import('@/views/pms-management/permission/Permissions')
 
 Vue.use(Router)
 
@@ -108,11 +109,11 @@ function configRoutes() {
         admin: "Admin",
         serviceman: "Tamirci",
         customer: "Customer",
-        accountant: "Muhasebe"
+        accountant: "Muhasebe",
     }
 
-    var dashboard_link = ""
-    switch (user_group) {
+    var dashboard_link = "/deneme"
+    switch (user_group === 'undefined') {
         case groups.admin:
             dashboard_link = "/admin-dashboard"
             break;
@@ -127,7 +128,7 @@ function configRoutes() {
             break;
 
         default:
-            dashboard_link = "/pages/login"
+            dashboard_link = "/deneme"
             break;
     }
     return [
@@ -284,7 +285,27 @@ function configRoutes() {
                     ]
                 },
 
-
+                {
+                    path: '/group',
+                    name: 'Staff',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: '/group',
+                            name: 'Group',
+                            component: Group
+                        }
+                    ]
+                },
+                {
+                    path: '/permission',
+                    name: 'Yetkilendirme',
+                    component: Permission
+                },
                 {
                     path: '/staff',
                     redirect: '/staff/staff-operations',
@@ -543,7 +564,7 @@ function configRoutes() {
                             component: Modals
                         }
                     ]
-                }
+                },
             ]
         },
         {
