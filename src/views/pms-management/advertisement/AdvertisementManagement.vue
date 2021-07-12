@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Grup İşlemleri
+              Reklam Yönetimi
               <div class="card-header-actions">
 
                 <CLink
@@ -26,15 +26,52 @@
                 </div>
                 <CRow></CRow>
                 <CRow>
-                  <CCol lg="6">
-                    Grup Adı <span class="text-danger">*</span>
+                  <CCol lg="4">
+                    Reklam Adı <span class="text-danger">*</span>
+                    <CSelect
+                        description=""
+                        autocomplete="autocomplete"
+                        :options="options"
+                    />
+                  </CCol>
+                  <CCol lg="4">
+                    Firma Adı <span class="text-danger">*</span>
                     <CInput
                         description=""
                         autocomplete="autocomplete"
-                        v-model="staff.firstName"
                     />
                   </CCol>
-                  <CCol lg="6" class="mt-3">
+                  <CCol lg="4">
+                    Reklam Yeri <span class="text-danger">*</span>
+                    <CSelect
+                        description=""
+                        autocomplete="autocomplete"
+                        :options="options"
+                    />
+
+                  </CCol>
+                  <CCol lg="4">
+                    Yayın Başlangıç Tarihi <span class="text-danger">*</span>
+                    <CInput
+                        type="date"
+
+                    />
+                  </CCol>
+                  <CCol lg="4">
+                    Yayın Bitiş Tarihi <span class="text-danger">*</span>
+                    <CInput
+                        type="date"
+                    />
+                  </CCol>
+                  <CCol lg="4">
+                    Fiyat <span class="text-danger">*</span>
+                    <CInput
+                        description=""
+                        autocomplete="autocomplete"
+                    />
+
+                  </CCol>
+                  <CCol lg="4" class="mt-3">
                     <div class="form-actions">
                       <CButton type="submit" color="primary"
                       >Kaydet
@@ -198,7 +235,10 @@ export default {
   data() {
     return {
       fieldsTable: [
-        {key: "groupName", label: "Grup Adı"},
+        {key: "advertisementLocation", label: "Reklam Yeri"},
+        {key: "pixels", label: "Genişlik x Uzunluk"},
+        {key: "price", label: "Fiyat"},
+        {key: "showPopUp", label: "PopUp Gösterimi"},
         {key: "actions", label: "İşlemler"},
 
       ],
@@ -262,11 +302,23 @@ export default {
         "Inline Radios - custom",
       ],
       deleteModel: false,
-      deleteId: ''
+      deleteId: '',
+      showPopUp: false
+
     };
   },
 
-  methods: {},
+  methods: {
+    popUpChange() {
+      if (this.showPopUp) {
+        console.log("if")
+        this.showPopUp = false
+      } else {
+        console.log("else")
+        this.showPopUp = false
+      }
+    }
+  },
 
   watch: {},
 

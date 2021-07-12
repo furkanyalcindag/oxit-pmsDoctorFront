@@ -1,21 +1,24 @@
 <template>
   <div>
     <CCard>
-    <CRow>
-      <CCol class="col-lg-10 mt-3">
-        <CSelect :options="options">
+      <CRow>
+        <CCol class="col-lg-2 mt-4">
+        </CCol>
+        <CCol class="col-lg-8 mt-3">
+          <CSelect :options="options">
 
-        </CSelect>
-      </CCol>
-      <CCol class="col-lg-2">
-        <CButton class="btn-outline-primary mt-3" type="submit">Kaydet</CButton>
-      </CCol>
-    </CRow>
-      </CCard>
+          </CSelect>
+        </CCol>
+        <CCol class="col-lg-2">
+          <CButton class="btn-outline-primary mt-3" type="submit">Kaydet</CButton>
+        </CCol>
+      </CRow>
+    </CCard>
     <CRow>
       <CCol v-for="(item,index) in 8" :key="index" class="col-lg-3">
-        <CCard>
-          <CCardHeader>Deneme Modülü</CCardHeader>
+        <CCard border-color="primary">
+
+            <CCardHeader><CIcon name="cilArrowRight"/>Deneme Modülü</CCardHeader>
           <CCardBody>
             <CRow>
               <CCol class="col-lg-12">

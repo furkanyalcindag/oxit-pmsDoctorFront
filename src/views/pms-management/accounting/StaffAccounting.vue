@@ -4,57 +4,6 @@
       <CCol lg="12">
         <transition name="fade">
           <CCard v-if="show">
-            <CCardHeader>
-              <CIcon name="cil-pencil"/>
-              Grup İşlemleri
-              <div class="card-header-actions">
-
-                <CLink
-                    class="card-header-action btn-minimize"
-                    @click="formCollapsed = !formCollapsed"
-                >
-                  <CIcon
-                      :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
-                  />
-                </CLink>
-
-              </div>
-            </CCardHeader>
-            <CCollapse :show="formCollapsed">
-              <CCardBody>
-                <div>
-                </div>
-                <CRow></CRow>
-                <CRow>
-                  <CCol lg="6">
-                    Grup Adı <span class="text-danger">*</span>
-                    <CInput
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="staff.firstName"
-                    />
-                  </CCol>
-                  <CCol lg="6" class="mt-3">
-                    <div class="form-actions">
-                      <CButton type="submit" color="primary"
-                      >Kaydet
-                      </CButton>
-
-                    </div>
-                  </CCol>
-                </CRow>
-              </CCardBody>
-            </CCollapse>
-          </CCard>
-        </transition>
-      </CCol>
-    </CRow>
-
-
-    <CRow>
-      <CCol lg="12">
-        <transition name="fade">
-          <CCard v-if="show">
             <template>
               <CCardBody>
 
@@ -128,33 +77,20 @@
             <CCard v-if="staffUpdateModal">
               <template>
                 <CCardBody>
-
-                  <div>
-                    <!--                    <CAlert color="success" :show="isSuccessCar">-->
-                    <!--                      Personel başarıyla kaydedildi.-->
-                    <!--                    </CAlert>-->
-
-
-                    <!--                    <CAlert-->
-                    <!--                        v-for="(value,key) in errorsStaff"-->
-                    <!--                        :key="value.message"-->
-                    <!--                        color="danger"-->
-                    <!--                        :show="isErrorStaffUpdate"-->
-                    <!--                    >-->
-                    <!--                      {{ key }}: {{ value[0] }}-->
-                    <!--                    </CAlert>-->
-
-
-                  </div>
-
-
                   <CRow>
                     <CCol lg="6">
+                      Miktar <span class="text-danger">*</span>
                       <CInput
                           description=""
                           autocomplete="autocomplete"
                       />
-                      Grup Adı <span class="text-danger">*</span>
+                    </CCol>
+                    <CCol lg="6">
+                      Ödeme Türü <span class="text-danger">*</span>
+                      <CInput
+                          description=""
+                          autocomplete="autocomplete"
+                      />
                     </CCol>
                   </CRow>
 
@@ -198,7 +134,9 @@ export default {
   data() {
     return {
       fieldsTable: [
-        {key: "groupName", label: "Grup Adı"},
+        {key: "name", label: "Personel Adı Soyadı"},
+        {key: "prim", label: "Prim Miktarı"},
+        {key: "payment", label: "Ödeme Yap"},
         {key: "actions", label: "İşlemler"},
 
       ],

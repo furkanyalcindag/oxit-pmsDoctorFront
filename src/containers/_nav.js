@@ -126,29 +126,66 @@ const services = {
         }
     ]
 }
-const group = {
+const staffs = {
     _name: 'CSidebarNavDropdown',
-    name: 'Grup',
-    route: '/group',
+    name: 'Personel İşlemleri',
     icon: 'cil-file',
     items: [
         {
-            name: 'Group',
+            name: 'Personel',
+            to: '/staffs'
+        },
+        {
+            name: 'Grup',
             to: '/group'
         }
     ]
 }
 const permission = {
-    _name: 'CSidebarNavDropdown',
+    _name: 'CSidebarNavItem',
     name: 'Yetkilendirme',
-    route: '/permission',
+    to: '/permission',
+    icon: 'cil-file',
+}
+const advertisement = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Reklam Yönetimi',
     icon: 'cil-file',
     items: [
         {
-            name: 'Yetkilendirme',
-            to: '/permission'
+            name: 'Reklam Ekleme',
+            to: '/advertisement'
+        },
+        {
+            name: 'Reklam Yeri',
+            to: '/advertisement/location'
         }
     ]
+
+}
+const accounting = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Muhasebe',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Firma',
+            to: '/accounting-company'
+        },
+        {
+            name: 'Klinik',
+            to: '/accounting-clinic'
+        },
+        {
+            name: 'Personel',
+            to: '/accounting-staff'
+        },
+        {
+            name: 'Referans Bazlı',
+            to: '/accounting-reference'
+        }
+    ]
+
 }
 
 var items = []
@@ -171,9 +208,11 @@ if (user_group === groups.admin || user_group === groups.serviceman || user_grou
     //items.push(services)
     items.push(clinic)
 } else {
-     items.push(clinic)
-    items.push(group)
+    items.push(clinic)
+    items.push(staffs)
     items.push(permission)
+    items.push(advertisement)
+    items.push(accounting)
 }
 export default [
     {
