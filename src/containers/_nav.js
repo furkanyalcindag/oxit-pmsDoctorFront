@@ -128,7 +128,7 @@ const services = {
 }
 const staffs = {
     _name: 'CSidebarNavDropdown',
-    name: 'Personel İşlemleri',
+    name: 'Personel',
     icon: 'cil-file',
     items: [
         {
@@ -149,7 +149,7 @@ const permission = {
 }
 const advertisement = {
     _name: 'CSidebarNavDropdown',
-    name: 'Reklam Yönetimi',
+    name: 'Reklam ',
     icon: 'cil-file',
     items: [
         {
@@ -163,6 +163,48 @@ const advertisement = {
     ]
 
 }
+
+
+const notifications = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Bildirim ',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Bildirim',
+            to: '/notifications'
+        }
+    ]
+
+}
+
+
+const wristbands = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Bileklik ',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Bileklik',
+            to: '/wristbands'
+        }
+    ]
+
+}
+
+const contracts = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Sözleşme',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Sözleşme',
+            to: '/contracts'
+        }
+    ]
+
+}
+
 const accounting = {
     _name: 'CSidebarNavDropdown',
     name: 'Muhasebe',
@@ -213,6 +255,9 @@ if (user_group === groups.admin || user_group === groups.serviceman || user_grou
     items.push(permission)
     items.push(advertisement)
     items.push(accounting)
+    items.push(notifications)
+    items.push(wristbands)
+    items.push(contracts)
 }
 export default [
     {

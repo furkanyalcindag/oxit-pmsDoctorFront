@@ -108,6 +108,12 @@ const StaffAccounting = () => import('@/views/pms-management/accounting/StaffAcc
 
 const ReferenceBasedAccounting = () => import('@/views/pms-management/accounting/ReferenceBasedAccounting')
 
+const Notifications  = () => import('@/views/pms-management/notifications/Notifications');
+
+const Wristbands  = () => import('@/views/pms-management/wristbands/Wristbands');
+
+const Contract  = () => import('@/views/pms-management/contract/Contract');
+
 Vue.use(Router)
 
 export default new Router({
@@ -126,7 +132,7 @@ function configRoutes() {
         accountant: "Muhasebe",
     }
 
-    var dashboard_link = "/deneme"
+    var dashboard_link = "/staffs"
     switch (user_group === 'undefined') {
         case groups.admin:
             dashboard_link = "/admin-dashboard"
@@ -142,7 +148,7 @@ function configRoutes() {
             break;
 
         default:
-            dashboard_link = "/deneme"
+            dashboard_link = "/staffs"
             break;
     }
     return [
@@ -397,6 +403,63 @@ function configRoutes() {
                         }
                     ]
                 },
+
+
+                    {
+                    path: '/notifications',
+                    name: 'Bildirim',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: '/notifications',
+                            name: 'Bildirim',
+                            component: Notifications
+                        }
+                    ]
+                },
+
+
+
+                  {
+                    path: '/wristbands',
+                    name: 'Bileklik',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: '/wristbands',
+                            name: 'Bileklik',
+                            component: Wristbands
+                        }
+                    ]
+                },
+
+                  {
+                    path: '/contracts',
+                    name: 'Sözleşme',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: '/contracts',
+                            name: 'Sözleşme',
+                            component: Contract
+                        }
+                    ]
+                },
+
+
+
                 {
                     path: '/service',
                     redirect: '/service/service-list',

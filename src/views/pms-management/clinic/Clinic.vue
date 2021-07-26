@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Klinik İşlemleri
+             Klinik Yönetimi
               <div class="card-header-actions">
 
                 <CLink
@@ -23,84 +23,103 @@
             <CCollapse :show="formCollapsed">
               <CCardBody>
                 <div>
+
                 </div>
                 <CRow></CRow>
                 <CRow>
-                  <CCol lg="6">
+                  <CCol lg="4">
                     <CInput
-                        label="Klinik Adı *"
+                        label="Klinik Adı (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
-                        v-model="clinic.clinicName"
+
                     />
 
                     <CInput
-                        label="Vergi Numarası *"
+                        label="Yetkili Ad (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
-                        v-model="clinic.taxNumber"
+
                     />
 
-                    <CInput
-                        label="Vergi Dairesi *"
-                        description=""
-                        v-model="clinic.taxOffice"
-                    />
-
-                    <CInput
-                        label="Telefon Numarası *"
+                       <CInput
+                        label="Yetkili Soyad (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
-                        v-model="clinic.telephoneNumber"
                     />
+
                   </CCol>
 
-                  <CCol lg="6">
+                  <CCol lg="4">
+                      <CInput
+                        label="Telefon Numarası (Zorunlu Alan)"
+                        description=""
+                        autocomplete="autocomplete"
 
-                    <CInput
-                        label="Email *"
+                    />
+
+                       <CInput
+                        label="Vergi Dairesi (Zorunlu Alan)"
+                        description=""
+                        autocomplete="autocomplete"
+
+                    />
+
+                      <CInput
+                        label="İl (Zorunlu Alan)"
+                        description=""
+                        autocomplete="autocomplete"
+
+                    />
+
+                  </CCol>
+
+                  <CCol lg="4">
+
+                       <CInput
+                        label="E-Mail (Zorunlu Alan)"
                         description=""
                         type="email"
                         autocomplete="email"
                         prepend="@"
-                        v-model="clinic.email"
-                    />
-
-
-                    <CSelect
-                        :options="cities"
-                        label="İl *"
-                        v-model="clinic.cityId"
-                        :value.sync="clinic.cityId"
-
-                        @change="getDistrict(clinic.cityId)"
 
                     />
 
-                    <CSelect
-                        :options="districts"
-                        label="İlçe *"
-                        v-model="clinic.districtId"
-                        :value.sync="clinic.districtId"
-
-
-                    />
-
-                    <CTextarea
-                        :rows="3"
-                        label="Adres"
+                      <CInput
+                        label="Vergi Numarası (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
-                        v-model="clinic.address"
+
+                    />
+
+                      <CInput
+                        label="İlçe (Zorunlu Alan)"
+                        description=""
+                        autocomplete="autocomplete"
+
                     />
 
                   </CCol>
+
+
+                  <CCol lg="12">
+
+                       <CTextarea
+                        :rows="1"
+                        label="Adres (Zorunlu Alan)"
+                        description=""
+                        autocomplete="autocomplete"
+
+                    />
+
+                  </CCol>
+
 
 
                 </CRow>
 
                 <div class="form-actions">
-                  <CButton type="submit" color="primary" @click="addClinic"
+                  <CButton type="submit" color="primary"
                   >Kaydet
                   </CButton>
 
