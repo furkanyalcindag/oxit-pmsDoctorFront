@@ -60,7 +60,7 @@
 
                 <CDataTable
                     :items="staffs"
-                    :fields="fieldsTable"
+                    :fields="fieldsTableGroup"
                     column-filter
                     :border="true"
                     :items-per-page="5"
@@ -197,7 +197,7 @@ export default {
 
   data() {
     return {
-      fieldsTable: [
+      fieldsTableGroup: [
         {key: "groupName", label: "Grup Adı"},
         {key: "actions", label: "İşlemler"},
 

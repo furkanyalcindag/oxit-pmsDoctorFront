@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-             Klinik Yönetimi
+              Klinik Yönetimi
               <div class="card-header-actions">
 
                 <CLink
@@ -32,7 +32,7 @@
                         label="Klinik Adı (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
-
+                        v-model="clinic.clinicName"
                     />
 
                     <CInput
@@ -42,7 +42,7 @@
 
                     />
 
-                       <CInput
+                    <CInput
                         label="Yetkili Soyad (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
@@ -51,32 +51,34 @@
                   </CCol>
 
                   <CCol lg="4">
-                      <CInput
+                    <CInput
                         label="Telefon Numarası (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
 
                     />
 
-                       <CInput
+                    <CInput
                         label="Vergi Dairesi (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
+                        v-model="clinic.taxOffice"
 
                     />
 
-                      <CInput
+                    <CSelect
                         label="İl (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
-
+                        :options="cities"
+                        v-model="city"
+                        :value.sync="city"
+                        @change="getDistricts(city)"
                     />
 
                   </CCol>
 
                   <CCol lg="4">
 
-                       <CInput
+                    <CInput
                         label="E-Mail (Zorunlu Alan)"
                         description=""
                         type="email"
@@ -85,18 +87,19 @@
 
                     />
 
-                      <CInput
+                    <CInput
                         label="Vergi Numarası (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
+                        v-model="clinic.taxNumber"
 
                     />
 
-                      <CInput
+                    <CSelect
                         label="İlçe (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
-
+                        :options="districts"
+                        v-model="district"
+                        :value.sync="district"
                     />
 
                   </CCol>
@@ -104,22 +107,23 @@
 
                   <CCol lg="12">
 
-                       <CTextarea
+                    <CTextarea
                         :rows="1"
                         label="Adres (Zorunlu Alan)"
                         description=""
                         autocomplete="autocomplete"
+                        v-model="clinic.address"
 
                     />
 
                   </CCol>
 
 
-
                 </CRow>
 
                 <div class="form-actions">
                   <CButton type="submit" color="primary"
+                           @click="addClinic"
                   >Kaydet
                   </CButton>
 
@@ -155,17 +159,16 @@
                 >
 
 
-                  <template #details="{ item }">
-                    <CCollapse
-                        :show="Boolean(item._toggled)"
-                        :duration="collapseDuration"
-                    >
+                  <template #actions="{ item, index }">
+                    <td class="py-2">
 
-                    </CCollapse>
+
+                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+
+                      <CButton @click="getSingleClinic(item.uuid)" color="success">Düzenle</CButton>
+                    </td>
                   </template>
                 </CDataTable>
-
-
               </CCardBody>
             </template>
           </CCard>
@@ -178,8 +181,9 @@
         title="Modal title"
         color="danger"
         :show.sync="deleteModel"
+        @ok="deleteClinic"
     >
-      Personeli silmek istediğinizden emin misiniz?
+      Kliniği silmek istediğinizden emin misiniz?
 
 
       <template #header>
@@ -188,7 +192,7 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteStaff" color="success">Evet</CButton>
+        <CButton @click="deleteClinic" color="success">Evet</CButton>
       </template>
 
 
@@ -209,83 +213,100 @@
             <CCard v-if="staffUpdateModal">
               <template>
                 <CCardBody>
-
-                  <div>
-                    <!--                    <CAlert color="success" :show="isSuccessCar">-->
-                    <!--                      Personel başarıyla kaydedildi.-->
-                    <!--                    </CAlert>-->
-
-
-                    <!--                    <CAlert-->
-                    <!--                        v-for="(value,key) in errorsStaff"-->
-                    <!--                        :key="value.message"-->
-                    <!--                        color="danger"-->
-                    <!--                        :show="isErrorStaffUpdate"-->
-                    <!--                    >-->
-                    <!--                      {{ key }}: {{ value[0] }}-->
-                    <!--                    </CAlert>-->
-
-
-                  </div>
-
-
                   <CRow>
-                    <CCol lg="6">
+                    <CCol lg="4">
                       <CInput
-                          label="Ad *"
+                          label="Klinik Adı (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="staffUpdate.firstName"
+                          v-model="clinic.clinicName"
                       />
 
                       <CInput
-                          label="Soyad *"
+                          label="Yetkili Ad (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="staffUpdate.lastName"
+
                       />
 
                       <CInput
-                          label="Email *"
+                          label="Yetkili Soyad (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                      />
+
+                    </CCol>
+
+                    <CCol lg="4">
+                      <CInput
+                          label="Telefon Numarası (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+
+                      />
+
+                      <CInput
+                          label="Vergi Dairesi (Zorunlu Alan)"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="clinic.taxOffice"
+
+                      />
+
+                      <CSelect
+                          label="İl (Zorunlu Alan)"
+                          :options="cities"
+                          v-model="city"
+                          :value.sync="city"
+                          @change="getDistricts(city)"
+                      />
+
+                    </CCol>
+
+                    <CCol lg="4">
+
+                      <CInput
+                          label="E-Mail (Zorunlu Alan)"
                           description=""
                           type="email"
                           autocomplete="email"
                           prepend="@"
-                          v-model="staffUpdate.username"
-                      />
-                    </CCol>
 
-                    <CCol lg="6">
+                      />
+
                       <CInput
-                          label="Telefon Numarası *"
+                          label="Vergi Numarası (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="staffUpdate.mobilePhone"
-                      />
+                          v-model="clinic.taxNumber"
 
+                      />
 
                       <CSelect
-                          :options="groups"
-                          label="Grup *"
-                          v-model="staffUpdate.group"
-                          :value.sync="staffUpdate.group"
-
+                          label="İlçe (Zorunlu Alan)"
+                          :options="districts"
+                          v-model="district"
+                          :value.sync="district"
                       />
 
+                    </CCol>
+
+
+                    <CCol lg="12">
+
                       <CTextarea
-                          :rows="3"
-                          label="Adres"
+                          :rows="1"
+                          label="Adres (Zorunlu Alan)"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="staffUpdate.address"
+                          v-model="clinic.address"
+
                       />
 
                     </CCol>
 
 
                   </CRow>
-
-
                 </CCardBody>
               </template>
             </CCard>
@@ -298,7 +319,7 @@
       </template>
       <template #footer>
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="updateStaffFunc" color="success">Güncelle</CButton>
+        <CButton @click="editClinic" color="success">Güncelle</CButton>
       </template>
     </CModal>
 
@@ -312,11 +333,9 @@
 import Car from "@/models/car";
 
 import Staff from "@/models/Staff";
-import StaffService from "@/services/staff.service";
 
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 import Customer from "@/models/customer";
-import UserService from "@/services/managementServices/user.service";
 import Clinic from "@/models/pms/clinic";
 import GeneralService from "@/services/managementServices/general.service";
 import ClinicService from "@/services/managementServices/clinic.service";
@@ -333,10 +352,8 @@ export default {
         {key: "taxOffice", label: "Vergi Dairesi"},
         {key: "email", label: "Email"},
         {key: "telephoneNumber", label: "Telefon Numarası"},
-        {key: "city", label: "İl"},
-        {key: "district", label: "İlçe"},
-
-
+        {key: "cityDistrict", label: "İl/İlçe"},
+        {key: "actions", label: "İşlemler"}
       ],
 
       pageLabel: {label: 'sasasa', external: true,},
@@ -401,7 +418,12 @@ export default {
       ],
       deleteModel: false,
       deleteId: '',
-      clinics: []
+      clinics: [],
+      city: '',
+      district: '',
+      cit: '',
+      updateId: 0,
+      updateModal: false
     };
   },
 
@@ -435,110 +457,32 @@ export default {
       this.isCorporate = !this.isCorporate;
       this.customer.isCorporate = this.isCorporate;
     },
-    addCarModal(profileUuid) {
-
-      this.carModal = true
-      this.car.profileUuid = profileUuid
-
-    },
-
-
     setDeleteModal(id) {
 
       this.deleteId = id
       this.deleteModel = true
 
     },
-
-
-    async deleteStaff() {
-
-      let a = await new StaffService().deleteStaff(this.deleteId);
-      if (a.status === 200) {
-
-        this.deleteModel = false;
-        this.successHide();
-        this.getStaffs()
-        this.$toast.success({
-          title: 'Başarılı',
-          message: "Başarıyla Silindi"
-        });
-
-      } else if (a.status === 401) {
-        this.isError = false;
-        this.isError = true;
-        this.errorHide();
-        await this.$router.push("/pages/login");
-      } else {
-        this.$toast.error({
-          title: 'Hata',
-          message: "Yetkiniz bulunmamaktadır"
-        });
-      }
-    },
-
-    errorHide() {
-      setTimeout(() => (this.isError = false), 5000);
-    },
-    successHide() {
-      setTimeout(() => (this.isSuccess = false), 5000);
-    },
-    errorHideCar() {
-      setTimeout(() => (this.isErrorCar = false), 5000);
-    },
-    successHideCar() {
-      setTimeout(() => (this.isSuccessCar = false), 5000);
-    },
-
-
-    async getSingleStaff(id) {
-
-      let response = await new StaffService().getStaff(id);
-      this.staffUpdate = response.data
-      this.staffUpdateModal = true
-
-    },
-
-
-    async getStaffs() {
-      let response = await new UserService().getStaffs();
-      console.log(response)
-      this.staffs = response.data
-    },
-    async getGroups() {
-      let response = await new UserService().getGroups();
-
-      this.groups = response.data
-    },
-
     async getClinics() {
       let response = await new ClinicService().getClinics();
-
-      this.clinics = response.data
+      console.log("res", response.data)
+      this.clinics = response.data.data
     },
-
-
-    async getCity() {
-      let response = await new GeneralService().getCity()
-
-      this.cities = response.data
-    },
-
-
-    async getDistrict(id) {
-
-      let response = await new GeneralService().getDistrict(id)
-
-      this.districts = response.data
-    },
-
     async addClinic() {
+      if (this.district === '') {
+        this.clinic.districtId = this.districts[0].value
+      }
+      if (this.city === '') {
+        this.clinic.cityId = this.cities[0].value
+      }
+      console.log("dist", this.clinic.cityId)
+      console.log("dist", this.clinic.districtId)
       let a = await new ClinicService().addClinic(this.clinic);
       if (a.status === 200) {
         this.isSuccess = false;
         this.isSuccess = true;
         this.successHide();
-        this.getStaffs();
+        await this.getClinics();
         this.$toast.success({
           title: 'Başarılı',
           message: "Personel başarıyla eklendi"
@@ -552,7 +496,6 @@ export default {
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
-        this.errorHide();
         this.$toast.error({
           title: 'Hata',
           message: "Yetkiniz bulunmamaktadır"
@@ -571,56 +514,60 @@ export default {
         this.errorHide();
       }
     },
-
-
-    async updateStaffFunc() {
-      let a = await new StaffService().updateStaff(this.staffUpdate);
-      if (a.status === 200) {
-        this.isSuccess = false;
-        this.$toast.success({
-          title: 'Başarılı',
-          message: "Personel başarıyla güncellendi"
-        });
+    async editClinic() {
+       if (this.district === '') {
+        this.clinic.districtId = this.districts[0].value
+      }
+      if (this.city === '') {
+        this.clinic.cityId = this.cities[0].value
+      }
+      let response = await new ClinicService().editClinic(this.clinic)
+      if (response.status === 200) {
         this.staffUpdateModal = false
-        this.getStaffs();
-        this.customer = new Customer()
-      } else if (a.response.status === 401) {
-        this.isErrorCustomerUpdate = false;
-        this.isErrorCustomerUpdate = true;
-        this.errorHideUpdateCustomer();
-        await this.$router.push("/pages/login");
-      } else {
-        this.isErrorCustomerUpdate = false;
-        this.isErrorCustomerUpdate = true;
-        this.errors = a.response.data
-        // this.$toast.err({
-        //   title: 'Hata',
-        //   message: a.response.data
-        // });
-        for (const [key, value] of Object.entries(this.errors)) {
-          this.$toast.error({
-            title: 'Hata',
-            message: `${key}: ${value}`
-          })
-        }
-
-
+        await this.getClinics()
       }
 
+
+    },
+    async getSingleClinic(id) {
+      this.staffUpdateModal = true
+      let response = await new ClinicService().getSingleClinic(id)
+      this.clinic = response.data
+      console.log("clin",this.clinic)
+
+    },
+    async getCities() {
+      let response = await new GeneralService().getCity()
+      this.cities = response.data
+
+    },
+    async getDistricts(city) {
+      console.log("id", city)
+      let response = await new GeneralService().getDistrict(city)
+      console.log("res", response.data)
+      this.districts = response.data
+    },
+    async deleteClinic() {
+      let response = await new ClinicService().deleteClinic(this.deleteId)
+      if (response.status === 200) {
+        this.deleteModel = false
+        this.getClinics()
+      }
     }
   },
 
   watch: {},
 
-  created() {
-    this.isCorporateControl();
+  async created() {
+    await this.getCities()
+    await this.getDistricts(this.cities[0].value)
+    await this.getClinics()
 
   },
-  mounted() {
-    this.getGroups()
-    this.getStaffs()
-    this.getCity()
-    this.getClinics()
+  async mounted() {
+    await this.getCities()
+    await this.getDistricts(this.cities[0].value)
+    await this.getClinics()
 
 
   },
