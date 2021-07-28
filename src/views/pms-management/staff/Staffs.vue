@@ -45,7 +45,7 @@
                         type="email"
                         autocomplete="email"
                         prepend="@"
-                        v-model="staff.username"
+                        v-model="staff.email"
                     />
                   </CCol>
 
@@ -64,13 +64,13 @@
                         :value.sync="staff.group"
 
                     />
-                    Adres <span class="text-danger">*</span>
-                    <CTextarea
-                        :rows="3"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="staff.address"
-                    />
+                    <!--                    Adres <span class="text-danger">*</span>-->
+                    <!--                    <CTextarea-->
+                    <!--                        :rows="3"-->
+                    <!--                        description=""-->
+                    <!--                        autocomplete="autocomplete"-->
+                    <!--                        v-model="staff.address"-->
+                    <!--                    />-->
 
                   </CCol>
 
@@ -112,15 +112,17 @@
                     clickableRows
 
                 >
+                  <template #group="{ item, index }">
+                    <td class="py-2">
+                      {{ item.group.label }}
+                    </td>
+                  </template>
 
-
-                  <template #details="{ item }">
-                    <CCollapse
-                        :show="Boolean(item._toggled)"
-                        :duration="collapseDuration"
-                    >
-
-                    </CCollapse>
+                  <template #actions="{ item, index }">
+                    <td class="py-2">
+                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                      <CButton @click="getSingleStaff(item.uuid)" color="primary" class="mr-2">Düzenle</CButton>
+                    </td>
                   </template>
                 </CDataTable>
 
@@ -168,26 +170,6 @@
             <CCard v-if="staffUpdateModal">
               <template>
                 <CCardBody>
-
-                  <div>
-                    <!--                    <CAlert color="success" :show="isSuccessCar">-->
-                    <!--                      Personel başarıyla kaydedildi.-->
-                    <!--                    </CAlert>-->
-
-
-                    <!--                    <CAlert-->
-                    <!--                        v-for="(value,key) in errorsStaff"-->
-                    <!--                        :key="value.message"-->
-                    <!--                        color="danger"-->
-                    <!--                        :show="isErrorStaffUpdate"-->
-                    <!--                    >-->
-                    <!--                      {{ key }}: {{ value[0] }}-->
-                    <!--                    </CAlert>-->
-
-
-                  </div>
-
-
                   <CRow>
                     <CCol lg="6">
                       <CInput
@@ -210,7 +192,7 @@
                           type="email"
                           autocomplete="email"
                           prepend="@"
-                          v-model="staffUpdate.username"
+                          v-model="staffUpdate.email"
                       />
                     </CCol>
 
@@ -226,18 +208,18 @@
                       <CSelect
                           :options="groups"
                           label="Grup *"
-                          v-model="staffUpdate.group"
-                          :value.sync="staffUpdate.group"
+                          v-model="groupUpdate"
+                          :value.sync="groupUpdate"
 
                       />
 
-                      <CTextarea
-                          :rows="3"
-                          label="Adres"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="staffUpdate.address"
-                      />
+                      <!--                      <CTextarea-->
+                      <!--                          :rows="3"-->
+                      <!--                          label="Adres"-->
+                      <!--                          description=""-->
+                      <!--                          autocomplete="autocomplete"-->
+                      <!--                          v-model="staffUpdate.address"-->
+                      <!--                      />-->
 
                     </CCol>
 
@@ -257,7 +239,7 @@
       </template>
       <template #footer>
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="updateStaffFunc" color="success">Güncelle</CButton>
+        <CButton @click="editStaff" color="success">Güncelle</CButton>
       </template>
     </CModal>
 
@@ -268,13 +250,10 @@
 <script>
 
 
-import Car from "@/models/car";
-
-import Staff from "@/models/Staff";
-import StaffService from "@/services/staff.service";
-import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
-import Customer from "@/models/customer";
+import StaffService from "@/services/managementServices/staff.service";
+import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css';
 import UserService from "@/services/managementServices/user.service";
+import Staff from "../../../models/pms/staff";
 
 
 export default {
@@ -285,7 +264,8 @@ export default {
       fieldsTable: [
         {key: 'firstName', label: "Ad Soyad", _style: "min-width:200px"},
         {key: "lastName", label: "Email"},
-        {key: "groupName", label: "Personel Grubu"},
+        {key: "group", label: "Personel Grubu"},
+        {key: "actions", label: "İşlemler"},
 
       ],
 
@@ -301,10 +281,6 @@ export default {
       customers: [],
       cars: [],
       staffs: [],
-      staff: new Staff("", "", "", "", "", ""),
-      staffUpdate: new Customer("", "", "", "", "", "", "", ""),
-      customer: new Customer("", "", "", "", "", "", "", ""),
-      car: new Car("", "", "", "", "", "", "", "", "", "", ""),
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
@@ -348,7 +324,10 @@ export default {
         "Inline Radios - custom",
       ],
       deleteModel: false,
-      deleteId: ''
+      deleteId: '',
+      staff: new Staff("", "", "", "", "", ""),
+      staffUpdate: new Staff("", "", "", "", "", ""),
+      groupUpdate: ''
     };
   },
 
@@ -382,13 +361,6 @@ export default {
       this.isCorporate = !this.isCorporate;
       this.customer.isCorporate = this.isCorporate;
     },
-    addCarModal(profileUuid) {
-
-      this.carModal = true
-      this.car.profileUuid = profileUuid
-
-    },
-
 
     setDeleteModal(id) {
 
@@ -396,150 +368,56 @@ export default {
       this.deleteModel = true
 
     },
-
-
-    async deleteStaff() {
-
-      let a = await new StaffService().deleteStaff(this.deleteId);
-      if (a.status === 200) {
-
-        this.deleteModel = false;
-        this.successHide();
-        this.getStaffs()
-        this.$toast.success({
-          title: 'Başarılı',
-          message: "Başarıyla Silindi"
-        });
-
-      } else if (a.status === 401) {
-        this.isError = false;
-        this.isError = true;
-        this.errorHide();
-        await this.$router.push("/pages/login");
-      } else {
-        this.$toast.error({
-          title: 'Hata',
-          message: "Yetkiniz bulunmamaktadır"
-        });
-      }
-    },
-
-    errorHide() {
-      setTimeout(() => (this.isError = false), 5000);
-    },
-    successHide() {
-      setTimeout(() => (this.isSuccess = false), 5000);
-    },
-    errorHideCar() {
-      setTimeout(() => (this.isErrorCar = false), 5000);
-    },
-    successHideCar() {
-      setTimeout(() => (this.isSuccessCar = false), 5000);
-    },
-
-
-    async getSingleStaff(id) {
-
-      let response = await new StaffService().getStaff(id);
-      this.staffUpdate = response.data
-      this.staffUpdateModal = true
-
-    },
-
-
-    async getStaffs() {
-      let response = await new UserService().getStaffs();
-      console.log(response)
-      this.staffs = response.data
-    },
     async getGroups() {
       let response = await new UserService().getGroups();
-
       this.groups = response.data
+      console.log("groups", this.groups)
     },
+
     async addStaff() {
-      let a = await new UserService().addStaff(this.staff);
-      if (a.status === 200) {
-        this.isSuccess = false;
-        this.isSuccess = true;
-        this.successHide();
-        this.getStaffs();
-        this.$toast.success({
-          title: 'Başarılı',
-          message: "Personel başarıyla eklendi"
-        })
-        this.staff.firstName = ''
-        this.staff.lastName = ''
-        this.staff.username = ''
-        this.staff.mobilePhone = ''
-        this.staff.address = ''
-        this.staff.group = ''
-      } else if (a.response.status === 401) {
-        this.isError = false;
-        this.isError = true;
-        this.errorHide();
-        this.$toast.error({
-          title: 'Hata',
-          message: "Yetkiniz bulunmamaktadır"
-        })
-        await this.$router.push("/pages/login");
-      } else {
-        this.isError = false;
-        this.isError = true;
-        this.errors = a.response.data;
-        for (const [key, value] of Object.entries(this.errors)) {
-          this.$toast.error({
-            title: 'Hata',
-            message: `${key}: ${value}`
-          })
-        }
-        this.errorHide();
+      console.log("group", this.staff)
+      let response = await new StaffService().addStaff(this.staff)
+      if (response.status === 200) {
+        await this.getStaffs()
+        this.staff = new Staff("", "", "", "", "", "")
       }
     },
-
-
-    async updateStaffFunc() {
-      let a = await new StaffService().updateStaff(this.staffUpdate);
-      if (a.status === 200) {
-        this.isSuccess = false;
-        this.$toast.success({
-          title: 'Başarılı',
-          message: "Personel başarıyla güncellendi"
-        });
-        this.staffUpdateModal = false
-        this.getStaffs();
-        this.customer = new Customer()
-      } else if (a.response.status === 401) {
-        this.isErrorCustomerUpdate = false;
-        this.isErrorCustomerUpdate = true;
-        this.errorHideUpdateCustomer();
-        await this.$router.push("/pages/login");
-      } else {
-        this.isErrorCustomerUpdate = false;
-        this.isErrorCustomerUpdate = true;
-        this.errors = a.response.data
-        // this.$toast.err({
-        //   title: 'Hata',
-        //   message: a.response.data
-        // });
-        for (const [key, value] of Object.entries(this.errors)) {
-          this.$toast.error({
-            title: 'Hata',
-            message: `${key}: ${value}`
-          })
-        }
-
-
+    async getStaffs() {
+      let response = await new StaffService().getStaffs()
+      this.staffs = response.data.data
+    },
+    async deleteStaff() {
+      let response = await new StaffService().deleteStaff(this.deleteId)
+      if (response.status === 200) {
+        this.deleteModel = false
+        await this.getStaffs()
       }
-
+    },
+    async getSingleStaff(id) {
+      let response = await new StaffService().getSingleStaff(id)
+      if (response.status === 200) {
+        this.staffUpdateModal = true
+        this.staffUpdate = response.data
+        this.groupUpdate = response.data.group
+        console.log("up", this.groupUpdate)
+        console.log("staff", this.staffUpdate)
+      }
+    },
+    async editStaff() {
+      this.staffUpdate.group = this.groupUpdate
+      console.log("den", this.staffUpdate)
+      let response = await new StaffService().editStaff(this.staffUpdate)
+      if (response.status === 200) {
+        this.staffUpdateModal = false
+        await this.getStaffs()
+      }
     }
   },
-
   watch: {},
-
   created() {
+    this.getGroups()
+    this.getStaffs()
     this.isCorporateControl();
-
   },
   mounted() {
     this.getGroups()

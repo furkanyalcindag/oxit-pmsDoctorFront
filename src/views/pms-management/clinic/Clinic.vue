@@ -27,89 +27,94 @@
                 </div>
                 <CRow></CRow>
                 <CRow>
-                  <CCol lg="4">
+                  <CCol lg="3">
                     <CInput
-                        label="Klinik Adı (Zorunlu Alan)"
+                        label="Klinik Adı *"
                         description=""
                         autocomplete="autocomplete"
                         v-model="clinic.clinicName"
                     />
-
+                  </CCol>
+                  <CCol lg="3">
                     <CInput
-                        label="Yetkili Ad (Zorunlu Alan)"
+                        label="Yetkili Ad *"
                         description=""
                         autocomplete="autocomplete"
+                        v-model="clinic.staffName"
 
                     />
+                  </CCol>
+                  <CCol lg="3">
 
                     <CInput
-                        label="Yetkili Soyad (Zorunlu Alan)"
+                        label="Yetkili Soyad *"
                         description=""
                         autocomplete="autocomplete"
+                        v-model="clinic.staffSurname"
                     />
 
                   </CCol>
 
-                  <CCol lg="4">
+                  <CCol lg="3">
                     <CInput
-                        label="Telefon Numarası (Zorunlu Alan)"
+                        label="Telefon Numarası *"
                         description=""
                         autocomplete="autocomplete"
+                        v-model="clinic.telephoneNumber"
 
                     />
-
+                  </CCol>
+                  <CCol lg="3">
                     <CInput
-                        label="Vergi Dairesi (Zorunlu Alan)"
+                        label="Vergi Dairesi *"
                         description=""
                         autocomplete="autocomplete"
                         v-model="clinic.taxOffice"
 
                     />
-
-                    <CSelect
-                        label="İl (Zorunlu Alan)"
-                        :options="cities"
-                        v-model="city"
-                        :value.sync="city"
-                        @change="getDistricts(city)"
-                    />
-
                   </CCol>
-
-                  <CCol lg="4">
-
+                  <CCol lg="3">
                     <CInput
-                        label="E-Mail (Zorunlu Alan)"
-                        description=""
-                        type="email"
-                        autocomplete="email"
-                        prepend="@"
-
-                    />
-
-                    <CInput
-                        label="Vergi Numarası (Zorunlu Alan)"
+                        label="Vergi Numarası *"
                         description=""
                         autocomplete="autocomplete"
                         v-model="clinic.taxNumber"
 
                     />
-
+                  </CCol>
+                  <CCol lg="3">
                     <CSelect
-                        label="İlçe (Zorunlu Alan)"
+                        label="İl *"
+                        :options="cities"
+                        v-model="city"
+                        :value.sync="city"
+                        @change="getDistricts(city)"
+                    />
+                  </CCol>
+                  <CCol lg="3">
+                    <CSelect
+                        label="İlçe *"
                         :options="districts"
                         v-model="district"
                         :value.sync="district"
                     />
-
                   </CCol>
+                  <CCol lg="3">
+                    <CInput
+                        label="E-Mail *"
+                        description=""
+                        type="email"
+                        autocomplete="email"
+                        prepend="@"
+                        v-model="clinic.email"
 
-
-                  <CCol lg="12">
+                    />
+                  </CCol>
+                  <CCol lg="9">
 
                     <CTextarea
-                        :rows="1"
-                        label="Adres (Zorunlu Alan)"
+                        :rows="2"
+                        label="Adres *"
                         description=""
                         autocomplete="autocomplete"
                         v-model="clinic.address"
@@ -214,92 +219,101 @@
               <template>
                 <CCardBody>
                   <CRow>
-                    <CCol lg="4">
+                    <CCol lg="3">
                       <CInput
-                          label="Klinik Adı (Zorunlu Alan)"
+                          label="Klinik Adı *"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="clinic.clinicName"
+                          v-model="clinicUpdate.clinicName"
                       />
-
+                    </CCol>
+                    <CCol lg="3">
                       <CInput
-                          label="Yetkili Ad (Zorunlu Alan)"
+                          label="Yetkili Ad *"
                           description=""
                           autocomplete="autocomplete"
+                          v-model="clinicUpdate.staffName"
 
-                      />
-
-                      <CInput
-                          label="Yetkili Soyad (Zorunlu Alan)"
-                          description=""
-                          autocomplete="autocomplete"
                       />
 
                     </CCol>
-
-                    <CCol lg="4">
+                    <CCol lg="3">
                       <CInput
-                          label="Telefon Numarası (Zorunlu Alan)"
+                          label="Yetkili Soyad *"
                           description=""
                           autocomplete="autocomplete"
-
+                          v-model="clinicUpdate.staffSurname"
                       />
+                    </CCol>
 
+                    <CCol lg="3">
                       <CInput
-                          label="Vergi Dairesi (Zorunlu Alan)"
+                          label="Telefon Numarası *"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="clinic.taxOffice"
+                          v-model="clinicUpdate.telephoneNumber"
 
                       />
+                    </CCol>
+                    <CCol lg="3">
+                      <CInput
+                          label="Vergi Dairesi *"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="clinicUpdate.taxOffice"
 
+                      />
+                    </CCol>
+                    <CCol lg="3">
+                      <CInput
+                          label="Vergi Numarası *"
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="clinicUpdate.taxNumber"
+
+                      />
+                    </CCol>
+                    <CCol lg="3">
                       <CSelect
-                          label="İl (Zorunlu Alan)"
+                          label="İl *"
                           :options="cities"
-                          v-model="city"
-                          :value.sync="city"
+                          v-model="cityUpdate"
+                          :value.sync="cityUpdate"
                           @change="getDistricts(city)"
                       />
-
                     </CCol>
 
-                    <CCol lg="4">
+                    <CCol lg="3">
 
+                      <CSelect
+                          label="İlçe *"
+                          :options="districts"
+                          v-model="districtUpdate"
+                          :value.sync="districtUpdate"
+                      />
+                    </CCol>
+
+                    <CCol lg="3">
                       <CInput
-                          label="E-Mail (Zorunlu Alan)"
+                          label="E-Mail *"
                           description=""
                           type="email"
                           autocomplete="email"
                           prepend="@"
+                          v-model="clinicUpdate.email"
 
                       />
-
-                      <CInput
-                          label="Vergi Numarası (Zorunlu Alan)"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="clinic.taxNumber"
-
-                      />
-
-                      <CSelect
-                          label="İlçe (Zorunlu Alan)"
-                          :options="districts"
-                          v-model="district"
-                          :value.sync="district"
-                      />
-
                     </CCol>
 
 
-                    <CCol lg="12">
+                    <CCol lg="9">
 
                       <CTextarea
-                          :rows="1"
-                          label="Adres (Zorunlu Alan)"
+                          :rows="2"
+                          label="Adres *"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="clinic.address"
+                          v-model="clinicUpdate.address"
 
                       />
 
@@ -348,8 +362,6 @@ export default {
     return {
       fieldsTable: [
         {key: 'clinicName', label: "Klinik Adı", _style: "min-width:200px"},
-        {key: "taxNumber", label: "Vergi No"},
-        {key: "taxOffice", label: "Vergi Dairesi"},
         {key: "email", label: "Email"},
         {key: "telephoneNumber", label: "Telefon Numarası"},
         {key: "cityDistrict", label: "İl/İlçe"},
@@ -370,7 +382,7 @@ export default {
       districts: [],
       staffs: [],
       staff: new Staff("", "", "", "", "", ""),
-      clinic: new Clinic("", "", "", "", "", "", "", ""),
+      clinic: new Clinic("", "", "", "", "", "", "", "", "", ""),
       staffUpdate: new Customer("", "", "", "", "", "", "", ""),
       customer: new Customer("", "", "", "", "", "", "", ""),
       car: new Car("", "", "", "", "", "", "", "", "", "", ""),
@@ -423,7 +435,10 @@ export default {
       district: '',
       cit: '',
       updateId: 0,
-      updateModal: false
+      updateModal: false,
+      clinicUpdate: new Clinic("", "", "", "", "", "", "", "", "", ""),
+      cityUpdate: '',
+      districtUpdate: ''
     };
   },
 
@@ -475,24 +490,17 @@ export default {
       if (this.city === '') {
         this.clinic.cityId = this.cities[0].value
       }
-      console.log("dist", this.clinic.cityId)
-      console.log("dist", this.clinic.districtId)
+      console.log("dist", this.clinic)
       let a = await new ClinicService().addClinic(this.clinic);
+      console.log("a", a)
       if (a.status === 200) {
         this.isSuccess = false;
         this.isSuccess = true;
-        this.successHide();
         await this.getClinics();
         this.$toast.success({
           title: 'Başarılı',
           message: "Personel başarıyla eklendi"
         })
-        this.staff.firstName = ''
-        this.staff.lastName = ''
-        this.staff.username = ''
-        this.staff.mobilePhone = ''
-        this.staff.address = ''
-        this.staff.group = ''
       } else if (a.response.status === 401) {
         this.isError = false;
         this.isError = true;
@@ -515,13 +523,13 @@ export default {
       }
     },
     async editClinic() {
-       if (this.district === '') {
-        this.clinic.districtId = this.districts[0].value
+      if (this.districtUpdate === '') {
+        this.clinicUpdate.districtId = this.districts[0].value
       }
-      if (this.city === '') {
-        this.clinic.cityId = this.cities[0].value
+      if (this.cityUpdate === '') {
+        this.clinicUpdate.cityId = this.cities[0].value
       }
-      let response = await new ClinicService().editClinic(this.clinic)
+      let response = await new ClinicService().editClinic(this.clinicUpdate)
       if (response.status === 200) {
         this.staffUpdateModal = false
         await this.getClinics()
@@ -532,8 +540,7 @@ export default {
     async getSingleClinic(id) {
       this.staffUpdateModal = true
       let response = await new ClinicService().getSingleClinic(id)
-      this.clinic = response.data
-      console.log("clin",this.clinic)
+      this.clinicUpdate = response.data
 
     },
     async getCities() {
@@ -542,16 +549,14 @@ export default {
 
     },
     async getDistricts(city) {
-      console.log("id", city)
       let response = await new GeneralService().getDistrict(city)
-      console.log("res", response.data)
       this.districts = response.data
     },
     async deleteClinic() {
       let response = await new ClinicService().deleteClinic(this.deleteId)
       if (response.status === 200) {
         this.deleteModel = false
-        this.getClinics()
+        await this.getClinics()
       }
     }
   },

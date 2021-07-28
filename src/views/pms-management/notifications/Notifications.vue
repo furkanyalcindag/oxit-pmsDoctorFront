@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-            Bildirimler
+              Bildirimler
               <div class="card-header-actions">
 
                 <CLink
@@ -22,400 +22,340 @@
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                   <CTabs variant="pills">
-              <CTab title="Manuel" active>
-                  <hr>
-                    <CRow>
-                        <CCol lg="6">
-                    <CInput
-                        label="Bildirim Başlığı (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
-
-                    />
-
-
-                       <CInput
-                        label="Bildirim Linki (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
-                    />
-
-                        <CInput
-                        label="Bildirim Logo Url (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
-                    />
-
-
-
-
-
-
-
-                  </CCol>
-
-                        <CCol lg="6">
-
-
-                       <CSelect
-                label="Yaş Aralığı"
-                :options="options"
-                placeholder="Lütfen Seçiniz"
-              />
-
-                       <CSelect
-                label="Şehir"
-                :options="options"
-                placeholder="Lütfen Seçiniz"
-              />
-
-
-                      <CTextarea
-                        :rows="2"
-                        label="Bildirim Açıklaması (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
-
-                    />
-
-
-
-
-                  </CCol>
-
-                </CRow>
-
-                   <hr>
-                   <CRow>
-      <CCol lg="12">
-        <transition name="fade">
-          <CCard v-if="show">
-            <template>
-              <CCardBody>
-
-              <CDataTable
-      :items="items"
-      :fields="fields"
-      column-filter
-      table-filter
-      items-per-page-select
-      :items-per-page="5"
-      hover
-      sorter
-      pagination
-    >
-      <template #status="{item}">
-        <td>
-          <CBadge :color="getBadge(item.status)">
-            {{item.status}}
-          </CBadge>
-        </td>
-      </template>
-      <template #show_details="{item, index}">
-        <td class="py-2">
-          <CButton
-            color="primary"
-            variant="outline"
-            square
-            size="sm"
-            @click="toggleDetails(item, index)"
-          >
-            {{Boolean(item._toggled) ? 'Hide' : 'Show'}}
-          </CButton>
-        </td>
-      </template>
-      <template #details="{item}">
-        <CCollapse :show="Boolean(item._toggled)" :duration="collapseDuration">
-          <CCardBody>
-            <CMedia :aside-image-props="{ height: 102 }">
-              <h4>
-                {{item.username}}
-              </h4>
-              <p class="text-muted">User since: {{item.registered}}</p>
-              <CButton size="sm" color="info" class="">
-                User Settings
-              </CButton>
-              <CButton size="sm" color="danger" class="ml-1">
-                Delete
-              </CButton>
-            </CMedia>
-          </CCardBody>
-        </CCollapse>
-      </template>
-    </CDataTable>
-
-
-              </CCardBody>
-            </template>
-          </CCard>
-        </transition>
-      </CCol>
-    </CRow>
-              </CTab>
-
-
-              <CTab title="Cron Job" >
+                <CTabs variant="pills">
+                  <CTab title="Manuel" active>
                     <hr>
                     <CRow>
-                        <CCol lg="6">
-                    <CInput
-                        label="Bildirim Başlığı (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
+                      <CCol lg="6">
+                        <CInput
+                            label="Bildirim Başlığı (Zorunlu Alan)"
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="notification.title"
 
-                    />
-                    <CSelect
-                label="Zamanlama"
-                :options="options"
-                placeholder="Lütfen Seçiniz"
-              />
-
-
-
-                       <CInput
-                        label="Bildirim Linki (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
-                    />
-
-
-
-
-
-
-                  </CCol>
-                        <CCol lg="6">
+                        />
 
 
                         <CInput
-                        label="Bildirim Logo Url (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
-                    />
+                            label="Bildirim Linki (Zorunlu Alan)"
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="notification.link"
+                        />
+
+                        <CInputFile
+                            label="Resim Ekle"
+                            horizontal
+                            @change="getBase64"
+                            custom
+                            multiple
+                            :placeholder="selectedFile"
+                        />
 
 
-                      <CTextarea
-                        :rows="2"
-                        label="Bildirim Açıklaması (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
+                      </CCol>
 
-                    />
+                      <CCol lg="6">
 
 
+                        <CSelect
+                            label="Yaş Aralığı"
+                            :options="options"
+                            placeholder="Lütfen Seçiniz"
+                        />
+
+                        <CSelect
+                            label="Şehir"
+                            :options="options"
+                            placeholder="Lütfen Seçiniz"
+                        />
 
 
-                  </CCol>
+                        <CTextarea
+                            :rows="2"
+                            label="Bildirim Açıklaması (Zorunlu Alan)"
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="notification.body"
+
+                        />
 
 
+                      </CCol>
 
+                    </CRow>
 
-
-
-
-                </CRow>
-                   <hr>
-                   <CRow>
-      <CCol lg="12">
-        <transition name="fade">
-          <CCard v-if="show">
-            <template>
-              <CCardBody>
-
-              <CDataTable
-      :items="items"
-      :fields="fields"
-      column-filter
-      table-filter
-      items-per-page-select
-      :items-per-page="5"
-      hover
-      sorter
-      pagination
-    >
-      <template #status="{item}">
-        <td>
-          <CBadge :color="getBadge(item.status)">
-            {{item.status}}
-          </CBadge>
-        </td>
-      </template>
-      <template #show_details="{item, index}">
-        <td class="py-2">
-          <CButton
-            color="primary"
-            variant="outline"
-            square
-            size="sm"
-            @click="toggleDetails(item, index)"
-          >
-            {{Boolean(item._toggled) ? 'Hide' : 'Show'}}
-          </CButton>
-        </td>
-      </template>
-      <template #details="{item}">
-        <CCollapse :show="Boolean(item._toggled)" :duration="collapseDuration">
-          <CCardBody>
-            <CMedia :aside-image-props="{ height: 102 }">
-              <h4>
-                {{item.username}}
-              </h4>
-              <p class="text-muted">User since: {{item.registered}}</p>
-              <CButton size="sm" color="info" class="">
-                User Settings
-              </CButton>
-              <CButton size="sm" color="danger" class="ml-1">
-                Delete
-              </CButton>
-            </CMedia>
-          </CCardBody>
-        </CCollapse>
-      </template>
-    </CDataTable>
-
-
-              </CCardBody>
-            </template>
-          </CCard>
-        </transition>
-      </CCol>
-    </CRow>
-              </CTab>
-              <CTab title="Otomatik" >
                     <hr>
-                   <CRow>
-                        <CCol lg="6">
+                    <CRow>
+                      <CCol lg="12">
+                        <transition name="fade">
+                          <CCard v-if="show">
+                            <template>
+                              <CCardBody>
 
-                       <CSelect
-                label="Gün"
-                :options="options"
-                placeholder="Lütfen Seçiniz"
-              />
+                                <CDataTable
+                                    :items="items"
+                                    :fields="fieldsTableNotification"
+                                    column-filter
+                                    :border="true"
+                                    :items-per-page="5"
+                                    :activePage="4"
+                                    hover
+                                    sorter
+                                    pagination
+                                    :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+                                    clickableRows
 
-                    <CInput
-                        label="Bildirim Başlığı (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
-
-                    />
-
-
-                       <CInput
-                        label="Bildirim Linki (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
-                    />
-
-
+                                >
+                                </CDataTable>
 
 
+                              </CCardBody>
+                            </template>
+                          </CCard>
+                        </transition>
+                      </CCol>
+                    </CRow>
+                  </CTab>
 
 
-                  </CCol>
-                          <CCol lg="6">
+                  <CTab title="Cron Job">
+                    <hr>
+                    <CRow>
+                      <CCol lg="6">
+                        <CInput
+                            label="Bildirim Başlığı (Zorunlu Alan)"
+                            description=""
+                            autocomplete="autocomplete"
 
+                        />
+                        <CSelect
+                            label="Zamanlama"
+                            :options="options"
+                            placeholder="Lütfen Seçiniz"
+                        />
 
 
                         <CInput
-                        label="Bildirim Logo Url (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
-                    />
+                            label="Bildirim Linki (Zorunlu Alan)"
+                            description=""
+                            autocomplete="autocomplete"
+                        />
 
 
-                      <CTextarea
-                        :rows="2"
-                        label="Bildirim Açıklaması (Zorunlu Alan)"
-                        description=""
-                        autocomplete="autocomplete"
-
-                    />
+                      </CCol>
+                      <CCol lg="6">
 
 
+                        <CInput
+                            label="Bildirim Logo Url (Zorunlu Alan)"
+                            description=""
+                            autocomplete="autocomplete"
+                        />
 
 
-                  </CCol>
+                        <CTextarea
+                            :rows="2"
+                            label="Bildirim Açıklaması (Zorunlu Alan)"
+                            description=""
+                            autocomplete="autocomplete"
+
+                        />
 
 
+                      </CCol>
 
 
+                    </CRow>
+                    <hr>
+                    <CRow>
+                      <CCol lg="12">
+                        <transition name="fade">
+                          <CCard v-if="show">
+                            <template>
+                              <CCardBody>
+
+                                <CDataTable
+                                    :items="items"
+                                    :fields="fields"
+                                    column-filter
+                                    table-filter
+                                    items-per-page-select
+                                    :items-per-page="5"
+                                    hover
+                                    sorter
+                                    pagination
+                                >
+                                  <template #status="{item}">
+                                    <td>
+                                      <CBadge :color="getBadge(item.status)">
+                                        {{ item.status }}
+                                      </CBadge>
+                                    </td>
+                                  </template>
+                                  <template #show_details="{item, index}">
+                                    <td class="py-2">
+                                      <CButton
+                                          color="primary"
+                                          variant="outline"
+                                          square
+                                          size="sm"
+                                          @click="toggleDetails(item, index)"
+                                      >
+                                        {{ Boolean(item._toggled) ? 'Hide' : 'Show' }}
+                                      </CButton>
+                                    </td>
+                                  </template>
+                                  <template #details="{item}">
+                                    <CCollapse :show="Boolean(item._toggled)" :duration="collapseDuration">
+                                      <CCardBody>
+                                        <CMedia :aside-image-props="{ height: 102 }">
+                                          <h4>
+                                            {{ item.username }}
+                                          </h4>
+                                          <p class="text-muted">User since: {{ item.registered }}</p>
+                                          <CButton size="sm" color="info" class="">
+                                            User Settings
+                                          </CButton>
+                                          <CButton size="sm" color="danger" class="ml-1">
+                                            Delete
+                                          </CButton>
+                                        </CMedia>
+                                      </CCardBody>
+                                    </CCollapse>
+                                  </template>
+                                </CDataTable>
 
 
+                              </CCardBody>
+                            </template>
+                          </CCard>
+                        </transition>
+                      </CCol>
+                    </CRow>
+                  </CTab>
+                  <!--                  <CTab title="Otomatik">-->
+                  <!--                    <hr>-->
+                  <!--                    <CRow>-->
+                  <!--                      <CCol lg="6">-->
 
-                </CRow>
-                   <hr>
-                   <CRow>
-      <CCol lg="12">
-        <transition name="fade">
-          <CCard v-if="show">
-            <template>
-              <CCardBody>
+                  <!--                        <CSelect-->
+                  <!--                            label="Gün"-->
+                  <!--                            :options="options"-->
+                  <!--                            placeholder="Lütfen Seçiniz"-->
+                  <!--                        />-->
 
-              <CDataTable
-      :items="items"
-      :fields="fields"
-      column-filter
-      table-filter
-      items-per-page-select
-      :items-per-page="5"
-      hover
-      sorter
-      pagination
-    >
-      <template #status="{item}">
-        <td>
-          <CBadge :color="getBadge(item.status)">
-            {{item.status}}
-          </CBadge>
-        </td>
-      </template>
-      <template #show_details="{item, index}">
-        <td class="py-2">
-          <CButton
-            color="primary"
-            variant="outline"
-            square
-            size="sm"
-            @click="toggleDetails(item, index)"
-          >
-            {{Boolean(item._toggled) ? 'Hide' : 'Show'}}
-          </CButton>
-        </td>
-      </template>
-      <template #details="{item}">
-        <CCollapse :show="Boolean(item._toggled)" :duration="collapseDuration">
-          <CCardBody>
-            <CMedia :aside-image-props="{ height: 102 }">
-              <h4>
-                {{item.username}}
-              </h4>
-              <p class="text-muted">User since: {{item.registered}}</p>
-              <CButton size="sm" color="info" class="">
-                User Settings
-              </CButton>
-              <CButton size="sm" color="danger" class="ml-1">
-                Delete
-              </CButton>
-            </CMedia>
-          </CCardBody>
-        </CCollapse>
-      </template>
-    </CDataTable>
+                  <!--                        <CInput-->
+                  <!--                            label="Bildirim Başlığı (Zorunlu Alan)"-->
+                  <!--                            description=""-->
+                  <!--                            autocomplete="autocomplete"-->
+
+                  <!--                        />-->
 
 
-              </CCardBody>
-            </template>
-          </CCard>
-        </transition>
-      </CCol>
-    </CRow>
-              </CTab>
-            </CTabs>
+                  <!--                        <CInput-->
+                  <!--                            label="Bildirim Linki (Zorunlu Alan)"-->
+                  <!--                            description=""-->
+                  <!--                            autocomplete="autocomplete"-->
+                  <!--                        />-->
+
+
+                  <!--                      </CCol>-->
+                  <!--                      <CCol lg="6">-->
+
+
+                  <!--                        <CInput-->
+                  <!--                            label="Bildirim Logo Url (Zorunlu Alan)"-->
+                  <!--                            description=""-->
+                  <!--                            autocomplete="autocomplete"-->
+                  <!--                        />-->
+
+
+                  <!--                        <CTextarea-->
+                  <!--                            :rows="2"-->
+                  <!--                            label="Bildirim Açıklaması (Zorunlu Alan)"-->
+                  <!--                            description=""-->
+                  <!--                            autocomplete="autocomplete"-->
+
+                  <!--                        />-->
+
+
+                  <!--                      </CCol>-->
+
+
+                  <!--                    </CRow>-->
+                  <!--                    <hr>-->
+                  <!--                    <CRow>-->
+                  <!--                      <CCol lg="12">-->
+                  <!--                        <transition name="fade">-->
+                  <!--                          <CCard v-if="show">-->
+                  <!--                            <template>-->
+                  <!--                              <CCardBody>-->
+
+                  <!--                                <CDataTable-->
+                  <!--                                    :items="items"-->
+                  <!--                                    :fields="fields"-->
+                  <!--                                    column-filter-->
+                  <!--                                    table-filter-->
+                  <!--                                    items-per-page-select-->
+                  <!--                                    :items-per-page="5"-->
+                  <!--                                    hover-->
+                  <!--                                    sorter-->
+                  <!--                                    pagination-->
+                  <!--                                >-->
+                  <!--                                  <template #status="{item}">-->
+                  <!--                                    <td>-->
+                  <!--                                      <CBadge :color="getBadge(item.status)">-->
+                  <!--                                        {{ item.status }}-->
+                  <!--                                      </CBadge>-->
+                  <!--                                    </td>-->
+                  <!--                                  </template>-->
+                  <!--                                  <template #show_details="{item, index}">-->
+                  <!--                                    <td class="py-2">-->
+                  <!--                                      <CButton-->
+                  <!--                                          color="primary"-->
+                  <!--                                          variant="outline"-->
+                  <!--                                          square-->
+                  <!--                                          size="sm"-->
+                  <!--                                          @click="toggleDetails(item, index)"-->
+                  <!--                                      >-->
+                  <!--                                        {{ Boolean(item._toggled) ? 'Hide' : 'Show' }}-->
+                  <!--                                      </CButton>-->
+                  <!--                                    </td>-->
+                  <!--                                  </template>-->
+                  <!--                                  <template #details="{item}">-->
+                  <!--                                    <CCollapse :show="Boolean(item._toggled)" :duration="collapseDuration">-->
+                  <!--                                      <CCardBody>-->
+                  <!--                                        <CMedia :aside-image-props="{ height: 102 }">-->
+                  <!--                                          <h4>-->
+                  <!--                                            {{ item.username }}-->
+                  <!--                                          </h4>-->
+                  <!--                                          <p class="text-muted">User since: {{ item.registered }}</p>-->
+                  <!--                                          <CButton size="sm" color="info" class="">-->
+                  <!--                                            User Settings-->
+                  <!--                                          </CButton>-->
+                  <!--                                          <CButton size="sm" color="danger" class="ml-1">-->
+                  <!--                                            Delete-->
+                  <!--                                          </CButton>-->
+                  <!--                                        </CMedia>-->
+                  <!--                                      </CCardBody>-->
+                  <!--                                    </CCollapse>-->
+                  <!--                                  </template>-->
+                  <!--                                </CDataTable>-->
+
+
+                  <!--                              </CCardBody>-->
+                  <!--                            </template>-->
+                  <!--                          </CCard>-->
+                  <!--                        </transition>-->
+                  <!--                      </CCol>-->
+                  <!--                    </CRow>-->
+                  <!--                  </CTab>-->
+                </CTabs>
 
 
                 <div class="form-actions">
-                  <CButton type="submit" color="primary"
+                  <CButton @click="addNotification" type="submit" color="primary"
                   >Kaydet
                   </CButton>
 
@@ -428,61 +368,13 @@
     </CRow>
 
 
-
-
-
-
-
-
-
-
-
   </div>
 </template>
 
 <script>
+import Notification from "../../../models/pms/notification";
+import NotificationService from "../../../services/managementServices/notification.service";
 
-  const items = [
-  { username: 'Samppa Nori', registered: '2012/01/01', role: 'Member', status: 'Active'},
-  { username: 'Estavan Lykos', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-  { username: 'Chetan Mohamed', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-  { username: 'Derick Maximinus', registered: '2012/03/01', role: 'Member', status: 'Pending'},
-  { username: 'Friderik Dávid', registered: '2012/01/21', role: 'Staff', status: 'Active'},
-  { username: 'Yiorgos Avraamu', registered: '2012/01/01', role: 'Member', status: 'Active'},
-  { username: 'Avram Tarasios', registered: '2012/02/01', role: 'Staff', status: 'Banned', _classes: 'table-success'},
-  { username: 'Quintin Ed', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-  { username: 'Enéas Kwadwo', registered: '2012/03/01', role: 'Member', status: 'Pending'},
-  { username: 'Agapetus Tadeáš', registered: '2012/01/21', role: 'Staff', status: 'Active'},
-  { username: 'Carwyn Fachtna', registered: '2012/01/01', role: 'Member', status: 'Active', _classes: 'table-info'},
-  { username: 'Nehemiah Tatius', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-  { username: 'Ebbe Gemariah', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-  { username: 'Eustorgios Amulius', registered: '2012/03/01', role: 'Member', status: 'Pending'},
-  { username: 'Leopold Gáspár', registered: '2012/01/21', role: 'Staff', status: 'Active'},
-  { username: 'Pompeius René', registered: '2012/01/01', role: 'Member', status: 'Active'},
-  { username: 'Paĉjo Jadon', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-  { username: 'Micheal Mercurius', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-  { username: 'Ganesha Dubhghall', registered: '2012/03/01', role: 'Member', status: 'Pending'},
-  { username: 'Hiroto Šimun', registered: '2012/01/21', role: 'Staff', status: 'Active'},
-  { username: 'Vishnu Serghei', registered: '2012/01/01', role: 'Member', status: 'Active'},
-  { username: 'Zbyněk Phoibos', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-  { username: 'Einar Randall', registered: '2012/02/01', role: 'Admin', status: 'Inactive', _classes: 'table-danger'},
-  { username: 'Félix Troels', registered: '2012/03/21', role: 'Staff', status: 'Active'},
-  { username: 'Aulus Agmundr', registered: '2012/01/01', role: 'Member', status: 'Pending'}
-]
-
-const fields = [
-  { key: 'username', _style:'min-width:200px' },
-  'registered',
-  { key: 'role', _style:'min-width:100px;' },
-  { key: 'status', _style:'min-width:100px;' },
-  {
-    key: 'show_details',
-    label: '',
-    _style: 'width:1%',
-    sorter: false,
-    filter: false
-  }
-]
 export default {
   name: "Notifications",
 
@@ -490,17 +382,13 @@ export default {
   data() {
     return {
       fieldsTable: [
-        {key: 'nameSurname', label: "Ad Soyad", _style: "min-width:200px"},
-        {key: "userUsername", label: "Email"},
-        {key: "userGroup", label: "Personel Grubu"},
+        {key: 'title', label: "Başlık", _style: "min-width:200px"},
+        {key: "link", label: "Link"},
         {key: "actions", label: "İşlemler"},
       ],
-          items: items.map((item, id) => { return {...item, id}}),
-      fields,
-
       pageLabel: {label: 'sasasa', external: true,},
       page: 1,
-         name: 'AdvancedTables',
+      name: 'AdvancedTables',
       numberOfPages: 0,
       selected: [],
       rowsPerPageItems: [5],
@@ -513,19 +401,12 @@ export default {
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
-
-
-
-
       details: [],
       errors: [],
-
-
       collapseDuration: 0,
       darkModal: false,
       carModal: false,
       show: true,
-
       horizontal: {label: "col-3", input: "col-9"},
       options: ["Option 1", "Option 2", "Option 3"],
       selectOptions: [
@@ -552,7 +433,13 @@ export default {
         "Inline Radios - custom",
       ],
       deleteModel: false,
-      deleteId: ''
+      deleteId: '',
+      notification: new Notification("", "", "", ""),
+      selectedFile: '',
+      items: [],
+      fieldsTableNotification: [
+        {key: "title", label: "Başlık"},
+        {key: "link", label: "Link"},]
     };
   },
   methods: {
@@ -580,28 +467,58 @@ export default {
         this.collapseDuration = 0;
       });
     },
+    async addNotification() {
+      console.log("not", this.notification)
+      let response = await new NotificationService().addNotification(this.notification)
+      if (response.status === 200) {
 
+      }
+
+    },
+    async getNotifications() {
+      let response = await new NotificationService().getNotifications()
+      this.items = response.data
+
+    },
+    getBase64(event) {
+      var reader = new FileReader();
+      reader.readAsDataURL(event[0]);
+      this.selectedFile = event.length + ' dosya seçildi'
+      var x = this
+      reader.onload = function () {
+        x.notification.pic = reader.result
+
+
+      };
+      reader.onerror = function (error) {
+      };
+
+
+      this.notification.pic = x
+    }
 
 
   },
   watch: {},
-  created() {
+  async created() {
+    await this.getNotifications()
 
   },
-  mounted() {
+  async mounted() {
+    await this.getNotifications()
 
   },
   computed: {
-    computedItems() {
-      return this.staffs.map(item => {
-        return {
-          ...item,
-          userUsername: item.user.username,
-          nameSurname: item.user.first_name + ' ' + item.user.last_name,
-          userGroup: item.user.groups[0].name
-        }
-      })
-    }
+    // computedItems() {
+    //   return this.staffs.map(item => {
+    //     return {
+    //       ...item,
+    //       userUsername: item.user.username,
+    //       nameSurname: item.user.first_name + ' ' + item.user.last_name,
+    //       userGroup: item.user.groups[0].name
+    //     }
+    //   })
+    // }
   }
 };
 </script>

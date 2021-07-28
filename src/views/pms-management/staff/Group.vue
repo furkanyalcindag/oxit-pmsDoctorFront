@@ -31,12 +31,12 @@
                     <CInput
                         description=""
                         autocomplete="autocomplete"
-                        v-model="staff.firstName"
+                        v-model="group.label"
                     />
                   </CCol>
                   <CCol lg="6" class="mt-3">
                     <div class="form-actions">
-                      <CButton type="submit" color="primary"
+                      <CButton type="submit" color="primary" @click="addGroup"
                       >Kaydet
                       </CButton>
 
@@ -59,7 +59,7 @@
               <CCardBody>
 
                 <CDataTable
-                    :items="staffs"
+                    :items="groups"
                     :fields="fieldsTableGroup"
                     column-filter
                     :border="true"
@@ -74,17 +74,12 @@
                 >
 
 
-                  <template #details="{ item }">
-                    <CCollapse
-                        :show="Boolean(item._toggled)"
-                        :duration="collapseDuration"
-                    >
-
-                    </CCollapse>
+                  <template #actions="{ item, index }">
+                    <td class="py-2">
+                      <CButton @click="setDeleteModal(item.value)" color="danger" class="mr-2">Sil</CButton>
+                    </td>
                   </template>
                 </CDataTable>
-
-
               </CCardBody>
             </template>
           </CCard>
@@ -106,8 +101,8 @@
         <CButtonClose @click="deleteModel = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton color="danger">Hayır</CButton>
-        <CButton color="success">Evet</CButton>
+        <CButton @click="deleteModel=false" color="danger">Hayır</CButton>
+        <CButton @click="deleteGroup" color="success">Evet</CButton>
       </template>
 
 
@@ -128,33 +123,14 @@
             <CCard v-if="staffUpdateModal">
               <template>
                 <CCardBody>
-
-                  <div>
-                    <!--                    <CAlert color="success" :show="isSuccessCar">-->
-                    <!--                      Personel başarıyla kaydedildi.-->
-                    <!--                    </CAlert>-->
-
-
-                    <!--                    <CAlert-->
-                    <!--                        v-for="(value,key) in errorsStaff"-->
-                    <!--                        :key="value.message"-->
-                    <!--                        color="danger"-->
-                    <!--                        :show="isErrorStaffUpdate"-->
-                    <!--                    >-->
-                    <!--                      {{ key }}: {{ value[0] }}-->
-                    <!--                    </CAlert>-->
-
-
-                  </div>
-
-
                   <CRow>
                     <CCol lg="6">
                       <CInput
+                          label="Grup Adı *"
                           description=""
                           autocomplete="autocomplete"
+                          v-model="groupUpdate.label"
                       />
-                      Grup Adı <span class="text-danger">*</span>
                     </CCol>
                   </CRow>
 
@@ -170,7 +146,7 @@
         <CButtonClose class="text-white"/>
       </template>
       <template #footer>
-        <CButton color="danger">Kapat</CButton>
+        <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
         <CButton color="success">Güncelle</CButton>
       </template>
     </CModal>
@@ -185,11 +161,10 @@
 import Car from "@/models/car";
 
 import Staff from "@/models/Staff";
-import StaffService from "@/services/staff.service";
-import GeneralService from "@/services/general.service";
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 import Customer from "@/models/customer";
-import UserService from "@/services/managementServices/user.service";
+import GroupService from "../../../services/managementServices/group.service";
+import Group from "@/models/pms/group";
 
 
 export default {
@@ -198,7 +173,7 @@ export default {
   data() {
     return {
       fieldsTableGroup: [
-        {key: "groupName", label: "Grup Adı"},
+        {key: "label", label: "Grup Adı"},
         {key: "actions", label: "İşlemler"},
 
       ],
@@ -262,19 +237,48 @@ export default {
         "Inline Radios - custom",
       ],
       deleteModel: false,
-      deleteId: ''
+      deleteId: '',
+      group: new Group("", ""),
+      groupUpdate: new Group("", ""),
     };
   },
 
-  methods: {},
+  methods: {
+    async getGroups() {
+      let response = await new GroupService().getGroups()
+      this.groups = response.data
+
+    },
+    async addGroup() {
+      console.log("group", this.group)
+      let response = await new GroupService().addGroup(this.group.label)
+      if (response.status === 200) {
+        this.group = new Group()
+
+      }
+    },
+    setDeleteModal(id) {
+      this.deleteId = id
+      this.deleteModel = true
+    },
+    async deleteGroup() {
+      let response = await new GroupService().deleteGroup(this.deleteId)
+      if (response.status === 200) {
+        await this.getGroups()
+        this.deleteModel = false
+      }
+
+    },
+  },
 
   watch: {},
 
-  created() {
+  async created() {
+    await this.getGroups()
 
   },
-  mounted() {
-
+  async mounted() {
+    await this.getGroups()
 
   },
   computed: {}
