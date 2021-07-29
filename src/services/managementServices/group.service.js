@@ -14,14 +14,29 @@ class GroupService {
     addGroup(groupName) {
         return axios.post(process.env.VUE_APP_API_URL + `/management/group-api/`, {
             groupName: groupName
-        }, {headers: authHeader()})
+        }, {headers: authHeader()}).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            return error
+        });
     }
 
     deleteGroup(id) {
         const params = {
             id: id
         }
-        return axios.delete(process.env.VUE_APP_API_URL + `/management/group-api/`, {headers: authHeader(), params})
+        return axios.delete(process.env.VUE_APP_API_URL + `/management/group-api/`, {
+            headers: authHeader(),
+            params
+        }).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            return error
+        });
     }
 
 

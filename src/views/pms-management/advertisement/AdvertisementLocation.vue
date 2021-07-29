@@ -28,10 +28,11 @@
                 <CRow>
                   <CCol lg="4">
                     Reklam Bölümü <span class="text-danger">*</span>
-                    <CSelect
+                    <CInput
                         description=""
                         autocomplete="autocomplete"
                         :options="options"
+                        v-model="advertisementLocation.name"
                     />
                   </CCol>
                   <CCol lg="4">
@@ -39,6 +40,7 @@
                     <CInput
                         description=""
                         autocomplete="autocomplete"
+                        v-model="advertisementLocation.width"
                     />
                   </CCol>
                   <CCol lg="4">
@@ -46,6 +48,7 @@
                     <CInput
                         description=""
                         autocomplete="autocomplete"
+                        v-model="advertisementLocation.height"
                     />
                   </CCol>
                   <CCol lg="4">
@@ -74,7 +77,7 @@
                   </CCol>
                   <CCol lg="4" class="mt-3">
                     <div class="form-actions">
-                      <CButton type="submit" color="primary"
+                      <CButton @click="addAdvertisementLocation" type="submit" color="primary"
                       >Kaydet
                       </CButton>
 
@@ -97,7 +100,7 @@
               <CCardBody>
 
                 <CDataTable
-                    :items="staffs"
+                    :items="locations"
                     :fields="fieldsTable"
                     column-filter
                     :border="true"
@@ -112,13 +115,12 @@
                 >
 
 
-                  <template #details="{ item }">
-                    <CCollapse
-                        :show="Boolean(item._toggled)"
-                        :duration="collapseDuration"
-                    >
-
-                    </CCollapse>
+                  <template #actions="{ item, index }">
+                    <td class="py-2">
+                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                      <CButton @click="getSingleAdvertisementLocation(item.uuid)" color="primary" class="mr-2">Düzenle
+                      </CButton>
+                    </td>
                   </template>
                 </CDataTable>
 
@@ -144,8 +146,8 @@
         <CButtonClose @click="deleteModel = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton color="danger">Hayır</CButton>
-        <CButton color="success">Evet</CButton>
+        <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
+        <CButton @click="deleteAdvertisementLocation" color="success">Evet</CButton>
       </template>
 
 
@@ -166,37 +168,56 @@
             <CCard v-if="staffUpdateModal">
               <template>
                 <CCardBody>
-
-                  <div>
-                    <!--                    <CAlert color="success" :show="isSuccessCar">-->
-                    <!--                      Personel başarıyla kaydedildi.-->
-                    <!--                    </CAlert>-->
-
-
-                    <!--                    <CAlert-->
-                    <!--                        v-for="(value,key) in errorsStaff"-->
-                    <!--                        :key="value.message"-->
-                    <!--                        color="danger"-->
-                    <!--                        :show="isErrorStaffUpdate"-->
-                    <!--                    >-->
-                    <!--                      {{ key }}: {{ value[0] }}-->
-                    <!--                    </CAlert>-->
-
-
-                  </div>
-
-
                   <CRow>
-                    <CCol lg="6">
+                    <CCol lg="4">
+                      Reklam Bölümü <span class="text-danger">*</span>
+                      <CInput
+                          description=""
+                          autocomplete="autocomplete"
+                          :options="options"
+                          v-model="advertisementLocationUpdate.name"
+                      />
+                    </CCol>
+                    <CCol lg="4">
+                      Genişlik(pixel) <span class="text-danger">*</span>
+                      <CInput
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="advertisementLocationUpdate.width"
+                      />
+                    </CCol>
+                    <CCol lg="4">
+                      Uzunluk(pixel) <span class="text-danger">*</span>
+                      <CInput
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="advertisementLocationUpdate.height"
+                      />
+                    </CCol>
+                    <CCol lg="4">
+                      Fiyat(dakika bazlı) <span class="text-danger">*</span>
                       <CInput
                           description=""
                           autocomplete="autocomplete"
                       />
-                      Grup Adı <span class="text-danger">*</span>
+                    </CCol>
+                    <CCol lg="4">
+                      <CRow>
+                        <CCol lg="6">
+                          <span> Popup'ta gösterilsin <span class="text-danger">*</span></span>
+                          <CInputCheckbox/>
+                        </CCol>
+                        <CCol lg="6">
+                          Gösterim Süresi <span class="text-danger">*</span>
+                          <CInput
+
+                              description=""
+                              autocomplete="autocomplete"
+                          />
+                        </CCol>
+                      </CRow>
                     </CCol>
                   </CRow>
-
-
                 </CCardBody>
               </template>
             </CCard>
@@ -208,8 +229,8 @@
         <CButtonClose class="text-white"/>
       </template>
       <template #footer>
-        <CButton color="danger">Kapat</CButton>
-        <CButton color="success">Güncelle</CButton>
+        <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="editAdvertisementLocation" color="success">Güncelle</CButton>
       </template>
     </CModal>
 
@@ -228,6 +249,8 @@ import GeneralService from "@/services/general.service";
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 import Customer from "@/models/customer";
 import UserService from "@/services/managementServices/user.service";
+import AdvertisementLocationService from "../../../services/managementServices/advertisement.location.service";
+import AdvertisementLocation from "../../../models/pms/advertisementLocation";
 
 
 export default {
@@ -236,10 +259,9 @@ export default {
   data() {
     return {
       fieldsTable: [
-        {key: "advertisementLocation", label: "Reklam Yeri"},
-        {key: "pixels", label: "Genişlik x Uzunluk"},
-        {key: "price", label: "Fiyat"},
-        {key: "showPopUp", label: "PopUp Gösterimi"},
+        {key: "name", label: "Reklam Yeri"},
+        {key: "width", label: "Genişlik"},
+        {key: "height", label: "Uzunluk"},
         {key: "actions", label: "İşlemler"},
 
       ],
@@ -304,7 +326,11 @@ export default {
       ],
       deleteModel: false,
       deleteId: '',
-      showPopUp: false
+      showPopUp: false,
+      advertisementLocation: new AdvertisementLocation("", "", "", ""),
+      advertisementLocationUpdate: new AdvertisementLocation("", "", "", ""),
+      locations: []
+
 
     };
   },
@@ -318,16 +344,100 @@ export default {
         console.log("else")
         this.showPopUp = false
       }
+    },
+    setDeleteModal(id) {
+
+      this.deleteId = id
+      this.deleteModel = true
+
+    },
+    async addAdvertisementLocation() {
+      let response = await new AdvertisementLocationService().addAdvertisementLocation(this.advertisementLocation)
+      if (response.status === 200) {
+        await this.getAdvertisementLocation()
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarıyla gerçekleşti"
+        })
+      } else if (response.status === 401) {
+
+      } else {
+        console.log("res", response.data)
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
+      }
+    },
+    async editAdvertisementLocation() {
+      let response = await new AdvertisementLocationService().editAdvertisementLocation(this.advertisementLocationUpdate)
+      if (response.status === 200) {
+        await this.getAdvertisementLocation()
+        this.staffUpdateModal = false
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarıyla gerçekleşti"
+        })
+      } else if (response.status === 401) {
+
+      } else {
+        console.log("res", response.data)
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
+      }
+    },
+    async getAdvertisementLocation() {
+      let response = await new AdvertisementLocationService().getAdvertisementLocation()
+      this.locations = response.data.data
+    },
+    async deleteAdvertisementLocation() {
+      let response = await new AdvertisementLocationService().deleteAdvertisementLocation(this.deleteId)
+      if (response.status === 200) {
+        await this.getAdvertisementLocation()
+        this.deleteModel = false
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarıyla gerçekleşti"
+        })
+      } else if (response.status === 401) {
+
+      } else {
+        console.log("res", response.data)
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
+      }
+
+    },
+    async getSingleAdvertisementLocation(id) {
+      let response = await new AdvertisementLocationService().getSingleAdvertisementLocation(id)
+      this.advertisementLocationUpdate = response.data
+      if (response.status === 200) {
+        this.staffUpdateModal = true
+      }
+
     }
   },
 
   watch: {},
 
-  created() {
-
+  async created() {
+    await this.getAdvertisementLocation()
   },
-  mounted() {
-
+  async mounted() {
+    await this.getAdvertisementLocation()
 
   },
   computed: {}

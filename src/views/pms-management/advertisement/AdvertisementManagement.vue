@@ -28,17 +28,20 @@
                 <CRow>
                   <CCol lg="4">
                     Reklam Adı <span class="text-danger">*</span>
-                    <CSelect
+                    <CInput
                         description=""
                         autocomplete="autocomplete"
-                        :options="options"
+                        v-model="advertisement.name"
                     />
                   </CCol>
                   <CCol lg="4">
                     Firma Adı <span class="text-danger">*</span>
-                    <CInput
+                    <CSelect
                         description=""
                         autocomplete="autocomplete"
+                        :options="companies"
+                        v-model="advertisement.companyName"
+                        :value.sync="advertisement.companyName"
                     />
                   </CCol>
                   <CCol lg="4">
@@ -46,7 +49,9 @@
                     <CSelect
                         description=""
                         autocomplete="autocomplete"
-                        :options="options"
+                        :options="locations"
+                        v-model="advertisement.locationName"
+                        :value.sync="advertisement.locationName"
                     />
 
                   </CCol>
@@ -54,6 +59,7 @@
                     Yayın Başlangıç Tarihi <span class="text-danger">*</span>
                     <CInput
                         type="date"
+                        v-model="advertisement.publishStartDate"
 
                     />
                   </CCol>
@@ -61,6 +67,7 @@
                     Yayın Bitiş Tarihi <span class="text-danger">*</span>
                     <CInput
                         type="date"
+                        v-model="advertisement.publishEndDate"
                     />
                   </CCol>
                   <CCol lg="4">
@@ -68,12 +75,13 @@
                     <CInput
                         description=""
                         autocomplete="autocomplete"
+                        v-model="advertisement.price"
                     />
 
                   </CCol>
                   <CCol lg="4" class="mt-3">
                     <div class="form-actions">
-                      <CButton type="submit" color="primary"
+                      <CButton @click="addAdvertisement" type="submit" color="primary"
                       >Kaydet
                       </CButton>
 
@@ -96,7 +104,7 @@
               <CCardBody>
 
                 <CDataTable
-                    :items="staffs"
+                    :items="advertisements"
                     :fields="fieldsTable"
                     column-filter
                     :border="true"
@@ -109,19 +117,25 @@
                     clickableRows
 
                 >
+                  <template #company="{ item, index }">
+                    <td class="py-2">
+                      {{ item.company.label }}
+                    </td>
+                  </template>
+                  <template #location="{ item, index }">
+                    <td class="py-2">
+                      {{ item.location.label }}
+                    </td>
+                  </template>
 
-
-                  <template #details="{ item }">
-                    <CCollapse
-                        :show="Boolean(item._toggled)"
-                        :duration="collapseDuration"
-                    >
-
-                    </CCollapse>
+                  <template #actions="{ item, index }">
+                    <td class="py-2">
+                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                      <CButton @click="getSingleAdvertisement(item.uuid)" color="primary" class="mr-2">Düzenle
+                      </CButton>
+                    </td>
                   </template>
                 </CDataTable>
-
-
               </CCardBody>
             </template>
           </CCard>
@@ -143,8 +157,8 @@
         <CButtonClose @click="deleteModel = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton color="danger">Hayır</CButton>
-        <CButton color="success">Evet</CButton>
+        <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
+        <CButton @click="deleteAdvertisement" color="success">Evet</CButton>
       </template>
 
 
@@ -165,37 +179,57 @@
             <CCard v-if="staffUpdateModal">
               <template>
                 <CCardBody>
-
-                  <div>
-                    <!--                    <CAlert color="success" :show="isSuccessCar">-->
-                    <!--                      Personel başarıyla kaydedildi.-->
-                    <!--                    </CAlert>-->
-
-
-                    <!--                    <CAlert-->
-                    <!--                        v-for="(value,key) in errorsStaff"-->
-                    <!--                        :key="value.message"-->
-                    <!--                        color="danger"-->
-                    <!--                        :show="isErrorStaffUpdate"-->
-                    <!--                    >-->
-                    <!--                      {{ key }}: {{ value[0] }}-->
-                    <!--                    </CAlert>-->
-
-
-                  </div>
-
-
                   <CRow>
-                    <CCol lg="6">
+                    <CCol lg="4">
+                      Reklam Adı <span class="text-danger">*</span>
                       <CInput
                           description=""
                           autocomplete="autocomplete"
+                          v-model="advertisementUpdate.name"
                       />
-                      Grup Adı <span class="text-danger">*</span>
+                    </CCol>
+                    <CCol lg="4">
+                      Firma Adı <span class="text-danger">*</span>
+                      <CSelect
+                          :options="companies"
+                          v-model="companyUpdate"
+                          :value.sync="companyUpdate"
+                      />
+                    </CCol>
+                    <CCol lg="4">
+                      Reklam Yeri <span class="text-danger">*</span>
+                      <CSelect
+                          :options="locations"
+                          v-model="locationUpdate"
+                          :value.sync="locationUpdate"
+                      />
+
+                    </CCol>
+                    <CCol lg="4">
+                      Yayın Başlangıç Tarihi <span class="text-danger">*</span>
+                      <CInput
+                          type="date"
+                          v-model="advertisementUpdate.publishStartDate"
+
+                      />
+                    </CCol>
+                    <CCol lg="4">
+                      Yayın Bitiş Tarihi <span class="text-danger">*</span>
+                      <CInput
+                          type="date"
+                          v-model="advertisementUpdate.publishEndDate"
+                      />
+                    </CCol>
+                    <CCol lg="4">
+                      Fiyat <span class="text-danger">*</span>
+                      <CInput
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="advertisementUpdate.price"
+                      />
+
                     </CCol>
                   </CRow>
-
-
                 </CCardBody>
               </template>
             </CCard>
@@ -207,8 +241,8 @@
         <CButtonClose class="text-white"/>
       </template>
       <template #footer>
-        <CButton color="danger">Kapat</CButton>
-        <CButton color="success">Güncelle</CButton>
+        <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="editAdvertisement" color="success">Güncelle</CButton>
       </template>
     </CModal>
 
@@ -218,27 +252,24 @@
 
 <script>
 
-
-import Car from "@/models/car";
-
-import Staff from "@/models/Staff";
-import StaffService from "@/services/staff.service";
-import GeneralService from "@/services/general.service";
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
-import Customer from "@/models/customer";
-import UserService from "@/services/managementServices/user.service";
+import AdvertisementLocationService from "../../../services/managementServices/advertisement.location.service";
+import CompanyService from "../../../services/managementServices/company.service";
+import Advertisement from "../../../models/pms/advertisement";
+import AdvertisementService from "../../../services/managementServices/advertisement.service";
 
 
 export default {
-  name: "Group",
+  name: "AdvertisementManagament",
 
   data() {
     return {
       fieldsTable: [
-        {key: "advertisementLocation", label: "Reklam Yeri"},
-        {key: "pixels", label: "Genişlik x Uzunluk"},
-        {key: "price", label: "Fiyat"},
-        {key: "showPopUp", label: "PopUp Gösterimi"},
+        {key: "name", label: "Reklam Adı"},
+        {key: "company", label: "Firma"},
+        {key: "location", label: "Reklam Yeri"},
+        {key: "publishStartDate", label: "Yayın Başlangıç Tarihi"},
+        {key: "publishEndDate", label: "Yayın Bitiş Tarihi"},
         {key: "actions", label: "İşlemler"},
 
       ],
@@ -255,10 +286,6 @@ export default {
       customers: [],
       cars: [],
       staffs: [],
-      staff: new Staff("", "", "", "", "", ""),
-      staffUpdate: new Customer("", "", "", "", "", "", "", ""),
-      customer: new Customer("", "", "", "", "", "", "", ""),
-      car: new Car("", "", "", "", "", "", "", "", "", "", ""),
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
@@ -303,7 +330,16 @@ export default {
       ],
       deleteModel: false,
       deleteId: '',
-      showPopUp: false
+      showPopUp: false,
+      locations: [],
+      companies: [],
+      company: '',
+      location: '',
+      advertisement: new Advertisement("", "", "", "", "", "", ""),
+      advertisementUpdate: new Advertisement("", "", "", "", "", "", ""),
+      advertisements: [],
+      locationUpdate: '',
+      companyUpdate: ''
 
     };
   },
@@ -317,16 +353,135 @@ export default {
         console.log("else")
         this.showPopUp = false
       }
+    },
+    setDeleteModal(id) {
+
+      this.deleteId = id
+      this.deleteModel = true
+
+    },
+    async selectLocation() {
+      let response = await new AdvertisementLocationService().selectAdvertisementLocation()
+      this.locations = response.data
+    },
+    async selectCompany() {
+      let response = await new CompanyService().selectCompanies()
+      this.companies = response.data
+    },
+    async addAdvertisement() {
+      if (this.advertisement.locationName === '') {
+        this.advertisement.locationName = this.locations[0].value
+      }
+      if (this.advertisement.companyName === '') {
+        this.advertisement.companyName = this.companies[0].value
+      }
+      console.log("ad", this.advertisement)
+      let response = await new AdvertisementService().addAdvertisement(this.advertisement)
+      if (response.status === 200) {
+        await this.getAdvertisements()
+        this.advertisement = new Advertisement("", "", "", "", "", "", "")
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarıyla gerçekleşti"
+        })
+      } else if (response.status === 401) {
+
+      } else {
+        console.log("res", response.data)
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
+      }
+    },
+    async editAdvertisement() {
+      console.log("comp0", this.advertisementUpdate)
+      // if (this.advertisementUpdate.locationName === '') {
+      //   this.advertisementUpdate.locationName = this.locations[0].value
+      // }
+      // if (this.advertisementUpdate.companyName === '') {
+      //   this.advertisementUpdate.companyName = this.companies[0].value
+      // }
+      this.advertisementUpdate.locationName = this.locationUpdate
+      this.advertisementUpdate.companyName = this.companyUpdate
+      console.log("comp", this.advertisementUpdate)
+      let response = await new AdvertisementService().editAdvertisement(this.advertisementUpdate)
+      if (response.status === 200) {
+        await this.getAdvertisements()
+        this.staffUpdateModal = false
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarıyla gerçekleşti"
+        })
+      } else if (response.status === 401) {
+
+      } else {
+        console.log("res", response.data)
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
+      }
+
+    },
+    async getAdvertisements() {
+      let response = await new AdvertisementService().getAdvertisement()
+      this.advertisements = response.data.data
+
+    },
+    async getSingleAdvertisement(id) {
+      let response = await new AdvertisementService().getSingleAdvertisement(id)
+
+      if (response.status === 200) {
+        this.staffUpdateModal = true
+        this.advertisementUpdate = response.data
+        this.locationUpdate = response.data.location.value
+        this.companyUpdate = response.data.company.value
+      }
+
+    },
+    async deleteAdvertisement() {
+      let response = await new AdvertisementService().deleteAdvertisement(this.deleteId)
+      if (response.status === 200) {
+        await this.getAdvertisements()
+        this.deleteModel = false
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarıyla gerçekleşti"
+        })
+      } else if (response.status === 401) {
+
+      } else {
+        console.log("res", response.data)
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
+      }
+
     }
   },
 
   watch: {},
 
-  created() {
-
+  async created() {
+    await this.selectCompany()
+    await this.selectLocation()
+    await this.getAdvertisements()
   },
-  mounted() {
-
+  async mounted() {
+    await this.selectCompany()
+    await this.selectLocation()
+    await this.getAdvertisements()
 
   },
   computed: {}

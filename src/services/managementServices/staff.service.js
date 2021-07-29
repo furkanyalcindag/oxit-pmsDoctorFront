@@ -15,7 +15,13 @@ class StaffService {
             email: staff.email,
             mobilePhone: staff.mobilePhone,
             groupId: staff.group
-        }, {headers: authHeader()})
+        }, {headers: authHeader()}).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            return error
+        });
 
 
     }
@@ -31,7 +37,13 @@ class StaffService {
             email: staff.email,
             mobilePhone: staff.mobilePhone,
             groupId: staff.group
-        }, {headers: authHeader(), params})
+        }, {headers: authHeader(), params}).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            return error
+        });
 
     }
 
@@ -39,7 +51,16 @@ class StaffService {
         const params = {
             id: id
         }
-        return axios.delete(process.env.VUE_APP_API_URL + '/management/staff-api/', {headers: authHeader(), params})
+        return axios.delete(process.env.VUE_APP_API_URL + '/management/staff-api/', {
+            headers: authHeader(),
+            params
+        }).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            return error
+        });
 
     }
 

@@ -255,6 +255,22 @@ export default {
       if (response.status === 200) {
         this.group = new Group()
 
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarıyla gerçekleşti"
+        })
+
+      } else if (response.status === 401) {
+
+      } else {
+        console.log("res", response.data)
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
       }
     },
     setDeleteModal(id) {
@@ -266,6 +282,22 @@ export default {
       if (response.status === 200) {
         await this.getGroups()
         this.deleteModel = false
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarıyla gerçekleşti"
+        })
+
+      } else if (response.status === 401) {
+
+      } else {
+        console.log("res", response.data)
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
       }
 
     },

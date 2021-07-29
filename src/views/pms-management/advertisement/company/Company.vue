@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Personel İşlemleri
+              Grup İşlemleri
               <div class="card-header-actions">
 
                 <CLink
@@ -27,62 +27,46 @@
                 <CRow></CRow>
                 <CRow>
                   <CCol lg="6">
-                    Ad <span class="text-danger">*</span>
+                    Firma Adı <span class="text-danger">*</span>
                     <CInput
                         description=""
                         autocomplete="autocomplete"
-                        v-model="staff.firstName"
-                    />
-                    Soyad <span class="text-danger">*</span>
-                    <CInput
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="staff.lastName"
-                    />
-                    E-Mail <span class="text-danger">*</span>
-                    <CInput
-                        description=""
-                        type="email"
-                        autocomplete="email"
-                        prepend="@"
-                        v-model="staff.email"
+                        v-model="company.companyName"
                     />
                   </CCol>
-
                   <CCol lg="6">
-                    Telefon Numarası <span class="text-danger">*</span>
+                    Mail <span class="text-danger">*</span>
                     <CInput
                         description=""
                         autocomplete="autocomplete"
-                        v-model="staff.mobilePhone"
+                        v-model="company.email"
                     />
-
-                    Grup <span class="text-danger">*</span>
-                    <CSelect
-                        :options="groups"
-                        v-model="staff.group"
-                        :value.sync="staff.group"
-
-                    />
-                    <!--                    Adres <span class="text-danger">*</span>-->
-                    <!--                    <CTextarea-->
-                    <!--                        :rows="3"-->
-                    <!--                        description=""-->
-                    <!--                        autocomplete="autocomplete"-->
-                    <!--                        v-model="staff.address"-->
-                    <!--                    />-->
-
                   </CCol>
+                  <CCol lg="6">
+                    Vergi Dairesi <span class="text-danger">*</span>
+                    <CInput
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="company.taxOffice"
+                    />
+                  </CCol>
+                  <CCol lg="6">
+                    Vergi Numarası <span class="text-danger">*</span>
+                    <CInput
+                        description=""
+                        autocomplete="autocomplete"
+                        v-model="company.taxNumber"
+                    />
+                  </CCol>
+                  <CCol lg="6" class="mt-3">
+                    <div class="form-actions">
+                      <CButton type="submit" color="primary" @click="addCompany"
+                      >Kaydet
+                      </CButton>
 
-
+                    </div>
+                  </CCol>
                 </CRow>
-
-                <div class="form-actions">
-                  <CButton type="submit" color="primary" @click="addStaff"
-                  >Kaydet
-                  </CButton>
-
-                </div>
               </CCardBody>
             </CCollapse>
           </CCard>
@@ -99,8 +83,8 @@
               <CCardBody>
 
                 <CDataTable
-                    :items="staffs"
-                    :fields="fieldsTable"
+                    :items="companies"
+                    :fields="fieldsTableGroup"
                     column-filter
                     :border="true"
                     :items-per-page="5"
@@ -112,21 +96,15 @@
                     clickableRows
 
                 >
-                  <template #group="{ item, index }">
-                    <td class="py-2">
-                      {{ item.group.label }}
-                    </td>
-                  </template>
+
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
                       <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-                      <CButton @click="getSingleStaff(item.uuid)" color="primary" class="mr-2">Düzenle</CButton>
+                      <CButton @click="getSingleCompany(item.uuid)" color="primary" class="mr-2">Düzenle</CButton>
                     </td>
                   </template>
                 </CDataTable>
-
-
               </CCardBody>
             </template>
           </CCard>
@@ -148,8 +126,8 @@
         <CButtonClose @click="deleteModel = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteStaff" color="success">Evet</CButton>
+        <CButton @click="deleteModel=false" color="danger">Hayır</CButton>
+        <CButton @click="deleteCompany" color="success">Evet</CButton>
       </template>
 
 
@@ -172,61 +150,38 @@
                 <CCardBody>
                   <CRow>
                     <CCol lg="6">
+                      Firma Adı <span class="text-danger">*</span>
                       <CInput
-                          label="Ad *"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="staffUpdate.firstName"
-                      />
-
-                      <CInput
-                          label="Soyad *"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="staffUpdate.lastName"
-                      />
-
-                      <CInput
-                          label="Email *"
-                          description=""
-                          type="email"
-                          autocomplete="email"
-                          prepend="@"
-                          v-model="staffUpdate.email"
+                          v-model="companyUpdate.companyName"
                       />
                     </CCol>
-
                     <CCol lg="6">
+                      Mail <span class="text-danger">*</span>
                       <CInput
-                          label="Telefon Numarası *"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="staffUpdate.mobilePhone"
+                          v-model="companyUpdate.email"
                       />
-
-
-                      <CSelect
-                          :options="groups"
-                          label="Grup *"
-                          v-model="groupUpdate"
-                          :value.sync="groupUpdate"
-
-                      />
-
-                      <!--                      <CTextarea-->
-                      <!--                          :rows="3"-->
-                      <!--                          label="Adres"-->
-                      <!--                          description=""-->
-                      <!--                          autocomplete="autocomplete"-->
-                      <!--                          v-model="staffUpdate.address"-->
-                      <!--                      />-->
-
                     </CCol>
-
-
+                    <CCol lg="6">
+                      Vergi Dairesi <span class="text-danger">*</span>
+                      <CInput
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="companyUpdate.taxOffice"
+                      />
+                    </CCol>
+                    <CCol lg="6">
+                      Vergi Numarası <span class="text-danger">*</span>
+                      <CInput
+                          description=""
+                          autocomplete="autocomplete"
+                          v-model="companyUpdate.taxNumber"
+                      />
+                    </CCol>
                   </CRow>
-
-
                 </CCardBody>
               </template>
             </CCard>
@@ -235,11 +190,11 @@
       </CRow>
       <template #header>
         <h6 class="modal-title">Personel Güncelle</h6>
-        <CButtonClose @click="staffUpdateModal = false" class="text-white"/>
+        <CButtonClose class="text-white"/>
       </template>
       <template #footer>
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="editStaff" color="success">Güncelle</CButton>
+        <CButton @click="editCompany" color="success">Güncelle</CButton>
       </template>
     </CModal>
 
@@ -248,23 +203,19 @@
 </template>
 
 <script>
-
-
-import StaffService from "@/services/managementServices/staff.service";
-import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css';
-import UserService from "@/services/managementServices/user.service";
-import Staff from "../../../models/pms/staff";
+import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
+import CompanyService from "../../../../services/managementServices/company.service";
+import Company from "../../../../models/pms/company";
 
 
 export default {
-  name: "Group",
+  name: "Company",
 
   data() {
     return {
-      fieldsTable: [
-        {key: 'firstName', label: "Ad Soyad", _style: "min-width:200px"},
-        {key: "lastName", label: "Email"},
-        {key: "group", label: "Personel Grubu"},
+      fieldsTableGroup: [
+        {key: "companyName", label: "Firma Adı"},
+        {key: "email", label: "Email"},
         {key: "actions", label: "İşlemler"},
 
       ],
@@ -325,65 +276,28 @@ export default {
       ],
       deleteModel: false,
       deleteId: '',
-      staff: new Staff("", "", "", "", "", ""),
-      staffUpdate: new Staff("", "", "", "", "", ""),
-      groupUpdate: ''
+      company: new Company("", "", "", "", ""),
+      companyUpdate: new Company("", "", "", "", ""),
+      companies: []
     };
   },
 
   methods: {
-    validator(val) {
-      return val ? val.length >= 4 : false;
-    },
-    getBadge(status) {
-      switch (status) {
-        case "Active":
-          return "success";
-        case "Inactive":
-          return "secondary";
-        case "Pending":
-          return "warning";
-        case "Banned":
-          return "danger";
-        default:
-          "primary";
-      }
-    },
-    toggleDetails(item) {
-      this.$set(this.items[item.id], "_toggled", !item._toggled);
-      this.collapseDuration = 300;
-      this.$nextTick(() => {
-        this.collapseDuration = 0;
-      });
-    },
-
-    isCorporateControl() {
-      this.isCorporate = !this.isCorporate;
-      this.customer.isCorporate = this.isCorporate;
-    },
-
     setDeleteModal(id) {
-
       this.deleteId = id
       this.deleteModel = true
-
     },
-    async getGroups() {
-      let response = await new UserService().getGroups();
-      this.groups = response.data
-      console.log("groups", this.groups)
-    },
-
-    async addStaff() {
-      console.log("group", this.staff)
-      let response = await new StaffService().addStaff(this.staff)
+    async addCompany() {
+      let response = await new CompanyService().addCompany(this.company)
+      console.log("res", response)
       if (response.status === 200) {
-        await this.getStaffs()
-        this.staff = new Staff("", "", "", "", "", "")
+        await this.getCompanies()
+        this.company = new Company("", "", "", "", "")
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
         })
+
       } else if (response.status === 401) {
 
       } else {
@@ -396,48 +310,13 @@ export default {
           })
         }
       }
-    },
-    async getStaffs() {
-      let response = await new StaffService().getStaffs()
-      this.staffs = response.data.data
-    },
-    async deleteStaff() {
-      let response = await new StaffService().deleteStaff(this.deleteId)
-      if (response.status === 200) {
-        this.deleteModel = false
-        await this.getStaffs()
-        this.$toast.success({
-          title: 'Başarılı',
-          message: "işlem başarıyla gerçekleşti"
-        })
-      } else if (response.status === 401) {
 
-      } else {
-        console.log("res", response.data)
-        this.errors = response.response.data;
-        for (const [key, value] of Object.entries(this.errors)) {
-          this.$toast.error({
-            title: 'Hata',
-            message: `${key}: ${value}`
-          })
-        }
-      }
     },
-    async getSingleStaff(id) {
-      let response = await new StaffService().getSingleStaff(id)
-      if (response.status === 200) {
-        this.staffUpdateModal = true
-        this.staffUpdate = response.data
-        this.groupUpdate = response.data.group.value
-      }
-    },
-    async editStaff() {
-      this.staffUpdate.group = this.groupUpdate
-      console.log("den", this.staffUpdate)
-      let response = await new StaffService().editStaff(this.staffUpdate)
+    async editCompany() {
+      let response = await new CompanyService().editCompany(this.companyUpdate)
       if (response.status === 200) {
         this.staffUpdateModal = false
-        await this.getStaffs()
+        await this.getCompanies()
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
@@ -445,7 +324,6 @@ export default {
       } else if (response.status === 401) {
 
       } else {
-        console.log("res", response.data)
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -454,34 +332,46 @@ export default {
           })
         }
       }
+
+    },
+    async deleteCompany() {
+      let response = await new CompanyService().deleteCompany(this.deleteId)
+      if (response.status === 200) {
+        this.deleteModel = false
+        await this.getCompanies()
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "işlem başarıyla gerçekleşti"
+        })
+      }
+
+    },
+    async getSingleCompany(id) {
+      let response = await new CompanyService().getSingleCompany(id)
+      if (response.status === 200) {
+        this.staffUpdateModal = true
+        this.companyUpdate = response.data
+      }
+    },
+    async getCompanies() {
+      let response = await new CompanyService().getCompanies()
+      this.companies = response.data.data
+
     }
   },
+
   watch: {},
-  created() {
-    this.getGroups()
-    this.getStaffs()
-    this.isCorporateControl();
-  },
-  mounted() {
-    this.getGroups()
-    this.getStaffs()
+
+  async created() {
+    await this.getCompanies()
 
 
   },
-  computed: {
-    computedItems() {
+  async mounted() {
+    await this.getCompanies()
 
-      return this.staffs.map(item => {
-        return {
-          ...item,
-          userUsername: item.email,
-          nameSurname: item.firstName + ' ' + item.lastName,
-          userGroup: item.groupName
-
-        }
-      })
-    }
-  }
+  },
+  computed: {}
 
 };
 </script>

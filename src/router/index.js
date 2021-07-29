@@ -99,6 +99,7 @@ const Group = () => import('@/views/pms-management/staff/Group')
 const Advertisement = () => import('@/views/pms-management/advertisement/AdvertisementManagement')
 
 const AdvertisementLocation = () => import('@/views/pms-management/advertisement/AdvertisementLocation')
+const Company = () => import('@/views/pms-management/advertisement/company/Company')
 
 const ClinicAccounting = () => import('@/views/pms-management/accounting/ClinicAccounting')
 
@@ -108,11 +109,11 @@ const StaffAccounting = () => import('@/views/pms-management/accounting/StaffAcc
 
 const ReferenceBasedAccounting = () => import('@/views/pms-management/accounting/ReferenceBasedAccounting')
 
-const Notifications  = () => import('@/views/pms-management/notifications/Notifications');
+const Notifications = () => import('@/views/pms-management/notifications/Notifications');
 
-const Wristbands  = () => import('@/views/pms-management/wristbands/Wristbands');
+const Wristbands = () => import('@/views/pms-management/wristbands/Wristbands');
 
-const Contract  = () => import('@/views/pms-management/contract/Contract');
+const Contract = () => import('@/views/pms-management/contract/Contract');
 
 Vue.use(Router)
 
@@ -400,12 +401,17 @@ function configRoutes() {
                             path: '/advertisement/location',
                             name: 'Reklam Yeri',
                             component: AdvertisementLocation
+                        },
+                        {
+                            path: '/advertisement/company',
+                            name: 'Firma',
+                            component: Company
                         }
                     ]
                 },
 
 
-                    {
+                {
                     path: '/notifications',
                     name: 'Bildirim',
                     component: {
@@ -423,8 +429,7 @@ function configRoutes() {
                 },
 
 
-
-                  {
+                {
                     path: '/wristbands',
                     name: 'Bileklik',
                     component: {
@@ -441,7 +446,7 @@ function configRoutes() {
                     ]
                 },
 
-                  {
+                {
                     path: '/contracts',
                     name: 'Sözleşme',
                     component: {
@@ -457,7 +462,6 @@ function configRoutes() {
                         }
                     ]
                 },
-
 
 
                 {

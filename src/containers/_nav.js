@@ -159,6 +159,10 @@ const advertisement = {
         {
             name: 'Reklam Yeri',
             to: '/advertisement/location'
+        },
+        {
+            name: 'Firma',
+            to: '/advertisement/company'
         }
     ]
 
