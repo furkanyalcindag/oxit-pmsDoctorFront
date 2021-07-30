@@ -7,7 +7,7 @@ class GeneralService {
 
     getCity() {
 
-        return axios.get(process.env.VUE_APP_API_URL + `/management/city-district-api/`, {headers: authHeader()})
+        return axios.get(process.env.VUE_APP_API_URL + `/management/city-api/`, {headers: authHeader()})
 
     }
 
@@ -19,7 +19,7 @@ class GeneralService {
 
         };
 
-        return axios.get(process.env.VUE_APP_API_URL + `/management/city-district-api/`, {
+        return axios.get(process.env.VUE_APP_API_URL + `/management/city-api/`, {
             headers: authHeader(),
             params
         })

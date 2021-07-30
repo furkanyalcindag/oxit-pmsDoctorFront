@@ -126,6 +126,113 @@ const services = {
         }
     ]
 }
+const staffs = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Personel',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Personel',
+            to: '/staffs'
+        },
+        {
+            name: 'Grup',
+            to: '/group'
+        }
+    ]
+}
+const permission = {
+    _name: 'CSidebarNavItem',
+    name: 'Yetkilendirme',
+    to: '/permission',
+    icon: 'cil-file',
+}
+const advertisement = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Reklam ',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Reklam Ekleme',
+            to: '/advertisement'
+        },
+        {
+            name: 'Reklam Yeri',
+            to: '/advertisement/location'
+        },
+        {
+            name: 'Firma',
+            to: '/advertisement/company'
+        }
+    ]
+
+}
+
+
+const notifications = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Bildirim ',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Bildirim',
+            to: '/notifications'
+        }
+    ]
+
+}
+
+
+const wristbands = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Bileklik ',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Bileklik',
+            to: '/wristbands'
+        }
+    ]
+
+}
+
+const contracts = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Sözleşme',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Sözleşme',
+            to: '/contracts'
+        }
+    ]
+
+}
+
+const accounting = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Muhasebe',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Firma',
+            to: '/accounting-company'
+        },
+        {
+            name: 'Klinik',
+            to: '/accounting-clinic'
+        },
+        {
+            name: 'Personel',
+            to: '/accounting-staff'
+        },
+        {
+            name: 'Referans Bazlı',
+            to: '/accounting-reference'
+        }
+    ]
+
+}
 
 var items = []
 items.push(home)
@@ -144,8 +251,17 @@ if (user_group === groups.admin) {
     items.push(staff)
 }
 if (user_group === groups.admin || user_group === groups.serviceman || user_group === groups.customer) {
-    items.push(services)
+    //items.push(services)
     items.push(clinic)
+} else {
+    items.push(clinic)
+    items.push(staffs)
+    items.push(permission)
+    items.push(advertisement)
+    items.push(accounting)
+    items.push(notifications)
+    items.push(wristbands)
+    items.push(contracts)
 }
 export default [
     {

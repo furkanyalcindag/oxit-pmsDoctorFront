@@ -1,7 +1,7 @@
 export default class Clinic {
 
 
-    constructor(clinicName, taxNumber, taxOffice, address, cityId, districtId, email, telephoneNumber) {
+    constructor(clinicName, taxNumber, taxOffice, address, cityId, districtId, email, telephoneNumber, staffName, staffSurname) {
         this.clinicName = clinicName
         this.taxNumber = taxNumber
         this.taxOffice = taxOffice
@@ -10,6 +10,8 @@ export default class Clinic {
         this.districtId = districtId
         this.email = email
         this.telephoneNumber = telephoneNumber
+        this.staffName = staffName
+        this.staffSurname = staffSurname
 
 
     }

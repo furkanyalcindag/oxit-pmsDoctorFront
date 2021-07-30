@@ -25,7 +25,9 @@ class ClinicService {
                 address: clinic.address,
                 email: clinic.email,
                 cityId: clinic.cityId,
-                districtId: clinic.districtId
+                districtId: clinic.districtId,
+                staffName: clinic.staffName,
+                staffSurname: clinic.staffSurname
             }, {headers: authHeader()}).then(response => {
 
 
@@ -35,6 +37,45 @@ class ClinicService {
         });
 
 
+    }
+
+    editClinic(clinic) {
+        const params = {
+            id: clinic.uuid
+        }
+        return axios.put(process.env.VUE_APP_API_URL + '/management/clinic-api/',
+            {
+                clinicName: clinic.clinicName,
+                taxNumber: clinic.taxNumber,
+                taxOffice: clinic.taxOffice,
+                // telephoneNumber: clinic.telephoneNumber,
+                address: clinic.address,
+                email: clinic.email,
+                cityId: clinic.cityId,
+                districtId: clinic.districtId
+            }, {headers: authHeader(), params}).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            return error
+        });
+
+
+    }
+
+    getSingleClinic(id) {
+        const params = {
+            id: id
+        }
+        return axios.get(process.env.VUE_APP_API_URL + `/management/clinic-api/`, {headers: authHeader(), params})
+    }
+
+    deleteClinic(id) {
+        const params = {
+            id: id
+        }
+        return axios.delete(process.env.VUE_APP_API_URL + `/management/clinic-api/`, {headers: authHeader(), params})
     }
 
 
