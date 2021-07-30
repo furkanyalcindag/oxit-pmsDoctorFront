@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Grup İşlemleri
+              Firma İşlemleri
               <div class="card-header-actions">
 
                 <CLink
@@ -22,51 +22,82 @@
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                <div>
-                </div>
-                <CRow></CRow>
-                <CRow>
-                  <CCol lg="6">
-                    Firma Adı <span class="text-danger">*</span>
-                    <CInput
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="company.companyName"
-                    />
-                  </CCol>
-                  <CCol lg="6">
-                    Mail <span class="text-danger">*</span>
-                    <CInput
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="company.email"
-                    />
-                  </CCol>
-                  <CCol lg="6">
-                    Vergi Dairesi <span class="text-danger">*</span>
-                    <CInput
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="company.taxOffice"
-                    />
-                  </CCol>
-                  <CCol lg="6">
-                    Vergi Numarası <span class="text-danger">*</span>
-                    <CInput
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="company.taxNumber"
-                    />
-                  </CCol>
-                  <CCol lg="6" class="mt-3">
-                    <div class="form-actions">
-                      <CButton type="submit" color="primary" @click="addCompany"
-                      >Kaydet
-                      </CButton>
+                <validation-observer ref="simpleRules">
+                  <CRow>
+                    <CCol lg="6">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Firma Adı">
+                        Firma Adı <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
 
-                    </div>
-                  </CCol>
-                </CRow>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="company.companyName"
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="6">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Mail">
+                        Mail <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="company.email"
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="6">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Vergi Dairesi">
+                        Vergi Dairesi <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="company.taxOffice"
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="6">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Vergi Numarası">
+                        Vergi Numarası <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="company.taxNumber"
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="6" class="mt-3">
+                      <div class="form-actions">
+                        <CButton type="submit" color="primary" @click="validationForm"
+                        >Kaydet
+                        </CButton>
+
+                      </div>
+                    </CCol>
+                  </CRow>
+                </validation-observer>
               </CCardBody>
             </CCollapse>
           </CCard>
@@ -148,40 +179,74 @@
             <CCard v-if="staffUpdateModal">
               <template>
                 <CCardBody>
-                  <CRow>
-                    <CCol lg="6">
-                      Firma Adı <span class="text-danger">*</span>
-                      <CInput
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="companyUpdate.companyName"
-                      />
-                    </CCol>
-                    <CCol lg="6">
-                      Mail <span class="text-danger">*</span>
-                      <CInput
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="companyUpdate.email"
-                      />
-                    </CCol>
-                    <CCol lg="6">
-                      Vergi Dairesi <span class="text-danger">*</span>
-                      <CInput
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="companyUpdate.taxOffice"
-                      />
-                    </CCol>
-                    <CCol lg="6">
-                      Vergi Numarası <span class="text-danger">*</span>
-                      <CInput
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="companyUpdate.taxNumber"
-                      />
-                    </CCol>
-                  </CRow>
+                  <validation-observer ref="simpleRules">
+                    <CRow>
+                      <CCol lg="6">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Firma Adı">
+                          Firma Adı <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+
+                          <CInput
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="companyUpdate.companyName"
+                              :state="errors.length > 0 ? false:null"
+                          />
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="6">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Mail">
+                          Mail <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+
+                          <CInput
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="companyUpdate.email"
+                              :state="errors.length > 0 ? false:null"
+                          />
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="6">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Vergi Dairesi">
+                          Vergi Dairesi <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+
+                          <CInput
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="companyUpdate.taxOffice"
+                              :state="errors.length > 0 ? false:null"
+                          />
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="6">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Vergi Numarası">
+                          Vergi Numarası <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+
+                          <CInput
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="companyUpdate.taxNumber"
+                              :state="errors.length > 0 ? false:null"
+                          />
+                        </validation-provider>
+                      </CCol>
+                    </CRow>
+                  </validation-observer>
                 </CCardBody>
               </template>
             </CCard>
@@ -194,7 +259,7 @@
       </template>
       <template #footer>
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="editCompany" color="success">Güncelle</CButton>
+        <CButton @click="validationForm" color="success">Güncelle</CButton>
       </template>
     </CModal>
 
@@ -206,11 +271,15 @@
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 import CompanyService from "../../../../services/managementServices/company.service";
 import Company from "../../../../models/pms/company";
-
+import {ValidationProvider, ValidationObserver} from 'vee-validate'
+import {required, email, min, max} from 'validations'
 
 export default {
   name: "Company",
-
+  components: {
+    ValidationObserver,
+    ValidationProvider
+  },
   data() {
     return {
       fieldsTableGroup: [
@@ -235,13 +304,11 @@ export default {
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
-      errorsStaff: [],
       isErrorCustomerUpdate: false,
       groups: [],
       staffUpdateModal: false,
       details: [],
       errors: [],
-      errorsCar: [],
       isCorporate: false,
       collapseDuration: 0,
       darkModal: false,
@@ -278,7 +345,11 @@ export default {
       deleteId: '',
       company: new Company("", "", "", "", ""),
       companyUpdate: new Company("", "", "", "", ""),
-      companies: []
+      companies: [],
+      required,
+      email,
+      min,
+      max
     };
   },
 
@@ -357,7 +428,19 @@ export default {
       let response = await new CompanyService().getCompanies()
       this.companies = response.data.data
 
-    }
+    },
+    async validationForm() {
+      this.$refs.simpleRules.validate().then(async success => {
+        if (success) {
+          if (this.companyUpdate.uuid) {
+            await this.editCompany()
+          } else {
+            await this.addCompany()
+          }
+        } else {
+        }
+      })
+    },
   },
 
   watch: {},

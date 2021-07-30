@@ -22,27 +22,33 @@
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                <div>
-                </div>
-                <CRow></CRow>
-                <CRow>
-                  <CCol lg="6">
-                    Grup Adı <span class="text-danger">*</span>
-                    <CInput
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="group.label"
-                    />
-                  </CCol>
-                  <CCol lg="6" class="mt-3">
-                    <div class="form-actions">
-                      <CButton type="submit" color="primary" @click="addGroup"
-                      >Kaydet
-                      </CButton>
+                <validation-observer ref="simpleRules">
+                  <CRow>
+                    <CCol lg="6">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Grup Ad">
+                        Grup Adı <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="group.label"
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="6" class="mt-3">
+                      <div class="form-actions">
+                        <CButton type="submit" color="primary" @click="validationForm"
+                        >Kaydet
+                        </CButton>
 
-                    </div>
-                  </CCol>
-                </CRow>
+                      </div>
+                    </CCol>
+                  </CRow>
+                </validation-observer>
               </CCardBody>
             </CCollapse>
           </CCard>
@@ -165,10 +171,16 @@ import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 import Customer from "@/models/customer";
 import GroupService from "../../../services/managementServices/group.service";
 import Group from "@/models/pms/group";
-
+import {ValidationProvider, ValidationObserver} from 'vee-validate'
+import {required, email, min, max} from 'validations'
 
 export default {
   name: "Group",
+  components: {
+    ValidationObserver,
+    ValidationProvider
+  },
+
 
   data() {
     return {
@@ -240,6 +252,10 @@ export default {
       deleteId: '',
       group: new Group("", ""),
       groupUpdate: new Group("", ""),
+      required,
+      email,
+      max,
+      min,
     };
   },
 
@@ -300,6 +316,14 @@ export default {
         }
       }
 
+    },
+    async validationForm() {
+      this.$refs.simpleRules.validate().then(async success => {
+        if (success) {
+          await this.addGroup()
+        } else {
+        }
+      })
     },
   },
 

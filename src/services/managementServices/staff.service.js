@@ -14,7 +14,8 @@ class StaffService {
             lastName: staff.lastName,
             email: staff.email,
             mobilePhone: staff.mobilePhone,
-            groupId: staff.group
+            groupId: staff.group,
+            address: staff.address
         }, {headers: authHeader()}).then(response => {
 
 
@@ -36,7 +37,8 @@ class StaffService {
             lastName: staff.lastName,
             email: staff.email,
             mobilePhone: staff.mobilePhone,
-            groupId: staff.group
+            groupId: staff.group,
+            address: staff.address
         }, {headers: authHeader(), params}).then(response => {
 
 

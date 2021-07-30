@@ -25,110 +25,180 @@
                 <div>
 
                 </div>
-                <CRow></CRow>
-                <CRow>
-                  <CCol lg="3">
-                    <CInput
-                        label="Klinik Adı *"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="clinic.clinicName"
-                    />
-                  </CCol>
-                  <CCol lg="3">
-                    <CInput
-                        label="Yetkili Ad *"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="clinic.staffName"
+                <validation-observer ref="simpleRules">
+                  <CRow>
 
-                    />
-                  </CCol>
-                  <CCol lg="3">
-
-                    <CInput
-                        label="Yetkili Soyad *"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="clinic.staffSurname"
-                    />
-
-                  </CCol>
-
-                  <CCol lg="3">
-                    <CInput
-                        label="Telefon Numarası *"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="clinic.telephoneNumber"
-
-                    />
-                  </CCol>
-                  <CCol lg="3">
-                    <CInput
-                        label="Vergi Dairesi *"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="clinic.taxOffice"
-
-                    />
-                  </CCol>
-                  <CCol lg="3">
-                    <CInput
-                        label="Vergi Numarası *"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="clinic.taxNumber"
-
-                    />
-                  </CCol>
-                  <CCol lg="3">
-                    <CSelect
-                        label="İl *"
-                        :options="cities"
-                        v-model="city"
-                        :value.sync="city"
-                        @change="getDistricts(city)"
-                    />
-                  </CCol>
-                  <CCol lg="3">
-                    <CSelect
-                        label="İlçe *"
-                        :options="districts"
-                        v-model="district"
-                        :value.sync="district"
-                    />
-                  </CCol>
-                  <CCol lg="3">
-                    <CInput
-                        label="E-Mail *"
-                        description=""
-                        type="email"
-                        autocomplete="email"
-                        prepend="@"
-                        v-model="clinic.email"
-
-                    />
-                  </CCol>
-                  <CCol lg="9">
-
-                    <CTextarea
-                        :rows="2"
-                        label="Adres *"
-                        description=""
-                        autocomplete="autocomplete"
-                        v-model="clinic.address"
-
-                    />
-
-                  </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Klinik Adı">
+                        Klinik Adı <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinic.clinicName"
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
 
 
-                </CRow>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Yetkili Ad">
+                        Yetkili Ad <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinic.staffName"
+
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Yetkili Soyad">
+                        Yetkili Soyad <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinic.staffSurname"
+                            :state="errors.length > 0 ? false:null"
+                        />
+
+                      </validation-provider>
+                    </CCol>
+
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Telefon Numarası">
+                        Telefon Numarası <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinic.telephoneNumber"
+
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Vergi Dairesi">
+                        Vergi Dairesi <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinic.taxOffice"
+
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Vergi Numarası">
+                        Vergi Numarası <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinic.taxNumber"
+
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="İl">
+                        İl <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CSelect
+                            :options="cities"
+                            v-model="city"
+                            :value.sync="city"
+                            @change="getDistricts(city)"
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="İlçe">
+                        İlçe <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CSelect
+                            :options="districts"
+                            v-model="district"
+                            :value.sync="district"
+                            :state="errors.length > 0 ? false:null"
+                        />
+
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100|email"
+                          name="E-Mail">
+                        E-Mail <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            type="email"
+                            autocomplete="email"
+                            prepend="@"
+                            v-model="clinic.email"
+                            :state="errors.length > 0 ? false:null"
+                        />
+
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="9">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Adres">
+                        Adres <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CTextarea
+                            :rows="2"
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinic.address"
+                            :state="errors.length > 0 ? false:null"
+                        />
+
+                      </validation-provider>
+                    </CCol>
+                  </CRow>
+                </validation-observer>
 
                 <div class="form-actions">
                   <CButton type="submit" color="primary"
-                           @click="addClinic"
+                           @click="validationForm"
                   >Kaydet
                   </CButton>
 
@@ -219,107 +289,172 @@
               <template>
                 <CCardBody>
                   <CRow>
-                    <CCol lg="3">
-                      <CInput
-                          label="Klinik Adı *"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="clinicUpdate.clinicName"
-                      />
-                    </CCol>
-                    <CCol lg="3">
-                      <CInput
-                          label="Yetkili Ad *"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="clinicUpdate.staffName"
-
-                      />
-
-                    </CCol>
-                    <CCol lg="3">
-                      <CInput
-                          label="Yetkili Soyad *"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="clinicUpdate.staffSurname"
-                      />
-                    </CCol>
 
                     <CCol lg="3">
-                      <CInput
-                          label="Telefon Numarası *"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="clinicUpdate.telephoneNumber"
-
-                      />
-                    </CCol>
-                    <CCol lg="3">
-                      <CInput
-                          label="Vergi Dairesi *"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="clinicUpdate.taxOffice"
-
-                      />
-                    </CCol>
-                    <CCol lg="3">
-                      <CInput
-                          label="Vergi Numarası *"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="clinicUpdate.taxNumber"
-
-                      />
-                    </CCol>
-                    <CCol lg="3">
-                      <CSelect
-                          label="İl *"
-                          :options="cities"
-                          v-model="cityUpdate"
-                          :value.sync="cityUpdate"
-                          @change="getDistricts(city)"
-                      />
-                    </CCol>
-
-                    <CCol lg="3">
-
-                      <CSelect
-                          label="İlçe *"
-                          :options="districts"
-                          v-model="districtUpdate"
-                          :value.sync="districtUpdate"
-                      />
-                    </CCol>
-
-                    <CCol lg="3">
-                      <CInput
-                          label="E-Mail *"
-                          description=""
-                          type="email"
-                          autocomplete="email"
-                          prepend="@"
-                          v-model="clinicUpdate.email"
-
-                      />
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Klinik Adı">
+                        Klinik Adı <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinicUpdate.clinicName"
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
                     </CCol>
 
 
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Yetkili Ad">
+                        Yetkili Ad <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinicUpdate.staffName"
+
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Yetkili Soyad">
+                        Yetkili Soyad <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinicUpdate.staffSurname"
+                            :state="errors.length > 0 ? false:null"
+                        />
+
+                      </validation-provider>
+                    </CCol>
+
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Telefon Numarası">
+                        Telefon Numarası <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinicUpdate.telephoneNumber"
+
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Vergi Dairesi">
+                        Vergi Dairesi <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinicUpdate.taxOffice"
+
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Vergi Numarası">
+                        Vergi Numarası <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinicUpdate.taxNumber"
+
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="İl">
+                        İl <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CSelect
+                            :options="cities"
+                            v-model="cityUpdate"
+                            :value.sync="cityUpdate"
+                            @change="getDistricts(city)"
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="İlçe">
+                        İlçe <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CSelect
+                            :options="districts"
+                            v-model="districtUpdate"
+                            :value.sync="districtUpdate"
+                            :state="errors.length > 0 ? false:null"
+                        />
+
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="3">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100|email"
+                          name="E-Mail">
+                        E-Mail <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CInput
+                            description=""
+                            type="email"
+                            autocomplete="email"
+                            prepend="@"
+                            v-model="clinicUpdate.email"
+                            :state="errors.length > 0 ? false:null"
+                        />
+
+                      </validation-provider>
+                    </CCol>
                     <CCol lg="9">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Adres">
+                        Adres <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+                        <CTextarea
+                            :rows="2"
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="clinicUpdate.address"
+                            :state="errors.length > 0 ? false:null"
+                        />
 
-                      <CTextarea
-                          :rows="2"
-                          label="Adres *"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="clinicUpdate.address"
-
-                      />
-
+                      </validation-provider>
                     </CCol>
-
-
                   </CRow>
                 </CCardBody>
               </template>
@@ -333,7 +468,7 @@
       </template>
       <template #footer>
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="editClinic" color="success">Güncelle</CButton>
+        <CButton @click="validationForm" color="success">Güncelle</CButton>
       </template>
     </CModal>
 
@@ -343,21 +478,19 @@
 
 <script>
 
-
-import Car from "@/models/car";
-
-import Staff from "@/models/Staff";
-
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
-import Customer from "@/models/customer";
 import Clinic from "@/models/pms/clinic";
 import GeneralService from "@/services/managementServices/general.service";
 import ClinicService from "@/services/managementServices/clinic.service";
-
+import {ValidationProvider, ValidationObserver} from 'vee-validate'
+import {required, email, min, max} from 'validations'
 
 export default {
-  name: "Group",
-
+  name: "Clinic",
+  components: {
+    ValidationProvider,
+    ValidationObserver
+  },
   data() {
     return {
       fieldsTable: [
@@ -381,11 +514,7 @@ export default {
       cities: [],
       districts: [],
       staffs: [],
-      staff: new Staff("", "", "", "", "", ""),
       clinic: new Clinic("", "", "", "", "", "", "", "", "", ""),
-      staffUpdate: new Customer("", "", "", "", "", "", "", ""),
-      customer: new Customer("", "", "", "", "", "", "", ""),
-      car: new Car("", "", "", "", "", "", "", "", "", "", ""),
       isSuccess: false,
       isSuccessCar: false,
       isError: false,
@@ -395,7 +524,6 @@ export default {
       staffUpdateModal: false,
       details: [],
       errors: [],
-      errorsCar: [],
       isCorporate: false,
       collapseDuration: 0,
       darkModal: false,
@@ -438,7 +566,11 @@ export default {
       updateModal: false,
       clinicUpdate: new Clinic("", "", "", "", "", "", "", "", "", ""),
       cityUpdate: '',
-      districtUpdate: ''
+      districtUpdate: '',
+      required,
+      email,
+      min,
+      max
     };
   },
 
@@ -480,7 +612,6 @@ export default {
     },
     async getClinics() {
       let response = await new ClinicService().getClinics();
-      console.log("res", response.data)
       this.clinics = response.data.data
     },
     async addClinic() {
@@ -490,9 +621,7 @@ export default {
       if (this.city === '') {
         this.clinic.cityId = this.cities[0].value
       }
-      console.log("dist", this.clinic)
       let a = await new ClinicService().addClinic(this.clinic);
-      console.log("a", a)
       if (a.status === 200) {
         this.isSuccess = false;
         this.isSuccess = true;
@@ -558,7 +687,19 @@ export default {
         this.deleteModel = false
         await this.getClinics()
       }
-    }
+    },
+    async validationForm() {
+      this.$refs.simpleRules.validate().then(async success => {
+        if (success) {
+          if (this.clinicUpdate.uuid) {
+            await this.editClinic()
+          } else {
+            await this.addClinic()
+          }
+        } else {
+        }
+      })
+    },
   },
 
   watch: {},
@@ -576,20 +717,7 @@ export default {
 
 
   },
-  computed: {
-    computedItems() {
-
-      return this.staffs.map(item => {
-        return {
-          ...item,
-          userUsername: item.email,
-          nameSurname: item.firstName + ' ' + item.lastName,
-          userGroup: item.groupName
-
-        }
-      })
-    }
-  }
+  computed: {}
 
 };
 </script>

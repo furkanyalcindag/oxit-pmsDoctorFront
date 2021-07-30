@@ -6,15 +6,16 @@ import router from './router'
 import CoreuiVue from '@coreui/vue'
 import {iconsSet as icons} from './assets/icons/icons.js'
 import store from './store/store'
-import VeeValidate from 'vee-validate';
+import VeeValidate, {Validator} from 'vee-validate';
 import VueLazyload from 'vue-lazyload'
 import VueUploadMultipleImage from 'vue-upload-multiple-image'
 import CxltToastr from "cxlt-vue2-toastr";
-
+import tr from 'vee-validate/dist/locale/tr';
 
 Vue.use(VueLazyload)
 
 Vue.use(VeeValidate);
+Validator.localize('tr',tr)
 Vue.config.performance = true
 
 Vue.use(CoreuiVue)

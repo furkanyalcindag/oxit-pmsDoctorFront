@@ -1,384 +1,422 @@
 <template>
-  <div>
-    <CRow>
-      <CCol lg="12">
-        <transition name="fade">
-          <CCard v-if="show">
-            <CCardHeader>
-              <CIcon name="cil-pencil"/>
-              Bildirimler
-              <div class="card-header-actions">
+  <CRow>
+    <CCol lg="12">
+      <transition name="fade">
+        <CCard v-if="show">
+          <CCardHeader>
+            <CIcon name="cil-pencil"/>
+            Bildirimler
+            <div class="card-header-actions">
 
-                <CLink
-                    class="card-header-action btn-minimize"
-                    @click="formCollapsed = !formCollapsed"
-                >
-                  <CIcon
-                      :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
-                  />
-                </CLink>
+              <CLink
+                  class="card-header-action btn-minimize"
+                  @click="formCollapsed = !formCollapsed"
+              >
+                <CIcon
+                    :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
+                />
+              </CLink>
 
-              </div>
-            </CCardHeader>
-            <CCollapse :show="formCollapsed">
-              <CCardBody>
-                <CTabs variant="pills">
-                  <CTab title="Manuel" active>
-                    <hr>
+            </div>
+          </CCardHeader>
+          <CCollapse :show="formCollapsed">
+            <CCardBody>
+              <CTabs variant="pills">
+                <CTab title="Manuel" active>
+                  <hr>
+                  <validation-observer ref="simpleRules">
                     <CRow>
                       <CCol lg="6">
+                        <CCol lg="12">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Başlık">
+                            Başlık <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="notification.title"
+                                :state="errors.length > 0 ? false:null"
+                            />
+                          </validation-provider>
+                        </CCol>
+                        <CCol lg="12">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Link">
+                            Link <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="notification.link"
+                                :state="errors.length > 0 ? false:null"
+                            />
+                          </validation-provider>
+                        </CCol>
+                        <CCol lg="12">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Açıklama">
+                            Açıklama <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CTextarea
+                                :rows="2"
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="notification.body"
+                                :state="errors.length > 0 ? false:null"
+
+                            />
+                          </validation-provider>
+                        </CCol>
+                      </CCol>
+                      <CCol lg="6">
+                        <CCol lg="12">
+                          Yaş Aralığı <span class="text-danger">*</span>
+                          <CSelect
+                              :options="options"
+                              placeholder="Lütfen Seçiniz"
+                          />
+                        </CCol>
+                        <CCol lg="12">
+                          İl <span class="text-danger">*</span>
+                          <CSelect
+                              :options="options"
+                              placeholder="Lütfen Seçiniz"
+                          />
+                        </CCol>
+                        <CCol lg="12">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Resim">
+                            Resim <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInputFile
+                                horizontal
+                                @change="getBase64"
+                                custom
+                                :placeholder="selectedFile"
+                                :state="errors.length > 0 ? false:null"
+                            />
+                          </validation-provider>
+                        </CCol>
+                      </CCol>
+                      <CCol class="ml-3" lg="6">
+                        <div class="form-actions">
+                          <CButton @click="validationForm" type="submit" color="primary"
+                          >Kaydet
+                          </CButton>
+
+                        </div>
+                      </CCol>
+
+                    </CRow>
+                  </validation-observer>
+                  <hr>
+                  <CRow>
+                    <CCol lg="12">
+                      <transition name="fade">
+                        <CCard v-if="show">
+                          <template>
+                            <CCardBody>
+
+                              <CDataTable
+                                  :items="items"
+                                  :fields="fieldsTableNotification"
+                                  column-filter
+                                  :border="true"
+                                  :items-per-page="5"
+                                  :activePage="4"
+                                  hover
+                                  sorter
+                                  pagination
+                                  :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+                                  clickableRows
+
+                              >
+                              </CDataTable>
+
+
+                            </CCardBody>
+                          </template>
+                        </CCard>
+                      </transition>
+                    </CCol>
+                  </CRow>
+                </CTab>
+
+
+                <CTab title="Cron Job">
+                  <hr>
+                  <CRow>
+                    <CCol lg="6">
+                      <CCol lg="12">
+                        Başlık <span class="text-danger">*</span>
                         <CInput
-                            label="Bildirim Başlığı (Zorunlu Alan)"
                             description=""
                             autocomplete="autocomplete"
-                            v-model="notification.title"
 
                         />
-
-
+                      </CCol>
+                      <CCol lg="12">
+                        Zamanlama <span class="text-danger">*</span>
+                        <CSelect
+                            :options="options"
+                            placeholder="Lütfen Seçiniz"
+                        />
+                      </CCol>
+                      <CCol lg="12">
+                        Link <span class="text-danger">*</span>
                         <CInput
-                            label="Bildirim Linki (Zorunlu Alan)"
                             description=""
                             autocomplete="autocomplete"
-                            v-model="notification.link"
                         />
+                      </CCol>
+                    </CCol>
+                    <CCol lg="6">
+                      <CCol lg="12">
 
+                        Logo <span class="text-danger">*</span>
                         <CInputFile
-                            label="Resim Ekle"
                             horizontal
                             @change="getBase64"
                             custom
-                            multiple
                             :placeholder="selectedFile"
                         />
-
-
                       </CCol>
-
-                      <CCol lg="6">
-
-
-                        <CSelect
-                            label="Yaş Aralığı"
-                            :options="options"
-                            placeholder="Lütfen Seçiniz"
-                        />
-
-                        <CSelect
-                            label="Şehir"
-                            :options="options"
-                            placeholder="Lütfen Seçiniz"
-                        />
-
-
-                        <CTextarea
-                            :rows="2"
-                            label="Bildirim Açıklaması (Zorunlu Alan)"
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="notification.body"
-
-                        />
-
-
-                      </CCol>
-
-                    </CRow>
-
-                    <hr>
-                    <CRow>
                       <CCol lg="12">
-                        <transition name="fade">
-                          <CCard v-if="show">
-                            <template>
-                              <CCardBody>
-
-                                <CDataTable
-                                    :items="items"
-                                    :fields="fieldsTableNotification"
-                                    column-filter
-                                    :border="true"
-                                    :items-per-page="5"
-                                    :activePage="4"
-                                    hover
-                                    sorter
-                                    pagination
-                                    :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
-                                    clickableRows
-
-                                >
-                                </CDataTable>
-
-
-                              </CCardBody>
-                            </template>
-                          </CCard>
-                        </transition>
-                      </CCol>
-                    </CRow>
-                  </CTab>
-
-
-                  <CTab title="Cron Job">
-                    <hr>
-                    <CRow>
-                      <CCol lg="6">
-                        <CInput
-                            label="Bildirim Başlığı (Zorunlu Alan)"
-                            description=""
-                            autocomplete="autocomplete"
-
-                        />
-                        <CSelect
-                            label="Zamanlama"
-                            :options="options"
-                            placeholder="Lütfen Seçiniz"
-                        />
-
-
-                        <CInput
-                            label="Bildirim Linki (Zorunlu Alan)"
-                            description=""
-                            autocomplete="autocomplete"
-                        />
-
-
-                      </CCol>
-                      <CCol lg="6">
-
-
-                        <CInput
-                            label="Bildirim Logo Url (Zorunlu Alan)"
-                            description=""
-                            autocomplete="autocomplete"
-                        />
-
-
+                        Açıklama <span class="text-danger">*</span>
                         <CTextarea
-                            :rows="2"
-                            label="Bildirim Açıklaması (Zorunlu Alan)"
+                            :rows="3"
                             description=""
                             autocomplete="autocomplete"
-
                         />
-
-
                       </CCol>
+                    </CCol>
+                    <CCol class="ml-3" lg="6">
+                      <div class="form-actions">
+                        <CButton type="submit" color="primary"
+                        >Kaydet
+                        </CButton>
+
+                      </div>
+                    </CCol>
 
 
-                    </CRow>
-                    <hr>
-                    <CRow>
-                      <CCol lg="12">
-                        <transition name="fade">
-                          <CCard v-if="show">
-                            <template>
-                              <CCardBody>
+                  </CRow>
+                  <hr>
+                  <CRow>
+                    <CCol lg="12">
+                      <transition name="fade">
+                        <CCard v-if="show">
+                          <template>
+                            <CCardBody>
 
-                                <CDataTable
-                                    :items="items"
-                                    :fields="fields"
-                                    column-filter
-                                    table-filter
-                                    items-per-page-select
-                                    :items-per-page="5"
-                                    hover
-                                    sorter
-                                    pagination
-                                >
-                                  <template #status="{item}">
-                                    <td>
-                                      <CBadge :color="getBadge(item.status)">
-                                        {{ item.status }}
-                                      </CBadge>
-                                    </td>
-                                  </template>
-                                  <template #show_details="{item, index}">
-                                    <td class="py-2">
-                                      <CButton
-                                          color="primary"
-                                          variant="outline"
-                                          square
-                                          size="sm"
-                                          @click="toggleDetails(item, index)"
-                                      >
-                                        {{ Boolean(item._toggled) ? 'Hide' : 'Show' }}
-                                      </CButton>
-                                    </td>
-                                  </template>
-                                  <template #details="{item}">
-                                    <CCollapse :show="Boolean(item._toggled)" :duration="collapseDuration">
-                                      <CCardBody>
-                                        <CMedia :aside-image-props="{ height: 102 }">
-                                          <h4>
-                                            {{ item.username }}
-                                          </h4>
-                                          <p class="text-muted">User since: {{ item.registered }}</p>
-                                          <CButton size="sm" color="info" class="">
-                                            User Settings
-                                          </CButton>
-                                          <CButton size="sm" color="danger" class="ml-1">
-                                            Delete
-                                          </CButton>
-                                        </CMedia>
-                                      </CCardBody>
-                                    </CCollapse>
-                                  </template>
-                                </CDataTable>
-
-
-                              </CCardBody>
-                            </template>
-                          </CCard>
-                        </transition>
-                      </CCol>
-                    </CRow>
-                  </CTab>
-                  <!--                  <CTab title="Otomatik">-->
-                  <!--                    <hr>-->
-                  <!--                    <CRow>-->
-                  <!--                      <CCol lg="6">-->
-
-                  <!--                        <CSelect-->
-                  <!--                            label="Gün"-->
-                  <!--                            :options="options"-->
-                  <!--                            placeholder="Lütfen Seçiniz"-->
-                  <!--                        />-->
-
-                  <!--                        <CInput-->
-                  <!--                            label="Bildirim Başlığı (Zorunlu Alan)"-->
-                  <!--                            description=""-->
-                  <!--                            autocomplete="autocomplete"-->
-
-                  <!--                        />-->
+                              <CDataTable
+                                  :items="items"
+                                  :fields="fieldsTable"
+                                  column-filter
+                                  table-filter
+                                  items-per-page-select
+                                  :items-per-page="5"
+                                  hover
+                                  sorter
+                                  pagination
+                              >
+                                <template #status="{item}">
+                                  <td>
+                                    <CBadge :color="getBadge(item.status)">
+                                      {{ item.status }}
+                                    </CBadge>
+                                  </td>
+                                </template>
+                                <template #show_details="{item, index}">
+                                  <td class="py-2">
+                                    <CButton
+                                        color="primary"
+                                        variant="outline"
+                                        square
+                                        size="sm"
+                                        @click="toggleDetails(item, index)"
+                                    >
+                                      {{ Boolean(item._toggled) ? 'Hide' : 'Show' }}
+                                    </CButton>
+                                  </td>
+                                </template>
+                                <template #details="{item}">
+                                  <CCollapse :show="Boolean(item._toggled)" :duration="collapseDuration">
+                                    <CCardBody>
+                                      <CMedia :aside-image-props="{ height: 102 }">
+                                        <h4>
+                                          {{ item.username }}
+                                        </h4>
+                                        <p class="text-muted">User since: {{ item.registered }}</p>
+                                        <CButton size="sm" color="info" class="">
+                                          User Settings
+                                        </CButton>
+                                        <CButton size="sm" color="danger" class="ml-1">
+                                          Delete
+                                        </CButton>
+                                      </CMedia>
+                                    </CCardBody>
+                                  </CCollapse>
+                                </template>
+                              </CDataTable>
 
 
-                  <!--                        <CInput-->
-                  <!--                            label="Bildirim Linki (Zorunlu Alan)"-->
-                  <!--                            description=""-->
-                  <!--                            autocomplete="autocomplete"-->
-                  <!--                        />-->
+                            </CCardBody>
+                          </template>
+                        </CCard>
+                      </transition>
+                    </CCol>
+                  </CRow>
+                </CTab>
+                <!--                  <CTab title="Otomatik">-->
+                <!--                    <hr>-->
+                <!--                    <CRow>-->
+                <!--                      <CCol lg="6">-->
+
+                <!--                        <CSelect-->
+                <!--                            label="Gün"-->
+                <!--                            :options="options"-->
+                <!--                            placeholder="Lütfen Seçiniz"-->
+                <!--                        />-->
+
+                <!--                        <CInput-->
+                <!--                            label="Bildirim Başlığı (Zorunlu Alan)"-->
+                <!--                            description=""-->
+                <!--                            autocomplete="autocomplete"-->
+
+                <!--                        />-->
 
 
-                  <!--                      </CCol>-->
-                  <!--                      <CCol lg="6">-->
+                <!--                        <CInput-->
+                <!--                            label="Bildirim Linki (Zorunlu Alan)"-->
+                <!--                            description=""-->
+                <!--                            autocomplete="autocomplete"-->
+                <!--                        />-->
 
 
-                  <!--                        <CInput-->
-                  <!--                            label="Bildirim Logo Url (Zorunlu Alan)"-->
-                  <!--                            description=""-->
-                  <!--                            autocomplete="autocomplete"-->
-                  <!--                        />-->
+                <!--                      </CCol>-->
+                <!--                      <CCol lg="6">-->
 
 
-                  <!--                        <CTextarea-->
-                  <!--                            :rows="2"-->
-                  <!--                            label="Bildirim Açıklaması (Zorunlu Alan)"-->
-                  <!--                            description=""-->
-                  <!--                            autocomplete="autocomplete"-->
-
-                  <!--                        />-->
+                <!--                        <CInput-->
+                <!--                            label="Bildirim Logo Url (Zorunlu Alan)"-->
+                <!--                            description=""-->
+                <!--                            autocomplete="autocomplete"-->
+                <!--                        />-->
 
 
-                  <!--                      </CCol>-->
+                <!--                        <CTextarea-->
+                <!--                            :rows="2"-->
+                <!--                            label="Bildirim Açıklaması (Zorunlu Alan)"-->
+                <!--                            description=""-->
+                <!--                            autocomplete="autocomplete"-->
+
+                <!--                        />-->
 
 
-                  <!--                    </CRow>-->
-                  <!--                    <hr>-->
-                  <!--                    <CRow>-->
-                  <!--                      <CCol lg="12">-->
-                  <!--                        <transition name="fade">-->
-                  <!--                          <CCard v-if="show">-->
-                  <!--                            <template>-->
-                  <!--                              <CCardBody>-->
-
-                  <!--                                <CDataTable-->
-                  <!--                                    :items="items"-->
-                  <!--                                    :fields="fields"-->
-                  <!--                                    column-filter-->
-                  <!--                                    table-filter-->
-                  <!--                                    items-per-page-select-->
-                  <!--                                    :items-per-page="5"-->
-                  <!--                                    hover-->
-                  <!--                                    sorter-->
-                  <!--                                    pagination-->
-                  <!--                                >-->
-                  <!--                                  <template #status="{item}">-->
-                  <!--                                    <td>-->
-                  <!--                                      <CBadge :color="getBadge(item.status)">-->
-                  <!--                                        {{ item.status }}-->
-                  <!--                                      </CBadge>-->
-                  <!--                                    </td>-->
-                  <!--                                  </template>-->
-                  <!--                                  <template #show_details="{item, index}">-->
-                  <!--                                    <td class="py-2">-->
-                  <!--                                      <CButton-->
-                  <!--                                          color="primary"-->
-                  <!--                                          variant="outline"-->
-                  <!--                                          square-->
-                  <!--                                          size="sm"-->
-                  <!--                                          @click="toggleDetails(item, index)"-->
-                  <!--                                      >-->
-                  <!--                                        {{ Boolean(item._toggled) ? 'Hide' : 'Show' }}-->
-                  <!--                                      </CButton>-->
-                  <!--                                    </td>-->
-                  <!--                                  </template>-->
-                  <!--                                  <template #details="{item}">-->
-                  <!--                                    <CCollapse :show="Boolean(item._toggled)" :duration="collapseDuration">-->
-                  <!--                                      <CCardBody>-->
-                  <!--                                        <CMedia :aside-image-props="{ height: 102 }">-->
-                  <!--                                          <h4>-->
-                  <!--                                            {{ item.username }}-->
-                  <!--                                          </h4>-->
-                  <!--                                          <p class="text-muted">User since: {{ item.registered }}</p>-->
-                  <!--                                          <CButton size="sm" color="info" class="">-->
-                  <!--                                            User Settings-->
-                  <!--                                          </CButton>-->
-                  <!--                                          <CButton size="sm" color="danger" class="ml-1">-->
-                  <!--                                            Delete-->
-                  <!--                                          </CButton>-->
-                  <!--                                        </CMedia>-->
-                  <!--                                      </CCardBody>-->
-                  <!--                                    </CCollapse>-->
-                  <!--                                  </template>-->
-                  <!--                                </CDataTable>-->
+                <!--                      </CCol>-->
 
 
-                  <!--                              </CCardBody>-->
-                  <!--                            </template>-->
-                  <!--                          </CCard>-->
-                  <!--                        </transition>-->
-                  <!--                      </CCol>-->
-                  <!--                    </CRow>-->
-                  <!--                  </CTab>-->
-                </CTabs>
+                <!--                    </CRow>-->
+                <!--                    <hr>-->
+                <!--                    <CRow>-->
+                <!--                      <CCol lg="12">-->
+                <!--                        <transition name="fade">-->
+                <!--                          <CCard v-if="show">-->
+                <!--                            <template>-->
+                <!--                              <CCardBody>-->
+
+                <!--                                <CDataTable-->
+                <!--                                    :items="items"-->
+                <!--                                    :fields="fields"-->
+                <!--                                    column-filter-->
+                <!--                                    table-filter-->
+                <!--                                    items-per-page-select-->
+                <!--                                    :items-per-page="5"-->
+                <!--                                    hover-->
+                <!--                                    sorter-->
+                <!--                                    pagination-->
+                <!--                                >-->
+                <!--                                  <template #status="{item}">-->
+                <!--                                    <td>-->
+                <!--                                      <CBadge :color="getBadge(item.status)">-->
+                <!--                                        {{ item.status }}-->
+                <!--                                      </CBadge>-->
+                <!--                                    </td>-->
+                <!--                                  </template>-->
+                <!--                                  <template #show_details="{item, index}">-->
+                <!--                                    <td class="py-2">-->
+                <!--                                      <CButton-->
+                <!--                                          color="primary"-->
+                <!--                                          variant="outline"-->
+                <!--                                          square-->
+                <!--                                          size="sm"-->
+                <!--                                          @click="toggleDetails(item, index)"-->
+                <!--                                      >-->
+                <!--                                        {{ Boolean(item._toggled) ? 'Hide' : 'Show' }}-->
+                <!--                                      </CButton>-->
+                <!--                                    </td>-->
+                <!--                                  </template>-->
+                <!--                                  <template #details="{item}">-->
+                <!--                                    <CCollapse :show="Boolean(item._toggled)" :duration="collapseDuration">-->
+                <!--                                      <CCardBody>-->
+                <!--                                        <CMedia :aside-image-props="{ height: 102 }">-->
+                <!--                                          <h4>-->
+                <!--                                            {{ item.username }}-->
+                <!--                                          </h4>-->
+                <!--                                          <p class="text-muted">User since: {{ item.registered }}</p>-->
+                <!--                                          <CButton size="sm" color="info" class="">-->
+                <!--                                            User Settings-->
+                <!--                                          </CButton>-->
+                <!--                                          <CButton size="sm" color="danger" class="ml-1">-->
+                <!--                                            Delete-->
+                <!--                                          </CButton>-->
+                <!--                                        </CMedia>-->
+                <!--                                      </CCardBody>-->
+                <!--                                    </CCollapse>-->
+                <!--                                  </template>-->
+                <!--                                </CDataTable>-->
 
 
-                <div class="form-actions">
-                  <CButton @click="addNotification" type="submit" color="primary"
-                  >Kaydet
-                  </CButton>
-
-                </div>
-              </CCardBody>
-            </CCollapse>
-          </CCard>
-        </transition>
-      </CCol>
-    </CRow>
+                <!--                              </CCardBody>-->
+                <!--                            </template>-->
+                <!--                          </CCard>-->
+                <!--                        </transition>-->
+                <!--                      </CCol>-->
+                <!--                    </CRow>-->
+                <!--                  </CTab>-->
+              </CTabs>
 
 
-  </div>
+            </CCardBody>
+          </CCollapse>
+        </CCard>
+      </transition>
+    </CCol>
+  </CRow>
 </template>
 
 <script>
 import Notification from "../../../models/pms/notification";
 import NotificationService from "../../../services/managementServices/notification.service";
+import {ValidationProvider, ValidationObserver} from 'vee-validate'
+import {required, email, min, max} from 'validations'
 
 export default {
   name: "Notifications",
-
-
+  components: {
+    ValidationObserver,
+    ValidationProvider
+  },
   data() {
     return {
       fieldsTable: [
@@ -439,7 +477,11 @@ export default {
       items: [],
       fieldsTableNotification: [
         {key: "title", label: "Başlık"},
-        {key: "link", label: "Link"},]
+        {key: "link", label: "Link"},],
+      required,
+      email,
+      min,
+      max
     };
   },
   methods: {
@@ -495,7 +537,15 @@ export default {
 
 
       this.notification.pic = x
-    }
+    },
+    async validationForm() {
+      this.$refs.simpleRules.validate().then(async success => {
+        if (success) {
+          await this.addNotification()
+        } else {
+        }
+      })
+    },
 
 
   },

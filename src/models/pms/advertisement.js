@@ -1,13 +1,11 @@
 export default class Advertisement {
 
 
-    constructor(name, companyName, locationName, uuid, publishStartDate, publishEndDate, price) {
+    constructor(name, width, height, uuid, price) {
         this.name = name
-        this.companyName = companyName
-        this.locationName = locationName
+        this.width = width
+        this.height = height
         this.uuid = uuid
-        this.publishStartDate = publishStartDate
-        this.publishEndDate = publishEndDate
         this.price = price
     }
 }

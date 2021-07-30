@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Personel İşlemleri
+              Reklam Yönetimi
               <div class="card-header-actions">
 
                 <CLink
@@ -29,12 +29,13 @@
                           #default="{errors}"
                           rules="required|min:3|max:100"
                           name="Ad">
-                        Ad <span class="text-danger">*</span>
+                        Reklam Adı <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
+
                         <CInput
                             description=""
                             autocomplete="autocomplete"
-                            v-model="staff.firstName"
+                            v-model="advertisement.name"
                             :state="errors.length > 0 ? false:null"
                         />
                       </validation-provider>
@@ -43,61 +44,16 @@
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100"
-                          name="Soyad">
-                        Soyad <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="staff.lastName"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-                    </CCol>
-                    <CCol lg="4">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="E-mail">
-                        E-Mail <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            description=""
-                            type="email"
-                            autocomplete="email"
-                            prepend="@"
-                            v-model="staff.email"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-                    </CCol>
-                    <CCol lg="4">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Telefon Numarası">
-                        Telefon Numarası <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="staff.mobilePhone"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-                    </CCol>
-                    <CCol lg="4">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Grup">
-                        Grup <span class="text-danger">*</span>
+                          name="Firma Adı">
+                        Firma Adı <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
 
                         <CSelect
-                            :options="groups"
-                            v-model="staff.group"
-                            :value.sync="staff.group"
+                            description=""
+                            autocomplete="autocomplete"
+                            :options="companies"
+                            v-model="advertisement.companyName"
+                            :value.sync="advertisement.companyName"
                             :state="errors.length > 0 ? false:null"
                         />
                       </validation-provider>
@@ -106,26 +62,77 @@
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100"
-                          name="Adres">
-                        Adres <span class="text-danger">*</span>
+                          name=" Reklam Yeri">
+                        Reklam Yeri <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
-                        <CTextarea
-                            :rows="3"
+
+                        <CSelect
                             description=""
                             autocomplete="autocomplete"
-                            v-model="staff.address"
+                            :options="locations"
+                            v-model="advertisement.locationName"
+                            :value.sync="advertisement.locationName"
                             :state="errors.length > 0 ? false:null"
                         />
                       </validation-provider>
                     </CCol>
+                    <CCol lg="4">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Yayın Başlangıç Tarihi">
+                        Yayın Başlangıç Tarihi <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+
+                        <CInput
+                            type="date"
+                            v-model="advertisement.publishStartDate"
+                            :state="errors.length > 0 ? false:null"
+
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="4">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Yayın Bitiş Tarihi">
+                        Yayın Bitiş Tarihi <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+
+                        <CInput
+                            type="date"
+                            v-model="advertisement.publishEndDate"
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="4">
+                      <validation-provider
+                          #default="{errors}"
+                          rules="required|min:3|max:100"
+                          name="Fiyat">
+                        Fiyat <span class="text-danger">*</span>
+                        <span class="text-danger">{{ errors[0] }}</span>
+
+                        <CInput
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="advertisement.price"
+                            :state="errors.length > 0 ? false:null"
+                        />
+                      </validation-provider>
+                    </CCol>
+                    <CCol lg="4" class="mt-3">
+                      <div class="form-actions">
+                        <CButton @click="validationForm" type="submit" color="primary"
+                        >Kaydet
+                        </CButton>
+
+                      </div>
+                    </CCol>
                   </CRow>
                 </validation-observer>
-                <div class="form-actions">
-                  <CButton type="submit" color="primary" @click="validationForm"
-                  >Kaydet
-                  </CButton>
-
-                </div>
               </CCardBody>
             </CCollapse>
           </CCard>
@@ -142,8 +149,8 @@
               <CCardBody>
 
                 <CDataTable
-                    :items="staffs"
-                    :fields="fieldsTable"
+                    :items="advertisements"
+                    :fields="fieldsTableAdvertising"
                     column-filter
                     :border="true"
                     :items-per-page="5"
@@ -155,21 +162,25 @@
                     clickableRows
 
                 >
-                  <template #group="{ item, index }">
+                  <template #company="{ item, index }">
                     <td class="py-2">
-                      {{ item.group.label }}
+                      {{ item.company.label }}
+                    </td>
+                  </template>
+                  <template #location="{ item, index }">
+                    <td class="py-2">
+                      {{ item.location.label }}
                     </td>
                   </template>
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
                       <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-                      <CButton @click="getSingleStaff(item.uuid)" color="primary" class="mr-2">Düzenle</CButton>
+                      <CButton @click="getSingleAdvertisement(item.uuid)" color="primary" class="mr-2">Düzenle
+                      </CButton>
                     </td>
                   </template>
                 </CDataTable>
-
-
               </CCardBody>
             </template>
           </CCard>
@@ -192,7 +203,7 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteStaff" color="success">Evet</CButton>
+        <CButton @click="deleteAdvertisement" color="success">Evet</CButton>
       </template>
 
 
@@ -220,12 +231,12 @@
                             #default="{errors}"
                             rules="required|min:3|max:100"
                             name="Ad">
-                          Ad <span class="text-danger">*</span>
+                          Reklam Adı <span class="text-danger">*</span>
                           <span class="text-danger">{{ errors[0] }}</span>
                           <CInput
                               description=""
                               autocomplete="autocomplete"
-                              v-model="staffUpdate.firstName"
+                              v-model="advertisementUpdate.name"
                               :state="errors.length > 0 ? false:null"
                           />
                         </validation-provider>
@@ -234,61 +245,16 @@
                         <validation-provider
                             #default="{errors}"
                             rules="required|min:3|max:100"
-                            name="Soyad">
-                          Soyad <span class="text-danger">*</span>
-                          <span class="text-danger">{{ errors[0] }}</span>
-                          <CInput
-                              description=""
-                              autocomplete="autocomplete"
-                              v-model="staffUpdate.lastName"
-                              :state="errors.length > 0 ? false:null"
-                          />
-                        </validation-provider>
-                      </CCol>
-                      <CCol lg="4">
-                        <validation-provider
-                            #default="{errors}"
-                            rules="required|min:3|max:100"
-                            name="E-mail">
-                          E-Mail <span class="text-danger">*</span>
-                          <span class="text-danger">{{ errors[0] }}</span>
-                          <CInput
-                              description=""
-                              type="email"
-                              autocomplete="email"
-                              prepend="@"
-                              v-model="staffUpdate.email"
-                              :state="errors.length > 0 ? false:null"
-                          />
-                        </validation-provider>
-                      </CCol>
-                      <CCol lg="4">
-                        <validation-provider
-                            #default="{errors}"
-                            rules="required|min:3|max:100"
-                            name="Telefon Numarası">
-                          Telefon Numarası <span class="text-danger">*</span>
-                          <span class="text-danger">{{ errors[0] }}</span>
-                          <CInput
-                              description=""
-                              autocomplete="autocomplete"
-                              v-model="staffUpdate.mobilePhone"
-                              :state="errors.length > 0 ? false:null"
-                          />
-                        </validation-provider>
-                      </CCol>
-                      <CCol lg="4">
-                        <validation-provider
-                            #default="{errors}"
-                            rules="required|min:3|max:100"
-                            name="Grup">
-                          Grup <span class="text-danger">*</span>
+                            name="Firma Adı">
+                          Firma Adı <span class="text-danger">*</span>
                           <span class="text-danger">{{ errors[0] }}</span>
 
                           <CSelect
-                              :options="groups"
-                              v-model="staffUpdate.group"
-                              :value.sync="staffUpdate.group"
+                              description=""
+                              autocomplete="autocomplete"
+                              :options="companies"
+                              v-model="companyUpdate"
+                              :value.sync="companyUpdate"
                               :state="errors.length > 0 ? false:null"
                           />
                         </validation-provider>
@@ -297,22 +263,69 @@
                         <validation-provider
                             #default="{errors}"
                             rules="required|min:3|max:100"
-                            name="Adres">
-                          Adres <span class="text-danger">*</span>
+                            name=" Reklam Yeri">
+                          Reklam Yeri <span class="text-danger">*</span>
                           <span class="text-danger">{{ errors[0] }}</span>
-                          <CTextarea
-                              :rows="3"
+
+                          <CSelect
                               description=""
                               autocomplete="autocomplete"
-                              v-model="staffUpdate.address"
+                              :options="locations"
+                              v-model="locationUpdate"
+                              :value.sync="locationUpdate"
+                              :state="errors.length > 0 ? false:null"
+                          />
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="4">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Yayın Başlangıç Tarihi">
+                          Yayın Başlangıç Tarihi <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+
+                          <CInput
+                              type="date"
+                              v-model="advertisementUpdate.publishStartDate"
+                              :state="errors.length > 0 ? false:null"
+
+                          />
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="4">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Yayın Bitiş Tarihi">
+                          Yayın Bitiş Tarihi <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+
+                          <CInput
+                              type="date"
+                              v-model="advertisementUpdate.publishEndDate"
+                              :state="errors.length > 0 ? false:null"
+                          />
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="4">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Fiyat">
+                          Fiyat <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+
+                          <CInput
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="advertisementUpdate.price"
                               :state="errors.length > 0 ? false:null"
                           />
                         </validation-provider>
                       </CCol>
                     </CRow>
                   </validation-observer>
-
-
                 </CCardBody>
               </template>
             </CCard>
@@ -321,7 +334,7 @@
       </CRow>
       <template #header>
         <h6 class="modal-title">Personel Güncelle</h6>
-        <CButtonClose @click="staffUpdateModal = false" class="text-white"/>
+        <CButtonClose class="text-white"/>
       </template>
       <template #footer>
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
@@ -335,16 +348,16 @@
 
 <script>
 
-
-import StaffService from "@/services/managementServices/staff.service";
-import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css';
-import UserService from "@/services/managementServices/user.service";
-import Staff from "../../../models/pms/staff";
+import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
+import AdvertisementLocationService from "../../../services/managementServices/advertisement.service";
+import CompanyService from "../../../services/managementServices/company.service";
+import CompanyAdvertisement from "../../../models/pms/companyAdvertisement";
+import CompanyAdvertisementService from "../../../services/managementServices/company.advertisement.service";
 import {ValidationProvider, ValidationObserver} from 'vee-validate'
 import {required, email, min, max} from 'validations'
 
 export default {
-  name: "Staff",
+  name: "CompanyAdvertisement",
   components: {
     ValidationObserver,
     ValidationProvider
@@ -352,10 +365,12 @@ export default {
 
   data() {
     return {
-      fieldsTable: [
-        {key: 'firstName', label: "Ad Soyad", _style: "min-width:200px"},
-        {key: "lastName", label: "Email"},
-        {key: "group", label: "Personel Grubu"},
+      fieldsTableAdvertising: [
+        {key: "name", label: "Reklam Adı"},
+        {key: "company", label: "Firma"},
+        {key: "location", label: "Reklam Yeri"},
+        {key: "publishStartDate", label: "Yayın Başlangıç Tarihi"},
+        {key: "publishEndDate", label: "Yayın Bitiş Tarihi"},
         {key: "actions", label: "İşlemler"},
 
       ],
@@ -416,65 +431,59 @@ export default {
       ],
       deleteModel: false,
       deleteId: '',
-      staff: new Staff("", "", "", "", "", "", ""),
-      staffUpdate: new Staff("", "", "", "", "", "", ""),
-      groupUpdate: '',
+      showPopUp: false,
+      locations: [],
+      companies: [],
+      company: '',
+      location: '',
+      advertisement: new CompanyAdvertisement("", "", "", "", "", "", ""),
+      advertisementUpdate: new CompanyAdvertisement("", "", "", "", "", "", ""),
+      advertisements: [],
+      locationUpdate: '',
+      companyUpdate: '',
       required,
       email,
       min,
       max
+
     };
   },
 
   methods: {
-    validator(val) {
-      return val ? val.length >= 4 : false;
-    },
-    getBadge(status) {
-      switch (status) {
-        case "Active":
-          return "success";
-        case "Inactive":
-          return "secondary";
-        case "Pending":
-          return "warning";
-        case "Banned":
-          return "danger";
-        default:
-          "primary";
+    popUpChange() {
+      if (this.showPopUp) {
+        console.log("if")
+        this.showPopUp = false
+      } else {
+        console.log("else")
+        this.showPopUp = false
       }
     },
-    toggleDetails(item) {
-      this.$set(this.items[item.id], "_toggled", !item._toggled);
-      this.collapseDuration = 300;
-      this.$nextTick(() => {
-        this.collapseDuration = 0;
-      });
-    },
-
-    isCorporateControl() {
-      this.isCorporate = !this.isCorporate;
-      this.customer.isCorporate = this.isCorporate;
-    },
-
     setDeleteModal(id) {
 
       this.deleteId = id
       this.deleteModel = true
 
     },
-    async getGroups() {
-      let response = await new UserService().getGroups();
-      this.groups = response.data
-      console.log("groups", this.groups)
+    async selectLocation() {
+      let response = await new AdvertisementLocationService().selectAdvertisementLocation()
+      this.locations = response.data
     },
-
-    async addStaff() {
-      console.log("group", this.staff)
-      let response = await new StaffService().addStaff(this.staff)
+    async selectCompany() {
+      let response = await new CompanyService().selectCompanies()
+      this.companies = response.data
+    },
+    async addAdvertisement() {
+      if (this.advertisement.locationName === '') {
+        this.advertisement.locationName = this.locations[0].value
+      }
+      if (this.advertisement.companyName === '') {
+        this.advertisement.companyName = this.companies[0].value
+      }
+      let response = await new CompanyAdvertisementService().addAdvertisement(this.advertisement)
       if (response.status === 200) {
-        await this.getStaffs()
-        this.staff = new Staff("", "", "", "", "", "")
+        await this.getAdvertisements()
+        this.advertisement = new CompanyAdvertisement("", "", "", "", "", "", "")
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
@@ -492,15 +501,20 @@ export default {
         }
       }
     },
-    async getStaffs() {
-      let response = await new StaffService().getStaffs()
-      this.staffs = response.data.data
-    },
-    async deleteStaff() {
-      let response = await new StaffService().deleteStaff(this.deleteId)
+    async editAdvertisement() {
+      console.log("comp0", this.advertisementUpdate)
+      // if (this.advertisementUpdate.locationName === '') {
+      //   this.advertisementUpdate.locationName = this.locations[0].value
+      // }
+      // if (this.advertisementUpdate.companyName === '') {
+      //   this.advertisementUpdate.companyName = this.companies[0].value
+      // }
+      this.advertisementUpdate.locationName = this.locationUpdate
+      this.advertisementUpdate.companyName = this.companyUpdate
+      let response = await new CompanyAdvertisementService().editAdvertisement(this.advertisementUpdate)
       if (response.status === 200) {
-        this.deleteModel = false
-        await this.getStaffs()
+        await this.getAdvertisements()
+        this.staffUpdateModal = false
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
@@ -517,22 +531,29 @@ export default {
           })
         }
       }
+
     },
-    async getSingleStaff(id) {
-      let response = await new StaffService().getSingleStaff(id)
+    async getAdvertisements() {
+      let response = await new CompanyAdvertisementService().getAdvertisement()
+      this.advertisements = response.data.data
+
+    },
+    async getSingleAdvertisement(id) {
+      let response = await new CompanyAdvertisementService().getSingleAdvertisement(id)
+
       if (response.status === 200) {
         this.staffUpdateModal = true
-        this.staffUpdate = response.data
-        this.groupUpdate = response.data.group.value
+        this.advertisementUpdate = response.data
+        this.locationUpdate = response.data.location.value
+        this.companyUpdate = response.data.company.value
       }
+
     },
-    async editStaff() {
-      this.staffUpdate.group = this.groupUpdate
-      console.log("den", this.staffUpdate)
-      let response = await new StaffService().editStaff(this.staffUpdate)
+    async deleteAdvertisement() {
+      let response = await new CompanyAdvertisementService().deleteAdvertisement(this.deleteId)
       if (response.status === 200) {
-        this.staffUpdateModal = false
-        await this.getStaffs()
+        await this.getAdvertisements()
+        this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
@@ -549,47 +570,36 @@ export default {
           })
         }
       }
+
     },
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
         if (success) {
-          if (this.staffUpdate.uuid) {
-            await this.editStaff()
+          if (this.advertisementUpdate.uuid) {
+            await this.editAdvertisement()
           } else {
-            await this.addStaff()
+            await this.addAdvertisement()
           }
-
         } else {
         }
       })
     },
   },
+
   watch: {},
-  created() {
-    this.getGroups()
-    this.getStaffs()
-    this.isCorporateControl();
+
+  async created() {
+    await this.selectCompany()
+    await this.selectLocation()
+    await this.getAdvertisements()
   },
-  mounted() {
-    this.getGroups()
-    this.getStaffs()
-
+  async mounted() {
+    await this.selectCompany()
+    await this.selectLocation()
+    await this.getAdvertisements()
 
   },
-  computed: {
-    computedItems() {
-
-      return this.staffs.map(item => {
-        return {
-          ...item,
-          userUsername: item.email,
-          nameSurname: item.firstName + ' ' + item.lastName,
-          userGroup: item.groupName
-
-        }
-      })
-    }
-  }
+  computed: {}
 
 };
 </script>

@@ -1,57 +1,53 @@
 import axios from "axios";
 import authHeader from "@/services/auth-header";
 
-class AdvertisementService {
-
-    getAdvertisement() {
-        return axios.get(process.env.VUE_APP_API_URL + '/management/advertising-management-api/', {headers: authHeader()}).then(response => {
-            return response
-        }).catch(error => {
-            return error
-        })
+class AdvertisementLocationService {
+    getAdvertisementLocation() {
+        return axios.get(process.env.VUE_APP_API_URL + '/management/advertising-api/', {headers: authHeader()})
 
     }
 
-    addAdvertisement(advertisement) {
-        return axios.post(process.env.VUE_APP_API_URL + '/management/advertising-management-api/', {
+    addAdvertisementLocation(advertisement) {
+        return axios.post(process.env.VUE_APP_API_URL + '/management/advertising-api/', {
             name: advertisement.name,
-            companyId: advertisement.companyName.value,
-            locationId: advertisement.locationName.value,
-            publishEndDate: advertisement.publishEndDate,
-            publishStartDate: advertisement.publishStartDate,
+            width: advertisement.width,
+            height: advertisement.height,
             price: advertisement.price
-        }, {headers: authHeader()}).then(response => {
-            return response;
-        }).catch(error => {
-            return error
-        })
+        }, {headers: authHeader()})
 
     }
 
-    editAdvertisement(advertisement) {
+    editAdvertisementLocation(advertisementLocation) {
         const params = {
-            id: advertisement.uuid
+            id: advertisementLocation.uuid
+
+
         }
-        return axios.put(process.env.VUE_APP_API_URL + '/management/advertising-management-api/', {
-            name: advertisement.name,
-            companyId: advertisement.companyName,
-            locationId: advertisement.locationName,
-            publishEndDate: advertisement.publishEndDate,
-            publishStartDate: advertisement.publishStartDate,
-            price: advertisement.price
-        }, {headers: authHeader(), params}).then(response => {
-            return response;
-        }).catch(error => {
-            return error
-        })
+        return axios.put(process.env.VUE_APP_API_URL + '/management/advertising-api/', {
+            name: advertisementLocation.name,
+            width: advertisementLocation.width,
+            height: advertisementLocation.height,
+            price: advertisementLocation.price
+        }, {headers: authHeader(), params})
 
     }
 
-    getSingleAdvertisement(id) {
+    getSingleAdvertisementLocation(id) {
         const params = {
             id: id
         }
-        return axios.get(process.env.VUE_APP_API_URL + '/management/advertising-management-api/', {
+        return axios.get(process.env.VUE_APP_API_URL + '/management/advertising-api/', {
+            headers: authHeader(),
+            params
+        })
+
+    }
+
+    deleteAdvertisementLocation(id) {
+        const params = {
+            id: id
+        }
+        return axios.delete(process.env.VUE_APP_API_URL + '/management/advertising-api/', {
             headers: authHeader(),
             params
         })
@@ -59,18 +55,12 @@ class AdvertisementService {
 
     }
 
-    deleteAdvertisement(id) {
-        const params = {
-            id: id
-        }
-        return axios.get(process.env.VUE_APP_API_URL + '/management/advertising-management-api/', {
-            headers: authHeader(),
-            params
-        })
+    selectAdvertisementLocation() {
+        return axios.get(process.env.VUE_APP_API_URL + '/management/advertising-select-api/', {headers: authHeader()})
 
     }
 
 
 }
 
-export default AdvertisementService
+export default AdvertisementLocationService
