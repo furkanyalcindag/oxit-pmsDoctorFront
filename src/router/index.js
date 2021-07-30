@@ -87,6 +87,34 @@ const CheckingAccountList = () => import('@/views/checkingAccount/CheckingAccoun
 
 const CheckingAccountByCustomerList = () => import('@/views/checkingAccount/CheckingAccounByCustomerList')
 
+
+const Staffs = () => import('@/views/pms-management/staff/Staffs')
+
+const Clinic = () => import('@/views/pms-management/clinic/Clinic')
+
+const Permission = () => import('@/views/pms-management/permission/Permissions')
+
+const Group = () => import('@/views/pms-management/staff/Group')
+
+const Advertisement = () => import('@/views/pms-management/advertisement/CompanyAdvertisement')
+
+const AdvertisementLocation = () => import('@/views/pms-management/advertisement/Advertisement')
+const Company = () => import('@/views/pms-management/advertisement/company/Company')
+
+const ClinicAccounting = () => import('@/views/pms-management/accounting/ClinicAccounting')
+
+const CompanyAccounting = () => import('@/views/pms-management/accounting/CompanyAccounting')
+
+const StaffAccounting = () => import('@/views/pms-management/accounting/StaffAccounting')
+
+const ReferenceBasedAccounting = () => import('@/views/pms-management/accounting/ReferenceBasedAccounting')
+
+const Notifications = () => import('@/views/pms-management/notifications/Notifications');
+
+const Wristbands = () => import('@/views/pms-management/wristbands/Wristbands');
+
+const Contract = () => import('@/views/pms-management/contract/Contract');
+
 Vue.use(Router)
 
 export default new Router({
@@ -99,14 +127,14 @@ export default new Router({
 function configRoutes() {
     const user_group = UserService.getUserGroup()
     const groups = {
-        admin:"Admin",
-        serviceman:"Tamirci",
-        customer:"Customer",
-        accountant:"Muhasebe"
+        admin: "Admin",
+        serviceman: "Tamirci",
+        customer: "Customer",
+        accountant: "Muhasebe",
     }
 
-    var dashboard_link = ""
-    switch (user_group) {
+    var dashboard_link = "/staffs"
+    switch (user_group === 'undefined') {
         case groups.admin:
             dashboard_link = "/admin-dashboard"
             break;
@@ -119,15 +147,15 @@ function configRoutes() {
         case groups.accountant:
             dashboard_link = "/accountant-dashboard"
             break;
-        
+
         default:
-            dashboard_link = "/pages/login"
+            dashboard_link = "/staffs"
             break;
     }
     return [
         {
             path: '/',
-            redirect:`${dashboard_link}`,
+            redirect: `${dashboard_link}`,
             name: 'Home',
             component: TheContainer,
             children: [
@@ -257,6 +285,85 @@ function configRoutes() {
 
                     ]
                 },
+
+                {
+                    path: '/clinic',
+                    redirect: '/clinic/clinic',
+                    name: 'Clinic',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'clinic',
+                            name: 'Clinic',
+                            component: Clinic
+                        }
+
+
+                    ]
+                },
+                {
+                    path: '/accounting',
+                    name: 'Muhasebe',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: '/accounting-company',
+                            name: 'Firma',
+                            component: CompanyAccounting
+                        },
+                        {
+                            path: '/accounting-clinic',
+                            name: 'Klinik',
+                            component: ClinicAccounting
+                        },
+                        {
+                            path: '/accounting-reference',
+                            name: 'Referans Bazlı',
+                            component: ReferenceBasedAccounting
+                        },
+                        {
+                            path: '/accounting-staff',
+                            name: 'Personel',
+                            component: StaffAccounting
+                        }
+
+
+                    ]
+                },
+                {
+                    path: '/staffs',
+                    name: 'Personel',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: '/staffs',
+                            name: 'Personel',
+                            component: Staffs
+                        },
+                        {
+                            path: '/group',
+                            name: 'Grup',
+                            component: Group
+                        }
+                    ]
+                },
+                {
+                    path: '/permission',
+                    name: 'Yetkilendirme',
+                    component: Permission
+                },
                 {
                     path: '/staff',
                     redirect: '/staff/staff-operations',
@@ -268,13 +375,95 @@ function configRoutes() {
                     },
                     children: [
                         {
-                            path: 'staff-operations',
-                            name: 'Staff',
-                            component: Staff
+                            path: 'staff',
+                            name: 'Group',
+                            component: Staffs
                         }
+
 
                     ]
                 },
+                {
+                    path: '/advertisement',
+                    name: 'Reklam',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: '/advertisement',
+                            name: 'Reklam',
+                            component: Advertisement
+                        },
+                        {
+                            path: '/advertisement/location',
+                            name: 'Reklam Yeri',
+                            component: AdvertisementLocation
+                        },
+                        {
+                            path: '/advertisement/company',
+                            name: 'Firma',
+                            component: Company
+                        }
+                    ]
+                },
+
+
+                {
+                    path: '/notifications',
+                    name: 'Bildirim',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: '/notifications',
+                            name: 'Bildirim',
+                            component: Notifications
+                        }
+                    ]
+                },
+
+
+                {
+                    path: '/wristbands',
+                    name: 'Bileklik',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: '/wristbands',
+                            name: 'Bileklik',
+                            component: Wristbands
+                        }
+                    ]
+                },
+
+                {
+                    path: '/contracts',
+                    name: 'Sözleşme',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: '/contracts',
+                            name: 'Sözleşme',
+                            component: Contract
+                        }
+                    ]
+                },
+
+
                 {
                     path: '/service',
                     redirect: '/service/service-list',
@@ -509,7 +698,7 @@ function configRoutes() {
                             component: Modals
                         }
                     ]
-                }
+                },
             ]
         },
         {

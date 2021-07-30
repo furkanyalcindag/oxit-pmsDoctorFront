@@ -1,10 +1,11 @@
 import UserService from "../services/UserService"
+
 const user_group = UserService.getUserGroup()
 const groups = {
-    admin:"Admin",
-    serviceman:"Tamirci",
-    customer:"Customer",
-    accountant:"Muhasebe"
+    admin: "Admin",
+    serviceman: "Tamirci",
+    customer: "Customer",
+    accountant: "Muhasebe"
 }
 
 var dashboard_link = ""
@@ -21,7 +22,7 @@ switch (user_group) {
     case groups.accountant:
         dashboard_link = "accountant-dashboard"
         break;
-    
+
     default:
         break;
 }
@@ -48,7 +49,7 @@ const current = {
         }
     ]
 }
-const customer ={
+const customer = {
     _name: 'CSidebarNavDropdown',
     name: 'Müşteri',
     route: '/customer',
@@ -60,7 +61,7 @@ const customer ={
         }
     ]
 }
-const catalog ={
+const catalog = {
     _name: 'CSidebarNavDropdown',
     name: 'Katalog',
     route: '/category',
@@ -89,9 +90,30 @@ const staff = {
         {
             name: 'Personel İşlemleri',
             to: '/staff/staff-operations'
+        },
+
+        {
+            name: 'Personel İşlemleri PMS',
+            to: '/staff/staff'
         }
     ]
 }
+
+
+const clinic = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Klinik',
+    route: '/clinic',
+    icon: 'cil-people',
+    items: [
+        {
+            name: 'Klinik İşlemleri',
+            to: '/clinic/clinic'
+        }
+    ]
+}
+
+
 const services = {
     _name: 'CSidebarNavDropdown',
     name: 'Servis',
@@ -104,30 +126,142 @@ const services = {
         }
     ]
 }
+const staffs = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Personel',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Personel',
+            to: '/staffs'
+        },
+        {
+            name: 'Grup',
+            to: '/group'
+        }
+    ]
+}
+const permission = {
+    _name: 'CSidebarNavItem',
+    name: 'Yetkilendirme',
+    to: '/permission',
+    icon: 'cil-file',
+}
+const advertisement = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Reklam ',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Reklam Ekleme',
+            to: '/advertisement'
+        },
+        {
+            name: 'Reklam Yeri',
+            to: '/advertisement/location'
+        },
+        {
+            name: 'Firma',
+            to: '/advertisement/company'
+        }
+    ]
 
-var items =[]
+}
+
+
+const notifications = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Bildirim ',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Bildirim',
+            to: '/notifications'
+        }
+    ]
+
+}
+
+
+const wristbands = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Bileklik ',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Bileklik',
+            to: '/wristbands'
+        }
+    ]
+
+}
+
+const contracts = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Sözleşme',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Sözleşme',
+            to: '/contracts'
+        }
+    ]
+
+}
+
+const accounting = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Muhasebe',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Firma',
+            to: '/accounting-company'
+        },
+        {
+            name: 'Klinik',
+            to: '/accounting-clinic'
+        },
+        {
+            name: 'Personel',
+            to: '/accounting-staff'
+        },
+        {
+            name: 'Referans Bazlı',
+            to: '/accounting-reference'
+        }
+    ]
+
+}
+
+var items = []
 items.push(home)
 items.push(actions)
-if(user_group === groups.admin || user_group === groups.accountant)
-{
+if (user_group === groups.admin || user_group === groups.accountant) {
     items.push(current)
 }
-if(user_group === groups.admin || user_group === groups.accountant || user_group===groups.customer)
-{
+if (user_group === groups.admin || user_group === groups.accountant || user_group === groups.customer) {
     items.push(customer)
 }
-if(user_group === groups.admin || user_group === groups.serviceman)
-{
+if (user_group === groups.admin || user_group === groups.serviceman) {
     items.push(catalog)
 }
 
-if(user_group === groups.admin)
-{
+if (user_group === groups.admin) {
     items.push(staff)
 }
-if(user_group === groups.admin || user_group === groups.serviceman || user_group===groups.customer)
-{
-    items.push(services)
+if (user_group === groups.admin || user_group === groups.serviceman || user_group === groups.customer) {
+    //items.push(services)
+    items.push(clinic)
+} else {
+    items.push(clinic)
+    items.push(staffs)
+    items.push(permission)
+    items.push(advertisement)
+    items.push(accounting)
+    items.push(notifications)
+    items.push(wristbands)
+    items.push(contracts)
 }
 export default [
     {

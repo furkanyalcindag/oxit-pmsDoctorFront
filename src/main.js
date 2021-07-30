@@ -4,58 +4,47 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import CoreuiVue from '@coreui/vue'
-import { iconsSet as icons } from './assets/icons/icons.js'
+import {iconsSet as icons} from './assets/icons/icons.js'
 import store from './store/store'
-//import VeeValidate from 'vee-validate';
+import VeeValidate, {Validator} from 'vee-validate';
 import VueLazyload from 'vue-lazyload'
 import VueUploadMultipleImage from 'vue-upload-multiple-image'
 import CxltToastr from "cxlt-vue2-toastr";
-
+import tr from 'vee-validate/dist/locale/tr';
 
 Vue.use(VueLazyload)
 
-
-
-
-
-
-
-
-
-
-
+Vue.use(VeeValidate);
+Validator.localize('tr',tr)
 Vue.config.performance = true
 
 Vue.use(CoreuiVue)
-//Vue.use(VeeValidate)
+Vue.config.productionTip = false;
 
 var toastrConfigs = {
-  position: 'top right',
-  timeOut: 10000,
-  progressBar:true
+    position: 'top right',
+    timeOut: 10000,
+    progressBar: true
 }
-Vue.use(CxltToastr,toastrConfigs)
-
-
-
+Vue.use(CxltToastr, toastrConfigs)
 
 
 Vue.prototype.$log = console.log.bind(console)
 
 
 new Vue({
-  el: '#app',
+    el: '#app',
 
-  router,
-  store,
-  icons,
+    router,
+    store,
+    icons,
 
-  template: '<App/>',
+    template: '<App/>',
 
-  
-  components: {
-    App,
-    VueUploadMultipleImage
-   
-  }
+
+    components: {
+        App,
+        VueUploadMultipleImage
+
+    }
 })
