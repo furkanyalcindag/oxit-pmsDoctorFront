@@ -1,11 +1,15 @@
-import UserService from "../services/UserService"
+// import UserService from "../services/UserService"
 
-const user_group = UserService.getUserGroup()
+const user_group = localStorage.getItem('user_group')
+console.log("user_grtoup", user_group)
 const groups = {
     admin: "Admin",
+    clinic: "Clinic",
     serviceman: "Tamirci",
     customer: "Customer",
-    accountant: "Muhasebe"
+    accountant: "Muhasebe",
+    secretary : "Secretary",
+    patient : "Patient",
 }
 
 var dashboard_link = ""
@@ -37,67 +41,108 @@ const actions = {
     _name: 'CSidebarNavTitle',
     _children: ['İşlemler']
 }
-const current = {
+// const current = {
+//     _name: 'CSidebarNavDropdown',
+//     name: 'Cari',
+//     route: '/checking-account',
+//     icon: 'cil-calculator',
+//     items: [
+//         {
+//             name: 'Cari İşlemler',
+//             to: '/checking-account/checking-account-list'
+//         }
+//     ]
+// }
+
+const doctor = {
     _name: 'CSidebarNavDropdown',
-    name: 'Cari',
-    route: '/checking-account',
-    icon: 'cil-calculator',
-    items: [
-        {
-            name: 'Cari İşlemler',
-            to: '/checking-account/checking-account-list'
-        }
-    ]
-}
-const customer = {
-    _name: 'CSidebarNavDropdown',
-    name: 'Müşteri',
-    route: '/customer',
+    name: 'Doktor',
+    route: '/doctor',
     icon: 'cil-user',
     items: [
         {
-            name: 'Müşteri',
-            to: '/customer/customer'
+            name: 'Doktor',
+            to: '/doctor/doctor'
         }
     ]
 }
-const catalog = {
-    _name: 'CSidebarNavDropdown',
-    name: 'Katalog',
-    route: '/category',
-    icon: 'cil-playlist-add',
-    items: [
-        {
-            name: 'Kategori',
-            to: '/catalog/category'
-        },
-        {
-            name: 'Ürünler',
-            to: '/catalog/product-list'
-        },
-        {
-            name: 'Marka',
-            to: '/catalog/brand'
-        }
-    ]
-}
-const staff = {
-    _name: 'CSidebarNavDropdown',
-    name: 'Personel',
-    route: '/staff',
-    icon: 'cil-people',
-    items: [
-        {
-            name: 'Personel İşlemleri',
-            to: '/staff/staff-operations'
-        },
 
+const patient = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Patient',
+    route: '/patient',
+    icon: 'cil-user',
+    items: [
         {
-            name: 'Personel İşlemleri PMS',
-            to: '/staff/staff'
+            name: 'Hasta',
+            to: '/patient/patient'
         }
     ]
 }
+
+
+
+const secretary = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Sekreter',
+    route: '/secretary',
+    icon: 'cil-user',
+    items: [
+        {
+            name: 'Sekreter',
+            to: '/secretary/secretary'
+        }
+    ]
+}
+// const customer = {
+//     _name: 'CSidebarNavDropdown',
+//     name: 'Müşteri',
+//     route: '/customer',
+//     icon: 'cil-user',
+//     items: [
+//         {
+//             name: 'Müşteri',
+//             to: '/customer/customer'
+//         }
+//     ]
+// }
+// const catalog = {
+//     _name: 'CSidebarNavDropdown',
+//     name: 'Katalog',
+//     route: '/category',
+//     icon: 'cil-playlist-add',
+//     items: [
+//         {
+//             name: 'Kategori',
+//             to: '/catalog/category'
+//         },
+//         {
+//             name: 'Ürünler',
+//             to: '/catalog/product-list'
+//         },
+//         {
+//             name: 'Marka',
+//             to: '/catalog/brand'
+//         }
+//     ]
+// }
+// const staff = {
+//     _name: 'CSidebarNavDropdown',
+//     name: 'Personel',
+//     route: '/staff',
+//     icon: 'cil-people',
+//     items: [
+//         {
+//             name: 'Personel İşlemleri',
+//             to: '/staff/staff-operations'
+//         },
+//
+//         {
+//             name: 'Personel İşlemleri PMS',
+//             to: '/staff/staff'
+//         }
+//     ]
+// }
 
 
 const clinic = {
@@ -114,18 +159,18 @@ const clinic = {
 }
 
 
-const services = {
-    _name: 'CSidebarNavDropdown',
-    name: 'Servis',
-    route: '/service',
-    icon: 'cil-file',
-    items: [
-        {
-            name: 'Servis Listesi',
-            to: '/service/service-list'
-        }
-    ]
-}
+// const services = {
+//     _name: 'CSidebarNavDropdown',
+//     name: 'Servis',
+//     route: '/service',
+//     icon: 'cil-file',
+//     items: [
+//         {
+//             name: 'Servis Listesi',
+//             to: '/service/service-list'
+//         }
+//     ]
+// }
 const staffs = {
     _name: 'CSidebarNavDropdown',
     name: 'Personel',
@@ -237,23 +282,18 @@ const accounting = {
 var items = []
 items.push(home)
 items.push(actions)
-if (user_group === groups.admin || user_group === groups.accountant) {
-    items.push(current)
-}
-if (user_group === groups.admin || user_group === groups.accountant || user_group === groups.customer) {
-    items.push(customer)
-}
-if (user_group === groups.admin || user_group === groups.serviceman) {
-    items.push(catalog)
-}
+// if (user_group === groups.admin || user_group === groups.accountant) {
+//     items.push(current)
+// }
+// if (user_group === groups.admin || user_group === groups.accountant || user_group === groups.customer) {
+//     items.push(customer)
+// }
+// if (user_group === groups.admin || user_group === groups.serviceman) {
+//     items.push(catalog)
+// }
 
 if (user_group === groups.admin) {
-    items.push(staff)
-}
-if (user_group === groups.admin || user_group === groups.serviceman || user_group === groups.customer) {
-    //items.push(services)
-    items.push(clinic)
-} else {
+    console.log("user", user_group)
     items.push(clinic)
     items.push(staffs)
     items.push(permission)
@@ -262,7 +302,29 @@ if (user_group === groups.admin || user_group === groups.serviceman || user_grou
     items.push(notifications)
     items.push(wristbands)
     items.push(contracts)
+    // items.push(staff)
 }
+if (user_group === groups.clinic) {
+    console.log("clinic", user_group)
+    items.push(doctor)
+    items.push(secretary)
+    items.push(patient)
+
+}
+// if (user_group === groups.admin || user_group === groups.serviceman || user_group === groups.customer) {
+//     //items.push(services)
+//     items.push(clinic)
+// }
+// else {
+//     items.push(clinic)
+//     items.push(staffs)
+//     items.push(permission)
+//     items.push(advertisement)
+//     items.push(accounting)
+//     items.push(notifications)
+//     items.push(wristbands)
+//     items.push(contracts)
+// }
 export default [
     {
         _name: 'CSidebarNav',
