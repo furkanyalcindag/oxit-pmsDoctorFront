@@ -127,36 +127,30 @@
                       </validation-provider>
                     </CCol>
                     <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="İl">
+
                         İl <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
+
                         <CSelect
                             :options="cities"
                             v-model="city"
                             :value.sync="city"
                             @change="getDistricts(city)"
-                            :state="errors.length > 0 ? false:null"
+
                         />
-                      </validation-provider>
+
                     </CCol>
                     <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="İlçe">
+
                         İlçe <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
+
                         <CSelect
                             :options="districts"
                             v-model="district"
                             :value.sync="district"
-                            :state="errors.length > 0 ? false:null"
+
                         />
 
-                      </validation-provider>
+
                     </CCol>
                     <CCol lg="3">
                       <validation-provider
@@ -691,12 +685,13 @@ export default {
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
         if (success) {
+          console.log("burda")
           if (this.clinicUpdate.uuid) {
             await this.editClinic()
           } else {
+            console.log("else")
             await this.addClinic()
           }
-        } else {
         }
       })
     },

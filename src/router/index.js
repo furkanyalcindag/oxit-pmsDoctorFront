@@ -115,6 +115,12 @@ const Wristbands = () => import('@/views/pms-management/wristbands/Wristbands');
 
 const Contract = () => import('@/views/pms-management/contract/Contract');
 
+const Doctor = () => import('@/views/pms-doctor/Doctor')
+
+const Patient = () => import('@/views/pms-doctor/patient/Patient')
+
+const Secretary = () => import('@/views/pms-doctor/secretary/Secretary')
+
 Vue.use(Router)
 
 export default new Router({
@@ -300,6 +306,68 @@ function configRoutes() {
                             path: 'clinic',
                             name: 'Clinic',
                             component: Clinic
+                        }
+
+
+                    ]
+                },
+
+
+                {
+                    path: '/patient',
+                    redirect: '/patient/patient',
+                    name: 'Patient',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'patient',
+                            name: 'Patient',
+                            component: Patient
+                        }
+
+
+                    ]
+                },
+
+                  {
+                    path: '/doctor',
+                    redirect: '/doctor/doctor',
+                    name: 'Doctor',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'doctor',
+                            name: 'Doctor',
+                            component: Doctor
+                        }
+
+
+                    ]
+                },
+
+
+                 {
+                    path: '/secretary',
+                    redirect: '/secretary/secretary',
+                    name: 'Secretary',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'secretary',
+                            name: 'Secretary',
+                            component: Secretary
                         }
 
 
