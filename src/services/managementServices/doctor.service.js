@@ -10,6 +10,12 @@ class DoctorService {
         return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/doctor-api/`, {headers: authHeader()})
 
     }
+
+      getDoctorSelect() {
+
+        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/doctor-select-api/`, {headers: authHeader()})
+
+    }
      addDoctor(doctor) {
         return axios.post(process.env.VUE_APP_API_URL + '/pmsDoctor/doctor-api/',
             {

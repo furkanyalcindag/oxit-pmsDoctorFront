@@ -10,6 +10,7 @@ const groups = {
     accountant: "Muhasebe",
     secretary : "Secretary",
     patient : "Patient",
+
 }
 
 var dashboard_link = ""
@@ -76,6 +77,19 @@ const patient = {
         {
             name: 'Hasta',
             to: '/patient/patient'
+        }
+    ]
+}
+
+const patientCalendar = {
+    _name: 'CSidebarNavDropdown',
+    name: 'PatientCalendar',
+    route: '/patientCalendar',
+    icon: 'cil-user',
+    items: [
+        {
+            name: 'Takvim',
+            to: '/patientCalendar/patientCalendar'
         }
     ]
 }
@@ -241,6 +255,21 @@ const wristbands = {
 
 }
 
+
+const appointment = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Randevu',
+    route: '/appointment',
+    icon: 'cil-people',
+    items: [
+        {
+            name: 'Klinik İşlemleri',
+            to: '/appointmnet/appointmnet'
+        }
+    ]
+}
+
+
 const contracts = {
     _name: 'CSidebarNavDropdown',
     name: 'Sözleşme',
@@ -302,6 +331,9 @@ if (user_group === groups.admin) {
     items.push(notifications)
     items.push(wristbands)
     items.push(contracts)
+    items.push(appointment)
+    items.push(patientCalendar)
+
     // items.push(staff)
 }
 if (user_group === groups.clinic) {

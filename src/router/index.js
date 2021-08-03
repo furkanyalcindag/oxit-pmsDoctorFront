@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import ProductList from "@/views/catalog/ProductList";
-import Repairman from "@/views/staff/Staff";
 import Staff from "@/views/staff/Staff";
 import UserService from "../services/UserService"
+
 
 
 // Containers
@@ -117,9 +117,13 @@ const Contract = () => import('@/views/pms-management/contract/Contract');
 
 const Doctor = () => import('@/views/pms-doctor/Doctor')
 
+const Appointment = () => import('@/views/pms-doctor/patient/PatientAppointment')
+
 const Patient = () => import('@/views/pms-doctor/patient/Patient')
 
 const Secretary = () => import('@/views/pms-doctor/secretary/Secretary')
+
+const patientCalendar = () => import('@/views/pms-doctor/patient/PatientAppointmentCalendar')
 
 Vue.use(Router)
 
@@ -137,6 +141,7 @@ function configRoutes() {
         serviceman: "Tamirci",
         customer: "Customer",
         accountant: "Muhasebe",
+
     }
 
     var dashboard_link = "/staffs"
@@ -333,6 +338,28 @@ function configRoutes() {
                     ]
                 },
 
+
+                {
+                    path: '/patientCalendar',
+                    redirect: '/patientCalendar/patientCalendar',
+                    name: 'PatientCalendar',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'patientCalendar',
+                            name: 'patientCalendar',
+                            component: patientCalendar
+                        }
+
+
+                    ]
+                },
+
+
                   {
                     path: '/doctor',
                     redirect: '/doctor/doctor',
@@ -347,6 +374,26 @@ function configRoutes() {
                             path: 'doctor',
                             name: 'Doctor',
                             component: Doctor
+                        }
+
+
+                    ]
+                },
+
+                {
+                    path: '/appointment',
+                    redirect: '/appointment/appointment',
+                    name: 'Appointment',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'appointment',
+                            name: 'Appointment',
+                            component: Appointment
                         }
 
 
