@@ -214,20 +214,42 @@
                     clickableRows
 
                 >
-                  <template #department="{ item, index }">
+                  <template #firstName="{ item, index }">
                     <td class="py-2">
 
-                      {{ item.label }}
+                      {{ item.firstName }} {{ item.lastName }}
+                    </td>
+                  </template>
+                  <template #bloodGroup="{ item, index }">
+                    <td class="py-2">
+
+                      {{ item.bloodGroup.label }}
+                    </td>
+                  </template>
+                  <template #gender="{ item, index }">
+                    <td class="py-2">
+
+                      {{ item.gender.label }}
                     </td>
                   </template>
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
+                      <CDropdown toggler-text="İşlemler">
+                        <CDropdownItem>
+                          <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
+                          <CButton @click="getSinglePatient(item.uuid)" color="success">Düzenle</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
+                          <CLink>
+                            <CButton @click="$router.push({name:'protocolNew',params:{patient:item.uuid}})" color="primary">Protokol</CButton>
+                          </CLink>
+                        </CDropdownItem>
+                      </CDropdown>
 
 
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-
-                      <CButton @click="getSinglePatient(item.uuid)" color="success">Düzenle</CButton>
                     </td>
                   </template>
                 </CDataTable>
@@ -502,18 +524,16 @@ export default {
     return {
       fieldsTable: [
         {key: 'firstName', label: "Hasta Adı", _style: "min-width:200px"},
-        {key: "lastName", label: "Hasta Soyadı"},
         {key: "email", label: "Email"},
         {key: "identityNumber", label: "TC No"},
         {key: "bloodGroup", label: "Kan Grubu"},
-        {key: "address", label: "Adres"},
         {key: "gender", label: "Cinsiyet"},
         {key: "mobilePhone", label: "Telefon Numarası"},
-        {key: "birthDate", label: "Doğum Tarihi"}
+        {key: "birthDate", label: "Doğum Tarihi"},
+        {key: "actions", label: "İşlemler"}
 
 
       ],
-
 
 
       pageLabel: {label: 'sasasa', external: true,},
@@ -646,7 +666,6 @@ export default {
       }
 
 
-
       let response = await new PatientService().addPatient(this.patient)
       if (response.status === 200) {
         await this.getPatients()
@@ -752,7 +771,7 @@ export default {
     async getPatients() {
 
       let response = await new PatientService().getPatients()
-      console.log("response",response)
+      console.log("response", response)
       this.patients = response.data.data
       console.log(this.patients)
     },
@@ -777,7 +796,6 @@ export default {
     await this.getGenders()
     await this.getBloodGroups()
     await this.getPatients()
-
 
 
   },

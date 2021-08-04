@@ -10,6 +10,13 @@ class AssayService {
 
     }
 
+
+    getAssaysSelect() {
+
+        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/assay-select-api/`, {headers: authHeader()})
+
+    }
+
     addSecretary(assay) {
         return axios.post(process.env.VUE_APP_API_URL + '/pmsDoctor/assay-api/',
             {
