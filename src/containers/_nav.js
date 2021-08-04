@@ -81,6 +81,19 @@ const patient = {
     ]
 }
 
+const assay = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Assay',
+    route: '/assay',
+    icon: 'cil-user',
+    items: [
+        {
+            name: 'Tahlil',
+            to: '/assay/assay'
+        }
+    ]
+}
+
 const patientCalendar = {
     _name: 'CSidebarNavDropdown',
     name: 'PatientCalendar',
@@ -333,6 +346,7 @@ if (user_group === groups.admin) {
     items.push(contracts)
     items.push(appointment)
     items.push(patientCalendar)
+    items.push(assay)
 
     // items.push(staff)
 }

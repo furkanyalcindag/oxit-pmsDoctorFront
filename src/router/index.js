@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import ProductList from "@/views/catalog/ProductList";
-import Staff from "@/views/staff/Staff";
 import UserService from "../services/UserService"
 
 
@@ -120,6 +119,8 @@ const Doctor = () => import('@/views/pms-doctor/Doctor')
 const Appointment = () => import('@/views/pms-doctor/patient/PatientAppointment')
 
 const Patient = () => import('@/views/pms-doctor/patient/Patient')
+
+const Assay = () => import('@/views/pms-doctor/patient/Assay')
 
 const Secretary = () => import('@/views/pms-doctor/secretary/Secretary')
 
@@ -374,6 +375,26 @@ function configRoutes() {
                             path: 'doctor',
                             name: 'Doctor',
                             component: Doctor
+                        }
+
+
+                    ]
+                },
+
+                 {
+                    path: '/assay',
+                    redirect: '/assay/assay',
+                    name: 'Assay',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'assay',
+                            name: 'Assay',
+                            component: Assay
                         }
 
 
