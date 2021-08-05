@@ -4,9 +4,13 @@ import authHeader from "@/services/auth-header";
 class AssayService {
 
 
-    getAssays() {
+    getAssays(name) {
 
-        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/assay-api/`, {headers: authHeader()})
+        const params = {
+            name:name,
+
+        }
+        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/assay-api/`, {headers: authHeader(),params})
 
     }
 

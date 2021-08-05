@@ -153,13 +153,18 @@
                               </validation-observer>
                             </CCol>
                             <CCol lg="6">
-                              <CCardSubtitle class="mt-2">İstenilen Tahliller</CCardSubtitle>
+                              <CCardSubtitle class="mt-2">İstenilen Tahliller
+                              </CCardSubtitle>
                               <CListGroup>
                                 <CListGroupItem>
                                   <CListGroup>
-                                    <CListGroupItem v-for="selected in protocol.assays">{{
-                                        selected.name
-                                      }}
+                                    <CListGroupItem v-for="(selected,index) in protocol.assays">
+                                      {{ selected.name }}
+                                      <CButton @click="minusSelectedAssay(selected)">
+                                        <CIcon :content="$options.freeSet.cilMinus"
+                                               name="cil-minus" class="ml-3"/>
+
+                                      </CButton>
                                     </CListGroupItem>
                                   </CListGroup>
                                 </CListGroupItem>
@@ -211,9 +216,7 @@
                           <td class="py-2">
 
 
-                            <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-
-                            <CButton @click="getSingleProtocol(item.uuid)" color="success">Düzenle</CButton>
+                            <CButton @click="getSingleOldProtocol(item.uuid)" color="success">Görüntüle</CButton>
                           </td>
                         </template>
                       </CDataTable>
@@ -229,24 +232,36 @@
 
 
     <CModal
-        title="Modal title"
-        color="danger"
-        :show.sync="deleteModel"
-
+        :show.sync="showResultModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
     >
-      Protokol silmek istediğinizden emin misiniz?
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="showResultModal">
+              <template>
+                <CCardBody>
+                  <CTableWrapper :items="getShuffledUsersData()" :fields="fieldsTableAssay">
 
-
+                  </CTableWrapper>
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
       <template #header>
-        <h6 class="modal-title">Uyarı</h6>
-        <CButtonClose @click="deleteModel = false" class="text-white"/>
+        <h6 class="modal-title">Sonuçlar</h6>
+        <CButtonClose @click="showResultModal = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteProtocol" color="success">Evet</CButton>
+        <CButton @click="showResultModal = false" color="danger">Kapat</CButton>
+
       </template>
-
-
     </CModal>
 
 
@@ -279,12 +294,14 @@
                               description=""
                               autocomplete="autocomplete"
                               v-model="assay.assayName"
+                              @input="getAssays"
                               :state="errors.length > 0 ? false:null"
                           />
                         </validation-provider>
                       </CCol>
                       <CCol lg="6" class="mt-4">
-                        <CButton @click="getAssays" color="success">Arama</CButton>
+                        <CButton @click="getAssays" color="success">Ara</CButton>
+
                       </CCol>
 
                     </CRow>
@@ -298,6 +315,7 @@
                           <CButton @click="pushSelectedAssay(assay)">
                             <CIcon :content="$options.freeSet.cilPlus"
                                    name="cil-plus" class="ml-3"/>
+
                           </CButton>
                         </CListGroupItem>
                       </CListGroup>
@@ -305,7 +323,7 @@
                     <CCol lg="6">
                       <CCard>
                         <CListGroup>
-                          <CListGroupItem v-for="selected in selectedAssay">{{ selected.name }}</CListGroupItem>
+                          <CListGroupItem v-for="selected in selectedAssays">{{ selected.name }}</CListGroupItem>
                         </CListGroup>
                       </CCard>
                     </CCol>
@@ -318,11 +336,73 @@
       </CRow>
       <template #header>
         <h6 class="modal-title">Tahlil Ekle</h6>
-        <CButtonClose @click="protocolUpdateModal = false" class="text-white"/>
+        <CButtonClose @click="closeModalAssay" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="protocolUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="closeModalAssay" color="danger">Kapat</CButton>
         <CButton @click="setAssayModal" color="success">Ekle</CButton>
+      </template>
+    </CModal>
+
+
+    <CModal
+        :show.sync="protocolNewUpdateModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="protocolNewUpdateModal">
+              <template>
+                <CCardBody>
+                  <CRow>
+                    <CCol lg="6">
+                      Açıklama <span class="text-danger">*</span>
+                      <CInput
+                          disabled
+                          v-model="protocolUpdate.description"
+                      />
+                    </CCol>
+                    <CCol lg="6">
+                      <CListGroup>
+                        <CListGroupItem v-for="selected in this.protocolUpdate.assayList">
+                          <CRow>
+
+                            <CCol lg="9">
+                              {{ selected.name }}
+
+                            </CCol>
+
+                            <CCol lg="3">
+
+                              <CButton @click="getSingleAssayResult(selected.uuid)" color="success">Görüntüle</CButton>
+                            </CCol>
+                          </CRow>
+
+
+                        </CListGroupItem>
+
+
+                      </CListGroup>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Protokol</h6>
+        <CButtonClose @click="protocolNewUpdateModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="protocolNewUpdateModal = false" color="danger">Kapat</CButton>
+
       </template>
     </CModal>
 
@@ -345,6 +425,8 @@ import ProtocolService from "@/services/managementServices/protocol.service";
 import AssayService from "@/services/managementServices/assay.service";
 import Assay from "@/models/pms/assay";
 import {freeSet} from "@coreui/icons";
+import usersData from "@/views/users/UsersData";
+import CTableWrapper from '@/views/base/Table.vue'
 
 export default {
   name: "Clinic",
@@ -354,16 +436,20 @@ export default {
     ValidationObserver,
     // eslint-disable-next-line vue/no-unused-components
     VSimpleCheckbox,
+    CTableWrapper
   },
   data() {
     return {
       fieldsTable: [
         {key: 'description', label: "Açıklama", _style: "min-width:200px"},
         {key: "patient", label: "Hasta"},
-        {key: "assayList", label: "Tahlil"},
         {key: "actions", label: "İşlemler"},
       ],
-
+      fieldsTableAssay: [
+        {key: 'assayName', label: "Açıklama", _style: "min-width:200px"},
+        {key: "refNo", label: "Referans Değeri"},
+        {key: "assayNo", label: "Tahlil Değeri"},
+      ],
 
       pageLabel: {label: 'sasasa', external: true,},
       page: 1,
@@ -451,7 +537,17 @@ export default {
       appointments: [],
       assayArray: [],
       assay: new Assay("",),
-      selectedAssay: []
+      assayUpdate: new Assay("",),
+      selectedAssays: [],
+      protocolNewUpdateModal: false,
+      showResultModal: false,
+      usersData: [
+        {'assayName': 'Smjhjhjuhjh', 'refNo': '686876', 'assayNo': '87878', 'status': 'Active'},
+        {'assayName': 'Estavan Lykos', 'refNo': '8787877', 'assayNo': '988787', 'status': 'Banned'},
+        {'assayName': 'Chetan Mohamed', 'refNo': '8788787', 'assayNo': '878787', 'status': 'Inactive'},
+        {'assayName': 'Derick Maximinus', 'refNo': '87878787', 'assayNo': '878787', 'status': 'Pending'},
+        {'assayName': 'Friderik Dávid', 'refNo': '8887787', 'assayNo': '7877', 'status': 'Active'},
+      ]
 
 
     };
@@ -484,17 +580,58 @@ export default {
 
     },
     setAssayModal() {
-      this.selectedAssay = []
+      this.selectedAssays = []
       this.protocolUpdateModal = false
     },
+    async getSingleOldProtocol(id) {
+      this.protocolNewUpdateModal = true
+      let response = await new ProtocolService().getSingleProtocol(id)
+      this.protocolUpdate = response.data
+    },
+    closeModalAssay() {
+      this.protocol.assays = []
+      this.selectedAssays = []
+      this.protocolUpdateModal = false
+    },
+
+    async getSingleAssayResult(id) {
+      this.showResultModal = true
+      this.protocolNewUpdateModal = false
+      let response = await new ProtocolService().getResultAssay(id, this.$route.params.patient)
+      this.assayUpdate = response.data
+    },
+
+    async minusSelectedAssay(index) {
+      console.log(index)
+      console.log("assay", this.protocol.assays)
+      const deneme = this.protocol.assays.indexOf(index)
+      console.log("proto", this.protocol.assays.indexOf(1))
+      console.log("deneme", deneme)
+      if (deneme > -1) {
+        console.log("ifte")
+        this.protocol.assays.splice(deneme, 1)
+      }
+      console.log("selectedasssay", this.protocol.assays)
+
+
+    },
+    isUniqeElementInArray(uuid, array) {
+      for (let i = 0; i < array.length; i++) {
+        if (array[i].uuid === uuid) {
+          return false
+        }
+
+      }
+      return true;
+    },
+
+
     async getSinglePatient() {
-      console.log("pati", this.$route.params.patient)
       let response = await new PatientService().getSinglePatient(this.$route.params.patient)
-      console.log("res", response)
       this.patient = response.data
     },
     async getAssays() {
-      let response = await new AssayService().getAssays()
+      let response = await new AssayService().getAssays(this.assay.assayName)
       this.assayArray = response.data.data
     },
     async pushSelectedAssay(assay) {
@@ -502,21 +639,21 @@ export default {
         name: assay.name,
         uuid: assay.uuid
       }
-      console.log(obj)
-      console.log("name", assay)
-      this.selectedAssay.push(obj)
+      if (this.isUniqeElementInArray(obj.uuid, this.selectedAssays)) {
+        this.selectedAssays.push(obj)
+      }
       obj = {}
-      this.protocol.assays = this.selectedAssay
-      console.log("assay", this.selectedAssay)
+      this.protocol.assays = this.selectedAssays
     },
     async addProtocol() {
       for (let i = 0; i < this.protocol.assays.length; i++) {
         this.protocol.assays[i] = this.protocol.assays[i].uuid
       }
+
       this.protocol.patient = this.$route.params.patient
       let response = await new ProtocolService().addProtocol(this.protocol)
       if (response.status === 200) {
-        await this.getProtocols()
+        await this.getOldProtocols()
         this.protocol = new Protocol("", [])
         this.$toast.success({
           title: 'Başarılı',
@@ -526,36 +663,35 @@ export default {
     },
     async getOldProtocols() {
       let response = await new ProtocolService().getPatientProtocols(this.$route.params.patient)
-      this.protocols = response.data.data
+      this.protocols = response.data
     },
-    async editOldProtocol() {
-      this.protocolUpdate.assays = this.assayArray
 
-      let response = await new ProtocolService().editProtocol(this.protocolUpdate)
-      if (response.status === 200) {
-        this.protocolUpdateModal = false
-        await this.getProtocols()
-        this.$toast.success({
-          title: 'Başarılı',
-          message: "Protokol başarıyla eklendi"
-        })
-      } else {
-        this.isError = true;
-        this.errors = response.response.data;
-        for (const [key, value] of Object.entries(this.errors)) {
-          this.$toast.error({
-            title: 'Hata',
-            message: `${key}: ${value}`
-          })
-        }
-      }
+    setDeleteModal(id) {
+
+      this.deleteId = id
+      this.deleteModel = true
     },
+
+    shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1))
+        let temp = array[i]
+        array[i] = array[j]
+        array[j] = temp
+      }
+      return array
+    },
+
+    getShuffledUsersData() {
+      return this.shuffleArray(this.usersData.slice(0))
+    }
   },
 
   watch: {},
 
   async created() {
     await this.getSinglePatient()
+    await this.getOldProtocols()
 
 
   },

@@ -14,13 +14,13 @@ class ProtocolService {
             id: id
         }
 
-        return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/protocol-api/', {headers: authHeader(),params})
+        return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/protocol-api/', {headers: authHeader(), params})
     }
 
     getSingleProtocol(id) {
 
         const params = {
-            id: id
+            protocolId: id
         }
 
         return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/protocol-api/', {headers: authHeader(), params})
@@ -67,6 +67,15 @@ class ProtocolService {
         }
 
         return axios.delete(process.env.VUE_APP_API_URL + '/pmsDoctor/protocol-api/', {headers: authHeader(), params})
+    }
+
+    getResultAssay(id, patientId) {
+        const params = {
+            id: id,
+            patientId: patientId
+        }
+        return axios.get(process.env.VUE_APP_API_URL + '', {headers: authHeader(), params})
+
     }
 
 
