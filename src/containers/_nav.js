@@ -81,6 +81,19 @@ const patient = {
     ]
 }
 
+const assay = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Assay',
+    route: '/assay',
+    icon: 'cil-user',
+    items: [
+        {
+            name: 'Tahlil',
+            to: '/assay/assay'
+        }
+    ]
+}
+
 const patientCalendar = {
     _name: 'CSidebarNavDropdown',
     name: 'PatientCalendar',
@@ -200,6 +213,33 @@ const staffs = {
         }
     ]
 }
+
+
+const protocols = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Protokol',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Protokol',
+            to: '/protocols'
+        },
+
+    ]
+}
+const protocolNew = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Protokol',
+    icon: 'cil-file',
+    items: [
+        {
+            name: 'Protokol',
+            to: '/protocolNew/:patient'
+        },
+
+    ]
+}
+
 const permission = {
     _name: 'CSidebarNavItem',
     name: 'Yetkilendirme',
@@ -333,6 +373,9 @@ if (user_group === groups.admin) {
     items.push(contracts)
     items.push(appointment)
     items.push(patientCalendar)
+    items.push(assay)
+    items.push(protocols)
+    items.push(protocolNew)
 
     // items.push(staff)
 }

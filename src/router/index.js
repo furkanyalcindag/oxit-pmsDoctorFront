@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import ProductList from "@/views/catalog/ProductList";
-import Staff from "@/views/staff/Staff";
 import UserService from "../services/UserService"
 
 
@@ -120,6 +119,12 @@ const Doctor = () => import('@/views/pms-doctor/Doctor')
 const Appointment = () => import('@/views/pms-doctor/patient/PatientAppointment')
 
 const Patient = () => import('@/views/pms-doctor/patient/Patient')
+
+const Protocol = () => import('@/views/pms-doctor/patient/Protocol')
+
+const ProtocolNew = () => import('@/views/pms-doctor/patient/ProtocolNew')
+
+const Assay = () => import('@/views/pms-doctor/patient/Assay')
 
 const Secretary = () => import('@/views/pms-doctor/secretary/Secretary')
 
@@ -337,8 +342,25 @@ function configRoutes() {
 
                     ]
                 },
+          {
+                    path: '',
+                    redirect: '/protocolNew',
+                    name: 'protocolNew',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'protocolNew/:patient',
+                            name: 'protocolNew',
+                            component: ProtocolNew
+                        }
 
 
+                    ]
+                },
                 {
                     path: '/patientCalendar',
                     redirect: '/patientCalendar/patientCalendar',
@@ -379,6 +401,48 @@ function configRoutes() {
 
                     ]
                 },
+
+                 {
+                    path: '/assay',
+                    redirect: '/assay/assay',
+                    name: 'Assay',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'assay',
+                            name: 'Assay',
+                            component: Assay
+                        }
+
+
+                    ]
+                },
+
+
+                 {
+                    path: '/protocols',
+                    redirect: '/protocols/protocols',
+                    name: 'Protocols',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'protocols',
+                            name: 'Protocols',
+                            component: Protocol
+                        }
+
+
+                    ]
+                },
+
 
                 {
                     path: '/appointment',
