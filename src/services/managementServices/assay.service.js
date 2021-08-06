@@ -71,6 +71,13 @@ class AssayService {
         return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/assay-api/`, {headers: authHeader(), params})
     }
 
+     getSinglePatientAssay(id) {
+        const params = {
+            id: id
+        }
+        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/patient-assay-api/`, {headers: authHeader(), params})
+    }
+
 
 }
 

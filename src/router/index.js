@@ -120,9 +120,8 @@ const Appointment = () => import('@/views/pms-doctor/patient/PatientAppointment'
 
 const Patient = () => import('@/views/pms-doctor/patient/Patient')
 
-const Protocol = () => import('@/views/pms-doctor/patient/Protocol')
 
-const ProtocolNew = () => import('@/views/pms-doctor/patient/ProtocolNew')
+const Protocol = () => import('@/views/pms-doctor/patient/Protocol')
 
 const Assay = () => import('@/views/pms-doctor/patient/Assay')
 
@@ -325,7 +324,7 @@ function configRoutes() {
 
                 {
                     path: '/patient',
-                    redirect: '/patient/patient',
+                    redirect: '',
                     name: 'Patient',
                     component: {
                         render(c) {
@@ -334,7 +333,7 @@ function configRoutes() {
                     },
                     children: [
                         {
-                            path: 'patient',
+                            path: 'list',
                             name: 'Patient',
                             component: Patient
                         }
@@ -344,8 +343,8 @@ function configRoutes() {
                 },
           {
                     path: '',
-                    redirect: '/protocolNew',
-                    name: 'protocolNew',
+                    redirect: '/protocol',
+                    name: 'protocol',
                     component: {
                         render(c) {
                             return c('router-view')
@@ -353,9 +352,9 @@ function configRoutes() {
                     },
                     children: [
                         {
-                            path: 'protocolNew/:patient',
-                            name: 'protocolNew',
-                            component: ProtocolNew
+                            path: 'protocol/:patient',
+                            name: 'protocol',
+                            component: Protocol
                         }
 
 
@@ -363,7 +362,7 @@ function configRoutes() {
                 },
                 {
                     path: '/patientCalendar',
-                    redirect: '/patientCalendar/patientCalendar',
+                    redirect: '/patientCalendar',
                     name: 'PatientCalendar',
                     component: {
                         render(c) {
@@ -384,7 +383,7 @@ function configRoutes() {
 
                   {
                     path: '/doctor',
-                    redirect: '/doctor/doctor',
+                    redirect: '/doctor',
                     name: 'Doctor',
                     component: {
                         render(c) {
@@ -393,7 +392,7 @@ function configRoutes() {
                     },
                     children: [
                         {
-                            path: 'doctor',
+                            path: 'list',
                             name: 'Doctor',
                             component: Doctor
                         }
@@ -404,7 +403,7 @@ function configRoutes() {
 
                  {
                     path: '/assay',
-                    redirect: '/assay/assay',
+                    redirect: '/assay',
                     name: 'Assay',
                     component: {
                         render(c) {
@@ -423,30 +422,11 @@ function configRoutes() {
                 },
 
 
-                 {
-                    path: '/protocols',
-                    redirect: '/protocols/protocols',
-                    name: 'Protocols',
-                    component: {
-                        render(c) {
-                            return c('router-view')
-                        }
-                    },
-                    children: [
-                        {
-                            path: 'protocols',
-                            name: 'Protocols',
-                            component: Protocol
-                        }
-
-
-                    ]
-                },
 
 
                 {
                     path: '/appointment',
-                    redirect: '/appointment/appointment',
+                    redirect: '/appointment',
                     name: 'Appointment',
                     component: {
                         render(c) {
@@ -467,7 +447,7 @@ function configRoutes() {
 
                  {
                     path: '/secretary',
-                    redirect: '/secretary/secretary',
+                    redirect: '/secretary',
                     name: 'Secretary',
                     component: {
                         render(c) {
@@ -476,7 +456,7 @@ function configRoutes() {
                     },
                     children: [
                         {
-                            path: 'secretary',
+                            path: 'list',
                             name: 'Secretary',
                             component: Secretary
                         }

@@ -244,7 +244,7 @@
                         </CDropdownItem>
                         <CDropdownItem>
                           <CLink>
-                            <CButton @click="$router.push({name:'protocolNew',params:{patient:item.uuid}})" color="primary">Protokol</CButton>
+                            <CButton @click="$router.push({name:'protocol',params:{patient:item.uuid}})" color="primary">Protokol</CButton>
                           </CLink>
                         </CDropdownItem>
                       </CDropdown>
