@@ -359,37 +359,44 @@
             <CCard v-if="protocolNewUpdateModal">
               <template>
                 <CCardBody>
-                  <CRow>
-                    <CCol lg="6">
-                      Açıklama <span class="text-danger">*</span>
-                      <CInput
-                          disabled
-                          v-model="protocolUpdate.description"
-                      />
-                    </CCol>
-                    <CCol lg="6">
-                      <CListGroup>
-                        <CListGroupItem v-for="selected in patientAssays">
-                          <CRow>
 
-                            <CCol lg="9">
-                              {{ selected.label }}
+                  <CTabs>
+                    <CTab title="Şikayet ve Tahliller" active>
+                      <CRow>
+                        <CCol lg="6">
+                          Açıklama <span class="text-danger">*</span>
+                          <CInput
+                              disabled
+                              v-model="protocolUpdate.description"
+                          />
+                        </CCol>
+                        <CCol lg="6">
+                          <CListGroup>
+                            <CListGroupItem v-for="selected in patientAssays">
+                              <CRow>
 
-                            </CCol>
+                                <CCol lg="9">
+                                  {{ selected.label }}
 
-                            <CCol lg="3">
+                                </CCol>
 
-                              <CButton @click="getSingleAssayResult(selected.value)" color="success">Görüntüle</CButton>
-                            </CCol>
-                          </CRow>
+                                <CCol lg="3">
+
+                                  <CButton @click="getSingleAssayResult(selected.value)" color="success">Görüntüle
+                                  </CButton>
+                                </CCol>
+                              </CRow>
 
 
-                        </CListGroupItem>
+                            </CListGroupItem>
+                            <CButton @click="getSingleDiagnosis">Teşhis EKle</CButton>
 
 
-                      </CListGroup>
-                    </CCol>
-                  </CRow>
+                          </CListGroup>
+                        </CCol>
+                      </CRow>
+                    </CTab>
+                  </CTabs>
                 </CCardBody>
               </template>
             </CCard>
@@ -402,6 +409,95 @@
       </template>
       <template #footer>
         <CButton @click="protocolNewUpdateModal = false" color="danger">Kapat</CButton>
+
+      </template>
+    </CModal>
+    <CModal
+        :show.sync="getDiagnosis"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="getDiagnosis">
+              <template>
+                <CCardBody>
+
+                  <CRow v-if="showDiagnosis">
+                    <CCol lg="6">
+                      Teşhis <span class="text-danger">*</span>
+                      <CInput
+                          v-model="diagnosis.diagnosis"
+                      />
+                    </CCol>
+                    <CCol lg="6">
+                      <CRow>
+                        <CCol lg="6">
+                          İlaç <span class="text-danger">*</span>
+                          <CInput
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="medicineName"
+                          />
+                        </CCol>
+                        <CCol lg="6" v-if="medicineName !== ''">
+                          <CButton @click="pushSelectedMedicine(medicineName)">
+                            <CIcon :content="$options.freeSet.cilPlus"
+                                   name="cil-plus" class="ml-3"/>
+                          </CButton>
+                        </CCol>
+                      </CRow>
+                    </CCol>
+                    <CCol lg="6">
+                      <CCard>
+                        <CListGroup>
+                          <CListGroupItem v-for="selected in selectedMedicines">{{ selected }}
+                            <CButton @click="minusSelectedMedicine(selected)">
+                              <CIcon :content="$options.freeSet.cilMinus"
+                                     name="cil-minus" class="ml-3"/>
+                            </CButton>
+                          </CListGroupItem>
+                        </CListGroup>
+                      </CCard>
+                    </CCol>
+                    <CCol lg="6">
+                      <CButton @click="addDiagnosis">Ekle</CButton>
+                    </CCol>
+                  </CRow>
+                  <CRow v-else>
+                    <CCol lg="4">
+                      <CCard>
+                        <CCardHeader class="d-flex justify-content-center">Teşhis</CCardHeader>
+                        <CCardBody>
+                          {{ diagnosis.diagnosis }}
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                    <CCol lg="8">
+                      <CCard>
+                      <CListGroup>
+                        <CCardHeader class="d-flex justify-content-center">İlaçlar</CCardHeader>
+                        <CListGroupItem v-for="medicine in patientMedicines">{{ medicine.name }}</CListGroupItem>
+                      </CListGroup>
+                        </CCard>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Protokol</h6>
+        <CButtonClose @click="getDiagnosis = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="getDiagnosis = false" color="danger">Kapat</CButton>
 
       </template>
     </CModal>
@@ -427,6 +523,9 @@ import Assay from "@/models/pms/assay";
 import {freeSet} from "@coreui/icons";
 import usersData from "@/views/users/UsersData";
 import CTableWrapper from '@/views/base/Table.vue'
+import DiagnosisService from "../../../services/managementServices/diagnosis.service";
+import Diagnosis from "../../../models/pms/diagnosis";
+import MedicineService from "../../../services/managementServices/medicine.service";
 
 export default {
   name: "Clinic",
@@ -549,8 +648,14 @@ export default {
         {'assayName': 'Friderik Dávid', 'refNo': '8887787', 'assayNo': '7877', 'status': 'Active'},
       ],
       patientAssays: [],
-
-
+      diagnosis: new Diagnosis("", "", []),
+      showDiagnosis: false,
+      selectedMedicines: [],
+      medicineName: '',
+      protocolId: '',
+      id: '',
+      getDiagnosis: false,
+      patientMedicines: []
     };
 
   },
@@ -586,8 +691,10 @@ export default {
       this.protocolUpdateModal = false
     },
     async getSingleOldProtocol(id) {
+      this.protocolId = id
       this.protocolNewUpdateModal = true
       let response = await new ProtocolService().getSingleProtocol(id)
+      this.id = response.data.protocolId
       await this.getPatientAssays(id)
       this.protocolUpdate = response.data
 
@@ -612,22 +719,29 @@ export default {
     },
 
     async minusSelectedAssay(index) {
-      console.log(index)
-      console.log("assay", this.protocol.assays)
       const deneme = this.protocol.assays.indexOf(index)
-      console.log("proto", this.protocol.assays.indexOf(1))
-      console.log("deneme", deneme)
       if (deneme > -1) {
-        console.log("ifte")
         this.protocol.assays.splice(deneme, 1)
       }
-      console.log("selectedasssay", this.protocol.assays)
-
-
+    },
+    async minusSelectedMedicine(index) {
+      const deneme = this.selectedMedicines.indexOf(index)
+      if (deneme > -1) {
+        this.selectedMedicines.splice(deneme, 1)
+      }
     },
     isUniqeElementInArray(uuid, array) {
       for (let i = 0; i < array.length; i++) {
         if (array[i].uuid === uuid) {
+          return false
+        }
+
+      }
+      return true;
+    },
+    isUniqeElementInMedicineArray(name, array) {
+      for (let i = 0; i < array.length; i++) {
+        if (array[i].name === name) {
           return false
         }
 
@@ -655,6 +769,12 @@ export default {
       obj = {}
       this.protocol.assays = this.selectedAssays
     },
+    async pushSelectedMedicine(medicine) {
+      if (this.isUniqeElementInMedicineArray(medicine, this.selectedMedicines)) {
+        this.selectedMedicines.push(medicine)
+      }
+      this.diagnosis.medicines = this.selectedMedicines
+    },
     async addProtocol() {
       for (let i = 0; i < this.protocol.assays.length; i++) {
         this.protocol.assays[i] = this.protocol.assays[i].uuid
@@ -675,7 +795,34 @@ export default {
       let response = await new ProtocolService().getPatientProtocols(this.$route.params.patient)
       this.protocols = response.data
     },
+    async addDiagnosis() {
+      this.diagnosis.protocolId = this.protocolId
+      console.log("diag", this.diagnosis)
+      let response = await new DiagnosisService().addDiagnosis(this.diagnosis)
+      if (response.status === 200) {
+        this.showDiagnosis = false
+        await this.getSingleDiagnosis()
+      }
+    },
+    async getSingleDiagnosis() {
+      this.getDiagnosis = true
+      this.protocolNewUpdateModal = false
+      let response = await new DiagnosisService().getDiagnosis(this.id)
+      if (response.status === 200) {
+        this.diagnosis = response.data
+        this.showDiagnosis = false
+        await this.getDiagnosisMedicines()
+      } else {
+        this.showDiagnosis = true
+      }
 
+    },
+    async getDiagnosisMedicines() {
+      let response = await new MedicineService().getMedicines(this.diagnosis.uuid)
+      this.patientMedicines = response.data
+      console.log("response mdei", this.diagnosis.medicines)
+
+    },
     setDeleteModal(id) {
 
       this.deleteId = id

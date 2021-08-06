@@ -1,7 +1,9 @@
 export default class Diagnosis {
 
-    constructor(diagnosisName) {
-        this.diagnosisName = diagnosisName
+    constructor(diagnosis, protocolId, medicines) {
+        this.diagnosis = diagnosis
+        this.protocolId = protocolId
+        this.medicines = medicines
 
 
     }
