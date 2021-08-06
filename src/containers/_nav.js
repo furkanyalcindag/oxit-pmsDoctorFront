@@ -63,7 +63,7 @@ const doctor = {
     items: [
         {
             name: 'Doktor',
-            to: '/doctor/doctor'
+            to: '/list'
         }
     ]
 }
@@ -76,7 +76,7 @@ const patient = {
     items: [
         {
             name: 'Hasta',
-            to: '/patient/patient'
+            to: '/list'
         }
     ]
 }
@@ -117,7 +117,7 @@ const secretary = {
     items: [
         {
             name: 'Sekreter',
-            to: '/secretary/secretary'
+            to: '/list'
         }
     ]
 }
@@ -215,26 +215,14 @@ const staffs = {
 }
 
 
-const protocols = {
+const protocol = {
     _name: 'CSidebarNavDropdown',
     name: 'Protokol',
     icon: 'cil-file',
     items: [
         {
             name: 'Protokol',
-            to: '/protocols'
-        },
-
-    ]
-}
-const protocolNew = {
-    _name: 'CSidebarNavDropdown',
-    name: 'Protokol',
-    icon: 'cil-file',
-    items: [
-        {
-            name: 'Protokol',
-            to: '/protocolNew/:patient'
+            to: '/protocol/:patient'
         },
 
     ]
@@ -374,8 +362,7 @@ if (user_group === groups.admin) {
     items.push(appointment)
     items.push(patientCalendar)
     items.push(assay)
-    items.push(protocols)
-    items.push(protocolNew)
+    items.push(protocol)
 
     // items.push(staff)
 }

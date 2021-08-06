@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Klinik Yönetimi
+              Hasta Bilgileri
               <div class="card-header-actions">
 
                 <CLink
@@ -16,81 +16,88 @@
                   <CIcon
                       :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
                   />
+
                 </CLink>
 
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                <div>
-
-                </div>
-                <validation-observer ref="simpleRules">
-                  <CRow>
-
-                    <CCol lg="2">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Açıklama">
-                        Açıklama<span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CTextarea
-
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="protocol.description"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-
-                    </CCol>
-
-
-                    <CCol lg="3">
-
-                      Hasta <span class="text-danger">*</span>
-
-                      <CSelect
-                          :options="patients"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="protocol.patient"
-                          :value.sync="protocol.patient"
-
-                      />
-
-                    </CCol>
-
-                    <CCol lg="6">
-
-                      Tahlil <span class="text-danger">*</span>
-
-                      <multiselect
-                          :options="assays"
-                          label="label"
-                          value="value"
-                          multiple
-                          class="form-multi-select"
-                          v-model="assayArray"
-
-
-                      >
-                      </multiselect>
-
-                    </CCol>
-
-
-                  </CRow>
-                </validation-observer>
-
-                <div class="form-actions">
-                  <CButton type="submit" color="primary"
-                           @click="validationForm"
-                  >Kaydet
-                  </CButton>
-
-                </div>
+                <CRow>
+                  <CCol lg="2">
+                    <h5>
+                      İsim Soyisim:
+                    </h5>
+                  </CCol>
+                  <CCol lg="3">
+                    <h5>{{ patient.firstName }} {{ patient.lastName }}</h5>
+                  </CCol>
+                  <CCol lg="2">
+                    <h5>
+                      TC:
+                    </h5>
+                  </CCol>
+                  <CCol lg="3">
+                    <h5>{{ patient.identityNumber }}</h5>
+                  </CCol>
+                </CRow>
+                <hr>
+                <CRow>
+                  <CCol lg="2">
+                    <h5>
+                      Doğum Tarihi:
+                    </h5>
+                  </CCol>
+                  <CCol lg="3">
+                    <h5>{{ patient.birthDate }}</h5>
+                  </CCol>
+                  <CCol lg="2">
+                    <h5>
+                      Adres:
+                    </h5>
+                  </CCol>
+                  <CCol lg="3">
+                    <h5>{{ patient.address }}</h5>
+                  </CCol>
+                </CRow>
+                <hr>
+                <CRow>
+                  <CCol lg="2">
+                    <h5>
+                      Kan Grubu:
+                    </h5>
+                  </CCol>
+                  <CCol lg="3">
+                    <h5>{{ patient.bloodGroup.label }}</h5>
+                  </CCol>
+                  <CCol lg="2">
+                    <h5>
+                      Telefon Numarası:
+                    </h5>
+                  </CCol>
+                  <CCol lg="3">
+                    <h5>{{ patient.mobilePhone }}</h5>
+                  </CCol>
+                </CRow>
+                <hr>
+                <CRow>
+                  <CCol lg="2">
+                    <h5>
+                      Cinsiyet:
+                    </h5>
+                  </CCol>
+                  <CCol lg="3">
+                    <h5>{{ patient.gender.label }}</h5>
+                  </CCol>
+                  <CCol lg="2">
+                    <h5>
+                      E-Mail
+                    </h5>
+                  </CCol>
+                  <CCol lg="3">
+                    <h5>{{ patient.email }}</h5>
+                  </CCol>
+                </CRow>
               </CCardBody>
             </CCollapse>
           </CCard>
@@ -105,46 +112,117 @@
           <CCard v-if="show">
             <template>
               <CCardBody>
+                <CTabs>
+                  <CTab title="Protokol Ekle" active>
+                    <CCard class="mt-5">
+                      <CCard>
+                        <CCardHeader>
+                          <div class="card-header-actions">
 
-                <CDataTable
-                    :items="protocols"
-                    :fields="fieldsTable"
-                    column-filter
-                    :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
-                    hover
-                    sorter
-                    pagination
-                    :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
-                    clickableRows
+                            <CDropdown href="#" class="card-header-action btn-setting" toggler-text="İşlemler">
 
-                >
-                  <template #patient="{ item, index }">
-                    <td class="py-2">
+                              <CDropdownItem>
+                                <CButton @click="protocolUpdateModal=true" color="primary">Tahlil Ekle</CButton>
 
-                      {{ item.patient.label }}
-                    </td>
-                  </template>
+                              </CDropdownItem>
+                            </CDropdown>
+                          </div>
+                        </CCardHeader>
+                        <CCardBody>
+                          <CRow>
+                            <CCol lg="6">
+                              <validation-observer ref="simpleRules">
+                                <CRow>
+                                  <CCol lg="12">
+                                    <validation-provider
+                                        #default="{errors}"
+                                        rules="required|min:3|max:100"
+                                        name="Şikayet">
+                                      Şikayet<span class="text-danger">*</span>
+                                      <span class="text-danger">{{ errors[0] }}</span>
+                                      <CTextarea
 
-                  <template #assayList="{ item, index }">
-                    <td class="py-2">
+                                          description=""
+                                          autocomplete="autocomplete"
+                                          v-model="protocol.description"
+                                          :state="errors.length > 0 ? false:null"
+                                      />
+                                    </validation-provider>
+                                  </CCol>
+                                </CRow>
+                              </validation-observer>
+                            </CCol>
+                            <CCol lg="6">
+                              <CCardSubtitle class="mt-2">İstenilen Tahliller
+                              </CCardSubtitle>
+                              <CListGroup>
+                                <CListGroupItem>
+                                  <CListGroup>
+                                    <CListGroupItem v-for="(selected,index) in protocol.assays">
+                                      {{ selected.name }}
+                                      <CButton @click="minusSelectedAssay(selected)">
+                                        <CIcon :content="$options.freeSet.cilMinus"
+                                               name="cil-minus" class="ml-3"/>
 
-                      <span v-for="assay in item.assayList">{{ assay.name }} - </span>
-                    </td>
-                  </template>
+                                      </CButton>
+                                    </CListGroupItem>
+                                  </CListGroup>
+                                </CListGroupItem>
+                              </CListGroup>
+                            </CCol>
+                          </CRow>
+                          <CRow>
+                            <CCol lg="6">
+                              <CButton @click="addProtocol" color="primary">Kaydet</CButton>
+                            </CCol>
+                          </CRow>
+                        </CCardBody>
+                      </CCard>
+                    </CCard>
+                  </CTab>
+                  <CTab title="Geçmiş Protokoller">
+                    <CCardBody>
+
+                      <CDataTable
+                          :items="protocols"
+                          :fields="fieldsTable"
+                          column-filter
+                          :border="true"
+                          :items-per-page="5"
+                          :activePage="4"
+                          hover
+                          sorter
+                          pagination
+                          :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+                          clickableRows
+
+                      >
+                        <template #patient="{ item, index }">
+                          <td class="py-2">
+
+                            {{ item.patient.label }}
+                          </td>
+                        </template>
+
+                        <template #assayList="{ item, index }">
+                          <td class="py-2">
+
+                            <span v-for="assay in item.assayList">{{ assay.name }} - </span>
+                          </td>
+                        </template>
 
 
-                  <template #actions="{ item, index }">
-                    <td class="py-2">
+                        <template #actions="{ item, index }">
+                          <td class="py-2">
 
 
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-
-                      <CButton @click="getSingleProtocol(item.uuid)" color="success">Düzenle</CButton>
-                    </td>
-                  </template>
-                </CDataTable>
+                            <CButton @click="getSingleOldProtocol(item.uuid)" color="success">Görüntüle</CButton>
+                          </td>
+                        </template>
+                      </CDataTable>
+                    </CCardBody>
+                  </CTab>
+                </CTabs>
               </CCardBody>
             </template>
           </CCard>
@@ -154,24 +232,36 @@
 
 
     <CModal
-        title="Modal title"
-        color="danger"
-        :show.sync="deleteModel"
-
+        :show.sync="showResultModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
     >
-      Protokol silmek istediğinizden emin misiniz?
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="showResultModal">
+              <template>
+                <CCardBody>
+                  <CTableWrapper :items="getShuffledUsersData()" :fields="fieldsTableAssay">
 
-
+                  </CTableWrapper>
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
       <template #header>
-        <h6 class="modal-title">Uyarı</h6>
-        <CButtonClose @click="deleteModel = false" class="text-white"/>
+        <h6 class="modal-title">Sonuçlar</h6>
+        <CButtonClose @click="showResultModal = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteProtocol" color="success">Evet</CButton>
+        <CButton @click="showResultModal = false" color="danger">Kapat</CButton>
+
       </template>
-
-
     </CModal>
 
 
@@ -189,57 +279,54 @@
             <CCard v-if="protocolUpdateModal">
               <template>
                 <CCardBody>
-                  <CRow>
-
-                    <validation-observer ref="simpleRules">
-                      <CRow>
-
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Açıklama">
-                            Açıklama <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-
-                                v-model="protocolUpdate.description"
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
-                        </CCol>
+                  <validation-observer ref="simpleRules">
+                    <CRow>
 
 
-                        <CCol lg="6">
-
-                          Tahlil <span class="text-danger">*</span>
-
-                          <multiselect
-                              :options="assays"
-                              label="name"
-                              multiple
-                              class="form-multi-select"
-                              v-model="assayArray"
-
-
-                          >
-                          </multiselect>
-
-                        </CCol>
-
-
-                        <CCol lg="3">
-                          Hasta <span class="text-danger">*</span>
-                          <CSelect
-                              :options="patients"
+                      <CCol lg="6">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Tahlil Adı">
+                          Tahlil Adı <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+                          <CInput
                               description=""
                               autocomplete="autocomplete"
-                              v-model="protocolUpdate.patient"
-                              :value.sync="protocolUpdate.patient"
+                              v-model="assay.assayName"
+                              @input="getAssays"
+                              :state="errors.length > 0 ? false:null"
                           />
-                        </CCol>
-                      </CRow>
-                    </validation-observer>
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="6" class="mt-4">
+                        <CButton @click="getAssays" color="success">Ara</CButton>
+
+                      </CCol>
+
+                    </CRow>
+                  </validation-observer>
+                  <hr>
+                  <CRow>
+                    <CCol lg="6">
+
+                      <CListGroup>
+                        <CListGroupItem v-for="assay in assayArray">{{ assay.name }}
+                          <CButton @click="pushSelectedAssay(assay)">
+                            <CIcon :content="$options.freeSet.cilPlus"
+                                   name="cil-plus" class="ml-3"/>
+
+                          </CButton>
+                        </CListGroupItem>
+                      </CListGroup>
+                    </CCol>
+                    <CCol lg="6">
+                      <CCard>
+                        <CListGroup>
+                          <CListGroupItem v-for="selected in selectedAssays">{{ selected.name }}</CListGroupItem>
+                        </CListGroup>
+                      </CCard>
+                    </CCol>
                   </CRow>
                 </CCardBody>
               </template>
@@ -248,12 +335,74 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Hasta Güncelle</h6>
-        <CButtonClose @click="protocolUpdateModal = false" class="text-white"/>
+        <h6 class="modal-title">Tahlil Ekle</h6>
+        <CButtonClose @click="closeModalAssay" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="protocolUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton @click="closeModalAssay" color="danger">Kapat</CButton>
+        <CButton @click="setAssayModal" color="success">Ekle</CButton>
+      </template>
+    </CModal>
+
+
+    <CModal
+        :show.sync="protocolNewUpdateModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="protocolNewUpdateModal">
+              <template>
+                <CCardBody>
+                  <CRow>
+                    <CCol lg="6">
+                      Açıklama <span class="text-danger">*</span>
+                      <CInput
+                          disabled
+                          v-model="protocolUpdate.description"
+                      />
+                    </CCol>
+                    <CCol lg="6">
+                      <CListGroup>
+                        <CListGroupItem v-for="selected in patientAssays">
+                          <CRow>
+
+                            <CCol lg="9">
+                              {{ selected.label }}
+
+                            </CCol>
+
+                            <CCol lg="3">
+
+                              <CButton @click="getSingleAssayResult(selected.value)" color="success">Görüntüle</CButton>
+                            </CCol>
+                          </CRow>
+
+
+                        </CListGroupItem>
+
+
+                      </CListGroup>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Protokol</h6>
+        <CButtonClose @click="protocolNewUpdateModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="protocolNewUpdateModal = false" color="danger">Kapat</CButton>
+
       </template>
     </CModal>
 
@@ -274,26 +423,33 @@ import Protocol from "@/models/pms/protocol";
 import VSimpleCheckbox from 'vuetify'
 import ProtocolService from "@/services/managementServices/protocol.service";
 import AssayService from "@/services/managementServices/assay.service";
-import Multiselect from 'vue-multiselect'
+import Assay from "@/models/pms/assay";
+import {freeSet} from "@coreui/icons";
+import usersData from "@/views/users/UsersData";
+import CTableWrapper from '@/views/base/Table.vue'
 
 export default {
   name: "Clinic",
+  freeSet,
   components: {
     ValidationProvider,
     ValidationObserver,
     // eslint-disable-next-line vue/no-unused-components
     VSimpleCheckbox,
-    Multiselect
+    CTableWrapper
   },
   data() {
     return {
       fieldsTable: [
         {key: 'description', label: "Açıklama", _style: "min-width:200px"},
         {key: "patient", label: "Hasta"},
-        {key: "assayList", label: "Tahlil"},
         {key: "actions", label: "İşlemler"},
       ],
-
+      fieldsTableAssay: [
+        {key: 'assayName', label: "Açıklama", _style: "min-width:200px"},
+        {key: "refNo", label: "Referans Değeri"},
+        {key: "assayNo", label: "Tahlil Değeri"},
+      ],
 
       pageLabel: {label: 'sasasa', external: true,},
       page: 1,
@@ -373,17 +529,30 @@ export default {
       genders: [],
       bloodgroups: [],
       patients: [],
-      patientUpdate: new Patient("", "", "", "", "", "", "", "", "", "",),
       protocol: new Protocol("", [], "", false, "", "", 0, ""),
       protocolUpdate: new Protocol("", [], "", false, "", "", 0, ""),
       protocols: [],
       assays: [],
       isPaid: false,
       appointments: [],
-      assayArray: []
+      assayArray: [],
+      assay: new Assay("",),
+      assayUpdate: new Assay("",),
+      selectedAssays: [],
+      protocolNewUpdateModal: false,
+      showResultModal: false,
+      usersData: [
+        {'assayName': 'Smjhjhjuhjh', 'refNo': '686876', 'assayNo': '87878', 'status': 'Active'},
+        {'assayName': 'Estavan Lykos', 'refNo': '8787877', 'assayNo': '988787', 'status': 'Banned'},
+        {'assayName': 'Chetan Mohamed', 'refNo': '8788787', 'assayNo': '878787', 'status': 'Inactive'},
+        {'assayName': 'Derick Maximinus', 'refNo': '87878787', 'assayNo': '878787', 'status': 'Pending'},
+        {'assayName': 'Friderik Dávid', 'refNo': '8887787', 'assayNo': '7877', 'status': 'Active'},
+      ],
+      patientAssays: [],
 
 
     };
+
   },
 
   methods: {
@@ -410,171 +579,133 @@ export default {
       this.$nextTick(() => {
         this.collapseDuration = 0;
       });
+
+    },
+    setAssayModal() {
+      this.selectedAssays = []
+      this.protocolUpdateModal = false
+    },
+    async getSingleOldProtocol(id) {
+      this.protocolNewUpdateModal = true
+      let response = await new ProtocolService().getSingleProtocol(id)
+      await this.getPatientAssays(id)
+      this.protocolUpdate = response.data
+
     },
 
-    isCorporateControl() {
-      this.isCorporate = !this.isCorporate;
-      this.customer.isCorporate = this.isCorporate;
+    async getPatientAssays(id) {
+      let response = await new AssayService().getSinglePatientAssay(id)
+      this.patientAssays = response.data
+
     },
+    closeModalAssay() {
+      this.protocol.assays = []
+      this.selectedAssays = []
+      this.protocolUpdateModal = false
+    },
+
+    async getSingleAssayResult(id) {
+      this.showResultModal = true
+      this.protocolNewUpdateModal = false
+      let response = await new ProtocolService().getResultAssay(id, this.$route.params.patient)
+      this.assayUpdate = response.data
+    },
+
+    async minusSelectedAssay(index) {
+      console.log(index)
+      console.log("assay", this.protocol.assays)
+      const deneme = this.protocol.assays.indexOf(index)
+      console.log("proto", this.protocol.assays.indexOf(1))
+      console.log("deneme", deneme)
+      if (deneme > -1) {
+        console.log("ifte")
+        this.protocol.assays.splice(deneme, 1)
+      }
+      console.log("selectedasssay", this.protocol.assays)
+
+
+    },
+    isUniqeElementInArray(uuid, array) {
+      for (let i = 0; i < array.length; i++) {
+        if (array[i].uuid === uuid) {
+          return false
+        }
+
+      }
+      return true;
+    },
+
+
+    async getSinglePatient() {
+      let response = await new PatientService().getSinglePatient(this.$route.params.patient)
+      this.patient = response.data
+    },
+    async getAssays() {
+      let response = await new AssayService().getAssays(this.assay.assayName)
+      this.assayArray = response.data.data
+    },
+    async pushSelectedAssay(assay) {
+      let obj = {
+        name: assay.name,
+        uuid: assay.uuid
+      }
+      if (this.isUniqeElementInArray(obj.uuid, this.selectedAssays)) {
+        this.selectedAssays.push(obj)
+      }
+      obj = {}
+      this.protocol.assays = this.selectedAssays
+    },
+    async addProtocol() {
+      for (let i = 0; i < this.protocol.assays.length; i++) {
+        this.protocol.assays[i] = this.protocol.assays[i].uuid
+      }
+
+      this.protocol.patient = this.$route.params.patient
+      let response = await new ProtocolService().addProtocol(this.protocol)
+      if (response.status === 200) {
+        await this.getOldProtocols()
+        this.protocol = new Protocol("", [])
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Protokol başarıyla eklendi"
+        })
+      }
+    },
+    async getOldProtocols() {
+      let response = await new ProtocolService().getPatientProtocols(this.$route.params.patient)
+      this.protocols = response.data
+    },
+
     setDeleteModal(id) {
 
       this.deleteId = id
       this.deleteModel = true
-
     },
 
-    async addProtocol() {
-      //if (this.protocol.assays === "") {
-      //this.protocol.assays = this.assays[0].value
-      // }
-
-      for (let i = 0; i < this.assayArray.length; i++) {
-        this.assayArray[i] = this.assayArray[i].value
+    shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1))
+        let temp = array[i]
+        array[i] = array[j]
+        array[j] = temp
       }
-      this.protocol.assays = this.assayArray
-      if (this.protocol.patient === "") {
-        this.protocol.patient = this.patients[0].value
-      }
-
-      let response = await new ProtocolService().addProtocol(this.protocol)
-      if (response.status === 200) {
-        await this.getProtocols()
-        this.protocol = new Protocol()
-        this.$toast.success({
-          title: 'Başarılı',
-          message: "Protokol başarıyla eklendi"
-        })
-      } else {
-        this.isError = true;
-        this.errors = response.response.data;
-        for (const [key, value] of Object.entries(this.errors)) {
-          this.$toast.error({
-            title: 'Hata',
-            message: `${key}: ${value}`
-          })
-        }
-      }
-
+      return array
     },
 
-    async getSingleProtocol(id) {
-
-      let response = await new ProtocolService().getSingleProtocol(id)
-      this.protocolUpdate = response.data
-      this.assayArray = response.data.assayList
-      this.protocolUpdate.patient = response.data.patient.value
-      if (response.status === 200) {
-        this.protocolUpdateModal = true
-
-      }
-
-    },
-
-    async getAssays() {
-
-      let response = await new AssayService().getAssaysSelect()
-      this.assays = response.data
-    },
-
-    async getPatients() {
-
-      let response = await new PatientService().getPatientsSelect()
-      this.patients = response.data
-    },
-
-
-    async deleteProtocol() {
-
-      let response = await new ProtocolService().deleteProtocol(this.deleteId)
-      if (response.status === 200) {
-        await this.getProtocols()
-        this.deleteModel = false
-        this.$toast.success({
-          title: 'Başarılı',
-          message: "Protokol başarıyla silindi"
-        })
-      } else {
-        this.isError = true;
-        this.errors = response.response.data;
-        for (const [key, value] of Object.entries(this.errors)) {
-          this.$toast.error({
-            title: 'Hata',
-            message: `${key}: ${value}`
-          })
-        }
-      }
-    },
-
-    async editProtocol() {
-      for (let i = 0; i < this.assayArray.length; i++) {
-        this.assayArray[i] = this.assayArray[i].value
-      }
-      this.protocolUpdate.assays = this.assayArray
-
-      if (this.protocolUpdate.patient === "") {
-        this.protocolUpdate.patient = this.patients[0].value
-      }
-
-      let response = await new ProtocolService().editProtocol(this.protocolUpdate)
-      if (response.status === 200) {
-        this.protocolUpdateModal = false
-        await this.getProtocols()
-        this.$toast.success({
-          title: 'Başarılı',
-          message: "Protokol başarıyla eklendi"
-        })
-      } else {
-        this.isError = true;
-        this.errors = response.response.data;
-        for (const [key, value] of Object.entries(this.errors)) {
-          this.$toast.error({
-            title: 'Hata',
-            message: `${key}: ${value}`
-          })
-        }
-      }
-    },
-
-
-    async getProtocols() {
-
-      let response = await new ProtocolService().getProtocols()
-      console.log("response", response)
-      this.protocols = response.data.data
-      console.log(this.protocols)
-    },
-
-
-    async validationForm() {
-      this.$refs.simpleRules.validate().then(async success => {
-        console.log("array", this.assayArray)
-
-        if (success) {
-
-          if (this.protocolUpdate.uuid) {
-            await this.editProtocol()
-          } else {
-            await this.addProtocol()
-          }
-        }
-      })
-    },
+    getShuffledUsersData() {
+      return this.shuffleArray(this.usersData.slice(0))
+    }
   },
 
   watch: {},
 
   async created() {
-    await this.getAssays()
-    await this.getPatients()
-    await this.getProtocols()
+    await this.getSinglePatient()
+    await this.getOldProtocols()
 
 
   },
   async mounted() {
-    await this.getAssays()
-    await this.getPatients()
-    await this.getProtocols()
-
 
   },
   computed: {}
