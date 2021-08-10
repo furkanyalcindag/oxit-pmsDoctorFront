@@ -190,11 +190,15 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-
-
+                        <CDropdown toggler-text="İşlemler">
+                        <CDropdownItem>
                       <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
 
+                          <CDropdownItem>
                       <CButton @click="getSingleAppointment(item.uuid)" color="success">Düzenle</CButton>
+                        </CDropdownItem>
+                       </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
@@ -341,8 +345,12 @@
         <CButtonClose @click="staffUpdateModal = false" class="text-white"/>
       </template>
       <template #footer>
+         <CDropdownItem>
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
+         </CDropdownItem>
+         <CDropdownItem>
         <CButton @click="validationForm" color="success">Güncelle</CButton>
+         </CDropdownItem>
       </template>
     </CModal>
 

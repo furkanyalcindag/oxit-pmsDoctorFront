@@ -292,10 +292,26 @@ const appointment = {
     items: [
         {
             name: 'Klinik İşlemleri',
-            to: '/appointmnet/appointmnet'
+            to: '/appointment/appointment'
         }
     ]
 }
+
+const doctorProfile = {
+    _name: 'CSidebarNavDropdown',
+    name: 'Doktor Profil',
+    route: '/profile',
+    icon: 'cil-people',
+    items: [
+        {
+            name: 'Doktor Profil',
+            to: '/profile'
+        }
+    ]
+}
+
+
+
 
 
 const contracts = {
@@ -363,6 +379,8 @@ if (user_group === groups.admin) {
     items.push(patientCalendar)
     items.push(assay)
     items.push(protocol)
+    items.push(doctorProfile)
+
 
     // items.push(staff)
 }

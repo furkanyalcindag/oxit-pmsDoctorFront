@@ -95,11 +95,17 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
+                        <CDropdown toggler-text="İşlemler">
+                        <CDropdownItem>
 
 
                       <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                          </CDropdownItem>
+                        <CDropdownItem>
 
                       <CButton @click="getSingleAssay(item.uuid)" color="success">Düzenle</CButton>
+
+                          </CDropdownItem>
                     </td>
                   </template>
                 </CDataTable>

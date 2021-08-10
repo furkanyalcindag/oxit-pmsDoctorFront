@@ -426,6 +426,9 @@
                               v-model="patientUpdate.bloodgroup"
                               :value.sync="patinetUpdate.bloodgroup"
                           />
+
+
+
                         </CCol>
                         <CCol lg="3">
                           <validation-provider

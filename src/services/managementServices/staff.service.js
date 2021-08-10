@@ -8,6 +8,35 @@ class StaffService {
 
     }
 
+    getGeneralInfo() {
+        return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/general-info-api/', {headers: authHeader()})
+
+    }
+
+    editGeneralInfo(staff) {
+        const params = {
+            id: staff.uuid
+
+
+        }
+        return axios.put(process.env.VUE_APP_API_URL + '/pmsDoctor/general-info-api/', {
+            profileImage: staff.profileImage,
+            diplomaNo: staff.diplomaNo,
+            departmentId: staff.department.value,
+            profession: staff.profession,
+            title: staff.title
+
+
+        }, {headers: authHeader(), params}).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            return error
+        });
+
+    }
+
     addStaff(staff) {
         return axios.post(process.env.VUE_APP_API_URL + '/management/staff-api/', {
             firstName: staff.firstName,

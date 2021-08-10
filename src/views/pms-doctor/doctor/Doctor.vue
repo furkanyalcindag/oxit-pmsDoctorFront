@@ -66,7 +66,7 @@
                           #default="{errors}"
                           rules="required|min:3|max:100"
                           name="Diploma No">
-                        DiplomA No <span class="text-danger">*</span>
+                        Diploma No <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
                         <CInput
                             description=""
