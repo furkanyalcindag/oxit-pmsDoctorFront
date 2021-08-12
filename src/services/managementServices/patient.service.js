@@ -27,8 +27,8 @@ class PatientService {
                 identityNumber :patient.identityNumber,
                 mobilePhone : patient.mobilePhone,
                 address : patient.address,
-                birthDate : patient.birthdate,
-                bloodGroupId : patient.bloodgroup,
+                birthDate : patient.birthDate,
+                bloodGroupId : patient.bloodGroup,
                 email : patient.email
 
 
@@ -54,8 +54,8 @@ class PatientService {
                 identityNumber :patient.identityNumber,
                 mobilePhone : patient.mobilePhone,
                 address : patient.address,
-                birthDate : patient.birthdate,
-                bloodGroupId : patient.bloodgroup,
+                birthDate : patient.birthDate,
+                bloodGroupId : patient.bloodGroup,
                 email : patient.email
             }, {headers: authHeader(),params}).then(response => {
 

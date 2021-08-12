@@ -6,9 +6,11 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Genel Bilgiler
+              İletişim Bilgileri
               <div class="card-header-actions">
-
+                <CButton @click="contactInfoModal = true">
+                  <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
+                </CButton>
                 <CLink
                     class="card-header-action btn-minimize"
                     @click="formCollapsed = !formCollapsed"
@@ -22,64 +24,84 @@
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                <CRow>
-                  <CCol lg="2">
-                    <h3>
-                      height="24" width="24"/>
+                <CRow v-for="(c,index) in contacts" :key="index">
+                  <CCol lg="4">
+                    <h5>
+                      <img src="../../../icons/icons8-instagram-logo-24.png" height="24" width="24"/>
+
                       Instagram
-                    </h3>
+                    </h5>
+
+
                     <hr>
-                    <h5 v-if="contact.instagram">{{ contact.instagram }}</h5>
-                    <h5 v-else>-</h5>
+                    <h6 v-if="c.instagram">{{ c.instagram }}</h6>
+                    <h6 v-else>-</h6>
 
                   </CCol>
-                  <CCol lg="2">
+                  <CCol lg="4">
 
 
-                    <h3>
+                    <h5>
                       <img src="../../../icons/icons8-tag-window-24.png" height="24" width="24"/>
                       Web Site
-                    </h3>
+                    </h5>
                     <hr>
-                    <h5 v-if="contact.website">{{ contact.website }}</h5>
+                    <h5 v-if="c.website">{{ c.website }}</h5>
                     <h5 v-else>-</h5>
 
                   </CCol>
-                  <CCol lg="2">
-                    <h3>
-                      <img src="../../../icons/icons8-tag-window-24.png" height="24" width="24"/>
+                  <CCol lg="3">
+                    <h5>
+                      <img src="../../../icons/icons8-facebook-circled-24.png" height="24" width="24"/>
+
                       Facebook
-                    </h3>
+                    </h5>
+
+
                     <hr>
-                    <h5 v-if="contact.facebook">{{ contact.facebook }}</h5>
-                    <h5 v-else>-</h5>
+                    <h6 v-if="c.facebook">{{ c.facebook }}</h6>
+                    <h6 v-else>-</h6>
 
                   </CCol>
-                  <CCol lg="2">
-                    <h3>Linkedin</h3>
+                  <CCol lg="4">
+                    <h5>
+
+
+                      <img src="../../../icons/icons8-linkedin-24.png" height="24" width="24"/>
+                      Linkedin
+
+
+                    </h5>
                     <hr>
-                    <h5 v-if="contact.linkedIn">{{ contact.linkedIn }}</h5>
-                    <h5 v-else>-</h5>
+                    <h6 v-if="c.linkedIn">{{ c.linkedIn }}</h6>
+                    <h6 v-else>-</h6>
 
                   </CCol>
-                  <CCol lg="2">
+                  <CCol lg="4">
+
+                    <h5>
+                      <img src="../../../icons/icons8-youtube-play-button-24.png" height="24" width="24"/>
+                      Youtube</h5>
 
 
-                    <h3>Youtube</h3>
                     <hr>
-                    <h5 v-if="contact.youtube">{{ contact.youtube }}</h5>
-                    <h5 v-else>-</h5>
+                    <h6 v-if="c.youtube">{{ c.youtube }}</h6>
+                    <h6 v-else>-</h6>
 
                   </CCol>
 
 
-                  <CCol lg="2">
-                    <h3><img src="../../../icons/icons8-numbers-input-form-24.png" height="24" width="24"/>
+                  <CCol lg="3">
+                    <h5>
+                      <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
+
                       Telefon
-                    </h3>
+                    </h5>
+
+
                     <hr>
-                    <h5 v-if="contact.mobilePhone">{{ contact.mobilePhone }}</h5>
-                    <h5 v-else>-</h5>
+                    <h6 v-if="c.mobilePhone">{{ c.mobilePhone }}</h6>
+                    <h6 v-else>-</h6>
 
                   </CCol>
                   <CCol lg="1">
@@ -111,6 +133,152 @@
         <CCol lg="12">
           <transition name="fade">
             <CCard v-if="contactInfoUpdateModal">
+              <template>
+                <CCardBody>
+                  <CRow>
+
+                    <validation-observer ref="simpleRules">
+                      <CRow>
+
+                        <CCol lg="3">
+
+                          Telefon <span class="text-danger">*</span>
+
+                          <CInput
+
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="contactUpdate.mobilePhone"
+
+                          />
+
+                        </CCol>
+
+
+                        <CCol lg="3">
+                          Adres <span class="text-danger">*</span>
+
+                          <CInput
+
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="contactUpdate.address"
+
+                          />
+
+
+                        </CCol>
+                        <CCol lg="3">
+                          Web Site <span class="text-danger">*</span>
+
+                          <CInput
+
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="contactUpdate.website"
+
+                          />
+
+
+                        </CCol>
+                        <CCol lg="3">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Diploma No">
+                            E-mail <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                disabled
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="contactUpdate.diplomaNo"
+                                :state="errors.length > 0 ? false:null"
+                            />
+
+                          </validation-provider>
+                        </CCol>
+
+
+                        <CCol lg="3">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Uzmanlık Alanı">
+                            Instagram <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="contactUpdate.instagram"
+                                :state="errors.length > 0 ? false:null"
+                            />
+
+                          </validation-provider>
+                        </CCol>
+
+
+                        <CCol lg="3">
+                          Youtube <span class="text-danger">*</span>
+                          <CInput
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="contactUpdate.youtube"
+
+                              :state="errors.length > 0 ? false:null"
+                          />
+
+                        </CCol>
+
+
+                        <CCol lg="3">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Ünvan">
+                            Linkedin <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="contact.linkedIn"
+
+                                :state="errors.length > 0 ? false:null"
+                            />
+                          </validation-provider>
+                        </CCol>
+
+
+                      </CRow>
+                    </validation-observer>
+                  </CRow>
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">İletişim Bilgileri Güncelle</h6>
+        <CButtonClose @click="contactInfoUpdateModal = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="contactInfoUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="validationForm" color="success">Güncelle</CButton>
+      </template>
+    </CModal>
+    <CModal
+        :show.sync="contactInfoModal"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="contactInfoModal">
               <template>
                 <CCardBody>
                   <CRow>
@@ -167,7 +335,6 @@
                             E-mail <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
                             <CInput
-                                disabled
                                 description=""
                                 autocomplete="autocomplete"
                                 v-model="contact.diplomaNo"
@@ -237,16 +404,14 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Personel Güncelle</h6>
-        <CButtonClose @click="contactInfoUpdateModal = false" class="text-white"/>
+        <h6 class="modal-title">İletişim Bilgileri Güncelle</h6>
+        <CButtonClose @click="contactInfoModal = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="contactInfoUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="contactInfoModal = false" color="danger">Kapat</CButton>
         <CButton @click="validationForm" color="success">Güncelle</CButton>
       </template>
     </CModal>
-
-
   </div>
 </template>
 
@@ -259,9 +424,11 @@ import {required, email, min, max} from 'validations'
 import Doctor from "@/models/pms/doctor";
 import Contact from "@/models/pms/contact";
 import ContactService from "@/services/managementServices/contact.service";
+import {freeSet} from '@coreui/icons'
 
 export default {
   name: "Clinic",
+  freeSet,
   components: {
     ValidationProvider,
     ValidationObserver,
@@ -368,6 +535,9 @@ export default {
       departments: [],
       doctors: [],
       contact: new Contact("", "", "", "", "", "", "",),
+      contactInfoModal: false,
+      contacts: [],
+      contactUpdate: new Contact("", "", "", "", "", "", "",),
 
 
     };
@@ -400,11 +570,24 @@ export default {
       }
 
     },
+    async addContactInfo() {
+      let response = await new ContactService().addContactInfo(this.contact);
+      if (response.status === 200) {
+        this.contactInfoUpdateModal = false
+        await this.getContactInfo()
+      }
+
+    },
 
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
         if (success) {
-          await this.editContactInfo()
+          if (this.contactUpdate.uuid) {
+            await this.editContactInfo()
+
+          } else {
+            await this.addContactInfo()
+          }
         }
       })
 

@@ -106,6 +106,7 @@
                       <CButton @click="getSingleAssay(item.uuid)" color="success">Düzenle</CButton>
 
                           </CDropdownItem>
+                        </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
