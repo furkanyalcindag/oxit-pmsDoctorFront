@@ -1,15 +1,14 @@
-// import UserService from "../services/UserService"
+import UserService from "../services/UserService"
 
-const user_group = localStorage.getItem('user_group')
-console.log("user_grtoup", user_group)
+const user_group = UserService.getUserGroup()
 const groups = {
     admin: "Admin",
     clinic: "Clinic",
-    serviceman: "Tamirci",
-    customer: "Customer",
-    accountant: "Muhasebe",
-    secretary : "Secretary",
-    patient : "Patient",
+    secretary: "Secretary",
+    patient: "Patient",
+    doctor: "Doctor",
+    staff: "Staff",
+    company: "Company"
 
 }
 
@@ -18,16 +17,12 @@ switch (user_group) {
     case groups.admin:
         dashboard_link = "admin-dashboard"
         break;
-    case groups.customer:
-        dashboard_link = "customer-dashboard"
+    case groups.secretary:
+        dashboard_link = "secretary-dashboard"
         break;
-    case groups.serviceman:
-        dashboard_link = "serviceman-dashboard"
+    case groups.doctor:
+        dashboard_link = "doctor-dashboard"
         break;
-    case groups.accountant:
-        dashboard_link = "accountant-dashboard"
-        break;
-
     default:
         break;
 }
@@ -42,162 +37,42 @@ const actions = {
     _name: 'CSidebarNavTitle',
     _children: ['İşlemler']
 }
-// const current = {
-//     _name: 'CSidebarNavDropdown',
-//     name: 'Cari',
-//     route: '/checking-account',
-//     icon: 'cil-calculator',
-//     items: [
-//         {
-//             name: 'Cari İşlemler',
-//             to: '/checking-account/checking-account-list'
-//         }
-//     ]
-// }
-
 const doctor = {
-    _name: 'CSidebarNavDropdown',
+    _name: 'CSidebarNavItem',
     name: 'Doktor',
-    route: '/doctor',
-    icon: 'cil-user',
-    items: [
-        {
-            name: 'Doktor',
-            to: '/list'
-        }
-    ]
+    to: '/doctor/list',
+    icon: 'cil-user'
 }
-
 const patient = {
-    _name: 'CSidebarNavDropdown',
-    name: 'Patient',
-    route: '/patient',
+    _name: 'CSidebarNavItem',
+    name: 'Hasta',
+    to: '/patient/list',
     icon: 'cil-user',
-    items: [
-        {
-            name: 'Hasta',
-            to: '/list'
-        }
-    ]
 }
-
 const assay = {
-    _name: 'CSidebarNavDropdown',
-    name: 'Assay',
-    route: '/assay',
+    _name: 'CSidebarNavItem',
+    name: 'Tahliller',
+    to: '/assay/assay',
     icon: 'cil-user',
-    items: [
-        {
-            name: 'Tahlil',
-            to: '/assay/assay'
-        }
-    ]
 }
-
 const patientCalendar = {
-    _name: 'CSidebarNavDropdown',
-    name: 'PatientCalendar',
-    route: '/patientCalendar',
+    _name: 'CSidebarNavItem',
+    name: 'Hasta Takvimi',
+    to: '/patientCalendar/patientCalendar',
     icon: 'cil-user',
-    items: [
-        {
-            name: 'Takvim',
-            to: '/patientCalendar/patientCalendar'
-        }
-    ]
 }
-
-
-
 const secretary = {
-    _name: 'CSidebarNavDropdown',
+    _name: 'CSidebarNavItem',
     name: 'Sekreter',
-    route: '/secretary',
+    to: '/secretary/list',
     icon: 'cil-user',
-    items: [
-        {
-            name: 'Sekreter',
-            to: '/list'
-        }
-    ]
 }
-// const customer = {
-//     _name: 'CSidebarNavDropdown',
-//     name: 'Müşteri',
-//     route: '/customer',
-//     icon: 'cil-user',
-//     items: [
-//         {
-//             name: 'Müşteri',
-//             to: '/customer/customer'
-//         }
-//     ]
-// }
-// const catalog = {
-//     _name: 'CSidebarNavDropdown',
-//     name: 'Katalog',
-//     route: '/category',
-//     icon: 'cil-playlist-add',
-//     items: [
-//         {
-//             name: 'Kategori',
-//             to: '/catalog/category'
-//         },
-//         {
-//             name: 'Ürünler',
-//             to: '/catalog/product-list'
-//         },
-//         {
-//             name: 'Marka',
-//             to: '/catalog/brand'
-//         }
-//     ]
-// }
-// const staff = {
-//     _name: 'CSidebarNavDropdown',
-//     name: 'Personel',
-//     route: '/staff',
-//     icon: 'cil-people',
-//     items: [
-//         {
-//             name: 'Personel İşlemleri',
-//             to: '/staff/staff-operations'
-//         },
-//
-//         {
-//             name: 'Personel İşlemleri PMS',
-//             to: '/staff/staff'
-//         }
-//     ]
-// }
-
-
 const clinic = {
     _name: 'CSidebarNavDropdown',
     name: 'Klinik',
-    route: '/clinic',
+    route: '/clinic/clinic',
     icon: 'cil-people',
-    items: [
-        {
-            name: 'Klinik İşlemleri',
-            to: '/clinic/clinic'
-        }
-    ]
 }
-
-
-// const services = {
-//     _name: 'CSidebarNavDropdown',
-//     name: 'Servis',
-//     route: '/service',
-//     icon: 'cil-file',
-//     items: [
-//         {
-//             name: 'Servis Listesi',
-//             to: '/service/service-list'
-//         }
-//     ]
-// }
 const staffs = {
     _name: 'CSidebarNavDropdown',
     name: 'Personel',
@@ -213,21 +88,12 @@ const staffs = {
         }
     ]
 }
-
-
-const protocol = {
-    _name: 'CSidebarNavDropdown',
-    name: 'Protokol',
-    icon: 'cil-file',
-    items: [
-        {
-            name: 'Protokol',
-            to: '/protocol/:patient'
-        },
-
-    ]
-}
-
+// const protocol = {
+// _name: 'CSidebarNavItem',
+// name: 'Protokol',
+// to: '/protocol',
+// icon: 'cil-file',
+// }
 const permission = {
     _name: 'CSidebarNavItem',
     name: 'Yetkilendirme',
@@ -254,79 +120,37 @@ const advertisement = {
     ]
 
 }
-
-
 const notifications = {
-    _name: 'CSidebarNavDropdown',
+    _name: 'CSidebarNavItem',
     name: 'Bildirim ',
+    to: '/notifications',
     icon: 'cil-file',
-    items: [
-        {
-            name: 'Bildirim',
-            to: '/notifications'
-        }
-    ]
-
 }
-
-
 const wristbands = {
-    _name: 'CSidebarNavDropdown',
+    _name: 'CSidebarNavItem',
     name: 'Bileklik ',
+    to: '/wristbands',
     icon: 'cil-file',
-    items: [
-        {
-            name: 'Bileklik',
-            to: '/wristbands'
-        }
-    ]
-
 }
-
-
 const appointment = {
-    _name: 'CSidebarNavDropdown',
+    _name: 'CSidebarNavItem',
     name: 'Randevu',
-    route: '/appointment',
+    to: '/appointment/appointment',
     icon: 'cil-people',
-    items: [
-        {
-            name: 'Klinik İşlemleri',
-            to: '/appointment/appointment'
-        }
-    ]
 }
-
 const doctorProfile = {
-    _name: 'CSidebarNavDropdown',
+    _name: 'CSidebarNavItem',
     name: 'Doktor Profil',
-    route: '/profile',
+    to: '/profile',
     icon: 'cil-people',
-    items: [
-        {
-            name: 'Doktor Profil',
-            to: '/profile'
-        }
-    ]
 }
-
-
-
-
-
 const contracts = {
-    _name: 'CSidebarNavDropdown',
+    _name: 'CSidebarNavItem',
     name: 'Sözleşme',
+    to: '/contracts',
     icon: 'cil-file',
-    items: [
-        {
-            name: 'Sözleşme',
-            to: '/contracts'
-        }
-    ]
 
 }
-
 const accounting = {
     _name: 'CSidebarNavDropdown',
     name: 'Muhasebe',
@@ -351,60 +175,38 @@ const accounting = {
     ]
 
 }
-
 var items = []
-items.push(home)
+// items.push(home)
 items.push(actions)
-// if (user_group === groups.admin || user_group === groups.accountant) {
-//     items.push(current)
-// }
-// if (user_group === groups.admin || user_group === groups.accountant || user_group === groups.customer) {
-//     items.push(customer)
-// }
-// if (user_group === groups.admin || user_group === groups.serviceman) {
-//     items.push(catalog)
-// }
-
-if (user_group === groups.admin) {
+if (user_group === groups.clinic || user_group === groups.doctor) {
     console.log("user", user_group)
-    items.push(clinic)
+    items.push(assay)
+    items.push(appointment)
+    items.push(patient)
+
+}
+if (user_group === groups.admin) {
+    console.log("Admin", user_group)
     items.push(staffs)
+    items.push(clinic)
     items.push(permission)
+    items.push(wristbands)
+    items.push(contracts)
     items.push(advertisement)
     items.push(accounting)
     items.push(notifications)
-    items.push(wristbands)
-    items.push(contracts)
-    items.push(appointment)
-    items.push(patientCalendar)
-    items.push(assay)
-    items.push(protocol)
-    items.push(doctorProfile)
-
-
-    // items.push(staff)
 }
 if (user_group === groups.clinic) {
     console.log("clinic", user_group)
     items.push(doctor)
     items.push(secretary)
-    items.push(patient)
-
 }
-// if (user_group === groups.admin || user_group === groups.serviceman || user_group === groups.customer) {
-//     //items.push(services)
-//     items.push(clinic)
-// }
-// else {
-//     items.push(clinic)
-//     items.push(staffs)
-//     items.push(permission)
-//     items.push(advertisement)
-//     items.push(accounting)
-//     items.push(notifications)
-//     items.push(wristbands)
-//     items.push(contracts)
-// }
+if (user_group === 'Doctor') {
+    console.log("doctor", user_group)
+    items.push(patientCalendar)
+// items.push(protocol)
+    items.push(doctorProfile)
+}
 export default [
     {
         _name: 'CSidebarNav',

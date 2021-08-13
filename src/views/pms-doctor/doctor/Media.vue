@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Hakkında
+              Medya Bilgileri
               <div class="card-header-actions">
 
                 <CLink
@@ -22,27 +22,17 @@
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                <CRow>
-
-
-                  <CCol lg="11">
-
-                    <img src="../../../icons/icons8-about-24.png" height="24" width="24"/></h3>
-                    Hakkında
-
-                    <hr>
-                    <h5 v-if="about.about">{{ about.about }}</h5>
-                    <h5 v-else>-</h5>
+                <CRow v-for="(m,index) in medias" :key="index">
+                  <CCol lg="6" class="mt-2">
+                    <img :src="m.media" height="200" width="150">
 
                   </CCol>
                   <CCol lg="1">
-                    <CButton @click="getSingleAbout">
+                    <CButton @click="setDeleteModal(m.uuid)">
                       <CIcon name="cil-pencil"/>
                     </CButton>
-
                   </CCol>
                 </CRow>
-
 
               </CCardBody>
             </CCollapse>
@@ -50,10 +40,8 @@
         </transition>
       </CCol>
     </CRow>
-
-
     <CModal
-        :show.sync="aboutUpdateModal"
+        :show.sync="mediaUpdateModal"
         :no-close-on-backdrop="true"
         :centered="true"
         title="Modal title 2"
@@ -63,7 +51,7 @@
       <CRow>
         <CCol lg="12">
           <transition name="fade">
-            <CCard v-if="aboutUpdateModal">
+            <CCard v-if="mediaUpdateModal">
               <template>
                 <CCardBody>
 
@@ -72,14 +60,14 @@
 
                       <CCol lg="12">
 
-                        Hakkında <span class="text-danger">*</span>
+                        Medya <span class="text-danger">*</span>
 
-                        <CTextarea
-                            rows="3"
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="aboutUpdate.about"
-
+                        <CInputFile
+                            horizontal
+                            @change="getBase64"
+                            custom
+                            :placeholder="selectedFile"
+                            :state="errors.length > 0 ? false:null"
                         />
 
                       </CCol>
@@ -93,12 +81,42 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Hakkında Güncelle</h6>
-        <CButtonClose @click="aboutUpdateModal = false" class="text-white"/>
+        <h6 class="modal-title">Medya Ekle</h6>
+        <CButtonClose @click="mediaUpdateModal = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="aboutUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton @click="mediaUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="validationForm" color="success">Ekle</CButton>
+      </template>
+    </CModal>
+    <CModal
+        :show.sync="deleteModel"
+        :no-close-on-backdrop="true"
+        :centered="true"
+        title="Modal title 2"
+        size="xl"
+        color="dark"
+    >
+      <CRow>
+        <CCol lg="12">
+          <transition name="fade">
+            <CCard v-if="deleteModel">
+              <template>
+                <CCardBody>
+                  Medyayı silmek istediğinize emin misiniz?
+                </CCardBody>
+              </template>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">Medya Bilgileri Güncelle</h6>
+        <CButtonClose @click="deleteModel = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="deleteModel = false" color="danger">Kapat</CButton>
+        <CButton @click="deleteMedia" color="success">Sil</CButton>
       </template>
     </CModal>
 
@@ -113,21 +131,27 @@ import Clinic from "@/models/pms/clinic";
 import {ValidationProvider, ValidationObserver} from 'vee-validate'
 import {required, email, min, max} from 'validations'
 import Doctor from "@/models/pms/doctor";
-import Contact from "@/models/pms/contact";
+
 
 import About from "@/models/pms/about";
-import AboutService from "@/services/managementServices/about.service";
+
+import MediaService from "@/services/managementServices/media.service";
+import Media from "@/models/pms/media";
+import {freeSet} from '@coreui/icons'
 
 export default {
   name: "Clinic",
+  freeSet,
+
   components: {
     ValidationProvider,
     ValidationObserver,
+
   },
   data() {
     return {
       fieldsTable: [
-        {key: 'about', label: "Hakkında", _style: "min-width:200px"},
+        {key: 'media', label: "Medya", _style: "min-width:200px"},
         {key: "actions", label: "İşlemler"},
 
       ],
@@ -221,9 +245,12 @@ export default {
       doctorUpdate: new Doctor("", "", "", "", "", "", "", ""),
       departments: [],
       doctors: [],
-      contact: new Contact("", "", "", "", "", "", "",),
-      aboutUpdateModal: false,
-      aboutUpdate: new About("")
+      media: new Media("", "", "", "", "", "", "",),
+      mediaUpdateModal: false,
+      mediaUpdate: new Media(""),
+      medias: [],
+      mediaUUID: '',
+      selectedFile: ''
 
 
     };
@@ -231,35 +258,57 @@ export default {
 
   methods: {
 
-    async getAbout() {
-      let response = await new AboutService().getAbout();
+    async getMedia() {
+      let response = await new MediaService().getMedia();
       if (response.status === 200) {
-        this.about = response.data
+        console.log("res", response)
+        this.medias = response.data
+        console.log("medi", this.medias)
       }
     },
 
-    async getSingleAbout() {
-      this.aboutUpdateModal = true
-      let response = await new AboutService().getAbout();
-      if (response.status === 200) {
-        this.aboutUpdate = response.data
-      }
+    getBase64(event) {
+      var reader = new FileReader();
+      reader.readAsDataURL(event[0]);
+      this.selectedFile = event.length + ' dosya seçildi'
+      var x = this
+      reader.onload = function () {
+        x.media.media = reader.result
+
+
+      };
     },
 
-    async editAbout() {
 
-      let response = await new AboutService().editAbout(this.contact);
+    async addMedia() {
+      let response = await new MediaService().addMedia(this.media)
       if (response.status === 200) {
-        this.aboutUpdateModal = false
-        await this.getAbout()
+        this.mediaUpdateModal = false
+        await this.getMedia()
       }
 
     },
+    setDeleteModal(id) {
+      console.log("denemememem")
+      this.mediaUUID = id
+      this.deleteModel = true
+
+    },
+
+    async deleteMedia() {
+      let response = await new MediaService().deleteMedia(this.mediaUUID)
+      if (response.status === 200) {
+        this.deleteModel = false
+        await this.getMedia()
+      }
+
+    },
+
 
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
         if (success) {
-          await this.editAbout()
+          await this.addMedia()
         }
       })
 
@@ -268,7 +317,7 @@ export default {
 
 
   async created() {
-    await this.getAbout()
+    await this.getMedia()
 
   }
   ,

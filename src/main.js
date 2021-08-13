@@ -1,5 +1,7 @@
 import 'core-js/stable'
 import Vue from 'vue'
+import vuetimeline from "@growthbunker/vuetimeline";
+
 
 import App from './App'
 import router from './router'
@@ -14,9 +16,10 @@ import tr from 'vee-validate/dist/locale/tr';
 import VCalender from 'v-calendar'
 
 Vue.use(VueLazyload)
+Vue.use(vuetimeline);
 
 Vue.use(VeeValidate);
-Validator.localize('tr',tr)
+Validator.localize('tr', tr)
 Vue.config.performance = true
 Vue.use(VCalender, {
     componentPrefix: 'vc',

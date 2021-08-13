@@ -23,58 +23,71 @@
             <CCollapse :show="formCollapsed">
               <CCardBody>
                 <CRow>
-                  <CCol lg="3">
-                    <h3>
-                      <img src="../../../icons/icons8-user-24.png" height="24" width="24"/>
-                      İsim Soyisim</h3>
-                    <hr>
-                    <h5 v-if="staff.firstName !== '' || staff.lastName !==''">
-                      {{ staff.firstName }} {{ staff.lastName }}</h5>
-                    <h5 v-else>-</h5>
-                  </CCol>
                   <CCol lg="2">
+                    <CCol lg="2">
 
-
-                    <h3>
-                      <img src="../../../icons/icons8-tag-window-24.png" height="24" width="24"/>
-                      Ünvan
-                    </h3>
-                    <hr>
-                    <h5 v-if="staff.title">{{ staff.title }}</h5>
-                    <h5 v-else>-</h5>
+                      <img src="../../../../../../../Desktop/hasemagumus-iyonlu-maske-219f.jpg" height="180"
+                           width="120"/></CCol>
 
                   </CCol>
-                  <CCol lg="2">
-                    <h3>Uzmanlık Alanı</h3>
-                    <hr>
-                    <h5 v-if="staff.profession">{{ staff.profession }}</h5>
-                    <h5 v-else>-</h5>
+                  <CCol lg="10">
+                    <CRow>
+                      <CCol lg="6">
+                        <h5><img src="../../../icons/icons8-name-24.png" height="24" width="24"/>
 
-                  </CCol>
-                  <CCol lg="2">
-
-
-                    <h3>Bölüm</h3>
-                    <hr>
-                    <h5 v-if="staff.department">{{ staff.department.label }}</h5>
-                    <h5 v-else>-</h5>
-
-                  </CCol>
+                          İsim Soyisim</h5>
+                        <hr>
+                        <h5 v-if="staff.firstName !== '' || staff.lastName !==''">
+                          {{ staff.firstName }} {{ staff.lastName }}</h5>
+                        <h5 v-else>-</h5>
+                      </CCol>
+                      <CCol lg="6">
 
 
-                  <CCol lg="2">
-                    <h3><img src="../../../icons/icons8-numbers-input-form-24.png" height="24" width="24"/>
-                      Diploma No
-                    </h3>
-                    <hr>
-                    <h5 v-if="staff.diplomaNo">{{ staff.diplomaNo }}</h5>
-                    <h5 v-else>-</h5>
+                        <h5>
+                           <img src="../../../icons/icons8-price-tag-24.png" height="24" width="24"/></h5>
+                          Ünvan
 
-                  </CCol>
-                  <CCol lg="1">
-                    <CButton @click="getSingleGeneralInfo">
-                      <CIcon name="cil-pencil"/>
-                    </CButton>
+                        <hr>
+                        <h5 v-if="staff.title">{{ staff.title }}</h5>
+                        <h5 v-else>-</h5>
+
+                      </CCol>
+                    </CRow>
+
+                    <CRow class="mt-3">
+                        <CCol lg="4">
+                        <h5>Uzmanlık Alanı</h5>
+                        <hr>
+                        <h5 v-if="staff.profession">{{ staff.profession }}</h5>
+                        <h5 v-else>-</h5>
+
+                      </CCol>
+                      <CCol lg="4">
+
+
+                        <h5>Bölüm</h5>
+                        <hr>
+                        <h5 v-if="staff.department">{{ staff.department.label }}</h5>
+                        <h5 v-else>-</h5>
+
+                      </CCol>
+                      <CCol lg="3">
+                        <h5><img src="../../../icons/icons8-numbers-input-form-24.png" height="24" width="24"/>
+                          Diploma No
+                        </h5>
+                        <hr>
+                        <h5 v-if="staff.diplomaNo">{{ staff.diplomaNo }}</h5>
+                        <h5 v-else>-</h5>
+
+                      </CCol>
+                      <CCol lg="1">
+                        <CButton @click="getSingleGeneralInfo">
+                          <CIcon name="cil-pencil"/>
+                        </CButton>
+
+                      </CCol>
+                    </CRow>
 
                   </CCol>
                 </CRow>
@@ -109,29 +122,29 @@
 
                         <CCol lg="3">
 
-                            Doktor Adı <span class="text-danger">*</span>
+                          Doktor Adı <span class="text-danger">*</span>
 
-                            <CInput
-                                disabled
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="staff.firstName"
+                          <CInput
+                              disabled
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="staff.firstName"
 
-                            />
+                          />
 
                         </CCol>
 
 
                         <CCol lg="3">
-                            Doktor Soyadı <span class="text-danger">*</span>
+                          Doktor Soyadı <span class="text-danger">*</span>
 
-                            <CInput
-                                disabled
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="staff.lastName"
+                          <CInput
+                              disabled
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="staff.lastName"
 
-                            />
+                          />
 
 
                         </CCol>
@@ -169,7 +182,6 @@
 
                           </validation-provider>
                         </CCol>
-
 
 
                         <CCol lg="3">
@@ -346,7 +358,7 @@ export default {
       doctorUpdate: new Doctor("", "", "", "", "", "", "", ""),
       departments: [],
       doctors: [],
-      staff: new Staff("", "", "", "", "", "",  "", "", ""),
+      staff: new Staff("", "", "", "", "", "", "", "", ""),
 
 
     };
