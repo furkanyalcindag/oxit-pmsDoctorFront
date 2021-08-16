@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Klinik Yönetimi
+              Randevu Yönetimi
               <div class="card-header-actions">
 
                 <CLink
@@ -37,6 +37,8 @@
                         <span class="text-danger">{{ errors[0] }}</span>
                         <CInput
                             type="date"
+                            :min="minDate"
+                            editFormat="dd-MM-yyyy"
                             description=""
                             autocomplete="autocomplete"
                             v-model="appointment.date"
@@ -63,7 +65,7 @@
                       </validation-provider>
                     </CCol>
 
-                     <CCol lg="2">
+                    <CCol lg="2">
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100"
@@ -173,6 +175,24 @@
                     clickableRows
 
                 >
+                  <template #time="{ item, index }">
+                    <td class="py-2">
+
+                      {{ item.time.substring(0, 3) }}{{ item.time.substring(3, 5) }}
+                    </td>
+                  </template>
+                  <template #endTime="{ item, index }">
+                    <td class="py-2">
+
+                      {{ item.endTime.substring(0, 3) }}{{ item.endTime.substring(3, 5) }}
+                    </td>
+                  </template>
+                  <template #date="{ item, index }">
+                    <td class="py-2">
+
+                      {{ item.date.substring(8, 10) }}-{{ item.date.substring(5, 8) }}{{ item.date.substring(0, 4) }}
+                    </td>
+                  </template>
                   <template #patient="{ item, index }">
                     <td class="py-2">
 
@@ -186,19 +206,29 @@
                       {{ item.doctor.label }}
                     </td>
                   </template>
+                  <template #isPaid="{ item, index }">
+                    <td class="py-2" v-if="item.isPaid">
+
+                      {{ item.price }} TL
+                    </td>
+                    <td v-else class="py-2">
+
+                      -
+                    </td>
+                  </template>
 
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                        <CDropdown toggler-text="İşlemler">
+                      <CDropdown toggler-text="İşlemler">
                         <CDropdownItem>
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                          <CButton @click="setDeleteModal(item.uuid)"  class="mr-2">Sil</CButton>
                         </CDropdownItem>
 
-                          <CDropdownItem>
-                      <CButton @click="getSingleAppointment(item.uuid)" color="success">Düzenle</CButton>
+                        <CDropdownItem>
+                          <CButton @click="getSingleAppointment(item.uuid)" >Düzenle</CButton>
                         </CDropdownItem>
-                       </CDropdown>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
@@ -269,23 +299,23 @@
                           </validation-provider>
                         </CCol>
 
-                          <CCol lg="2">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Bitiş Saati">
-                        Bitiş Saati<span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            type="time"
-                            timeFormat="true"
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="appointmentUpdate.endTime"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-                    </CCol>
+                        <CCol lg="2">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Bitiş Saati">
+                            Bitiş Saati<span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                type="time"
+                                timeFormat="true"
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="appointmentUpdate.endTime"
+                                :state="errors.length > 0 ? false:null"
+                            />
+                          </validation-provider>
+                        </CCol>
 
 
                         <CCol lg="3">
@@ -305,8 +335,6 @@
                             />
                           </validation-provider>
                         </CCol>
-
-
 
 
                         <CCol lg="3">
@@ -345,16 +373,13 @@
         <CButtonClose @click="staffUpdateModal = false" class="text-white"/>
       </template>
       <template #footer>
-         <CDropdownItem>
-        <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-         </CDropdownItem>
-         <CDropdownItem>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
-         </CDropdownItem>
+
+          <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
+
+          <CButton @click="validationForm" color="success">Güncelle</CButton>
+
       </template>
     </CModal>
-
-
 
 
   </div>
@@ -385,12 +410,14 @@ export default {
   data() {
     return {
       fieldsTable: [
-        {key: 'time', label: "Saat", _style: "min-width:200px"},
+
         {key: "date", label: "Tarih"},
-        {key: "endTime", label: "endTime"},
+        {key: 'time', label: "Saat"},
+        {key: "endTime", label: "Bitiş Saati"},
         {key: "doctor", label: "Doktor"},
         {key: "patient", label: "Hasta"},
         {key: "isPaid", label: "Ücret"},
+        {key: "actions", label: "İşlemler"},
 
 
       ],
@@ -475,10 +502,11 @@ export default {
       bloodgroups: [],
       patients: [],
       patientUpdate: new Patient("", "", "", "", "", "", "", "", "", "",),
-      appointment: new Appointment("", "", "", false, "", "", 0,""),
-      appointmentUpdate: new Appointment("", "", "", false, "", "", 0,""),
+      appointment: new Appointment("", "", "", false, "", "", 0, ""),
+      appointmentUpdate: new Appointment("", "", "", false, "", "", 0, ""),
       isPaid: false,
       appointments: [],
+      minDate: ''
 
 
     };
@@ -633,9 +661,7 @@ export default {
     async getAppointments() {
 
       let response = await new AppointmentService().getAppointment()
-      console.log("response", response)
       this.appointments = response.data.data
-      console.log(this.appointments)
     },
 
 
@@ -658,7 +684,13 @@ export default {
     await this.getDoctors()
     await this.getPatients()
     await this.getAppointments()
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
 
+    today = yyyy + '-' + mm + '-' + dd;
+    this.minDate = today
 
   },
   async mounted() {

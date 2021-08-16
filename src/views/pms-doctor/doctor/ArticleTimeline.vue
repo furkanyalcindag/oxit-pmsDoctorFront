@@ -3,7 +3,7 @@
     <template id='my-template'>
       <div class='container'>
         <div class='timeline'>
-          <div v-for='(dateWithArticles, date) in timeline_data' :key="date">
+          <div v-for='(dateWithArticles, date) in articles' :key="date">
             <p v-if='dateWithArticles.length > 0' class='date'>{{ date }}</p>
             <div v-for='(article,index) in dateWithArticles' class='article' :key="index">
               <span class='dot'></span>
@@ -14,79 +14,27 @@
         </div>
       </div>
     </template>
-
   </div>
 </template>
 
 <script>
-import ArticleService from "@/services/managementServices/article.service";
 
 export default {
   name: "DoctorTimeline",
   data() {
-    return {
-      timeline_data: [],
-      edit: false,
-      datesArticles: {
-        ' 2016': [
-          {
-            title: 'Five',
-            slug: 'five',
-            teaser: 'fiveeeee',
-            published_at: '30.09.2016.'
-          },
-          {
-            title: 'Four',
-            slug: 'four',
-            teaser: 'four',
-            published_at: '15.09.2016.'
-          },
-          {
-            title: 'Three',
-            slug: 'three',
-            teaser: 'three',
-            published_at: '14.04.2016.'
-          },
-          {
-            title: 'Two and a half',
-            slug: 'two-and-a-half',
-            teaser: 'two and a half',
-            published_at: '02.04.2016.'
-          }
-        ],
-        ' 2015': [
-          {
-            title: 'Two',
-            slug: 'two',
-            teaser: 'two',
-            published_at: '25.12.2015.'
-          },
-          {
-            title: 'One',
-            slug: 'one',
-            teaser: 'one',
-            published_at: '01.12.2015.'
-          }
-        ]
-      },
-      searchQuery: ''
-    }
+    return {}
 
   },
   computed: {},
   props: {
     articles: {
-      type: Array
+      type: Object,
+      default: () => {
+      }
     }
   },
-  methods: {
-    async getArticles() {
-      let response = await new ArticleService().getArticleTimeline()
-      this.timeline_data = response.data
-    },
-  },
+  methods: {},
   async created() {
-    await this.getArticles()
   },
 }
 </script>

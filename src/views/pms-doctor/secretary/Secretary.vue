@@ -63,8 +63,6 @@
                     </CCol>
 
 
-
-
                     <CCol lg="3">
                       <validation-provider
                           #default="{errors}"
@@ -127,11 +125,18 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
+                      <CDropdown toggler-text="İşlemler">
+                        <CDropdownItem>
 
 
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
 
-                      <CButton @click="getSingleSecretary(item.uuid)" color="success">Düzenle</CButton>
+                          <CButton @click="getSingleSecretary(item.uuid)">Düzenle</CButton>
+
+                        </CDropdownItem>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
@@ -181,67 +186,65 @@
                 <CCardBody>
                   <CRow>
 
-                     <validation-observer ref="simpleRules">
-                  <CRow>
+                    <validation-observer ref="simpleRules">
+                      <CRow>
 
-                    <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Doktor Adı">
-                        Sekreter Adı <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="secretaryUpdate.firstName"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-                    </CCol>
-
-
-                    <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Sekreter Soyad">
-                        Sekreter Soyad <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="secretaryUpdate.lastName"
-
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-                    </CCol>
+                        <CCol lg="3">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Doktor Adı">
+                            Sekreter Adı <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="secretaryUpdate.firstName"
+                                :state="errors.length > 0 ? false:null"
+                            />
+                          </validation-provider>
+                        </CCol>
 
 
+                        <CCol lg="3">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Sekreter Soyad">
+                            Sekreter Soyad <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="secretaryUpdate.lastName"
+
+                                :state="errors.length > 0 ? false:null"
+                            />
+                          </validation-provider>
+                        </CCol>
 
 
-                    <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100|email"
-                          name="E-Mail">
-                        E-Mail <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            description=""
-                            type="email"
-                            autocomplete="email"
-                            prepend="@"
-                            v-model="secretaryUpdate.email"
-                            :state="errors.length > 0 ? false:null"
-                        />
+                        <CCol lg="3">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100|email"
+                              name="E-Mail">
+                            E-Mail <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                description=""
+                                type="email"
+                                autocomplete="email"
+                                prepend="@"
+                                v-model="secretaryUpdate.email"
+                                :state="errors.length > 0 ? false:null"
+                            />
 
-                      </validation-provider>
-                    </CCol>
+                          </validation-provider>
+                        </CCol>
 
-                  </CRow>
-                </validation-observer>
+                      </CRow>
+                    </validation-observer>
                   </CRow>
                 </CCardBody>
               </template>
@@ -404,7 +407,6 @@ export default {
 
     async addSecretary() {
 
-      console.log(this.secretary)
 
       let response = await new SecretaryService().addSecretary(this.secretary)
       if (response.status === 200) {
@@ -430,7 +432,6 @@ export default {
     async getSecretarys() {
 
       let response = await new SecretaryService().getSecretarys()
-      console.log(response)
       this.secretarys = response.data.data
     },
 

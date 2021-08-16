@@ -186,17 +186,24 @@
                   <template #department="{ item, index }">
                     <td class="py-2">
 
-                      {{ item.label }}
+                      {{ item.department.label }}
                     </td>
                   </template>
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
+                      <CDropdown toggler-text="İşlemler">
+                        <CDropdownItem>
 
 
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
 
-                      <CButton @click="getSingleDoctor(item.uuid)" color="success">Düzenle</CButton>
+                          <CButton @click="getSingleDoctor(item.uuid)">Düzenle</CButton>
+
+                        </CDropdownItem>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>

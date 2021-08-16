@@ -20,6 +20,7 @@
                 </CLink>
 
               </div>
+
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
@@ -526,6 +527,7 @@ import CTableWrapper from '@/views/base/Table.vue'
 import DiagnosisService from "../../../services/managementServices/diagnosis.service";
 import Diagnosis from "../../../models/pms/diagnosis";
 import MedicineService from "../../../services/managementServices/medicine.service";
+import Secretary from "@/models/pms/secretary";
 
 export default {
   name: "Clinic",
@@ -797,13 +799,28 @@ export default {
     },
     async addDiagnosis() {
       this.diagnosis.protocolId = this.protocolId
-      console.log("diag", this.diagnosis)
       let response = await new DiagnosisService().addDiagnosis(this.diagnosis)
       if (response.status === 200) {
         this.showDiagnosis = false
         await this.getSingleDiagnosis()
+        this.diagnosis = new Diagnosis()
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Teşhis başarıyla eklendi"
+        })
+      } else {
+        this.isError = true;
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
       }
+
     },
+
     async getSingleDiagnosis() {
       this.getDiagnosis = true
       this.protocolNewUpdateModal = false
@@ -820,7 +837,6 @@ export default {
     async getDiagnosisMedicines() {
       let response = await new MedicineService().getMedicines(this.diagnosis.uuid)
       this.patientMedicines = response.data
-      console.log("response mdei", this.diagnosis.medicines)
 
     },
     setDeleteModal(id) {

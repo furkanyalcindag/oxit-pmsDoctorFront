@@ -5,7 +5,7 @@
         <transition name="fade">
           <CCard v-if="show">
             <CCardHeader>
-              <CIcon name="cil-pencil"/>
+              <img src="../../../icons/icons8-more-info-32.png" height="32" width="32"/>
               Genel Bilgiler
               <div class="card-header-actions">
 
@@ -32,7 +32,7 @@
                   </CCol>
                   <CCol lg="10">
                     <CRow>
-                      <CCol lg="6">
+                      <CCol class="ml-3" lg="11">
                         <h5><img src="../../../icons/icons8-name-24.png" height="24" width="24"/>
 
                           İsim Soyisim</h5>
@@ -41,54 +41,61 @@
                           {{ staff.firstName }} {{ staff.lastName }}</h5>
                         <h5 v-else>-</h5>
                       </CCol>
+
+                    </CRow>
+                    <CRow>
                       <CCol lg="6">
+                        <CCol lg="12">
 
 
-                        <h5>
-                           <img src="../../../icons/icons8-price-tag-24.png" height="24" width="24"/></h5>
-                          Ünvan
+                          <h5>
+                            <img src="../../../icons/icons8-price-tag-24.png" height="24" width="24"/>
+                            Ünvan
+                          </h5>
 
-                        <hr>
-                        <h5 v-if="staff.title">{{ staff.title }}</h5>
-                        <h5 v-else>-</h5>
 
+                          <hr>
+                          <h5 v-if="staff.title">{{ staff.title }}</h5>
+                          <h5 v-else>-</h5>
+
+                        </CCol>
+                        <CCol lg="12">
+                          <h5><img src="../../../icons/icons8-numbers-input-form-24.png" height="24" width="24"/>
+                            Diploma No
+                          </h5>
+                          <hr>
+                          <h5 v-if="staff.diplomaNo">{{ staff.diplomaNo }}</h5>
+                          <h5 v-else>-</h5>
+
+                        </CCol>
                       </CCol>
+                      <CCol lg="6">
+                        <CCol lg="11">
+                          <h5>Uzmanlık Alanı</h5>
+                          <hr>
+                          <h5 v-if="staff.profession">{{ staff.profession }}</h5>
+                          <h5 v-else>-</h5>
+
+                        </CCol>
+                        <CCol lg="11">
+
+
+                          <h5>Bölüm</h5>
+                          <hr>
+                          <h5 v-if="staff.department">{{ staff.department.label }}</h5>
+                          <h5 v-else>-</h5>
+
+                        </CCol>
+                      </CCol>
+
+
                     </CRow>
+                    <CCol lg="1">
+                      <CButton @click="getSingleGeneralInfo">
+                        <CIcon name="cil-pencil"/>
+                      </CButton>
 
-                    <CRow class="mt-3">
-                        <CCol lg="4">
-                        <h5>Uzmanlık Alanı</h5>
-                        <hr>
-                        <h5 v-if="staff.profession">{{ staff.profession }}</h5>
-                        <h5 v-else>-</h5>
-
-                      </CCol>
-                      <CCol lg="4">
-
-
-                        <h5>Bölüm</h5>
-                        <hr>
-                        <h5 v-if="staff.department">{{ staff.department.label }}</h5>
-                        <h5 v-else>-</h5>
-
-                      </CCol>
-                      <CCol lg="3">
-                        <h5><img src="../../../icons/icons8-numbers-input-form-24.png" height="24" width="24"/>
-                          Diploma No
-                        </h5>
-                        <hr>
-                        <h5 v-if="staff.diplomaNo">{{ staff.diplomaNo }}</h5>
-                        <h5 v-else>-</h5>
-
-                      </CCol>
-                      <CCol lg="1">
-                        <CButton @click="getSingleGeneralInfo">
-                          <CIcon name="cil-pencil"/>
-                        </CButton>
-
-                      </CCol>
-                    </CRow>
-
+                    </CCol>
                   </CCol>
                 </CRow>
 
@@ -391,11 +398,9 @@ export default {
 
 
     async editGeneralInfo() {
-      console.log(this.staff.department)
       if (this.staff.department === "") {
         this.staff.department = this.departments[0].value
       }
-      console.log(this.staff.department)
       let response = await new StaffService().editGeneralInfo(this.staff);
       if (response.status === 200) {
         this.generalInfoUpdateModal = false

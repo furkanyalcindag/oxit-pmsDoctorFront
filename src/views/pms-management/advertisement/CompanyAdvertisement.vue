@@ -41,40 +41,25 @@
                       </validation-provider>
                     </CCol>
                     <CCol lg="4">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Firma Adı">
-                        Firma Adı <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-
-                        <CSelect
-                            description=""
-                            autocomplete="autocomplete"
-                            :options="companies"
-                            v-model="advertisement.companyName"
-                            :value.sync="advertisement.companyName"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
+                      Firma Adı <span class="text-danger">*</span>
+                      <CSelect
+                          description=""
+                          autocomplete="autocomplete"
+                          :options="companies"
+                          v-model="advertisement.companyName"
+                          :value.sync="advertisement.companyName"
+                      />
                     </CCol>
                     <CCol lg="4">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name=" Reklam Yeri">
-                        Reklam Yeri <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
+                      Reklam Yeri <span class="text-danger">*</span>
 
-                        <CSelect
-                            description=""
-                            autocomplete="autocomplete"
-                            :options="locations"
-                            v-model="advertisement.locationName"
-                            :value.sync="advertisement.locationName"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
+                      <CSelect
+                          description=""
+                          autocomplete="autocomplete"
+                          :options="locations"
+                          v-model="advertisement.locationName"
+                          :value.sync="advertisement.locationName"
+                      />
                     </CCol>
                     <CCol lg="4">
                       <validation-provider
@@ -175,9 +160,18 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-                      <CButton @click="getSingleAdvertisement(item.uuid)" color="primary" class="mr-2">Düzenle
-                      </CButton>
+                       <CDropdown toggler-text="İşlemler">
+                        <CDropdownItem>
+
+
+                      <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                          </CDropdownItem>
+                        <CDropdownItem>
+
+                      <CButton @click="getSingleAdvertisement(item.uuid)">Düzenle</CButton>
+
+                          </CDropdownItem>
+                        </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
@@ -194,7 +188,7 @@
         color="danger"
         :show.sync="deleteModel"
     >
-      Personeli silmek istediğinizden emin misiniz?
+      Reklamı silmek istediğinizden emin misiniz?
 
 
       <template #header>
@@ -452,10 +446,8 @@ export default {
   methods: {
     popUpChange() {
       if (this.showPopUp) {
-        console.log("if")
         this.showPopUp = false
       } else {
-        console.log("else")
         this.showPopUp = false
       }
     },
@@ -491,7 +483,6 @@ export default {
       } else if (response.status === 401) {
 
       } else {
-        console.log("res", response.data)
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({

@@ -179,14 +179,12 @@ var items = []
 // items.push(home)
 items.push(actions)
 if (user_group === groups.clinic || user_group === groups.doctor) {
-    console.log("user", user_group)
     items.push(assay)
     items.push(appointment)
     items.push(patient)
 
 }
 if (user_group === groups.admin) {
-    console.log("Admin", user_group)
     items.push(staffs)
     items.push(clinic)
     items.push(permission)
@@ -197,12 +195,10 @@ if (user_group === groups.admin) {
     items.push(notifications)
 }
 if (user_group === groups.clinic) {
-    console.log("clinic", user_group)
     items.push(doctor)
     items.push(secretary)
 }
 if (user_group === 'Doctor') {
-    console.log("doctor", user_group)
     items.push(patientCalendar)
 // items.push(protocol)
     items.push(doctorProfile)

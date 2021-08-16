@@ -128,27 +128,27 @@
                     </CCol>
                     <CCol lg="3">
 
-                        İl <span class="text-danger">*</span>
+                      İl <span class="text-danger">*</span>
 
-                        <CSelect
-                            :options="cities"
-                            v-model="city"
-                            :value.sync="city"
-                            @change="getDistricts(city)"
+                      <CSelect
+                          :options="cities"
+                          v-model="city"
+                          :value.sync="city"
+                          @change="getDistricts(city)"
 
-                        />
+                      />
 
                     </CCol>
                     <CCol lg="3">
 
-                        İlçe <span class="text-danger">*</span>
+                      İlçe <span class="text-danger">*</span>
 
-                        <CSelect
-                            :options="districts"
-                            v-model="district"
-                            :value.sync="district"
+                      <CSelect
+                          :options="districts"
+                          v-model="district"
+                          :value.sync="district"
 
-                        />
+                      />
 
 
                     </CCol>
@@ -219,8 +219,6 @@
                     :border="true"
                     :items-per-page="5"
                     :activePage="4"
-                    hover
-                    sorter
                     pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
@@ -230,11 +228,18 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
+                      <CDropdown toggler-text="İşlemler">
+                        <CDropdownItem>
 
 
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
 
-                      <CButton @click="getSingleClinic(item.uuid)" color="success">Düzenle</CButton>
+                          <CButton @click="getSingleClinic(item.uuid)">Düzenle</CButton>
+
+                        </CDropdownItem>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
@@ -269,7 +274,7 @@
 
 
     <CModal
-        :show.sync="staffUpdateModal"
+        :show.sync="clinicUpdateModal"
         :no-close-on-backdrop="true"
         :centered="true"
         title="Modal title 2"
@@ -279,7 +284,7 @@
       <CRow>
         <CCol lg="12">
           <transition name="fade">
-            <CCard v-if="staffUpdateModal">
+            <CCard v-if="clinicUpdateModal">
               <template>
                 <CCardBody>
                   <CRow>
@@ -383,36 +388,22 @@
                       </validation-provider>
                     </CCol>
                     <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="İl">
-                        İl <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CSelect
-                            :options="cities"
-                            v-model="cityUpdate"
-                            :value.sync="cityUpdate"
-                            @change="getDistricts(city)"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
+                      İl <span class="text-danger">*</span>
+                      <CSelect
+                          :options="cities"
+                          v-model="cityUpdate"
+                          :value.sync="cityUpdate"
+                          @change="getDistricts(cityUpdate)"
+                      />
                     </CCol>
                     <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="İlçe">
-                        İlçe <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CSelect
-                            :options="districts"
-                            v-model="districtUpdate"
-                            :value.sync="districtUpdate"
-                            :state="errors.length > 0 ? false:null"
-                        />
+                      İlçe <span class="text-danger">*</span>
+                      <CSelect
+                          :options="districts"
+                          v-model="districtUpdate"
+                          :value.sync="districtUpdate"
+                      />
 
-                      </validation-provider>
                     </CCol>
                     <CCol lg="3">
                       <validation-provider
@@ -458,11 +449,11 @@
       </CRow>
       <template #header>
         <h6 class="modal-title">Personel Güncelle</h6>
-        <CButtonClose @click="staffUpdateModal = false" class="text-white"/>
+        <CButtonClose @click="clinicUpdateModal = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton @click="clinicUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="editClinic()" color="success">Güncelle</CButton>
       </template>
     </CModal>
 
@@ -515,7 +506,7 @@ export default {
       errorsStaff: [],
       isErrorCustomerUpdate: false,
       groups: [],
-      staffUpdateModal: false,
+      clinicUpdateModal: false,
       details: [],
       errors: [],
       isCorporate: false,
@@ -622,7 +613,7 @@ export default {
         await this.getClinics();
         this.$toast.success({
           title: 'Başarılı',
-          message: "Personel başarıyla eklendi"
+          message: "Klinik başarıyla eklendi"
         })
       } else if (a.response.status === 401) {
         this.isError = false;
@@ -654,14 +645,14 @@ export default {
       }
       let response = await new ClinicService().editClinic(this.clinicUpdate)
       if (response.status === 200) {
-        this.staffUpdateModal = false
+        this.clinicUpdateModal = false
         await this.getClinics()
       }
 
 
     },
     async getSingleClinic(id) {
-      this.staffUpdateModal = true
+      this.clinicUpdateModal = true
       let response = await new ClinicService().getSingleClinic(id)
       this.clinicUpdate = response.data
 
@@ -672,6 +663,7 @@ export default {
 
     },
     async getDistricts(city) {
+      console.log(city)
       let response = await new GeneralService().getDistrict(city)
       this.districts = response.data
     },
@@ -680,18 +672,33 @@ export default {
       if (response.status === 200) {
         this.deleteModel = false
         await this.getClinics()
+        this.deleteModel = false
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Klinik başarıyla silindi"
+        })
+      } else {
+        this.isError = true;
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
       }
     },
+
+
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
+        console.log("this", this.clinicUpdate)
         if (success) {
           console.log("burda")
-          if (this.clinicUpdate.uuid) {
-            await this.editClinic()
-          } else {
-            console.log("else")
-            await this.addClinic()
-          }
+
+          console.log("else")
+          await this.addClinic()
+
         }
       })
     },

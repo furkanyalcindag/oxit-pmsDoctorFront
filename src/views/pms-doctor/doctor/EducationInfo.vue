@@ -5,7 +5,7 @@
         <transition name="fade">
           <CCard v-if="show">
             <CCardHeader>
-              <CIcon name="cil-pencil"/>
+              <img src="../../../icons/icons8-graduation-cap-32.png" height="32" width="32"/>
               Eğitim Bilgileri
               <div class="card-header-actions">
                 <CButton @click="educationInfoModal = true">
@@ -26,56 +26,72 @@
               <CCardBody>
                 <CRow v-for="(edu,index) in educations" :key="index">
                   <CCol lg="6">
-                    <h5>
-                      <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
-                      Universite
-                    </h5>
-                    <hr>
-                    <h6 v-if="edu.universityName">{{ edu.universityName }}</h6>
-                    <h6 v-else>-</h6>
+                    <CCol lg="12">
+                      <h5>
+                        <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
+                        Universite
+                      </h5>
+                      <hr>
+                      <h6 v-if="edu.universityName">{{ edu.universityName }}</h6>
+                      <h6 v-else>-</h6>
 
-                  </CCol>
-                  <CCol lg="5">
-                    <h5>
-                      <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
+                    </CCol>
+                    <CCol lg="12">
+                      <h5>
+                        <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
 
-                      Eğitim Türü
-                    </h5>
+                        Eğitim Türü
+                      </h5>
 
 
-                    <hr>
-                    <h6 v-if="edu.educationType">{{ edu.educationType }}</h6>
-                    <h6 v-else>-</h6>
+                      <hr>
+                      <h6 v-if="edu.educationType">{{ edu.educationType.label }}</h6>
+                      <h6 v-else>-</h6>
 
+                    </CCol>
                   </CCol>
                   <CCol lg="6">
-                    <h5>
-                      <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
+                    <CRow>
+                      <CCol lg="10">
+                        <h5>
+                          <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
 
-                      Fakülte
-                    </h5>
+                          Fakülte
+                        </h5>
 
 
-                    <hr>
-                    <h6 v-if="edu.facultyName">{{ edu.facultyName }}</h6>
-                    <h6 v-else>-</h6>
+                        <hr>
+                        <h6 v-if="edu.facultyName">{{ edu.facultyName }}</h6>
+                        <h6 v-else>-</h6>
+
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol lg="10">
+                        <h5>
+                          <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
+
+                          Bölüm
+                        </h5>
+                        <hr>
+                        <h6 v-if="edu.departmentName">{{ edu.departmentName }}</h6>
+                        <h6 v-else>-</h6>
+                      </CCol>
+                      <CCol lg="1">
+                        <CButton @click="getSingleEducationInfo(edu.uuid)">
+                          <CIcon name="cil-pencil"/>
+                        </CButton>
+                      </CCol>
+                      <CCol lg="1">
+                        <CButton @click="setDeleteModal(edu.uuid)">
+                          <CIcon name="cilTrash"/>
+                        </CButton>
+                      </CCol>
+                    </CRow>
 
                   </CCol>
-                  <CCol lg="5">
-                    <h5>
-                      <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
 
-                      Bölüm
-                    </h5>
-                    <hr>
-                    <h6 v-if="edu.departmentName">{{ edu.departmentName }}</h6>
-                    <h6 v-else>-</h6>
-                  </CCol>
-                  <CCol lg="1">
-                    <CButton @click="getSingleEducationInfo(education.uuid)">
-                      <CIcon name="cil-pencil"/>
-                    </CButton>
-                  </CCol>
+
                 </CRow>
               </CCardBody>
             </CCollapse>
@@ -163,11 +179,11 @@
       </CRow>
       <template #header>
         <h6 class="modal-title">Eğitim Bilgileri Güncelle</h6>
-        <CButtonClose @click="educationInfoUpdateModal = false" class="text-white"/>
+        <CButtonClose @click="educationInfoModal = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="educationInfoUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton @click="educationInfoModal = false" color="danger">Kapat</CButton>
+        <CButton @click="validationForm" color="success">Güncele</CButton>
       </template>
     </CModal>
     <CModal
@@ -252,10 +268,28 @@
       </template>
       <template #footer>
         <CButton @click="educationInfoModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton @click="validationForm" color="success">Kaydet</CButton>
       </template>
     </CModal>
+    <CModal
+        title="Modal title"
+        color="danger"
+        :show.sync="deleteModel"
+    >
+      Eğitimi silmek istediğinizden emin misiniz?
 
+
+      <template #header>
+        <h6 class="modal-title">Uyarı</h6>
+        <CButtonClose @click="deleteModel = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
+        <CButton @click="deleteEducationInfo" color="success">Evet</CButton>
+      </template>
+
+
+    </CModal>
 
   </div>
 </template>
@@ -270,6 +304,7 @@ import Doctor from "@/models/pms/doctor";
 import EducationService from "@/services/managementServices/education.service";
 import Education from "@/models/pms/education";
 import {freeSet} from '@coreui/icons'
+import EducationTypeService from "@/services/managementServices/educationType.service";
 
 export default {
   name: "Clinic",
@@ -383,7 +418,8 @@ export default {
       educations: [],
       educationInfoUpdateModal: false,
       educationTypes: [],
-      educationInfoModal: false
+      educationInfoModal: false,
+      eduUUID: ''
 
 
     };
@@ -401,12 +437,39 @@ export default {
     },
 
     async getSingleEducationInfo(id) {
-      this.educationInfoUpdateModal = true
-      let response = await new EducationService().getEducationInfo(id);
+      let response = await new EducationService().getSingleEducation(id);
+      this.education = response.data
       if (response.status === 200) {
-        this.educationUpdate = response.data
+        this.educationInfoModal = true
+
       }
     },
+    setDeleteModal(id) {
+      this.eduUUID = id
+      this.deleteModel = true
+    },
+    async deleteEducationInfo() {
+      let response = await new EducationService().deleteEducation(this.eduUUID)
+      if (response.status === 200) {
+        this.deleteModel = false
+        await this.getEducationInfo()
+        this.deleteModel = false
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Eğitim bilgileri başarıyla silindi"
+        })
+      } else {
+        this.isError = true;
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
+      }
+    },
+
 
     async editEducationInfo() {
 
@@ -418,19 +481,29 @@ export default {
 
     },
     async addEducationInfo() {
-
+      if (this.education.educationType === "") {
+        this.education.educationType = this.educationTypes[0].value
+      }
       let response = await new EducationService().addEducation(this.education);
       if (response.status === 200) {
-        this.educationInfoUpdateModal = false
+        this.educationInfoModal = false
         await this.getEducationInfo()
+
+
       }
 
     },
 
+    async getEducationTypes() {
+      let response = await new EducationTypeService().getEducationType()
+      this.educationTypes = response.data
+    },
+
+
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
         if (success) {
-          if (this.educationUpdate.uuid) {
+          if (this.education.uuid) {
             await this.editEducationInfo()
 
           } else {
@@ -445,11 +518,14 @@ export default {
 
   async created() {
     await this.getEducationInfo()
+    await this.getEducationTypes()
 
   }
   ,
   async mounted() {
 
+    await this.getEducationInfo()
+    await this.getEducationTypes()
 
   }
   ,

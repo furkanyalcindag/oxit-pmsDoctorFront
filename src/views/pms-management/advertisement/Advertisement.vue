@@ -146,9 +146,18 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-                      <CButton @click="getSingleAdvertisementLocation(item.uuid)" color="primary" class="mr-2">Düzenle
-                      </CButton>
+                      <CDropdown toggler-text="İşlemler">
+                        <CDropdownItem>
+
+
+                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
+
+                          <CButton @click="getSingleAdvertisementLocation(item.uuid)">Düzenle</CButton>
+
+                        </CDropdownItem>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
@@ -167,7 +176,7 @@
         color="danger"
         :show.sync="deleteModel"
     >
-      Personeli silmek istediğinizden emin misiniz?
+      Reklamı silmek istediğinizden emin misiniz?
 
 
       <template #header>
@@ -287,11 +296,11 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Personel Güncelle</h6>
+        <h6 class="modal-title">Reklamı Güncelle</h6>
         <CButtonClose class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="advertisementUpdateModal = false" color="danger">Kapat</CButton>
         <CButton @click="validationForm" color="success">Güncelle</CButton>
       </template>
     </CModal>
@@ -353,6 +362,7 @@ export default {
       isErrorCustomerUpdate: false,
       groups: [],
       staffUpdateModal: false,
+      advertisementUpdateModal: false,
       details: [],
       errors: [],
       errorsCar: [],

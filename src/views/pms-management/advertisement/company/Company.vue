@@ -131,8 +131,18 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-                      <CButton @click="getSingleCompany(item.uuid)" color="primary" class="mr-2">Düzenle</CButton>
+                      <CDropdown toggler-text="İşlemler">
+                        <CDropdownItem>
+
+
+                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
+
+                          <CButton @click="getSingleCompany(item.uuid)">Düzenle</CButton>
+
+                        </CDropdownItem>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>

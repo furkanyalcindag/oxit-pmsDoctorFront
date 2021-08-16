@@ -201,7 +201,6 @@ export default {
     },
     async adminGetSingleAppointment() {
       let response = await new AppointmentService().appointmentCalendarSingle(this.appointmentUUID)
-      console.log(response)
       this.appointment = response.data
 
     }

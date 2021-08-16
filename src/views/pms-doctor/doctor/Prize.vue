@@ -5,8 +5,9 @@
         <transition name="fade">
           <CCard v-if="show">
             <CCardHeader>
-              <img src="../../../../../../../Downloads/icons8-medal-24.png" height="24" width="24"/>
+              <img src="../../../icons/icons8-gold-medal-32.png" height="32" width="32"/>
               Ödüller
+
               <div class="card-header-actions">
                 <CButton @click="prizeModal = true">
                   <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
@@ -25,57 +26,69 @@
             <CCollapse :show="formCollapsed">
               <CCardBody>
                 <CRow v-for="(p,index) in prizes" :key="index">
-                  <CCol class="mt-2" lg="2">
-                    <CCol lg="2">
 
-                      <img src="../../../../../../../Desktop/hasemagumus-iyonlu-maske-219f.jpg" height="130"
-                           width="100"/></CCol>
-                  </CCol>
                   <CCol class="mt-2" lg="10">
                     <CRow>
-                      <CCol lg="3">
-                        <h5>
-                            <img src="../../../icons/icons8-tag-window-24 (1).png" height="24" width="24"/></h5>
+                      <CCol class="mt-2" lg="2">
+                        <CCol lg="2">
 
-
-                          Başlık
-
-
-                        <hr>
-                        <h6 v-if="p.title">{{ p.title }}</h6>
-                        <h6 v-else>-</h6>
-
+                          <img src="../../../../../../../Desktop/hasemagumus-iyonlu-maske-219f.jpg" height="130"
+                               width="100"/></CCol>
                       </CCol>
-                      <CCol lg="6">
-                        <h5>
-                          <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
+                      <CCol lg="4">
+                        <CCol lg="12">
+                          <h5>
+                            <img src="../../../icons/icons8-tag-window-24 (1).png" height="24" width="24"/>
 
-                          Açıklama
-                        </h5>
+                            Başlık
+                          </h5>
 
 
-                        <hr>
-                        <h6 v-if="p.description">{{ p.description }}</h6>
-                        <h6 v-else>-</h6>
+                          <hr>
+                          <h6 v-if="p.title">{{ p.title }}</h6>
+                          <h6 v-else>-</h6>
 
+                        </CCol>
+                        <CCol lg="12">
+                          <h5>
+                            <img src="../../../icons/icons8-maintenance-date-24.png" height="24" width="24"/>
+
+                            Tarih
+                          </h5>
+
+
+                          <hr>
+                          <h6 v-if="p.date">{{ p.date }}</h6>
+                          <h6 v-else>-</h6>
+
+                        </CCol>
                       </CCol>
-                      <CCol lg="2">
-                        <h5>
-                          <img src="../../../icons/icons8-maintenance-date-24.png" height="24" width="24"/></h5>
+                      <CCol lg="4">
+                        <CCol lg="12">
+                          <h5>
+                            <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
+
+                            Açıklama
+                          </h5>
 
 
-                          Tarih
+                          <hr>
+                          <h6 v-if="p.description">{{ p.description }}</h6>
+                          <h6 v-else>-</h6>
 
-                        <hr>
-                        <h6 v-if="p.date">{{ p.date }}</h6>
-                        <h6 v-else>-</h6>
-
+                        </CCol>
+                        <CCol lg="6">
+                          <CButton @click="getSinglePrize(p.uuid)">
+                            <CIcon name="cil-pencil"/>
+                          </CButton>
+                        </CCol>
+                        <CCol lg="6">
+                          <CButton @click="setDeleteModal(p.uuid)">
+                            <CIcon name="cilTrash"/>
+                          </CButton>
+                        </CCol>
                       </CCol>
-                      <CCol lg="1">
-                        <CButton @click="getSinglePrize">
-                          <CIcon name="cil-pencil"/>
-                        </CButton>
-                      </CCol>
+
                     </CRow>
                   </CCol>
                   <hr>
@@ -87,7 +100,25 @@
         </transition>
       </CCol>
     </CRow>
+    <CModal
+        title="Modal title"
+        color="danger"
+        :show.sync="deleteModel"
+    >
+      Ödülü silmek istediğinizden emin misiniz?
 
+
+      <template #header>
+        <h6 class="modal-title">Uyarı</h6>
+        <CButtonClose @click="deleteModel = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
+        <CButton @click="deletePrize" color="success">Evet</CButton>
+      </template>
+
+
+    </CModal>
 
     <CModal
         :show.sync="prizeUpdateModal"
@@ -172,9 +203,10 @@
       </template>
       <template #footer>
         <CButton @click="prizeUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton @click="validationForm" color="success">Kaydet</CButton>
       </template>
     </CModal>
+
     <CModal
         :show.sync="prizeModal"
         :no-close-on-backdrop="true"
@@ -191,6 +223,7 @@
                 <CCardBody>
                   <validation-observer ref="simpleRules">
                     <CRow>
+
 
                       <CCol lg="3">
                         Başlık <span class="text-danger">*</span>
@@ -219,11 +252,11 @@
 
                       <CCol lg="3">
                         Fotoğraf <span class="text-danger">*</span>
-                        <CInput
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="prize.image"
-
+                        <CInputFile
+                            horizontal
+                            @change="getBase64"
+                            custom
+                            :placeholder="selectedFile"
                             :state="errors.length > 0 ? false:null"
                         />
 
@@ -258,7 +291,7 @@
       </template>
       <template #footer>
         <CButton @click="prizeModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton @click="validationForm" color="success">Kaydet</CButton>
       </template>
     </CModal>
 
@@ -275,6 +308,7 @@ import {required, email, min, max} from 'validations'
 import PrizeService from "@/services/managementServices/prize.service";
 import Prize from "@/models/pms/article";
 import {freeSet} from '@coreui/icons'
+import Secretary from "@/models/pms/secretary";
 
 export default {
   name: "Clinic",
@@ -380,7 +414,9 @@ export default {
       prizeUpdate: new Prize("", "", "", "", "", "", "", ""),
       prizes: [],
       prizeUpdateModal: false,
-      prizeModal: false
+      prizeModal: false,
+      selectedFile: '',
+      prizeUUID: ''
 
     };
   },
@@ -394,11 +430,23 @@ export default {
       }
     },
 
+    getBase64(event) {
+      var reader = new FileReader();
+      reader.readAsDataURL(event[0]);
+      this.selectedFile = event.length + ' dosya seçildi'
+      var x = this
+      reader.onload = function () {
+        x.prize.image = reader.result
+
+
+      };
+    },
+
     async getSinglePrize(id) {
-      this.prizeUpdateModal = true
+      this.prizeModal = true
       let response = await new PrizeService().getSinglePrize(id);
       if (response.status === 200) {
-        this.prizeUpdate = response.data
+        this.prize = response.data
       }
     },
 
@@ -411,11 +459,68 @@ export default {
       }
 
     },
+    async addPrize() {
+
+      let response = await new PrizeService().addPrize(this.prize);
+      if (response.status === 200) {
+        this.prizeModal = false
+        await this.getPrizes()
+        this.prize = new Prize()
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Ödül başarıyla eklendi"
+        })
+      } else {
+        this.isError = true;
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
+      }
+
+    },
+
+
+    setDeleteModal(id) {
+      this.prizeUUID = id
+      this.deleteModel = true
+
+    },
+    async deletePrize() {
+      let response = await new PrizeService().deletePrize(this.prizeUUID)
+      if (response.status === 200) {
+        this.deleteModel = false
+        await this.getPrizes()
+        this.deleteModel = false
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Ödül başarıyla silindi"
+        })
+      } else {
+        this.isError = true;
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
+      }
+    },
+
 
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
         if (success) {
-          await this.editPrize()
+          if (this.prize.uuid) {
+            await this.editPrize()
+          } else {
+            await this.addPrize()
+
+          }
         }
       })
 

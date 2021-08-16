@@ -99,11 +99,11 @@
                         <CDropdownItem>
 
 
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                      <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                           </CDropdownItem>
                         <CDropdownItem>
 
-                      <CButton @click="getSingleAssay(item.uuid)" color="success">Düzenle</CButton>
+                      <CButton @click="getSingleAssay(item.uuid)">Düzenle</CButton>
 
                           </CDropdownItem>
                         </CDropdown>
@@ -360,8 +360,6 @@ export default {
 
      async addAssay() {
 
-      console.log(this.assay)
-
       let response = await new AssayService().addSecretary(this.assay)
       if (response.status === 200) {
         await this.getAssays()
@@ -386,7 +384,6 @@ export default {
     async getAssays() {
 
       let response = await new AssayService().getAssays()
-      console.log(response)
       this.assays = response.data.data
     },
 

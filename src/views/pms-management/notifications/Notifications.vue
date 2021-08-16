@@ -91,20 +91,14 @@
                           />
                         </CCol>
                         <CCol lg="12">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Resim">
-                            Resim <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInputFile
-                                horizontal
-                                @change="getBase64"
-                                custom
-                                :placeholder="selectedFile"
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
+                          Resim <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+                          <CInputFile
+                              horizontal
+                              @change="getBase64"
+                              custom
+                              :placeholder="selectedFile"
+                          />
                         </CCol>
                       </CCol>
                       <CCol class="ml-3" lg="6">
@@ -513,9 +507,8 @@ export default {
       console.log("not", this.notification)
       let response = await new NotificationService().addNotification(this.notification)
       if (response.status === 200) {
-
+        await this.getNotifications()
       }
-
     },
     async getNotifications() {
       let response = await new NotificationService().getNotifications()

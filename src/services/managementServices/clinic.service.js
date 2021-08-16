@@ -45,10 +45,12 @@ class ClinicService {
         }
         return axios.put(process.env.VUE_APP_API_URL + '/management/clinic-api/',
             {
+                staffName: clinic.staffName,
+                staffSurname: clinic.staffSurname,
                 clinicName: clinic.clinicName,
                 taxNumber: clinic.taxNumber,
                 taxOffice: clinic.taxOffice,
-                // telephoneNumber: clinic.telephoneNumber,
+                telephoneNumber: clinic.telephoneNumber,
                 address: clinic.address,
                 email: clinic.email,
                 cityId: clinic.cityId,

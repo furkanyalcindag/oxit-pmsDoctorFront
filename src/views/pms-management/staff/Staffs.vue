@@ -87,20 +87,13 @@
                       </validation-provider>
                     </CCol>
                     <CCol lg="4">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Grup">
-                        Grup <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
+                      Grup <span class="text-danger">*</span>
 
-                        <CSelect
-                            :options="groups"
-                            v-model="staff.group"
-                            :value.sync="staff.group"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
+                      <CSelect
+                          :options="groups"
+                          v-model="staff.group"
+                          :value.sync="staff.group"
+                      />
                     </CCol>
                     <CCol lg="4">
                       <validation-provider
@@ -163,8 +156,18 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-                      <CButton @click="getSingleStaff(item.uuid)" color="primary" class="mr-2">Düzenle</CButton>
+                      <CDropdown toggler-text="İşlemler">
+                        <CDropdownItem>
+
+
+                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
+
+                          <CButton @click="getSingleStaff(item.uuid)">Düzenle</CButton>
+
+                        </CDropdownItem>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>

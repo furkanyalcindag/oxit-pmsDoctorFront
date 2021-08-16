@@ -7,6 +7,7 @@ class AppointmentService {
         return axios.post(process.env.VUE_APP_API_URL + '/pmsDoctor/appointment-api/',
             {
                 time: appointment.time,
+                endTime: appointment.endTime,
                 date: appointment.date,
                 isPaid: appointment.isPaid,
                 doctorId: appointment.doctorId,

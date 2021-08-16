@@ -130,7 +130,7 @@
                           name="Adresi">
                         Adresi <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
+                        <CTextarea
                             description=""
                             autocomplete="autocomplete"
                             v-model="patient.address"
@@ -163,12 +163,13 @@
                           #default="{errors}"
                           rules="required"
                           name="Doğum Tarihi">
-                        E-Mail <span class="text-danger">*</span>
+                        Doğum Tarihi <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
                         <CInput
                             description=""
                             type="date"
-                            v-model="patient.birthdate"
+                            :max="maxDate"
+                            v-model="patient.birthDate"
                             :state="errors.length > 0 ? false:null"
                         />
 
@@ -232,19 +233,27 @@
                       {{ item.gender.label }}
                     </td>
                   </template>
+                  <template #birthDate="{ item, index }">
+                    <td class="py-2">
+
+                      {{ item.birthDate.substring(8, 10) }}-{{ item.birthDate.substring(5, 8) }}{{ item.birthDate.substring(0, 4) }}
+                    </td>
+                  </template>
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
                       <CDropdown toggler-text="İşlemler">
                         <CDropdownItem>
-                          <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                         </CDropdownItem>
                         <CDropdownItem>
-                          <CButton @click="getSinglePatient(item.uuid)" color="success">Düzenle</CButton>
+                          <CButton @click="getSinglePatient(item.uuid)">Düzenle</CButton>
                         </CDropdownItem>
                         <CDropdownItem>
                           <CLink>
-                            <CButton @click="$router.push({name:'protocol',params:{patient:item.uuid}})" color="primary">Protokol</CButton>
+                            <CButton @click="$router.push({name:'protocol',params:{patient:item.uuid}})"
+                                     color="primary">Protokol
+                            </CButton>
                           </CLink>
                         </CDropdownItem>
                       </CDropdown>
@@ -424,9 +433,8 @@
                               description=""
                               autocomplete="autocomplete"
                               v-model="patientUpdate.bloodgroup"
-                              :value.sync="patinetUpdate.bloodgroup"
+                              :value.sync="patientUpdate.bloodgroup"
                           />
-
 
 
                         </CCol>
@@ -491,7 +499,7 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Hasta Güncelle</h6>
+        <h6 class="modal-title">Hasta Bilgileri Güncelle</h6>
         <CButtonClose @click="staffUpdateModal = false" class="text-white"/>
       </template>
       <template #footer>
@@ -618,6 +626,7 @@ export default {
       bloodgroups: [],
       patients: [],
       patientUpdate: new Patient("", "", "", "", "", "", "", "", "", "",),
+      maxDate: ''
 
 
     };
@@ -664,8 +673,8 @@ export default {
       if (this.patient.gender === "") {
         this.patient.gender = this.genders[0].value
       }
-      if (this.patient.bloodgroup === "") {
-        this.patient.bloodgroup = this.bloodgroups[0].value
+      if (this.patient.bloodGroup === "") {
+        this.patient.bloodGroup = this.bloodgroups[0].value
       }
 
 
@@ -714,7 +723,7 @@ export default {
 
     async getBloodGroups() {
 
-      let response = await new BloodService().getBloodgroup()
+      let response = await new BloodService().getBloodGroup()
       this.bloodgroups = response.data
     },
 
@@ -774,9 +783,7 @@ export default {
     async getPatients() {
 
       let response = await new PatientService().getPatients()
-      console.log("response", response)
       this.patients = response.data.data
-      console.log(this.patients)
     },
 
 
@@ -799,6 +806,13 @@ export default {
     await this.getGenders()
     await this.getBloodGroups()
     await this.getPatients()
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+    this.maxDate = today
 
 
   },
