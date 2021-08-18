@@ -1,7 +1,7 @@
 export default class Staff {
 
 
-    constructor(firstName, lastName, email, mobilePhone, uuid, address, profession, profileImage,diplomaNo, insuranceNumber,department,title,username,group) {
+    constructor(firstName, lastName, email, mobilePhone, uuid, address, profession, profileImage,diplomaNo, insuranceNumber,departmentId,title,username,group) {
         this.firstName = firstName
         this.lastName = lastName
         this.email = email
@@ -10,12 +10,11 @@ export default class Staff {
         this.uuid = uuid
         this.address = address
         this.profession = profession
-        this.profilImage = profileImage
+        this.profileImage = profileImage
         this.diplomaNo = diplomaNo
         this.insuranceNumber = insuranceNumber
-        this.department = department
         this.title = title
-        this.department = department
+        this.departmentId = departmentId
         this.username = username
         this.group = group
     }

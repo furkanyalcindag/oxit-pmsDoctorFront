@@ -1,272 +1,144 @@
 <template>
   <div>
-    <CRow>
-      <CCol lg="12">
-        <transition name="fade">
-          <CCard v-if="show">
-            <CCardHeader>
+
+    <transition name="fade">
+      <CCard v-if="show">
+        <CCardHeader>
+          <img src="../../../icons/icons8-contact-32.png" height="32" width="32"/>
+          İletişim Bilgileri
+          <div class="card-header-actions">
+            <CButton @click="getSingleContactInfo">
               <CIcon name="cil-pencil"/>
-              İletişim Bilgileri
-              <div class="card-header-actions">
-                <CButton @click="contactInfoModal = true">
-                  <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
-                </CButton>
-                <CLink
-                    class="card-header-action btn-minimize"
-                    @click="formCollapsed = !formCollapsed"
+            </CButton>
+            <CButton v-if="contact === null" @click="contactInfoModal = true">
+              <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
+            </CButton>
+            <CLink
+                class="card-header-action btn-minimize"
+                @click="formCollapsed = !formCollapsed"
+            >
+              <CIcon
+                  :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
+              />
+            </CLink>
+
+          </div>
+        </CCardHeader>
+        <CCollapse :show="formCollapsed">
+          <CCardBody>
+            <CRow>
+              <CCol lg="12">
+                <CListGroupItem
+                    href="#"
+                    class="flex-column align-items-start"
                 >
-                  <CIcon
-                      :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
-                  />
-                </CLink>
-
-              </div>
-            </CCardHeader>
-            <CCollapse :show="formCollapsed">
-              <CCardBody>
-                <CRow v-for="(c,index) in contacts" :key="index">
-                  <CCol lg="4">
-                    <h5>
-                      <img src="../../../icons/icons8-instagram-logo-24.png" height="24" width="24"/>
-
-                      Instagram
-                    </h5>
-
-
-                    <hr>
-                    <h6 v-if="c.instagram">{{ c.instagram }}</h6>
-                    <h6 v-else>-</h6>
-
-                  </CCol>
-                  <CCol lg="4">
-
-
-                    <h5>
-                      <img src="../../../icons/icons8-tag-window-24.png" height="24" width="24"/>
-                      Web Site
-                    </h5>
-                    <hr>
-                    <h5 v-if="c.website">{{ c.website }}</h5>
-                    <h5 v-else>-</h5>
-
-                  </CCol>
-                  <CCol lg="3">
-                    <h5>
-                      <img src="../../../icons/icons8-facebook-circled-24.png" height="24" width="24"/>
-
-                      Facebook
-                    </h5>
-
-
-                    <hr>
-                    <h6 v-if="c.facebook">{{ c.facebook }}</h6>
-                    <h6 v-else>-</h6>
-
-                  </CCol>
-                  <CCol lg="4">
-                    <h5>
-
-
-                      <img src="../../../icons/icons8-linkedin-24.png" height="24" width="24"/>
-                      Linkedin
-
-
-                    </h5>
-                    <hr>
-                    <h6 v-if="c.linkedIn">{{ c.linkedIn }}</h6>
-                    <h6 v-else>-</h6>
-
-                  </CCol>
-                  <CCol lg="4">
-
-                    <h5>
-                      <img src="../../../icons/icons8-youtube-play-button-24.png" height="24" width="24"/>
-                      Youtube</h5>
-
-
-                    <hr>
-                    <h6 v-if="c.youtube">{{ c.youtube }}</h6>
-                    <h6 v-else>-</h6>
-
-                  </CCol>
-
-
-                  <CCol lg="3">
-                    <h5>
-                      <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
-
-                      Telefon
-                    </h5>
-
-
-                    <hr>
-                    <h6 v-if="c.mobilePhone">{{ c.mobilePhone }}</h6>
-                    <h6 v-else>-</h6>
-
-                  </CCol>
-                  <CCol lg="1">
-                    <CButton @click="getSingleContactInfo">
-                      <CIcon name="cil-pencil"/>
-                    </CButton>
-
-                  </CCol>
-                </CRow>
-
-
-              </CCardBody>
-            </CCollapse>
-          </CCard>
-        </transition>
-      </CCol>
-    </CRow>
-
-
-    <CModal
-        :show.sync="contactInfoUpdateModal"
-        :no-close-on-backdrop="true"
-        :centered="true"
-        title="Modal title 2"
-        size="xl"
-        color="dark"
-    >
-      <CRow>
-        <CCol lg="12">
-          <transition name="fade">
-            <CCard v-if="contactInfoUpdateModal">
-              <template>
-                <CCardBody>
                   <CRow>
+                    <CCol lg="12">
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="2">
+                            <img src="../../../icons/icons8-instagram-logo-24.png" height="24" width="24"/>
+                          </CCol>
+                          <CCol lg="10">
+                            <p class="mb-1 ml-1">{{ contactList.instagram }}</p>
+                          </CCol>
 
-                    <validation-observer ref="simpleRules">
-                      <CRow>
+                        </CRow>
+                        <small>
+                          <CDropdown size="sm" color="primary" toggler-text="İşlemler">
+                            <CDropdownItem>
+                              <CButton @click="getSingleContactInfo">
+                                <CIcon name="cil-pencil"/>
+                                Düzenle
+                              </CButton>
+                            </CDropdownItem>
+                          </CDropdown>
+                        </small>
+                      </div>
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="2">
+                            <img src="../../../icons/icons8-mail-24.png" height="24" width="24"/>
+                          </CCol>
+                          <CCol lg="10">
+                            <p class="mb-1 ml-1">{{ contactList.email }}</p>
+                          </CCol>
 
-                        <CCol lg="3">
+                        </CRow>
 
-                          Telefon <span class="text-danger">*</span>
+                      </div>
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="1">
 
-                          <CInput
+                            <img src="../../../icons/icons8-address-24.png" height="24" width="24"/></CCol>
+                          <CCol lg="11">
+                            <p class="mb-1 ml-1">{{ contactList.address }}</p>
+                          </CCol>
 
-                              description=""
-                              autocomplete="autocomplete"
-                              v-model="contactUpdate.mobilePhone"
+                        </CRow>
 
-                          />
+                      </div>
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="3">
+                            <img src="../../../icons/icons8-website-24.png" height="24" width="24"/>
+                          </CCol>
+                          <CCol lg="9">
+                            <p class="mb-1 ml-1">{{ contactList.website }}</p>
+                          </CCol>
 
-                        </CCol>
+                        </CRow>
 
+                      </div>
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="2">
+                            <img src="../../../icons/icons8-youtube-play-button-24.png" height="24" width="24"/>
+                          </CCol>
+                          <CCol lg="10">
+                            <p class=" ml-2 mb-1">{{ contactList.youtube }}</p>
+                          </CCol>
 
-                        <CCol lg="3">
-                          Adres <span class="text-danger">*</span>
+                        </CRow>
 
-                          <CInput
+                      </div>
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="2">
 
-                              description=""
-                              autocomplete="autocomplete"
-                              v-model="contactUpdate.address"
+                            <img src="../../../icons/icons8-facebook-24.png" height="24" width="24"/></CCol>
+                          <CCol lg="10">
+                            <p class="mb-1 ml-2">{{ contactList.facebook }}</p>
+                          </CCol>
 
-                          />
+                        </CRow>
 
+                      </div>
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="2">
+                            <img src="../../../icons/icons8-linkedin-24.png" height="24" width="24"/>
+                          </CCol>
+                          <CCol lg="10">
+                            <p class="ml-2 mb-1 ">{{ contactList.linkedin }}</p>
+                          </CCol>
 
-                        </CCol>
-                        <CCol lg="3">
-                          Web Site <span class="text-danger">*</span>
+                        </CRow>
+                      </div>
 
-                          <CInput
-
-                              description=""
-                              autocomplete="autocomplete"
-                              v-model="contactUpdate.website"
-
-                          />
-
-
-                        </CCol>
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Diploma No">
-                            E-mail <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                disabled
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="contactUpdate.diplomaNo"
-                                :state="errors.length > 0 ? false:null"
-                            />
-
-                          </validation-provider>
-                        </CCol>
-
-
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Uzmanlık Alanı">
-                            Instagram <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="contactUpdate.instagram"
-                                :state="errors.length > 0 ? false:null"
-                            />
-
-                          </validation-provider>
-                        </CCol>
-
-
-                        <CCol lg="3">
-                          Youtube <span class="text-danger">*</span>
-                          <CInput
-                              description=""
-                              autocomplete="autocomplete"
-                              v-model="contactUpdate.youtube"
-
-                              :state="errors.length > 0 ? false:null"
-                          />
-
-                        </CCol>
-
-
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Ünvan">
-                            Linkedin <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="contact.linkedIn"
-
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
-                        </CCol>
-
-
-                      </CRow>
-                    </validation-observer>
+                    </CCol>
                   </CRow>
-                </CCardBody>
-              </template>
-            </CCard>
-          </transition>
-        </CCol>
-      </CRow>
-      <template #header>
-        <h6 class="modal-title">İletişim Bilgileri Güncelle</h6>
-        <CButtonClose @click="contactInfoUpdateModal = false" class="text-white"/>
-      </template>
-      <template #footer>
-        <CButton @click="contactInfoUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
-      </template>
-    </CModal>
+
+
+                </CListGroupItem>
+              </CCol>
+            </CRow>
+
+          </CCardBody>
+        </CCollapse>
+      </CCard>
+    </transition>
     <CModal
         :show.sync="contactInfoModal"
         :no-close-on-backdrop="true"
@@ -303,8 +175,7 @@
 
                         <CCol lg="3">
                           Adres <span class="text-danger">*</span>
-
-                          <CInput
+                          <CTextarea
 
                               description=""
                               autocomplete="autocomplete"
@@ -328,16 +199,29 @@
 
                         </CCol>
                         <CCol lg="3">
+                          Facebook <span class="text-danger">*</span>
+
+                          <CInput
+
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="contact.facebook"
+
+                          />
+
+
+                        </CCol>
+                        <CCol lg="3">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
-                              name="Diploma No">
+                              name="Email">
                             E-mail <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
                             <CInput
                                 description=""
                                 autocomplete="autocomplete"
-                                v-model="contact.diplomaNo"
+                                v-model="contact.email"
                                 :state="errors.length > 0 ? false:null"
                             />
 
@@ -349,7 +233,7 @@
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
-                              name="Uzmanlık Alanı">
+                              name="Instagram">
                             Instagram <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
                             <CInput
@@ -375,22 +259,16 @@
 
                         </CCol>
 
-
                         <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Ünvan">
-                            Linkedin <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="contact.linkedIn"
+                          LinkedIn <span class="text-danger">*</span>
+                          <CInput
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="contact.linkedin"
 
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
+                              :state="errors.length > 0 ? false:null"
+                          />
+
                         </CCol>
 
 
@@ -409,7 +287,10 @@
       </template>
       <template #footer>
         <CButton @click="contactInfoModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton :disabled="loading" @click="validationForm" color="success">
+          <c-spinner v-show="loading" size="sm"></c-spinner>
+          Kaydet
+        </CButton>
       </template>
     </CModal>
   </div>
@@ -537,7 +418,7 @@ export default {
       contact: new Contact("", "", "", "", "", "", "",),
       contactInfoModal: false,
       contacts: [],
-      contactUpdate: new Contact("", "", "", "", "", "", "",),
+      contactList: new Contact("", "", "", "", "", "", "",),
 
 
     };
@@ -548,12 +429,12 @@ export default {
     async getContactInfo() {
       let response = await new ContactService().getContactInfo();
       if (response.status === 200) {
-        this.contact = response.data
+        this.contactList = response.data
       }
     },
 
     async getSingleContactInfo() {
-      this.contactInfoUpdateModal = true
+      this.contactInfoModal = true
       let response = await new ContactService().getContactInfo();
       if (response.status === 200) {
         this.contact = response.data
@@ -561,33 +442,21 @@ export default {
     },
 
     async editContactInfo() {
-      console.log(this.contact.department)
-      console.log(this.contact.department)
+      this.loading = true
       let response = await new ContactService().editContactInfo(this.contact);
       if (response.status === 200) {
-        this.contactInfoUpdateModal = false
+        this.contactInfoModal = false
+        this.loading = false
         await this.getContactInfo()
       }
 
     },
-    async addContactInfo() {
-      let response = await new ContactService().addContactInfo(this.contact);
-      if (response.status === 200) {
-        this.contactInfoUpdateModal = false
-        await this.getContactInfo()
-      }
 
-    },
 
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
         if (success) {
-          if (this.contactUpdate.uuid) {
-            await this.editContactInfo()
-
-          } else {
-            await this.addContactInfo()
-          }
+          await this.editContactInfo()
         }
       })
 

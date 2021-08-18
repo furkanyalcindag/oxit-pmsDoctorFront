@@ -102,8 +102,8 @@
                           :options="departments"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="doctor.department"
-                          :value.sync="doctor.department"
+                          v-model="doctor.departmentId"
+                          :value.sync="doctor.departmentId"
 
                       />
 
@@ -150,7 +150,9 @@
                 <div class="form-actions">
                   <CButton type="submit" color="primary"
                            @click="validationForm"
-                  >Kaydet
+                  >
+                    <c-spinner v-show="loading" size="sm"></c-spinner>
+                    Kaydet
                   </CButton>
 
                 </div>
@@ -186,17 +188,24 @@
                   <template #department="{ item, index }">
                     <td class="py-2">
 
-                      {{ item.label }}
+                      {{ item.department.label }}
                     </td>
                   </template>
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
+                      <CDropdown toggler-text="İşlemler">
+                        <CDropdownItem>
 
 
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
 
-                      <CButton @click="getSingleDoctor(item.uuid)" color="success">Düzenle</CButton>
+                          <CButton @click="getSingleDoctor(item.uuid)">Düzenle</CButton>
+
+                        </CDropdownItem>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
@@ -223,7 +232,10 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteDoctor" color="success">Evet</CButton>
+        <CButton @click="deleteDoctor" color="success">
+          <c-spinner v-show="loading" size="sm"></c-spinner>
+          Evet
+        </CButton>
       </template>
 
 
@@ -321,8 +333,8 @@
                               :options="departments"
                               description=""
                               autocomplete="autocomplete"
-                              v-model="doctorUpdate.department"
-                              :value.sync="doctor.department"
+                              v-model="doctorUpdate.departmentId"
+                              :value.sync="doctor.departmentId"
                           />
                         </CCol>
                         <CCol lg="3">
@@ -376,7 +388,10 @@
       </template>
       <template #footer>
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton :disabled="loading" @click="validationForm" color="success">
+          <c-spinner v-show="loading" size="sm"></c-spinner>
+          Güncelle
+        </CButton>
       </template>
     </CModal>
 
@@ -393,6 +408,7 @@ import {required, email, min, max} from 'validations'
 import Doctor from "@/models/pms/doctor";
 import DoctorService from "@/services/managementServices/doctor.service";
 import DepartmentService from "@/services/managementServices/department.service";
+import Staff from "@/models/pms/staff";
 
 export default {
   name: "Clinic",
@@ -482,8 +498,8 @@ export default {
       email,
       min,
       max,
-      doctor: new Doctor("", "", "", "", "", "", "", ""),
-      doctorUpdate: new Doctor("", "", "", "", "", "", "", ""),
+      doctor: new Staff("", "", "", "", "", "", "", ""),
+      doctorUpdate: new Staff("", "", "", "", "", "", "", ""),
       departments: [],
       doctors: [],
 
@@ -528,11 +544,13 @@ export default {
     },
 
     async addDoctor() {
-      if (this.doctor.department === "") {
-        this.doctor.department = this.departments[0].value
+      console.log("this.",this.doctor)
+      if (!this.doctor.departmentId) {
+        console.log("id",this.doctor)
+        this.doctor.departmentId = this.departments[0].value
       }
-      console.log(this.doctor)
-
+      this.loading = true
+      console.log("doctor",this.doctor)
       let response = await new DoctorService().addDoctor(this.doctor)
       if (response.status === 200) {
         await this.getDoctors()
@@ -541,7 +559,9 @@ export default {
           title: 'Başarılı',
           message: "Personel başarıyla eklendi"
         })
+        this.loading = false
       } else {
+        this.loading=false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -576,7 +596,7 @@ export default {
 
 
     async deleteDoctor() {
-
+      this.loading = true
       let response = await new DoctorService().deleteDoctor(this.deleteId)
       if (response.status === 200) {
         await this.getDoctors()
@@ -585,6 +605,7 @@ export default {
           title: 'Başarılı',
           message: "Doktor başarıyla silindi"
         })
+        this.loading = false
       } else {
         this.isError = true;
         this.errors = response.response.data;
@@ -598,6 +619,7 @@ export default {
     },
 
     async editDoctor() {
+      this.loading = true
       if (this.doctorUpdate.department === "") {
         this.doctorUpdate.department = this.departments[0].value
       }
@@ -609,6 +631,7 @@ export default {
           title: 'Başarılı',
           message: "Personel başarıyla eklendi"
         })
+        this.loading = false
       } else {
         this.isError = true;
         this.errors = response.response.data;

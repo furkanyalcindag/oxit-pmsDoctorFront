@@ -5,7 +5,7 @@
         <transition name="fade">
           <CCard v-if="show">
             <CCardHeader>
-              <CIcon name="cil-pencil"/>
+              <img src="../../../icons/icons8-graduation-cap-32.png" height="32" width="32"/>
               Eğitim Bilgileri
               <div class="card-header-actions">
                 <CButton @click="educationInfoModal = true">
@@ -19,62 +19,46 @@
                       :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
                   />
                 </CLink>
-
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                <CRow v-for="(edu,index) in educations" :key="index">
-                  <CCol lg="6">
-                    <h5>
-                      <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
-                      Universite
-                    </h5>
-                    <hr>
-                    <h6 v-if="edu.universityName">{{ edu.universityName }}</h6>
-                    <h6 v-else>-</h6>
+                <CRow>
+                  <CCol class="d-flex justify-content-end" lg="12">
 
                   </CCol>
-                  <CCol lg="5">
-                    <h5>
-                      <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
-
-                      Eğitim Türü
-                    </h5>
-
-
-                    <hr>
-                    <h6 v-if="edu.educationType">{{ edu.educationType }}</h6>
-                    <h6 v-else>-</h6>
-
-                  </CCol>
-                  <CCol lg="6">
-                    <h5>
-                      <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
-
-                      Fakülte
-                    </h5>
-
-
-                    <hr>
-                    <h6 v-if="edu.facultyName">{{ edu.facultyName }}</h6>
-                    <h6 v-else>-</h6>
-
-                  </CCol>
-                  <CCol lg="5">
-                    <h5>
-                      <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
-
-                      Bölüm
-                    </h5>
-                    <hr>
-                    <h6 v-if="edu.departmentName">{{ edu.departmentName }}</h6>
-                    <h6 v-else>-</h6>
-                  </CCol>
-                  <CCol lg="1">
-                    <CButton @click="getSingleEducationInfo(education.uuid)">
-                      <CIcon name="cil-pencil"/>
-                    </CButton>
+                  <CCol lg="12">
+                    <CListGroup>
+                      <CListGroupItem
+                          v-for="(edu,index) in educations" :key="index"
+                          href="#"
+                          class="flex-column align-items-start"
+                      >
+                        <div class="d-flex w-100 justify-content-between">
+                          <h5 class="mb-1">{{ edu.universityName }}</h5>
+                          <small>
+                            <CDropdown size="sm" color="primary" toggler-text="İşlemler">
+                              <CDropdownItem>
+                                <CButton @click="getSingleEducationInfo(edu.uuid)">
+                                  <CIcon name="cil-pencil"/>
+                                  Düzenle
+                                </CButton>
+                              </CDropdownItem>
+                              <CDropdownItem>
+                                <CButton @click="setDeleteModal(edu.uuid)">
+                                  <CIcon name="cilTrash"/>
+                                  Sil
+                                </CButton>
+                              </CDropdownItem>
+                            </CDropdown>
+                          </small>
+                        </div>
+                        <p class="mb-1">
+                          {{ edu.facultyName }} / {{ edu.departmentName }}
+                        </p>
+                        <small>{{ edu.educationType.label }}</small>
+                      </CListGroupItem>
+                    </CListGroup>
                   </CCol>
                 </CRow>
               </CCardBody>
@@ -167,7 +151,11 @@
       </template>
       <template #footer>
         <CButton @click="educationInfoUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton :disabled="loadingEdit" @click="validationForm" color="success">
+          <c-spinner v-show="loadingEdit" size="sm">
+          </c-spinner>
+          Güncelle
+        </CButton>
       </template>
     </CModal>
     <CModal
@@ -252,10 +240,34 @@
       </template>
       <template #footer>
         <CButton @click="educationInfoModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton @click="validationForm" color="success">
+          <c-spinner v-show="loading" size="sm"></c-spinner>
+          Kaydet
+        </CButton>
       </template>
     </CModal>
+    <CModal
+        title="Modal title"
+        color="danger"
+        :show.sync="deleteModel"
+    >
+      Eğitimi silmek istediğinizden emin misiniz?
 
+
+      <template #header>
+        <h6 class="modal-title">Uyarı</h6>
+        <CButtonClose @click="deleteModel = false" class="text-white"/>
+      </template>
+      <template #footer>
+        <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
+        <CButton :disabled="loadingDelete" @click="deleteEducationInfo" color="success">
+          <c-spinner size="sm" v-show="loadingDelete"></c-spinner>
+          Evet
+        </CButton>
+      </template>
+
+
+    </CModal>
 
   </div>
 </template>
@@ -270,6 +282,8 @@ import Doctor from "@/models/pms/doctor";
 import EducationService from "@/services/managementServices/education.service";
 import Education from "@/models/pms/education";
 import {freeSet} from '@coreui/icons'
+import EducationTypeService from "@/services/managementServices/educationType.service";
+import CTableWrapper from '@/views/base/Table.vue'
 
 export default {
   name: "Clinic",
@@ -277,14 +291,12 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
+    CTableWrapper
   },
   data() {
     return {
       fieldsTable: [
         {key: 'universityName', label: "Universite Adı", _style: "min-width:200px"},
-        {key: "facultyName", label: "Fakülte Adı"},
-        {key: "departmentName", label: "Bölüm"},
-        {key: "educationType", label: "Eğitim Türü"},
         {key: "actions", label: "İşlemler"},
 
       ],
@@ -383,7 +395,10 @@ export default {
       educations: [],
       educationInfoUpdateModal: false,
       educationTypes: [],
-      educationInfoModal: false
+      educationInfoModal: false,
+      eduUUID: '',
+      loadingDelete:false,
+      loadingEdit:false
 
 
     };
@@ -401,31 +416,75 @@ export default {
     },
 
     async getSingleEducationInfo(id) {
-      this.educationInfoUpdateModal = true
-      let response = await new EducationService().getEducationInfo(id);
+      let response = await new EducationService().getSingleEducation(id);
+      this.educationUpdate = response.data
       if (response.status === 200) {
-        this.educationUpdate = response.data
+        this.educationInfoUpdateModal = true
+      }
+    },
+    setDeleteModal(id) {
+      this.eduUUID = id
+      this.deleteModel = true
+    },
+    async deleteEducationInfo() {
+      this.loadingDelete = true
+      let response = await new EducationService().deleteEducation(this.eduUUID)
+      if (response.status === 200) {
+        this.deleteModel = false
+        this.loadingDelete = false
+        await this.getEducationInfo()
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Eğitim bilgileri başarıyla silindi"
+        })
+      } else {
+        this.loadingDelete = false
+        this.isError = true;
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
       }
     },
 
-    async editEducationInfo() {
 
+    async editEducationInfo() {
+      this.loadingEdit = true
+      this.educationUpdate.educationType = this.educationUpdate.educationType.value
       let response = await new EducationService().editEducation(this.educationUpdate);
       if (response.status === 200) {
         this.educationInfoUpdateModal = false
+        this.loadingEdit = false
         await this.getEducationInfo()
+      } else {
+        this.loadingEdit = false
       }
 
     },
     async addEducationInfo() {
-
+      this.loading = true
+      if (this.education.educationType === "") {
+        this.education.educationType = this.educationTypes[0].value
+      }
       let response = await new EducationService().addEducation(this.education);
       if (response.status === 200) {
-        this.educationInfoUpdateModal = false
+        this.loading = false
+        this.educationInfoModal = false
         await this.getEducationInfo()
+
+
       }
 
     },
+
+    async getEducationTypes() {
+      let response = await new EducationTypeService().getEducationType()
+      this.educationTypes = response.data
+    },
+
 
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
@@ -445,11 +504,14 @@ export default {
 
   async created() {
     await this.getEducationInfo()
+    await this.getEducationTypes()
 
   }
   ,
   async mounted() {
 
+    await this.getEducationInfo()
+    await this.getEducationTypes()
 
   }
   ,

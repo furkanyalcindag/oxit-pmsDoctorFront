@@ -9,6 +9,21 @@ class AboutService {
 
     }
 
+    addAbout(about) {
+        return axios.post(process.env.VUE_APP_API_URL + '/pmsDoctor/about-api/',
+            {
+                about: about.about,
+
+
+            }, {headers: authHeader()}).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            return error
+        });
+    }
+
     editAbout(about) {
         const params = {
             id: about.uuid

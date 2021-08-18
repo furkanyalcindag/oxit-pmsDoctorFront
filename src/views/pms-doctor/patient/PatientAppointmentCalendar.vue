@@ -1,23 +1,23 @@
 <template>
   <CCard>
-      <vue-cal
-          :on-event-click="onEventClick"
-          :events="events"
-          :selected-date="selectedDate"
-          style="height: 560px"
-          class="vuecal"
-          :time-from="7*60"
-          :time-to="22*60"
-          :disable-views="['years', 'year']"
-          events-count-on-year-view="events-count-on-year-view"
-          events-on-month-view="short"
-          active-view="month"
-          locale="tr"
-          @ready="formatDate"
-          @view-change="formatDate">
-      </vue-cal>
+    <vue-cal
+        :on-event-click="onEventClick"
+        :events="events"
+        :selected-date="selectedDate"
+        style="height: 560px"
+        class="vuecal"
+        :time-from="7*60"
+        :time-to="22*60"
+        :disable-views="['years', 'year']"
+        events-count-on-year-view="events-count-on-year-view"
+        events-on-month-view="short"
+        active-view="month"
+        locale="tr"
+        @ready="formatDate"
+        @view-change="formatDate">
+    </vue-cal>
 
-  <CModal
+    <CModal
         :show.sync="staffUpdateModal"
         :no-close-on-backdrop="true"
         :centered="true"
@@ -35,8 +35,7 @@
 
                     <validation-observer ref="simpleRules">
                       <CRow>
-
-                        <CCol lg="3">
+                        <CCol lg="2">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
@@ -45,37 +44,29 @@
                             <span class="text-danger">{{ errors[0] }}</span>
                             <CInput
                                 disabled
-                                timeFormat="24hr"
-                                type="time"
-                                description=""
                                 autocomplete="autocomplete"
                                 v-model="appointment.time"
                                 :state="errors.length > 0 ? false:null"
                             />
                           </validation-provider>
                         </CCol>
-
-                          <CCol lg="2">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Bitiş Saati">
-                        Bitiş Saati<span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            disabled
-                            type="time"
-                            timeFormat="true"
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="appointment.endTime"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-                    </CCol>
-
-
-                        <CCol lg="3">
+                        <CCol lg="2">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Bitiş Saati">
+                            Bitiş Saati<span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                disabled
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="appointment.endTime"
+                                :state="errors.length > 0 ? false:null"
+                            />
+                          </validation-provider>
+                        </CCol>
+                        <CCol lg="2">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
@@ -93,10 +84,6 @@
                             />
                           </validation-provider>
                         </CCol>
-
-
-
-
                         <CCol lg="3">
                           Doktor <span class="text-danger">*</span>
                           <CInput
@@ -108,8 +95,6 @@
 
                           />
                         </CCol>
-
-
                         <CCol lg="3">
                           Hasta <span class="text-danger">*</span>
                           <CInput
@@ -131,7 +116,7 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Hasta Güncelle</h6>
+        <h6 class="modal-title">Randevu Bilgileri</h6>
         <CButtonClose @click="staffUpdateModal = false" class="text-white"/>
       </template>
       <template #footer>
@@ -152,6 +137,7 @@ import 'vue-cal/dist/i18n/tr.js'
 import AppointmentService from "@/services/managementServices/appointment.service";
 import Appointment from "@/models/pms/appointment";
 import {ValidationProvider, ValidationObserver} from 'vee-validate'
+
 export default {
   name: "PatientAppointmentCalendar",
   components: {
@@ -171,7 +157,7 @@ export default {
       location: null,
       student: null,
       show: false,
-      appointment: new Appointment("","","","","","",""),
+      appointment: new Appointment("", "", "", "", "", "", ""),
       staffUpdateModal: false,
     }
   },
@@ -201,7 +187,6 @@ export default {
     },
     async adminGetSingleAppointment() {
       let response = await new AppointmentService().appointmentCalendarSingle(this.appointmentUUID)
-      console.log(response)
       this.appointment = response.data
 
     }

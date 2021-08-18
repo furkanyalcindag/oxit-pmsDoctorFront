@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Klinik Yönetimi
+              Randevu Yönetimi
               <div class="card-header-actions">
 
                 <CLink
@@ -37,6 +37,8 @@
                         <span class="text-danger">{{ errors[0] }}</span>
                         <CInput
                             type="date"
+                            :min="minDate"
+                            editFormat="dd-MM-yyyy"
                             description=""
                             autocomplete="autocomplete"
                             v-model="appointment.date"
@@ -63,7 +65,7 @@
                       </validation-provider>
                     </CCol>
 
-                     <CCol lg="2">
+                    <CCol lg="2">
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100"
@@ -140,7 +142,10 @@
                 <div class="form-actions">
                   <CButton type="submit" color="primary"
                            @click="validationForm"
-                  >Kaydet
+                           :disabled="loading"
+                  >
+                    <c-spinner v-show="loading" size="sm"></c-spinner>
+                    Kaydet
                   </CButton>
 
                 </div>
@@ -173,6 +178,24 @@
                     clickableRows
 
                 >
+                  <template #time="{ item, index }">
+                    <td class="py-2">
+
+                      {{ item.time.substring(0, 3) }}{{ item.time.substring(3, 5) }}
+                    </td>
+                  </template>
+                  <template #endTime="{ item, index }">
+                    <td class="py-2">
+
+                      {{ item.endTime.substring(0, 3) }}{{ item.endTime.substring(3, 5) }}
+                    </td>
+                  </template>
+                  <template #date="{ item, index }">
+                    <td class="py-2">
+
+                      {{ item.date.substring(8, 10) }}-{{ item.date.substring(5, 8) }}{{ item.date.substring(0, 4) }}
+                    </td>
+                  </template>
                   <template #patient="{ item, index }">
                     <td class="py-2">
 
@@ -186,19 +209,29 @@
                       {{ item.doctor.label }}
                     </td>
                   </template>
+                  <template #isPaid="{ item, index }">
+                    <td class="py-2" v-if="item.isPaid">
+
+                      {{ item.price }} TL
+                    </td>
+                    <td v-else class="py-2">
+
+                      -
+                    </td>
+                  </template>
 
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                        <CDropdown toggler-text="İşlemler">
+                      <CDropdown toggler-text="İşlemler">
                         <CDropdownItem>
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
+                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                         </CDropdownItem>
 
-                          <CDropdownItem>
-                      <CButton @click="getSingleAppointment(item.uuid)" color="success">Düzenle</CButton>
+                        <CDropdownItem>
+                          <CButton @click="getSingleAppointment(item.uuid)">Düzenle</CButton>
                         </CDropdownItem>
-                       </CDropdown>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
@@ -225,7 +258,10 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteAppointment" color="success">Evet</CButton>
+        <CButton :disabled="loadingDelete" @click="deleteAppointment" color="success">
+          <c-spinner v-show="loadingDelete" size="sm"></c-spinner>
+          Evet
+        </CButton>
       </template>
 
 
@@ -269,23 +305,23 @@
                           </validation-provider>
                         </CCol>
 
-                          <CCol lg="2">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Bitiş Saati">
-                        Bitiş Saati<span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            type="time"
-                            timeFormat="true"
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="appointmentUpdate.endTime"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-                    </CCol>
+                        <CCol lg="2">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Bitiş Saati">
+                            Bitiş Saati<span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                type="time"
+                                timeFormat="true"
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="appointmentUpdate.endTime"
+                                :state="errors.length > 0 ? false:null"
+                            />
+                          </validation-provider>
+                        </CCol>
 
 
                         <CCol lg="3">
@@ -305,8 +341,6 @@
                             />
                           </validation-provider>
                         </CCol>
-
-
 
 
                         <CCol lg="3">
@@ -345,16 +379,16 @@
         <CButtonClose @click="staffUpdateModal = false" class="text-white"/>
       </template>
       <template #footer>
-         <CDropdownItem>
+
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-         </CDropdownItem>
-         <CDropdownItem>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
-         </CDropdownItem>
+
+        <CButton :disabled="loadingEdit" @click="validationForm" color="success">
+          <c-spinner v-show="loadingEdit" size="sm"></c-spinner>
+          Güncelle
+        </CButton>
+
       </template>
     </CModal>
-
-
 
 
   </div>
@@ -385,12 +419,14 @@ export default {
   data() {
     return {
       fieldsTable: [
-        {key: 'time', label: "Saat", _style: "min-width:200px"},
+
         {key: "date", label: "Tarih"},
-        {key: "endTime", label: "endTime"},
+        {key: 'time', label: "Saat"},
+        {key: "endTime", label: "Bitiş Saati"},
         {key: "doctor", label: "Doktor"},
         {key: "patient", label: "Hasta"},
         {key: "isPaid", label: "Ücret"},
+        {key: "actions", label: "İşlemler"},
 
 
       ],
@@ -475,10 +511,13 @@ export default {
       bloodgroups: [],
       patients: [],
       patientUpdate: new Patient("", "", "", "", "", "", "", "", "", "",),
-      appointment: new Appointment("", "", "", false, "", "", 0,""),
-      appointmentUpdate: new Appointment("", "", "", false, "", "", 0,""),
+      appointment: new Appointment("", "", "", false, "", "", 0, ""),
+      appointmentUpdate: new Appointment("", "", "", false, "", "", 0, ""),
       isPaid: false,
       appointments: [],
+      minDate: '',
+      loadingDelete: false,
+      loadingEdit: false
 
 
     };
@@ -522,22 +561,44 @@ export default {
     },
 
     async addAppointment() {
+      this.loading = true
       if (this.appointment.doctorId === "") {
         this.appointment.doctorId = this.doctors[0].value
       }
       if (this.appointment.patientId === "") {
         this.appointment.patientId = this.patients[0].value
       }
-      console.log("is", this.appointment.isPaid)
       let response = await new AppointmentService().addAppointment(this.appointment)
       if (response.status === 200) {
+        this.loading = false
         await this.getAppointments()
         this.appointment = new Appointment()
         this.$toast.success({
           title: 'Başarılı',
           message: "Randevu başarıyla eklendi"
         })
-      } else {
+      } else if (response.staus===406) {
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Başlangıç tarihi bitiş tarihinden büyük olamaz"
+        })
+      }
+        else if (response.staus===301) {
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Başlangıç tarihi bugünün tarihinden küçük olamaz"
+        })
+      }
+        else if (response.staus===411){
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Bitiş tarihi bugünün tarihinden küçük olamaz"
+        })
+
+      }
+
+      else {
+        this.loading = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -573,22 +634,26 @@ export default {
 
     async getPatients() {
 
-      let response = await new PatientService().getPatientsSelect()
+      let response = await new PatientService().getPatientSelect()
       this.patients = response.data
     },
 
 
     async deleteAppointment() {
+      this.loadingDelete = true
 
       let response = await new AppointmentService().deleteAppointment(this.deleteId)
       if (response.status === 200) {
-        await this.getAppoitnments()
+        await this.getAppointments()
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
           message: "Randevu başarıyla silindi"
         })
-      } else {
+        this.loadingDelete = false
+      }
+      else {
+        this.loadingDelete = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -601,6 +666,7 @@ export default {
     },
 
     async editAppointment() {
+      this.loadingEdit = true
       if (this.appointmentUpdate.doctor === "") {
         this.appointmentUpdate.doctor = this.doctors[0].value
       }
@@ -609,15 +675,53 @@ export default {
         this.appointmentUpdate.patient = this.patients[0].value
       }
 
-      let response = await new AppointmentService().editAppointment(this.appointmentUpdate)
+      let response = await new AppointmentService().updateAppointment(this.appointmentUpdate)
       if (response.status === 200) {
+        this.loadingEdit = false
         this.staffUpdateModal = false
         await this.getAppointments()
         this.$toast.success({
           title: 'Başarılı',
-          message: "Randevu başarıyla eklendi"
+          message: "Randevu başarıyla güncellendi"
         })
-      } else {
+      }
+
+      else if (response.status===406) {
+         this.loadingEdit = false
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Başlangıç saati bitiş saatinden büyük olamaz"
+        })
+      }
+        else if (response.status===301) {
+           this.loadingEdit = false
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Başlangıç saati şuanki saatten küçük olamaz"
+        })
+      }
+        else if (response.status===411) {
+        this.loadingEdit = false
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Bitiş saati şuanki saatten küçük olamaz"
+        })
+      }
+
+         else if (response.status===417) {
+          this.loadingEdit = false
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Geçmiş tarih eklenemez"
+        })
+
+      }
+
+
+
+
+      else {
+        this.loadingEdit = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -633,9 +737,7 @@ export default {
     async getAppointments() {
 
       let response = await new AppointmentService().getAppointment()
-      console.log("response", response)
       this.appointments = response.data.data
-      console.log(this.appointments)
     },
 
 
@@ -644,6 +746,7 @@ export default {
         if (success) {
           if (this.appointmentUpdate.uuid) {
             await this.editAppointment()
+            console.log("ed")
           } else {
             await this.addAppointment()
           }
@@ -658,7 +761,13 @@ export default {
     await this.getDoctors()
     await this.getPatients()
     await this.getAppointments()
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
 
+    today = yyyy + '-' + mm + '-' + dd;
+    this.minDate = today
 
   },
   async mounted() {

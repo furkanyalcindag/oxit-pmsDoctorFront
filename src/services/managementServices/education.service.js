@@ -23,7 +23,7 @@ class EducationService {
                 universityName : education.universityName,
                 facultyName : education.facultyName,
                 departmentName : education.departmentName,
-                educationTypeId :education. educationTypeId
+                educationTypeId :education.educationType
 
 
             }, {headers: authHeader()}).then(response => {
@@ -44,7 +44,7 @@ class EducationService {
                 universityName : education.universityName,
                 facultyName : education.facultyName,
                 departmentName : education.departmentName,
-                educationTypeId :education. educationTypeId
+                educationTypeId :education. educationType
             }, {headers: authHeader(), params}).then(response => {
 
 

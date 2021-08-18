@@ -5,14 +5,17 @@
         <transition name="fade">
           <CCard v-if="show">
             <CCardHeader>
-              <CIcon name="cil-pencil"/>
+              <img src="../../../icons/icons8-photo-video-32.png" height="32" width="32"/>
               Medya Bilgileri
               <div class="card-header-actions">
-
+                <CButton @click="mediaUpdateModal=true">
+                  <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
+                </CButton>
                 <CLink
                     class="card-header-action btn-minimize"
                     @click="formCollapsed = !formCollapsed"
                 >
+
                   <CIcon
                       :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
                   />
@@ -29,7 +32,7 @@
                   </CCol>
                   <CCol lg="1">
                     <CButton @click="setDeleteModal(m.uuid)">
-                      <CIcon name="cil-pencil"/>
+                      <CIcon name="cilTrash"/>
                     </CButton>
                   </CCol>
                 </CRow>
@@ -261,9 +264,7 @@ export default {
     async getMedia() {
       let response = await new MediaService().getMedia();
       if (response.status === 200) {
-        console.log("res", response)
         this.medias = response.data
-        console.log("medi", this.medias)
       }
     },
 
@@ -289,7 +290,6 @@ export default {
 
     },
     setDeleteModal(id) {
-      console.log("denemememem")
       this.mediaUUID = id
       this.deleteModel = true
 
@@ -300,8 +300,21 @@ export default {
       if (response.status === 200) {
         this.deleteModel = false
         await this.getMedia()
+        this.deleteModel = false
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Medya başarıyla silindi"
+        })
+      } else {
+        this.isError = true;
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
       }
-
     },
 
 

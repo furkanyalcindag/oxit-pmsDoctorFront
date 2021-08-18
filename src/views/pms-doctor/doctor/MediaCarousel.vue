@@ -260,9 +260,7 @@ export default {
     async getMedia() {
       let response = await new MediaService().getMedia();
       if (response.status === 200) {
-        console.log("res", response)
         this.medias = response.data
-        console.log("medi", this.medias)
       }
     },
 
@@ -288,7 +286,6 @@ export default {
 
     },
     setDeleteModal(id) {
-      console.log("denemememem")
       this.mediaUUID = id
       this.deleteModel = true
 

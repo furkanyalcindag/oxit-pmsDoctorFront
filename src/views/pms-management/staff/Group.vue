@@ -42,7 +42,9 @@
                     <CCol lg="6" class="mt-3">
                       <div class="form-actions">
                         <CButton type="submit" color="primary" @click="validationForm"
-                        >Kaydet
+                        >
+                          <c-spinner v-show="loading" size="sm"></c-spinner>
+                          Kaydet
                         </CButton>
 
                       </div>
@@ -108,7 +110,10 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel=false" color="danger">Hayır</CButton>
-        <CButton @click="deleteGroup" color="success">Evet</CButton>
+        <CButton @click="deleteGroup" color="success">
+          <c-spinner v-show="locadingDelete" size="sm"></c-spinner>
+          Evet
+        </CButton>
       </template>
 
 
@@ -256,6 +261,7 @@ export default {
       email,
       max,
       min,
+      locadingDelete: false
     };
   },
 
@@ -266,20 +272,20 @@ export default {
 
     },
     async addGroup() {
-      console.log("group", this.group)
+      this.loading = true
       let response = await new GroupService().addGroup(this.group.label)
       if (response.status === 200) {
         this.group = new Group()
-
+        await this.getGroups()
+        this.loading = false
         this.$toast.success({
           title: 'Başarılı',
-          message: "işlem başarıyla gerçekleşti"
+          message: "Grup başarıyla eklendi"
         })
 
       } else if (response.status === 401) {
 
       } else {
-        console.log("res", response.data)
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -294,19 +300,19 @@ export default {
       this.deleteModel = true
     },
     async deleteGroup() {
+      this.loadingDelete = true
       let response = await new GroupService().deleteGroup(this.deleteId)
       if (response.status === 200) {
         await this.getGroups()
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
-          message: "işlem başarıyla gerçekleşti"
+          message: "Grup başarıyla silindi"
         })
-
+        this.loadingDelete = false
       } else if (response.status === 401) {
 
       } else {
-        console.log("res", response.data)
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({

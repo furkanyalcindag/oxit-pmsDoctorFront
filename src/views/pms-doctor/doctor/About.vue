@@ -5,10 +5,12 @@
         <transition name="fade">
           <CCard v-if="show">
             <CCardHeader>
-              <CIcon name="cil-pencil"/>
+              <img src="../../../icons/icons8-info-32.png" height="32" width="32"/>
               Hakkında
               <div class="card-header-actions">
-
+                <CButton v-show="!about" @click="aboutUpdateModal = true">
+                  <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
+                </CButton>
                 <CLink
                     class="card-header-action btn-minimize"
                     @click="formCollapsed = !formCollapsed"
@@ -22,26 +24,27 @@
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                <CRow>
+                <CListGroupItem
+                    href="#"
+                    class="flex-column align-items-start"
+                >
+                  <div class="d-flex w-100 justify-content-between">
+                    <h5 v-if="aboutList.about" class="mb-1">{{ aboutList.about }}</h5>
+                    <h5 v-else class="mb-1">-</h5>
+                    <small>
+                      <CDropdown size="sm" color="primary" toggler-text="İşlemler">
+                        <CDropdownItem>
+                          <CButton @click="getSingleAbout">
+                            <CIcon name="cil-pencil"/>
+                            Düzenle
+                          </CButton>
+                        </CDropdownItem>
+                      </CDropdown>
+                    </small>
+                  </div>
 
 
-                  <CCol lg="11">
-
-                    <img src="../../../icons/icons8-about-24.png" height="24" width="24"/></h3>
-                    Hakkında
-
-                    <hr>
-                    <h5 v-if="about.about">{{ about.about }}</h5>
-                    <h5 v-else>-</h5>
-
-                  </CCol>
-                  <CCol lg="1">
-                    <CButton @click="getSingleAbout">
-                      <CIcon name="cil-pencil"/>
-                    </CButton>
-
-                  </CCol>
-                </CRow>
+                </CListGroupItem>
 
 
               </CCardBody>
@@ -78,7 +81,7 @@
                             rows="3"
                             description=""
                             autocomplete="autocomplete"
-                            v-model="aboutUpdate.about"
+                            v-model="about.about"
 
                         />
 
@@ -98,7 +101,10 @@
       </template>
       <template #footer>
         <CButton @click="aboutUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton :disabled="loading" @click="validationForm" color="success">
+          <c-spinner size="sm" v-show="loading"></c-spinner>
+          Kaydet
+        </CButton>
       </template>
     </CModal>
 
@@ -114,12 +120,14 @@ import {ValidationProvider, ValidationObserver} from 'vee-validate'
 import {required, email, min, max} from 'validations'
 import Doctor from "@/models/pms/doctor";
 import Contact from "@/models/pms/contact";
-
+import {freeSet} from '@coreui/icons'
 import About from "@/models/pms/about";
 import AboutService from "@/services/managementServices/about.service";
+import Secretary from "@/models/pms/secretary";
 
 export default {
   name: "Clinic",
+  freeSet,
   components: {
     ValidationProvider,
     ValidationObserver,
@@ -223,7 +231,7 @@ export default {
       doctors: [],
       contact: new Contact("", "", "", "", "", "", "",),
       aboutUpdateModal: false,
-      aboutUpdate: new About("")
+      aboutList: new About("")
 
 
     };
@@ -234,7 +242,7 @@ export default {
     async getAbout() {
       let response = await new AboutService().getAbout();
       if (response.status === 200) {
-        this.about = response.data
+        this.aboutList = response.data
       }
     },
 
@@ -242,25 +250,57 @@ export default {
       this.aboutUpdateModal = true
       let response = await new AboutService().getAbout();
       if (response.status === 200) {
-        this.aboutUpdate = response.data
+        this.about = response.data
       }
     },
 
     async editAbout() {
+      this.loading = true
 
-      let response = await new AboutService().editAbout(this.contact);
+      let response = await new AboutService().editAbout(this.about);
       if (response.status === 200) {
         this.aboutUpdateModal = false
+        this.loading = false
         await this.getAbout()
       }
 
     },
+    async addAbout() {
+      this.loading = true
+      let response = await new AboutService().addAbout(this.about)
+      if (response.status === 200) {
+        this.aboutUpdateModal = false
+        await this.getAbout()
+        this.about = new About()
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "İşlem başarıyla gerçekleşti"
+        })
+        this.loading = false
+      } else {
+        this.isError = true;
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
+      }
+
+    },
+
 
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
         if (success) {
-          await this.editAbout()
+          if (this.about.uuid) {
+            await this.editAbout()
+          } else {
+            await this.addAbout()
+          }
         }
+
       })
 
     },

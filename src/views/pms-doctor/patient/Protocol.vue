@@ -20,6 +20,7 @@
                 </CLink>
 
               </div>
+
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
@@ -173,7 +174,10 @@
                           </CRow>
                           <CRow>
                             <CCol lg="6">
-                              <CButton @click="addProtocol" color="primary">Kaydet</CButton>
+                              <CButton @click="addProtocol" color="primary">
+                                <c-spinner v-show="loading" size="sm"></c-spinner>
+                                Kaydet
+                              </CButton>
                             </CCol>
                           </CRow>
                         </CCardBody>
@@ -340,7 +344,9 @@
       </template>
       <template #footer>
         <CButton @click="closeModalAssay" color="danger">Kapat</CButton>
-        <CButton @click="setAssayModal" color="success">Ekle</CButton>
+        <CButton @click="setAssayModal" color="success">
+          Ekle
+        </CButton>
       </template>
     </CModal>
 
@@ -465,7 +471,10 @@
                       </CCard>
                     </CCol>
                     <CCol lg="6">
-                      <CButton @click="addDiagnosis">Ekle</CButton>
+                      <CButton @click="addDiagnosis">
+                        <c-spinner v-show="loading" size="sm"></c-spinner>
+                        Ekle
+                      </CButton>
                     </CCol>
                   </CRow>
                   <CRow v-else>
@@ -479,11 +488,11 @@
                     </CCol>
                     <CCol lg="8">
                       <CCard>
-                      <CListGroup>
-                        <CCardHeader class="d-flex justify-content-center">İlaçlar</CCardHeader>
-                        <CListGroupItem v-for="medicine in patientMedicines">{{ medicine.name }}</CListGroupItem>
-                      </CListGroup>
-                        </CCard>
+                        <CListGroup>
+                          <CCardHeader class="d-flex justify-content-center">İlaçlar</CCardHeader>
+                          <CListGroupItem v-for="medicine in patientMedicines">{{ medicine.name }}</CListGroupItem>
+                        </CListGroup>
+                      </CCard>
                     </CCol>
                   </CRow>
                 </CCardBody>
@@ -526,6 +535,7 @@ import CTableWrapper from '@/views/base/Table.vue'
 import DiagnosisService from "../../../services/managementServices/diagnosis.service";
 import Diagnosis from "../../../models/pms/diagnosis";
 import MedicineService from "../../../services/managementServices/medicine.service";
+import Secretary from "@/models/pms/secretary";
 
 export default {
   name: "Clinic",
@@ -776,13 +786,14 @@ export default {
       this.diagnosis.medicines = this.selectedMedicines
     },
     async addProtocol() {
+      this.loading = true
       for (let i = 0; i < this.protocol.assays.length; i++) {
         this.protocol.assays[i] = this.protocol.assays[i].uuid
       }
-
       this.protocol.patient = this.$route.params.patient
       let response = await new ProtocolService().addProtocol(this.protocol)
       if (response.status === 200) {
+        this.loading = false
         await this.getOldProtocols()
         this.protocol = new Protocol("", [])
         this.$toast.success({
@@ -796,14 +807,31 @@ export default {
       this.protocols = response.data
     },
     async addDiagnosis() {
+      this.loading = true
       this.diagnosis.protocolId = this.protocolId
-      console.log("diag", this.diagnosis)
       let response = await new DiagnosisService().addDiagnosis(this.diagnosis)
       if (response.status === 200) {
         this.showDiagnosis = false
+        this.loading = false
         await this.getSingleDiagnosis()
+        this.diagnosis = new Diagnosis()
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Teşhis başarıyla eklendi"
+        })
+      } else {
+        this.isError = true;
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
       }
+
     },
+
     async getSingleDiagnosis() {
       this.getDiagnosis = true
       this.protocolNewUpdateModal = false
@@ -820,7 +848,6 @@ export default {
     async getDiagnosisMedicines() {
       let response = await new MedicineService().getMedicines(this.diagnosis.uuid)
       this.patientMedicines = response.data
-      console.log("response mdei", this.diagnosis.medicines)
 
     },
     setDeleteModal(id) {

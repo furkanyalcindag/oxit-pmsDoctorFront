@@ -5,9 +5,12 @@
         <transition name="fade">
           <CCard v-if="show">
             <CCardHeader>
-              <CIcon name="cil-pencil"/>
+              <img src="../../../icons/icons8-more-info-32.png" height="32" width="32"/>
               Genel Bilgiler
               <div class="card-header-actions">
+                <CButton @click="getSingleGeneralInfo">
+                  <CIcon name="cil-pencil"/>
+                </CButton>
 
                 <CLink
                     class="card-header-action btn-minimize"
@@ -21,78 +24,54 @@
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
-              <CCardBody>
+              <CCardBody style="backdrop-filter: blur(20px); background-color: #ebeff5">
                 <CRow>
-                  <CCol lg="2">
-                    <CCol lg="2">
 
-                      <img src="../../../../../../../Desktop/hasemagumus-iyonlu-maske-219f.jpg" height="180"
-                           width="120"/></CCol>
+                  <CCol class="d-flex justify-content-center" lg="12">
+                    <img v-if="staff.profileImage" class="profileImage" :src="staff.profileImage"
 
+                         height="140"
+                         width="140"/>
+
+
+                    <img v-else src="../../../icons/1181575-200.png" height="200" width="200"/></CCol>
+
+
+                  <CCol class=" mt-2 d-flex justify-content-center" lg="12">
+                    <h5 v-if="staff.firstName !== '' || staff.lastName !==''">
+                      <img src="../../../icons/icons8-user-24 (1).png" height="20" width="20"
+                      />
+                      {{ staff.title }} {{ staff.firstName }} {{ staff.lastName }}</h5>
+                    <h5 v-else><img src="../../../icons/icons8-user-24 (1).png" height="20" width="20"
+                    />-</h5>
                   </CCol>
-                  <CCol lg="10">
-                    <CRow>
-                      <CCol lg="6">
-                        <h5><img src="../../../icons/icons8-name-24.png" height="24" width="24"/>
-
-                          İsim Soyisim</h5>
-                        <hr>
-                        <h5 v-if="staff.firstName !== '' || staff.lastName !==''">
-                          {{ staff.firstName }} {{ staff.lastName }}</h5>
-                        <h5 v-else>-</h5>
-                      </CCol>
-                      <CCol lg="6">
-
-
-                        <h5>
-                           <img src="../../../icons/icons8-price-tag-24.png" height="24" width="24"/></h5>
-                          Ünvan
-
-                        <hr>
-                        <h5 v-if="staff.title">{{ staff.title }}</h5>
-                        <h5 v-else>-</h5>
-
-                      </CCol>
-                    </CRow>
-
-                    <CRow class="mt-3">
-                        <CCol lg="4">
-                        <h5>Uzmanlık Alanı</h5>
-                        <hr>
-                        <h5 v-if="staff.profession">{{ staff.profession }}</h5>
-                        <h5 v-else>-</h5>
-
-                      </CCol>
-                      <CCol lg="4">
-
-
-                        <h5>Bölüm</h5>
-                        <hr>
-                        <h5 v-if="staff.department">{{ staff.department.label }}</h5>
-                        <h5 v-else>-</h5>
-
-                      </CCol>
-                      <CCol lg="3">
-                        <h5><img src="../../../icons/icons8-numbers-input-form-24.png" height="24" width="24"/>
-                          Diploma No
-                        </h5>
-                        <hr>
-                        <h5 v-if="staff.diplomaNo">{{ staff.diplomaNo }}</h5>
-                        <h5 v-else>-</h5>
-
-                      </CCol>
-                      <CCol lg="1">
-                        <CButton @click="getSingleGeneralInfo">
-                          <CIcon name="cil-pencil"/>
-                        </CButton>
-
-                      </CCol>
-                    </CRow>
-
+                  <CCol class="d-flex justify-content-center" lg="12">
+                        <span v-if="staff.diplomaNo">
+                          <img src="../../../icons/icons8-graduation-scroll-24.png" height="20"
+                               width="20"/>{{ staff.diplomaNo }}</span>
+                    <span v-else><img src="../../../icons/icons8-graduation-scroll-24.png" height="20"
+                                      width="20"/>-</span>
                   </CCol>
+                  <CCol lg="12" class="d-flex justify-content-center">
+
+                        <span v-if="staff.profession">
+                          <img src="../../../icons/icons8-paste-special-24.png" height="20"
+                               width="20"/>{{ staff.profession }}</span>
+                    <h5 v-else><img src="../../../icons/icons8-paste-special-24.png" height="20"
+                                    width="20"/>-</h5>
+                  </CCol>
+
+
+                  <CCol lg="12" class="d-flex justify-content-center">
+                        <span v-if="staff.department">
+                          <img src="../../../icons/icons8-doctors-folder-24.png" height="20"
+                               width="20"/>{{ staff.department.label }}</span>
+                    <span v-else><img src="../../../icons/icons8-doctors-folder-24.png" height="20"
+                                      width="20"/>-</span>
+                  </CCol>
+
+
                 </CRow>
-
-
               </CCardBody>
             </CCollapse>
           </CCard>
@@ -216,6 +195,22 @@
                         </CCol>
 
 
+                        <CCol lg="3">
+
+
+                          Fotoğraf <span class="text-danger">*</span>
+
+                          <CInputFile
+                              horizontal
+                              @change="getBase64"
+                              custom
+                              :placeholder="selectedFile"
+
+                          />
+
+                        </CCol>
+
+
                       </CRow>
                     </validation-observer>
                   </CRow>
@@ -230,8 +225,13 @@
         <CButtonClose @click="generalInfoUpdateModal = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="generalInfoUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton :disabled="loading" @click="generalInfoUpdateModal = false" color="danger">
+          <c-spinner v-show="loading"></c-spinner>
+          Kapat
+        </CButton>
+        <CButton :disabled="loading" @click="validationForm" color="success">
+          <c-spinner size="sm" v-show="loading"></c-spinner>
+          Güncelle</CButton>
       </template>
     </CModal>
 
@@ -359,6 +359,7 @@ export default {
       departments: [],
       doctors: [],
       staff: new Staff("", "", "", "", "", "", "", "", ""),
+      selectedFile: '',
 
 
     };
@@ -371,6 +372,16 @@ export default {
       if (response.status === 200) {
         this.staff = response.data
       }
+    },
+
+    getBase64(event) {
+      var reader = new FileReader();
+      reader.readAsDataURL(event[0]);
+      this.selectedFile = event.length + ' dosya seçildi'
+      var x = this
+      reader.onload = function () {
+        x.staff.profileImage = reader.result
+      };
     },
 
     async getSingleGeneralInfo() {
@@ -391,13 +402,13 @@ export default {
 
 
     async editGeneralInfo() {
-      console.log(this.staff.department)
-      if (this.staff.department === "") {
-        this.staff.department = this.departments[0].value
+      this.loading = true
+      if (this.staff.department.label) {
+        this.staff.department = this.staff.department.value
       }
-      console.log(this.staff.department)
       let response = await new StaffService().editGeneralInfo(this.staff);
       if (response.status === 200) {
+        this.loading = false
         this.generalInfoUpdateModal = false
         await this.getGeneralInfo()
       }
@@ -412,7 +423,8 @@ export default {
         }
       })
 
-    },
+    }
+    ,
 
   },
 
@@ -435,3 +447,9 @@ export default {
 
 };
 </script>
+
+<style>
+.profileImage {
+  border-radius: 50%;
+}
+</style>

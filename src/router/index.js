@@ -4,8 +4,6 @@ import ProductList from "@/views/catalog/ProductList";
 import UserService from "../services/UserService";
 
 
-
-
 // Containers
 const TheContainer = () => import('@/containers/TheContainer')
 
@@ -117,8 +115,7 @@ const Contract = () => import('@/views/pms-management/contract/Contract');
 
 const Doctor = () => import('@/views/pms-doctor/doctor/Doctor')
 
-const DoctorProfile  = () => import('@/views/pms-doctor/doctor/DoctorProfile')
-
+const DoctorProfile = () => import('@/views/pms-doctor/doctor/DoctorProfile')
 
 
 const Appointment = () => import('@/views/pms-doctor/patient/PatientAppointment')
@@ -308,7 +305,7 @@ function configRoutes() {
 
                 {
                     path: '/clinic',
-                    redirect: '/clinic/clinic',
+                    redirect: '',
                     name: 'Clinic',
                     component: {
                         render(c) {
@@ -346,9 +343,9 @@ function configRoutes() {
 
                     ]
                 },
-          {
+                {
                     path: '',
-                    redirect: '/protocol',
+                    redirect: '',
                     name: 'protocol',
                     component: {
                         render(c) {
@@ -367,26 +364,14 @@ function configRoutes() {
                 },
                 {
                     path: '/patientCalendar',
-                    redirect: '/patientCalendar',
+                    redirect: '',
                     name: 'PatientCalendar',
-                    component: {
-                        render(c) {
-                            return c('router-view')
-                        }
-                    },
-                    children: [
-                        {
-                            path: 'patientCalendar',
-                            name: 'patientCalendar',
-                            component: patientCalendar
-                        }
+                    component: patientCalendar
 
-
-                    ]
                 },
 
 
-                  {
+                {
                     path: '/doctor',
                     redirect: '/doctor',
                     name: 'Doctor',
@@ -406,31 +391,19 @@ function configRoutes() {
                     ]
                 },
 
-                  {
+                {
                     path: '/profile',
                     redirect: '',
                     name: 'profile',
-                    component: {
-                        render(c) {
-                            return c('router-view')
-                        }
-                    },
-                    children: [
-                        {
-                            path: '/profile',
-                            name: 'profile',
-                            component: DoctorProfile
-                        }
+                    component: DoctorProfile
 
 
-                    ]
                 },
 
 
-
-                 {
+                {
                     path: '/assay',
-                    redirect: '/assay',
+                    redirect: '',
                     name: 'Assay',
                     component: {
                         render(c) {
@@ -447,8 +420,6 @@ function configRoutes() {
 
                     ]
                 },
-
-
 
 
                 {
@@ -472,7 +443,7 @@ function configRoutes() {
                 },
 
 
-                 {
+                {
                     path: '/secretary',
                     redirect: '/secretary',
                     name: 'Secretary',
@@ -928,4 +899,3 @@ function configRoutes() {
 
     ]
 }
-

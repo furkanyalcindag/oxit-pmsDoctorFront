@@ -25,7 +25,7 @@ class DoctorService {
                 diplomaNo: doctor.diplomaNo,
                 title: doctor.title,
                 email: doctor.email,
-                departmentId: doctor.department,
+                departmentId: doctor.departmentId,
 
             }, {headers: authHeader()}).then(response => {
 
