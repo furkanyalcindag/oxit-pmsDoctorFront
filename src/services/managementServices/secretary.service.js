@@ -5,7 +5,7 @@ import authHeader from "@/services/auth-header";
 class SecretaryService {
 
 
-    getSecretarys() {
+    getSecretary() {
 
         return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/secretary-api/`, {headers: authHeader()})
 

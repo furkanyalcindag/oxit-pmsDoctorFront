@@ -45,16 +45,19 @@
                     </CCol>
 
 
-
-
                   </CRow>
                 </validation-observer>
 
                 <div class="form-actions">
+
                   <CButton type="submit" color="primary"
                            @click="validationForm"
-                  >Kaydet
+                  >
+                    <c-spinner size="sm" v-show="loading">
+                    </c-spinner>
+                    Kaydet
                   </CButton>
+
 
                 </div>
               </CCardBody>
@@ -95,18 +98,18 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                        <CDropdown toggler-text="İşlemler">
+                      <CDropdown toggler-text="İşlemler">
                         <CDropdownItem>
 
 
-                      <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
-                          </CDropdownItem>
+                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
                         <CDropdownItem>
 
-                      <CButton @click="getSingleAssay(item.uuid)">Düzenle</CButton>
+                          <CButton @click="getSingleAssay(item.uuid)">Düzenle</CButton>
 
-                          </CDropdownItem>
-                        </CDropdown>
+                        </CDropdownItem>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
@@ -133,7 +136,11 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteAssay" color="success">Evet</CButton>
+
+        <CButton @click="deleteAssay" color="success">
+
+          Evet
+        </CButton>
       </template>
 
 
@@ -230,7 +237,6 @@ export default {
       ],
 
 
-
       pageLabel: {label: 'sasasa', external: true,},
       page: 1,
       numberOfPages: 0,
@@ -313,9 +319,7 @@ export default {
       assay: new Assay(""),
       assayUpdate: new Assay(""),
       assayUpdateModal: false,
-      assays:[],
-
-
+      assays: [],
 
 
     };
@@ -358,7 +362,8 @@ export default {
 
     },
 
-     async addAssay() {
+    async addAssay() {
+      this.loading = true
 
       let response = await new AssayService().addSecretary(this.assay)
       if (response.status === 200) {
@@ -368,6 +373,7 @@ export default {
           title: 'Başarılı',
           message: "Tahlil başarıyla eklendi"
         })
+        this.loading = false
       } else {
         this.isError = true;
         this.errors = response.response.data;
@@ -431,7 +437,7 @@ export default {
         await this.getAssays()
         this.$toast.success({
           title: 'Başarılı',
-          message: "Tahlil başarıyla eklendi"
+          message: "Tahlil başarıyla güncellendi"
         })
       } else {
         this.isError = true;

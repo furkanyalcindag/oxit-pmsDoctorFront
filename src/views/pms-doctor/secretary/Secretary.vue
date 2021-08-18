@@ -32,7 +32,7 @@
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100"
-                          name="Doktor Adı">
+                          name="Sekreter Adı">
                         Sekreter Adı <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
                         <CInput
@@ -88,7 +88,9 @@
                 <div class="form-actions">
                   <CButton type="submit" color="primary"
                            @click="validationForm"
-                  >Kaydet
+                  >
+                    <c-spinner v-show="loading" size="sm"></c-spinner>
+                    Kaydet
                   </CButton>
 
                 </div>
@@ -163,13 +165,12 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteSecretary" color="success">Evet</CButton>
+        <CButton :disabled="loadingDelete" @click="deleteSecretary" color="success">
+          <c-spinner v-show="loadingDelete" size="sm"></c-spinner>
+          Evet
+        </CButton>
       </template>
-
-
     </CModal>
-
-
     <CModal
         :show.sync="staffUpdateModal"
         :no-close-on-backdrop="true"
@@ -258,11 +259,12 @@
       </template>
       <template #footer>
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton @click="validationForm" color="success">
+          <c-spinner v-show="loading" size="sm"></c-spinner>
+          Güncelle
+        </CButton>
       </template>
     </CModal>
-
-
   </div>
 </template>
 
@@ -363,6 +365,8 @@ export default {
       secretary: new Secretary("", "", "", "",),
       secretaryUpdate: new Secretary("", "", "", "",),
       secretarys: [],
+      loadingEdit: false,
+      loadingDelete: false
 
 
     };
@@ -406,12 +410,12 @@ export default {
     },
 
     async addSecretary() {
-
-
+      this.loading = true
       let response = await new SecretaryService().addSecretary(this.secretary)
       if (response.status === 200) {
         await this.getSecretarys()
         this.secretary = new Secretary()
+        this.loading = false
         this.$toast.success({
           title: 'Başarılı',
           message: "Sekreter başarıyla eklendi"
@@ -431,7 +435,7 @@ export default {
 
     async getSecretarys() {
 
-      let response = await new SecretaryService().getSecretarys()
+      let response = await new SecretaryService().getSecretary()
       this.secretarys = response.data.data
     },
 
@@ -439,10 +443,10 @@ export default {
     async getSingleSecretary(id) {
 
       let response = await new SecretaryService().getSingleSecretary(id)
+      this.secretaryUpdate = response.data
 
       if (response.status === 200) {
         this.staffUpdateModal = true
-        this.secretaryUpdate = response.data
         this.staffUpdateModal = true
 
 
@@ -452,16 +456,19 @@ export default {
 
 
     async deleteSecretary() {
+      this.loadingDelete = true
 
       let response = await new SecretaryService().deleteSecretary(this.deleteId)
       if (response.status === 200) {
         await this.getSecretarys()
+        this.loadingDelete = false
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
           message: "Sekreter başarıyla silindi"
         })
       } else {
+        this.loadingDelete
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -474,15 +481,18 @@ export default {
     },
 
     async editSecretary() {
+      this.loadingEdit = true
       let response = await new SecretaryService().editSecretary(this.secretaryUpdate)
       if (response.status === 200) {
         this.staffUpdateModal = false
         await this.getSecretarys()
+        this.loadingEdit = false
         this.$toast.success({
           title: 'Başarılı',
-          message: "Sekreter başarıyla eklendi"
+          message: "Sekreter başarıyla güncellendi"
         })
       } else {
+        this.loadingEdit = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {

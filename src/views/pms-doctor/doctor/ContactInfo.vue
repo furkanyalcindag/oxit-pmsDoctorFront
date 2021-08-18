@@ -1,175 +1,144 @@
 <template>
   <div>
-    <CRow>
-      <CCol lg="12">
-        <transition name="fade">
-          <CCard v-if="show">
-            <CCardHeader>
-              <img src="../../../icons/icons8-contact-32.png" height="32" width="32"/>
-              İletişim Bilgileri
-              <div class="card-header-actions">
-                <CButton v-if="contact === null" @click="contactInfoModal = true">
-                  <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
-                </CButton>
-                <CLink
-                    class="card-header-action btn-minimize"
-                    @click="formCollapsed = !formCollapsed"
+
+    <transition name="fade">
+      <CCard v-if="show">
+        <CCardHeader>
+          <img src="../../../icons/icons8-contact-32.png" height="32" width="32"/>
+          İletişim Bilgileri
+          <div class="card-header-actions">
+            <CButton @click="getSingleContactInfo">
+              <CIcon name="cil-pencil"/>
+            </CButton>
+            <CButton v-if="contact === null" @click="contactInfoModal = true">
+              <CIcon :content="$options.freeSet.cilPlus" name="cil-plus"/>
+            </CButton>
+            <CLink
+                class="card-header-action btn-minimize"
+                @click="formCollapsed = !formCollapsed"
+            >
+              <CIcon
+                  :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
+              />
+            </CLink>
+
+          </div>
+        </CCardHeader>
+        <CCollapse :show="formCollapsed">
+          <CCardBody>
+            <CRow>
+              <CCol lg="12">
+                <CListGroupItem
+                    href="#"
+                    class="flex-column align-items-start"
                 >
-                  <CIcon
-                      :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
-                  />
-                </CLink>
-
-              </div>
-            </CCardHeader>
-            <CCollapse :show="formCollapsed">
-              <CCardBody>
-                <CRow>
-                  <CCol lg="6">
-                    <CRow>
-                      <CCol lg="12">
-                        <h5>
-                          <img src="../../../icons/icons8-instagram-logo-24.png" height="24" width="24"/>
-
-                          Instagram
-                        </h5>
-
-
-                        <hr>
-                        <h6 v-if="contactList.instagram">{{ contactList.instagram }}</h6>
-                        <h6 v-else>-</h6>
-
-                      </CCol>
-                      <CCol lg="12">
-
-
-                        <h5>
-                          <img src="../../../icons/icons8-tag-window-24.png" height="24" width="24"/>
-                          Web Site
-                        </h5>
-                        <hr>
-                        <h5 v-if="contactList.website">{{ contactList.website }}</h5>
-                        <h5 v-else>-</h5>
-
-                      </CCol>
-                      <CCol lg="12">
-                        <h5>
-                          <img src="../../../icons/icons8-facebook-circled-24.png" height="24" width="24"/>
-
-                          Facebook
-                        </h5>
-
-
-                        <hr>
-                        <h6 v-if="contactList.facebook">{{ contactList.facebook }}</h6>
-                        <h6 v-else>-</h6>
-
-                      </CCol>
-                      <CCol lg="12">
-                        <h5>
-
-
-                          <img src="../../../icons/icons8-linkedin-24.png" height="24" width="24"/>
-                          Linkedin
-
-
-                        </h5>
-                        <hr>
-                        <h6 v-if="contactList.linkedIn">{{ contactList.linkedIn }}</h6>
-                        <h6 v-else>-</h6>
-
-                      </CCol>
-                    </CRow>
-                  </CCol>
-                  <CCol lg="6">
-                    <CRow>
-                      <CCol lg="10">
+                  <CRow>
+                    <CCol lg="12">
+                      <div class="d-flex w-100 justify-content-between">
                         <CRow>
-                          <CCol>
-                            <h5>
-                              <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
-
-                              Telefon
-                            </h5>
-                            <hr>
-                            <h6 v-if="contactList.mobilePhone">{{ contactList.mobilePhone }}</h6>
-                            <h6 v-else>-</h6>
-                          </CCol>
-                        </CRow>
-
-                      </CCol>
-                      <CCol lg="10">
-                        <CRow>
-                          <CCol lg="3">
-                            <h5>
-                              <img src="../../../icons/icons8-cell-phone-24.png" height="24" width="24"/>
-                              E-mail:
-                            </h5>
-                          </CCol>
-                          <CCol lg="9">
-                            <h6 v-if="contactList.email">{{ contactList.email }}</h6>
-                            <h6 v-else>-</h6>
-                          </CCol>
-                        </CRow>
-
-
-                      </CCol>
-
-                      <CCol lg="10">
-                            <hr>
-                        <CRow>
-                          <CCol lg="3">
-                            <h5>
-                              <img src="../../../icons/icons8-linkedin-24.png" height="24" width="24"/>
-                              Adres:
-                            </h5>
-                          </CCol>
-                          <CCol lg="9">
-                            <h6 v-if="contactList.address">{{ contactList.address }}</h6>
-                            <h6 v-else>-</h6>
-                          </CCol>
-                        </CRow>
-                      </CCol>
-
-                      <CCol lg="12">
-                        <hr>
-                        <CRow>
-                          <CCol lg="10">
-
-                            <h5>
-                              <img src="../../../icons/icons8-youtube-play-button-24.png" height="24" width="24"/>
-                              Youtube</h5>
-
-
-                            <hr>
-                            <h6 v-if="contactList.youtube">{{ contactList.youtube }}</h6>
-                            <h6 v-else>-</h6>
-
-                          </CCol>
                           <CCol lg="2">
-                            <CButton @click="getSingleContactInfo">
-                              <CIcon name="cil-pencil"/>
-                            </CButton>
-
+                            <img src="../../../icons/icons8-instagram-logo-24.png" height="24" width="24"/>
                           </CCol>
+                          <CCol lg="10">
+                            <p class="mb-1 ml-1">{{ contactList.instagram }}</p>
+                          </CCol>
+
                         </CRow>
-                      </CCol>
+                        <small>
+                          <CDropdown size="sm" color="primary" toggler-text="İşlemler">
+                            <CDropdownItem>
+                              <CButton @click="getSingleContactInfo">
+                                <CIcon name="cil-pencil"/>
+                                Düzenle
+                              </CButton>
+                            </CDropdownItem>
+                          </CDropdown>
+                        </small>
+                      </div>
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="2">
+                            <img src="../../../icons/icons8-mail-24.png" height="24" width="24"/>
+                          </CCol>
+                          <CCol lg="10">
+                            <p class="mb-1 ml-1">{{ contactList.email }}</p>
+                          </CCol>
 
-                    </CRow>
-                  </CCol>
+                        </CRow>
+
+                      </div>
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="1">
+
+                            <img src="../../../icons/icons8-address-24.png" height="24" width="24"/></CCol>
+                          <CCol lg="11">
+                            <p class="mb-1 ml-1">{{ contactList.address }}</p>
+                          </CCol>
+
+                        </CRow>
+
+                      </div>
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="3">
+                            <img src="../../../icons/icons8-website-24.png" height="24" width="24"/>
+                          </CCol>
+                          <CCol lg="9">
+                            <p class="mb-1 ml-1">{{ contactList.website }}</p>
+                          </CCol>
+
+                        </CRow>
+
+                      </div>
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="2">
+                            <img src="../../../icons/icons8-youtube-play-button-24.png" height="24" width="24"/>
+                          </CCol>
+                          <CCol lg="10">
+                            <p class=" ml-2 mb-1">{{ contactList.youtube }}</p>
+                          </CCol>
+
+                        </CRow>
+
+                      </div>
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="2">
+
+                            <img src="../../../icons/icons8-facebook-24.png" height="24" width="24"/></CCol>
+                          <CCol lg="10">
+                            <p class="mb-1 ml-2">{{ contactList.facebook }}</p>
+                          </CCol>
+
+                        </CRow>
+
+                      </div>
+                      <div class="d-flex w-100 justify-content-between">
+                        <CRow>
+                          <CCol lg="2">
+                            <img src="../../../icons/icons8-linkedin-24.png" height="24" width="24"/>
+                          </CCol>
+                          <CCol lg="10">
+                            <p class="ml-2 mb-1 ">{{ contactList.linkedin }}</p>
+                          </CCol>
+
+                        </CRow>
+                      </div>
+
+                    </CCol>
+                  </CRow>
 
 
-                </CRow>
+                </CListGroupItem>
+              </CCol>
+            </CRow>
 
-
-              </CCardBody>
-            </CCollapse>
-          </CCard>
-        </transition>
-      </CCol>
-    </CRow>
-
-
+          </CCardBody>
+        </CCollapse>
+      </CCard>
+    </transition>
     <CModal
         :show.sync="contactInfoModal"
         :no-close-on-backdrop="true"
@@ -206,7 +175,7 @@
 
                         <CCol lg="3">
                           Adres <span class="text-danger">*</span>
-                           <CTextarea
+                          <CTextarea
 
                               description=""
                               autocomplete="autocomplete"
@@ -250,7 +219,6 @@
                             E-mail <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
                             <CInput
-                                disabled
                                 description=""
                                 autocomplete="autocomplete"
                                 v-model="contact.email"
@@ -319,7 +287,10 @@
       </template>
       <template #footer>
         <CButton @click="contactInfoModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Kaydet</CButton>
+        <CButton :disabled="loading" @click="validationForm" color="success">
+          <c-spinner v-show="loading" size="sm"></c-spinner>
+          Kaydet
+        </CButton>
       </template>
     </CModal>
   </div>
@@ -471,9 +442,11 @@ export default {
     },
 
     async editContactInfo() {
+      this.loading = true
       let response = await new ContactService().editContactInfo(this.contact);
       if (response.status === 200) {
         this.contactInfoModal = false
+        this.loading = false
         await this.getContactInfo()
       }
 

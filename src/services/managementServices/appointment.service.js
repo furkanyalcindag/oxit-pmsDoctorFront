@@ -17,7 +17,7 @@ class AppointmentService {
             }, {headers: authHeader()}).then(response => {
             return response;
         }).catch(error => {
-            return error;
+            return error.response
         });
     }
 
@@ -86,7 +86,7 @@ class AppointmentService {
             }, {headers: authHeader(), params}).then(response => {
             return response;
         }).catch(error => {
-            return error
+            return error.response
         })
 
     }

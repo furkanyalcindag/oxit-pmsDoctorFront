@@ -23,7 +23,7 @@ class CompanyAdvertisementService {
         }, {headers: authHeader()}).then(response => {
             return response;
         }).catch(error => {
-            return error
+            return error.response
         })
 
     }
@@ -63,7 +63,7 @@ class CompanyAdvertisementService {
         const params = {
             id: id
         }
-        return axios.get(process.env.VUE_APP_API_URL + '/management/company-advertising-api/', {
+        return axios.delete(process.env.VUE_APP_API_URL + '/management/company-advertising-api/', {
             headers: authHeader(),
             params
         })

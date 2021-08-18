@@ -290,7 +290,6 @@ export default {
 
     },
     setDeleteModal(id) {
-      console.log("denemememem")
       this.mediaUUID = id
       this.deleteModel = true
 

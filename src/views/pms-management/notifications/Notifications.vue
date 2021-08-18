@@ -92,7 +92,6 @@
                         </CCol>
                         <CCol lg="12">
                           Resim <span class="text-danger">*</span>
-                          <span class="text-danger">{{ errors[0] }}</span>
                           <CInputFile
                               horizontal
                               @change="getBase64"
@@ -104,7 +103,9 @@
                       <CCol class="ml-3" lg="6">
                         <div class="form-actions">
                           <CButton @click="validationForm" type="submit" color="primary"
-                          >Kaydet
+                          >
+                            <c-spinner v-show="loading" size="sm"></c-spinner>
+                            Kaydet
                           </CButton>
 
                         </div>
@@ -271,123 +272,6 @@
                     </CCol>
                   </CRow>
                 </CTab>
-                <!--                  <CTab title="Otomatik">-->
-                <!--                    <hr>-->
-                <!--                    <CRow>-->
-                <!--                      <CCol lg="6">-->
-
-                <!--                        <CSelect-->
-                <!--                            label="Gün"-->
-                <!--                            :options="options"-->
-                <!--                            placeholder="Lütfen Seçiniz"-->
-                <!--                        />-->
-
-                <!--                        <CInput-->
-                <!--                            label="Bildirim Başlığı (Zorunlu Alan)"-->
-                <!--                            description=""-->
-                <!--                            autocomplete="autocomplete"-->
-
-                <!--                        />-->
-
-
-                <!--                        <CInput-->
-                <!--                            label="Bildirim Linki (Zorunlu Alan)"-->
-                <!--                            description=""-->
-                <!--                            autocomplete="autocomplete"-->
-                <!--                        />-->
-
-
-                <!--                      </CCol>-->
-                <!--                      <CCol lg="6">-->
-
-
-                <!--                        <CInput-->
-                <!--                            label="Bildirim Logo Url (Zorunlu Alan)"-->
-                <!--                            description=""-->
-                <!--                            autocomplete="autocomplete"-->
-                <!--                        />-->
-
-
-                <!--                        <CTextarea-->
-                <!--                            :rows="2"-->
-                <!--                            label="Bildirim Açıklaması (Zorunlu Alan)"-->
-                <!--                            description=""-->
-                <!--                            autocomplete="autocomplete"-->
-
-                <!--                        />-->
-
-
-                <!--                      </CCol>-->
-
-
-                <!--                    </CRow>-->
-                <!--                    <hr>-->
-                <!--                    <CRow>-->
-                <!--                      <CCol lg="12">-->
-                <!--                        <transition name="fade">-->
-                <!--                          <CCard v-if="show">-->
-                <!--                            <template>-->
-                <!--                              <CCardBody>-->
-
-                <!--                                <CDataTable-->
-                <!--                                    :items="items"-->
-                <!--                                    :fields="fields"-->
-                <!--                                    column-filter-->
-                <!--                                    table-filter-->
-                <!--                                    items-per-page-select-->
-                <!--                                    :items-per-page="5"-->
-                <!--                                    hover-->
-                <!--                                    sorter-->
-                <!--                                    pagination-->
-                <!--                                >-->
-                <!--                                  <template #status="{item}">-->
-                <!--                                    <td>-->
-                <!--                                      <CBadge :color="getBadge(item.status)">-->
-                <!--                                        {{ item.status }}-->
-                <!--                                      </CBadge>-->
-                <!--                                    </td>-->
-                <!--                                  </template>-->
-                <!--                                  <template #show_details="{item, index}">-->
-                <!--                                    <td class="py-2">-->
-                <!--                                      <CButton-->
-                <!--                                          color="primary"-->
-                <!--                                          variant="outline"-->
-                <!--                                          square-->
-                <!--                                          size="sm"-->
-                <!--                                          @click="toggleDetails(item, index)"-->
-                <!--                                      >-->
-                <!--                                        {{ Boolean(item._toggled) ? 'Hide' : 'Show' }}-->
-                <!--                                      </CButton>-->
-                <!--                                    </td>-->
-                <!--                                  </template>-->
-                <!--                                  <template #details="{item}">-->
-                <!--                                    <CCollapse :show="Boolean(item._toggled)" :duration="collapseDuration">-->
-                <!--                                      <CCardBody>-->
-                <!--                                        <CMedia :aside-image-props="{ height: 102 }">-->
-                <!--                                          <h4>-->
-                <!--                                            {{ item.username }}-->
-                <!--                                          </h4>-->
-                <!--                                          <p class="text-muted">User since: {{ item.registered }}</p>-->
-                <!--                                          <CButton size="sm" color="info" class="">-->
-                <!--                                            User Settings-->
-                <!--                                          </CButton>-->
-                <!--                                          <CButton size="sm" color="danger" class="ml-1">-->
-                <!--                                            Delete-->
-                <!--                                          </CButton>-->
-                <!--                                        </CMedia>-->
-                <!--                                      </CCardBody>-->
-                <!--                                    </CCollapse>-->
-                <!--                                  </template>-->
-                <!--                                </CDataTable>-->
-
-
-                <!--                              </CCardBody>-->
-                <!--                            </template>-->
-                <!--                          </CCard>-->
-                <!--                        </transition>-->
-                <!--                      </CCol>-->
-                <!--                    </CRow>-->
-                <!--                  </CTab>-->
               </CTabs>
 
 
@@ -504,10 +388,13 @@ export default {
       });
     },
     async addNotification() {
-      console.log("not", this.notification)
+      this.loading = true
       let response = await new NotificationService().addNotification(this.notification)
       if (response.status === 200) {
+        this.loading = false
         await this.getNotifications()
+      } else {
+        this.loading = false
       }
     },
     async getNotifications() {

@@ -193,7 +193,7 @@
                 <div class="form-actions">
                   <CButton type="submit" color="primary"
                            @click="validationForm"
-                  >Kaydet
+                  ><c-spinner v-show="loading" size="sm"></c-spinner>Kaydet
                   </CButton>
 
                 </div>
@@ -266,7 +266,7 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteClinic" color="success">Evet</CButton>
+        <CButton @click="deleteClinic" color="success"><c-spinner v-show="loadingDelete" size="sm"></c-spinner>Evet</CButton>
       </template>
 
 
@@ -453,7 +453,7 @@
       </template>
       <template #footer>
         <CButton @click="clinicUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="editClinic()" color="success">Güncelle</CButton>
+        <CButton @click="editClinic()" color="success"><c-spinner v-show="loadingEdit" size="sm"></c-spinner>Güncelle</CButton>
       </template>
     </CModal>
 
@@ -555,7 +555,9 @@ export default {
       required,
       email,
       min,
-      max
+      max,
+      loadingDelete:false,
+      loadingEdit:false
     };
   },
 
@@ -600,6 +602,7 @@ export default {
       this.clinics = response.data.data
     },
     async addClinic() {
+      this.loading = true
       if (this.district === '') {
         this.clinic.districtId = this.districts[0].value
       }
@@ -611,6 +614,8 @@ export default {
         this.isSuccess = false;
         this.isSuccess = true;
         await this.getClinics();
+        this.clinic = await new Clinic()
+        this.loading = false
         this.$toast.success({
           title: 'Başarılı',
           message: "Klinik başarıyla eklendi"
@@ -624,6 +629,7 @@ export default {
         })
         await this.$router.push("/pages/login");
       } else {
+        this.loading = false
         this.isError = false;
         this.isError = true;
         this.errors = a.response.data;
@@ -637,6 +643,7 @@ export default {
       }
     },
     async editClinic() {
+      this.loadingEdit = false
       if (this.districtUpdate === '') {
         this.clinicUpdate.districtId = this.districts[0].value
       }
@@ -647,6 +654,21 @@ export default {
       if (response.status === 200) {
         this.clinicUpdateModal = false
         await this.getClinics()
+        this.loadingEdit = false
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Klinik başarıyla güncellendi"
+        })
+      } else {
+        this.isError = true;
+        this.loadingEdit = false
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
       }
 
 
@@ -663,11 +685,12 @@ export default {
 
     },
     async getDistricts(city) {
-      console.log(city)
+
       let response = await new GeneralService().getDistrict(city)
       this.districts = response.data
     },
     async deleteClinic() {
+      this.loadingDelete = true
       let response = await new ClinicService().deleteClinic(this.deleteId)
       if (response.status === 200) {
         this.deleteModel = false
@@ -677,7 +700,9 @@ export default {
           title: 'Başarılı',
           message: "Klinik başarıyla silindi"
         })
+        this.loadingDelete = false
       } else {
+        this.loadingDelete = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -692,11 +717,8 @@ export default {
 
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
-        console.log("this", this.clinicUpdate)
         if (success) {
-          console.log("burda")
 
-          console.log("else")
           await this.addClinic()
 
         }

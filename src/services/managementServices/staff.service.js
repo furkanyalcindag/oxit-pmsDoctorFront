@@ -22,7 +22,7 @@ class StaffService {
         return axios.put(process.env.VUE_APP_API_URL + '/pmsDoctor/general-info-api/', {
             profileImage: staff.profileImage,
             diplomaNo: staff.diplomaNo,
-            departmentId: staff.department.value,
+            departmentId: staff.department,
             profession: staff.profession,
             title: staff.title
 

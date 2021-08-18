@@ -7,13 +7,13 @@ import authHeader from "@/services/auth-header";
 class PatientService {
 
 
-  getPatients() {
+  getPatient() {
 
         return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/patient-api/`, {headers: authHeader()})
 
     }
 
-     getPatientsSelect() {
+     getPatientSelect() {
 
         return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/patient-select-api/`, {headers: authHeader()})
 
@@ -31,14 +31,12 @@ class PatientService {
                 bloodGroupId : patient.bloodGroup,
                 email : patient.email
 
-
-
-            }, {headers: authHeader()}).then(response => {
-
-
+            },
+            {headers: authHeader()
+            }).then(response => {
             return response;
         }).catch(error => {
-            return error
+            return error.response
         });
 
 
@@ -58,11 +56,9 @@ class PatientService {
                 bloodGroupId : patient.bloodGroup,
                 email : patient.email
             }, {headers: authHeader(),params}).then(response => {
-
-
             return response;
         }).catch(error => {
-            return error
+            return error.response
         });
 
 
@@ -80,8 +76,12 @@ class PatientService {
         const params = {
             id: id
         }
-        return axios.delete(process.env.VUE_APP_API_URL + `/pmsDoctor/patient-api/`, {headers: authHeader(), params})
+        return axios.delete(process.env.VUE_APP_API_URL + `/pmsDoctor/patient-api/`,
+            {headers: authHeader(),
+                params
+            })
     }
+
 
 
 

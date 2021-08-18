@@ -16,7 +16,7 @@ class PrizeService {
 
                 title : prize.title,
                 description : prize.description,
-                image : prize.image,
+                profileImage : prize.profileImage,
                 date :prize. date
 
 
@@ -37,7 +37,7 @@ class PrizeService {
             {
                  title : prize.title,
                 description : prize.description,
-                image : prize.image,
+                profileImage : prize.profileImage,
                 date :prize. date
 
             }, {headers: authHeader(), params}).then(response => {

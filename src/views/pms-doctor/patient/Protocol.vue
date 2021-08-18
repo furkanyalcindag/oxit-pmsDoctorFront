@@ -174,7 +174,10 @@
                           </CRow>
                           <CRow>
                             <CCol lg="6">
-                              <CButton @click="addProtocol" color="primary">Kaydet</CButton>
+                              <CButton @click="addProtocol" color="primary">
+                                <c-spinner v-show="loading" size="sm"></c-spinner>
+                                Kaydet
+                              </CButton>
                             </CCol>
                           </CRow>
                         </CCardBody>
@@ -341,7 +344,9 @@
       </template>
       <template #footer>
         <CButton @click="closeModalAssay" color="danger">Kapat</CButton>
-        <CButton @click="setAssayModal" color="success">Ekle</CButton>
+        <CButton @click="setAssayModal" color="success">
+          Ekle
+        </CButton>
       </template>
     </CModal>
 
@@ -466,7 +471,10 @@
                       </CCard>
                     </CCol>
                     <CCol lg="6">
-                      <CButton @click="addDiagnosis">Ekle</CButton>
+                      <CButton @click="addDiagnosis">
+                        <c-spinner v-show="loading" size="sm"></c-spinner>
+                        Ekle
+                      </CButton>
                     </CCol>
                   </CRow>
                   <CRow v-else>
@@ -480,11 +488,11 @@
                     </CCol>
                     <CCol lg="8">
                       <CCard>
-                      <CListGroup>
-                        <CCardHeader class="d-flex justify-content-center">İlaçlar</CCardHeader>
-                        <CListGroupItem v-for="medicine in patientMedicines">{{ medicine.name }}</CListGroupItem>
-                      </CListGroup>
-                        </CCard>
+                        <CListGroup>
+                          <CCardHeader class="d-flex justify-content-center">İlaçlar</CCardHeader>
+                          <CListGroupItem v-for="medicine in patientMedicines">{{ medicine.name }}</CListGroupItem>
+                        </CListGroup>
+                      </CCard>
                     </CCol>
                   </CRow>
                 </CCardBody>
@@ -778,13 +786,14 @@ export default {
       this.diagnosis.medicines = this.selectedMedicines
     },
     async addProtocol() {
+      this.loading = true
       for (let i = 0; i < this.protocol.assays.length; i++) {
         this.protocol.assays[i] = this.protocol.assays[i].uuid
       }
-
       this.protocol.patient = this.$route.params.patient
       let response = await new ProtocolService().addProtocol(this.protocol)
       if (response.status === 200) {
+        this.loading = false
         await this.getOldProtocols()
         this.protocol = new Protocol("", [])
         this.$toast.success({
@@ -798,10 +807,12 @@ export default {
       this.protocols = response.data
     },
     async addDiagnosis() {
+      this.loading = true
       this.diagnosis.protocolId = this.protocolId
       let response = await new DiagnosisService().addDiagnosis(this.diagnosis)
       if (response.status === 200) {
         this.showDiagnosis = false
+        this.loading = false
         await this.getSingleDiagnosis()
         this.diagnosis = new Diagnosis()
         this.$toast.success({

@@ -8,7 +8,7 @@
             <div v-for='(article,index) in dateWithArticles' class='article' :key="index">
               <span class='dot'></span>
               <p class='article-date'>{{ article.title }}</p>
-              <p>{{ article.date }}</p>
+              <p>  {{ article.date.substring(8, 10) }}-{{ article.date.substring(5, 8) }}{{ article.date.substring(0, 4) }}</p>
             </div>
           </div>
         </div>

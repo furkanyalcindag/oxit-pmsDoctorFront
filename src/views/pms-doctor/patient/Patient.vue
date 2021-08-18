@@ -182,7 +182,9 @@
                 <div class="form-actions">
                   <CButton type="submit" color="primary"
                            @click="validationForm"
-                  >Kaydet
+                  >
+                    <c-spinner v-show="loading" size="sm"></c-spinner>
+                    Kaydet
                   </CButton>
 
                 </div>
@@ -236,7 +238,9 @@
                   <template #birthDate="{ item, index }">
                     <td class="py-2">
 
-                      {{ item.birthDate.substring(8, 10) }}-{{ item.birthDate.substring(5, 8) }}{{ item.birthDate.substring(0, 4) }}
+                      {{ item.birthDate.substring(8, 10) }}-{{
+                        item.birthDate.substring(5, 8)
+                      }}{{ item.birthDate.substring(0, 4) }}
                     </td>
                   </template>
 
@@ -285,7 +289,10 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deletePatient" color="success">Evet</CButton>
+        <CButton :disabled="loadingDelete" @click="deletePatient" color="success">
+          <c-spinner v-show="loadingDelete" size="sm"></c-spinner>
+          Evet
+        </CButton>
       </template>
 
 
@@ -504,7 +511,10 @@
       </template>
       <template #footer>
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton :disabled="loading" @click="validationForm" color="success">
+          <c-spinner v-show="loading" size="sm"></c-spinner>
+          Güncelle
+        </CButton>
       </template>
     </CModal>
 
@@ -626,7 +636,9 @@ export default {
       bloodgroups: [],
       patients: [],
       patientUpdate: new Patient("", "", "", "", "", "", "", "", "", "",),
-      maxDate: ''
+      maxDate: '',
+      loadingDelete:false,
+      loadingEdit: false
 
 
     };
@@ -670,6 +682,7 @@ export default {
     },
 
     async addPatient() {
+      this.loading = true
       if (this.patient.gender === "") {
         this.patient.gender = this.genders[0].value
       }
@@ -680,6 +693,7 @@ export default {
 
       let response = await new PatientService().addPatient(this.patient)
       if (response.status === 200) {
+        this.loading = false
         await this.getPatients()
         this.patient = new Patient()
         this.$toast.success({
@@ -729,6 +743,7 @@ export default {
 
 
     async deletePatient() {
+      this.loadingDelete = true
 
       let response = await new PatientService().deletePatient(this.deleteId)
       if (response.status === 200) {
@@ -738,8 +753,10 @@ export default {
           title: 'Başarılı',
           message: "Hasta başarıyla silindi"
         })
+        this.loadingDelete = false
       } else {
         this.isError = true;
+        this.loadingDelete=false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -751,6 +768,7 @@ export default {
     },
 
     async editPatient() {
+      this.loadingEdit = true
       if (this.patientUpdate.gender === "") {
         this.patientUpdate.gender = this.genders[0].value
       }
@@ -758,16 +776,17 @@ export default {
       if (this.patientUpdate.bloodgroup === "") {
         this.patientUpdate.bloodgroup = this.bloodgroups[0].value
       }
-
+      this.loadingEdit = false
       let response = await new DoctorService().editPatient(this.patientUpdate)
       if (response.status === 200) {
         this.staffUpdateModal = false
         await this.getPatients()
         this.$toast.success({
           title: 'Başarılı',
-          message: "Hasta başarıyla eklendi"
+          message: "Hasta başarıyla güncellendi"
         })
       } else {
+        this.loadingEdit = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -782,7 +801,7 @@ export default {
 
     async getPatients() {
 
-      let response = await new PatientService().getPatients()
+      let response = await new PatientService().getPatient()
       this.patients = response.data.data
     },
 

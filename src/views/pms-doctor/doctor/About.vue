@@ -5,7 +5,7 @@
         <transition name="fade">
           <CCard v-if="show">
             <CCardHeader>
-                <img src="../../../icons/icons8-info-32.png" height="32" width="32"/>
+              <img src="../../../icons/icons8-info-32.png" height="32" width="32"/>
               Hakkında
               <div class="card-header-actions">
                 <CButton v-show="!about" @click="aboutUpdateModal = true">
@@ -24,26 +24,27 @@
             </CCardHeader>
             <CCollapse :show="formCollapsed">
               <CCardBody>
-                <CRow>
+                <CListGroupItem
+                    href="#"
+                    class="flex-column align-items-start"
+                >
+                  <div class="d-flex w-100 justify-content-between">
+                    <h5 v-if="aboutList.about" class="mb-1">{{ aboutList.about }}</h5>
+                    <h5 v-else class="mb-1">-</h5>
+                    <small>
+                      <CDropdown size="sm" color="primary" toggler-text="İşlemler">
+                        <CDropdownItem>
+                          <CButton @click="getSingleAbout">
+                            <CIcon name="cil-pencil"/>
+                            Düzenle
+                          </CButton>
+                        </CDropdownItem>
+                      </CDropdown>
+                    </small>
+                  </div>
 
 
-                  <CCol lg="11">
-                    <h5>
-                      <img src="../../../icons/icons8-about-24.png" height="24" width="24"/>
-                      Hakkında
-                    </h5>
-                    <hr>
-                    <h6 v-if="aboutList.about">{{ aboutList.about }}</h6>
-                    <h6 v-else>-</h6>
-
-                  </CCol>
-                  <CCol lg="1">
-                    <CButton @click="getSingleAbout">
-                      <CIcon name="cil-pencil"/>
-                    </CButton>
-
-                  </CCol>
-                </CRow>
+                </CListGroupItem>
 
 
               </CCardBody>
@@ -100,7 +101,10 @@
       </template>
       <template #footer>
         <CButton @click="aboutUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Kaydet</CButton>
+        <CButton :disabled="loading" @click="validationForm" color="success">
+          <c-spinner size="sm" v-show="loading"></c-spinner>
+          Kaydet
+        </CButton>
       </template>
     </CModal>
 
@@ -239,8 +243,6 @@ export default {
       let response = await new AboutService().getAbout();
       if (response.status === 200) {
         this.aboutList = response.data
-        console.log(response.data)
-        console.log("get", this.aboutList)
       }
     },
 
@@ -253,15 +255,18 @@ export default {
     },
 
     async editAbout() {
+      this.loading = true
 
       let response = await new AboutService().editAbout(this.about);
       if (response.status === 200) {
         this.aboutUpdateModal = false
+        this.loading = false
         await this.getAbout()
       }
 
     },
     async addAbout() {
+      this.loading = true
       let response = await new AboutService().addAbout(this.about)
       if (response.status === 200) {
         this.aboutUpdateModal = false
@@ -271,6 +276,7 @@ export default {
           title: 'Başarılı',
           message: "İşlem başarıyla gerçekleşti"
         })
+        this.loading = false
       } else {
         this.isError = true;
         this.errors = response.response.data;
