@@ -125,9 +125,19 @@
 
                 >
 
-                  <template #actions="{ item, index }">
+                  <template #buttons="{ item, index }">
                     <td class="py-2">
-                      <CDropdown toggler-text="İşlemler">
+
+                      <CDropdown
+                          color="link"
+                          size="lg"
+                          :caret="false"
+                          placement="top-start"
+                      >
+                        <template #toggler-content>
+                          &#x1F4C2;<span class="sr-only">sss</span>
+                        </template>
+
                         <CDropdownItem>
 
 
@@ -289,7 +299,7 @@ export default {
         {key: 'firstName', label: "Sekreter Adı", _style: "min-width:200px"},
         {key: "lastName", label: "Sekreter Soyadı"},
         {key: "email", label: "Email"},
-        {key: "actions", label: "İşlemler"}
+        {key: "buttons", label: "İşlemler"}
       ],
 
       pageLabel: {label: 'sasasa', external: true,},

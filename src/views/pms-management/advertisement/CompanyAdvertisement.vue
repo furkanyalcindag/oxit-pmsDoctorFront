@@ -176,9 +176,17 @@
                     </td>
                   </template>
 
-                  <template #actions="{ item, index }">
+                  <template #buttons="{ item, index }">
                     <td class="py-2">
-                      <CDropdown toggler-text="İşlemler">
+                      <CDropdown
+                          color="link"
+                          size="lg"
+                          :caret="false"
+                          placement="top-start"
+                      >
+                        <template #toggler-content>
+                          &#x1F4C2;<span class="sr-only">sss</span>
+                        </template>
                         <CDropdownItem>
 
 
@@ -389,7 +397,7 @@ export default {
         {key: "location", label: "Reklam Yeri"},
         {key: "publishStartDate", label: "Yayın Başlangıç Tarihi"},
         {key: "publishEndDate", label: "Yayın Bitiş Tarihi"},
-        {key: "actions", label: "İşlemler"},
+        {key: "buttons", label: "İşlemler"},
 
       ],
 

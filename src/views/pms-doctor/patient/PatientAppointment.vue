@@ -114,26 +114,6 @@
 
                     </CCol>
 
-                    <CCol lg="2">
-                      <CRow>
-                        <CCol lg="6">
-                          Ücretli mi ? <span class="text-danger">*</span>
-                          <span class="text-danger">{{ errors[0] }}</span>
-                          <CSwitch
-                              class="mx-1"
-                              color="primary"
-                              name="switch1"
-                              :checked.sync="appointment.isPaid"
-                          />
-                        </CCol>
-                        <CCol lg="6">
-                          Ücret
-                          <CInput
-                              v-model="appointment.price"
-                          />
-                        </CCol>
-                      </CRow>
-                    </CCol>
 
 
                   </CRow>
@@ -209,17 +189,6 @@
                       {{ item.doctor.label }}
                     </td>
                   </template>
-                  <template #isPaid="{ item, index }">
-                    <td class="py-2" v-if="item.isPaid">
-
-                      {{ item.price }} TL
-                    </td>
-                    <td v-else class="py-2">
-
-                      -
-                    </td>
-                  </template>
-
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
@@ -425,7 +394,6 @@ export default {
         {key: "endTime", label: "Bitiş Saati"},
         {key: "doctor", label: "Doktor"},
         {key: "patient", label: "Hasta"},
-        {key: "isPaid", label: "Ücret"},
         {key: "actions", label: "İşlemler"},
 
 
@@ -577,27 +545,23 @@ export default {
           title: 'Başarılı',
           message: "Randevu başarıyla eklendi"
         })
-      } else if (response.staus===406) {
-        this.$toast.success({
+      } else if (response.status === 406) {
+        this.$toast.warn({
           title: 'Başarısız',
-          message: "Başlangıç tarihi bitiş tarihinden büyük olamaz"
+          message: "Başlangıç saati bitiş saatinden büyük olamaz"
         })
-      }
-        else if (response.staus===301) {
-        this.$toast.success({
+      } else if (response.status === 301) {
+        this.$toast.warn({
           title: 'Başarısız',
-          message: "Başlangıç tarihi bugünün tarihinden küçük olamaz"
+          message: "Başlangıç saati şuanki saatten küçük olamaz"
         })
-      }
-        else if (response.staus===411){
-        this.$toast.success({
+      } else if (response.status === 411) {
+        this.$toast.warn({
           title: 'Başarısız',
-          message: "Bitiş tarihi bugünün tarihinden küçük olamaz"
+          message: "Bitiş saati şuanki saatten küçük olamaz"
         })
 
-      }
-
-      else {
+      } else {
         this.loading = false
         this.isError = true;
         this.errors = response.response.data;
@@ -651,8 +615,7 @@ export default {
           message: "Randevu başarıyla silindi"
         })
         this.loadingDelete = false
-      }
-      else {
+      } else {
         this.loadingDelete = false
         this.isError = true;
         this.errors = response.response.data;
@@ -684,43 +647,41 @@ export default {
           title: 'Başarılı',
           message: "Randevu başarıyla güncellendi"
         })
-      }
-
-      else if (response.status===406) {
-         this.loadingEdit = false
+      } else if (response.status === 406) {
+        this.loadingEdit = false
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Şuanki saatten geçmiş bir başlangıç saati eklenemez"
+        })
+      } else if (response.status === 301) {
+        this.loadingEdit = false
         this.$toast.success({
           title: 'Başarısız',
           message: "Başlangıç saati bitiş saatinden büyük olamaz"
         })
-      }
-        else if (response.status===301) {
-           this.loadingEdit = false
-        this.$toast.success({
-          title: 'Başarısız',
-          message: "Başlangıç saati şuanki saatten küçük olamaz"
-        })
-      }
-        else if (response.status===411) {
+      } else if (response.status === 411) {
         this.loadingEdit = false
         this.$toast.success({
           title: 'Başarısız',
           message: "Bitiş saati şuanki saatten küçük olamaz"
         })
-      }
-
-         else if (response.status===417) {
-          this.loadingEdit = false
+      } else if (response.status === 417) {
+        this.loadingEdit = false
         this.$toast.success({
           title: 'Başarısız',
           message: "Geçmiş tarih eklenemez"
         })
+      } else if (response.status === 304) {
+        this.loadingEdit = false
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Şuanki saatten geçmiş bir bitiş saati eklenemez"
+        })
 
-      }
+      } else if (response.status === 401) {
+        localStorage.clear()
 
-
-
-
-      else {
+      } else {
         this.loadingEdit = false
         this.isError = true;
         this.errors = response.response.data;

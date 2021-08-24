@@ -192,9 +192,20 @@
                     </td>
                   </template>
 
-                  <template #actions="{ item, index }">
+                  <template #buttons="{ item, index }">
                     <td class="py-2">
-                      <CDropdown toggler-text="İşlemler">
+
+                      <CDropdown
+                          color="link"
+                          size="lg"
+                          :caret="false"
+                          placement="top-start"
+                      >
+                        <template #toggler-content>
+                          &#x1F4C2;<span class="sr-only">sss</span>
+                        </template>
+
+
                         <CDropdownItem>
 
 
@@ -425,7 +436,7 @@ export default {
         {key: "title", label: "Ünvan"},
         {key: "department", label: "Bölüm"},
         {key: "insuranceNumber", label: "Sİgorta Numarası"},
-        {key: "actions", label: "İşlemler"}
+        {key: "buttons", label: "İşlemler"}
       ],
 
       pageLabel: {label: 'sasasa', external: true,},
@@ -544,13 +555,13 @@ export default {
     },
 
     async addDoctor() {
-      console.log("this.",this.doctor)
+      console.log("this.", this.doctor)
       if (!this.doctor.departmentId) {
-        console.log("id",this.doctor)
+        console.log("id", this.doctor)
         this.doctor.departmentId = this.departments[0].value
       }
       this.loading = true
-      console.log("doctor",this.doctor)
+      console.log("doctor", this.doctor)
       let response = await new DoctorService().addDoctor(this.doctor)
       if (response.status === 200) {
         await this.getDoctors()
@@ -561,7 +572,7 @@ export default {
         })
         this.loading = false
       } else {
-        this.loading=false
+        this.loading = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {

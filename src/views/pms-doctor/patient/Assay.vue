@@ -28,7 +28,7 @@
                 <validation-observer ref="simpleRules">
                   <CRow>
 
-                    <CCol lg="3">
+                    <CCol lg="4">
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100"
@@ -45,8 +45,49 @@
                     </CCol>
 
 
+                    <CCol lg="3">
+                      <CRow>
+                        <CCol lg="4">
+                          <h6>
+                            Ücretli mi ? <span class="text-danger">*</span>
+                          </h6>
+                          <CSwitch
+                              class="mx-1"
+                              color="primary"
+                              name="switch1"
+                              :checked.sync="isPaid"
+                              v-model="isPaid"
+                          />
+                        </CCol>
+                        <CCol lg="4">
+                          <h6>
+                            Ücret
+                          </h6>
+                          <CInput
+                              type="number"
+                              v-model="assay.price"
+                          />
+                        </CCol>
+
+                        <CCol lg="4">
+                          <h6>
+                            KDV
+                          </h6>
+                          <CInput
+                              type="number"
+                              v-model="assay.taxRate"
+                          />
+                        </CCol>
+
+
+                      </CRow>
+
+                    </CCol>
+
                   </CRow>
+
                 </validation-observer>
+
 
                 <div class="form-actions">
 
@@ -60,6 +101,8 @@
 
 
                 </div>
+
+
               </CCardBody>
             </CCollapse>
           </CCard>
@@ -96,9 +139,38 @@
                     </td>
                   </template>
 
-                  <template #actions="{ item, index }">
+
+                  <template #taxRate="{ item, index }">
                     <td class="py-2">
-                      <CDropdown toggler-text="İşlemler">
+                      <tr v-if="item.taxRate !== null">
+                        {{ item.taxRate }}
+                      </tr>
+
+                    </td>
+                  </template>
+
+
+                  <template #price="{ item, index }">
+                    <td class="py-2">
+                      <tr v-if="item.price !== null">
+                        {{ item.price }}
+                      </tr>
+
+                    </td>
+                  </template>
+
+
+                  <template #buttons="{ item, index }">
+                    <td class="py-2">
+                       <CDropdown
+              color="link"
+              size="lg"
+              :caret="false"
+              placement="top-start"
+          >
+            <template #toggler-content>
+              &#x1F4C2;<span class="sr-only">sss</span>
+            </template>
                         <CDropdownItem>
 
 
@@ -231,7 +303,9 @@ export default {
     return {
       fieldsTable: [
         {key: 'name', label: "Tahlil Adı", _style: "min-width:200px"},
-        {key: 'actions', label: "İşlemler"},
+        {key: "price", label: "Ücret"},
+        {key: "taxRate", label: "KDV"},
+        {key: 'buttons', label: "İşlemler"},
 
 
       ],
@@ -264,6 +338,7 @@ export default {
       collapseDuration: 0,
       darkModal: false,
       carModal: false,
+      isPaid: false,
       show: true,
       showAddCar: true,
       horizontal: {label: "col-3", input: "col-9"},
@@ -364,8 +439,8 @@ export default {
 
     async addAssay() {
       this.loading = true
-
-      let response = await new AssayService().addSecretary(this.assay)
+      this.assay.isPaid = this.isPaid
+      let response = await new AssayService().addAssay(this.assay)
       if (response.status === 200) {
         await this.getAssays()
         this.assay = new Assay()

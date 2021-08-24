@@ -81,11 +81,6 @@ const ServiceDetail = () => import('@/views/service/ServiceDetail')
 
 const ServiceCustomerApprove = () => import('@/views/service/ServiceCustomerApprove')
 
-const CheckingAccountList = () => import('@/views/checkingAccount/CheckingAccountList')
-
-const CheckingAccountByCustomerList = () => import('@/views/checkingAccount/CheckingAccounByCustomerList')
-
-
 const Staffs = () => import('@/views/pms-management/staff/Staffs')
 
 const Clinic = () => import('@/views/pms-management/clinic/Clinic')
@@ -804,29 +799,6 @@ function configRoutes() {
                             name: 'Flags',
                             component: Flags
                         }
-                    ]
-                },
-                {
-                    path: 'checking-account',
-                    redirect: '/checking-account/checking-account-list',
-                    name: 'CheckingAccount',
-                    component: {
-                        render(c) {
-                            return c('router-view')
-                        }
-                    },
-                    children: [
-                        {
-                            path: 'checking-account-list',
-                            name: 'CheckingAccountList',
-                            component: CheckingAccountList
-                        },
-                        {
-                            path: 'customer/:customerId',
-                            name: 'CheckingAccountByCustomer',
-                            component: CheckingAccountByCustomerList
-                        },
-
                     ]
                 },
                 {

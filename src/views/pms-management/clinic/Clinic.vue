@@ -193,7 +193,9 @@
                 <div class="form-actions">
                   <CButton type="submit" color="primary"
                            @click="validationForm"
-                  ><c-spinner v-show="loading" size="sm"></c-spinner>Kaydet
+                  >
+                    <c-spinner v-show="loading" size="sm"></c-spinner>
+                    Kaydet
                   </CButton>
 
                 </div>
@@ -226,9 +228,17 @@
                 >
 
 
-                  <template #actions="{ item, index }">
+                  <template #buttons="{ item, index }">
                     <td class="py-2">
-                      <CDropdown toggler-text="İşlemler">
+                      <CDropdown
+                          color="link"
+                          size="lg"
+                          :caret="false"
+                          placement="top-start"
+                      >
+                        <template #toggler-content>
+                          &#x1F4C2;<span class="sr-only">sss</span>
+                        </template>
                         <CDropdownItem>
 
 
@@ -266,7 +276,10 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteClinic" color="success"><c-spinner v-show="loadingDelete" size="sm"></c-spinner>Evet</CButton>
+        <CButton @click="deleteClinic" color="success">
+          <c-spinner v-show="loadingDelete" size="sm"></c-spinner>
+          Evet
+        </CButton>
       </template>
 
 
@@ -453,7 +466,10 @@
       </template>
       <template #footer>
         <CButton @click="clinicUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="editClinic()" color="success"><c-spinner v-show="loadingEdit" size="sm"></c-spinner>Güncelle</CButton>
+        <CButton @click="editClinic()" color="success">
+          <c-spinner v-show="loadingEdit" size="sm"></c-spinner>
+          Güncelle
+        </CButton>
       </template>
     </CModal>
 
@@ -483,7 +499,7 @@ export default {
         {key: "email", label: "Email"},
         {key: "telephoneNumber", label: "Telefon Numarası"},
         {key: "cityDistrict", label: "İl/İlçe"},
-        {key: "actions", label: "İşlemler"}
+        {key: "buttons", label: "İşlemler"}
       ],
 
       pageLabel: {label: 'sasasa', external: true,},
@@ -556,8 +572,8 @@ export default {
       email,
       min,
       max,
-      loadingDelete:false,
-      loadingEdit:false
+      loadingDelete: false,
+      loadingEdit: false
     };
   },
 

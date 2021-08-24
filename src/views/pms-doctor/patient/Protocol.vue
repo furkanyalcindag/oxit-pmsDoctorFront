@@ -82,6 +82,7 @@
                 </CRow>
                 <hr>
                 <CRow>
+
                   <CCol lg="2">
                     <h5>
                       Cinsiyet:
@@ -98,6 +99,8 @@
                   <CCol lg="3">
                     <h5>{{ patient.email }}</h5>
                   </CCol>
+
+
                 </CRow>
               </CCardBody>
             </CCollapse>
@@ -153,6 +156,7 @@
                                 </CRow>
                               </validation-observer>
                             </CCol>
+
                             <CCol lg="6">
                               <CCardSubtitle class="mt-2">İstenilen Tahliller
                               </CCardSubtitle>
@@ -166,12 +170,69 @@
                                                name="cil-minus" class="ml-3"/>
 
                                       </CButton>
+
+
                                     </CListGroupItem>
                                   </CListGroup>
                                 </CListGroupItem>
                               </CListGroup>
                             </CCol>
                           </CRow>
+
+
+
+
+
+                          <CRow>
+
+                            <CCol lg="3">
+                              <CRow>
+                                <CCol lg="4">
+                                  <h6>
+                                    Ücretli mi ? <span class="text-danger">*</span>
+                                  </h6>
+                                  <CSwitch
+                                      class="mx-1"
+                                      color="primary"
+                                      name="switch1"
+                                      :checked.sync="isPaid"
+                                      v-model="isPaid"
+                                  />
+                                </CCol>
+                                <CCol lg="4">
+                                  <h6>
+                                    Ücret
+                                  </h6>
+                                  <CInput
+                                      type="number"
+                                      v-model="protocol.price"
+                                  />
+                                </CCol>
+
+                                 <CCol lg="4">
+                                  <h6>
+                                    KDV
+                                  </h6>
+                                  <CInput
+                                      type="number"
+                                      v-model="protocol.taxRate"
+                                  />
+                                </CCol>
+
+
+
+                              </CRow>
+
+                            </CCol>
+                          </CRow>
+
+
+
+
+
+
+
+
                           <CRow>
                             <CCol lg="6">
                               <CButton @click="addProtocol" color="primary">
@@ -226,6 +287,10 @@
                       </CDataTable>
                     </CCardBody>
                   </CTab>
+
+                  <CTab title="Muhasebe">
+                    <checking-account></checking-account>
+                  </CTab>
                 </CTabs>
               </CCardBody>
             </template>
@@ -266,9 +331,9 @@
         <CButton @click="showResultModal = false" color="danger">Kapat</CButton>
 
       </template>
+
+
     </CModal>
-
-
     <CModal
         :show.sync="protocolUpdateModal"
         :no-close-on-backdrop="true"
@@ -349,8 +414,6 @@
         </CButton>
       </template>
     </CModal>
-
-
     <CModal
         :show.sync="protocolNewUpdateModal"
         :no-close-on-backdrop="true"
@@ -395,7 +458,7 @@
 
 
                             </CListGroupItem>
-                            <CButton @click="getSingleDiagnosis">Teşhis EKle</CButton>
+                            <CButton @click="getSingleDiagnosis">Teşhis Ekle</CButton>
 
 
                           </CListGroup>
@@ -535,7 +598,10 @@ import CTableWrapper from '@/views/base/Table.vue'
 import DiagnosisService from "../../../services/managementServices/diagnosis.service";
 import Diagnosis from "../../../models/pms/diagnosis";
 import MedicineService from "../../../services/managementServices/medicine.service";
-import Secretary from "@/models/pms/secretary";
+import Payment from "@/models/payment";
+import Discount from "@/models/discount";
+import CheckingAccountService from "@/services/checkingAccount.service";
+import CheckingAccount from "@/views/checkingAccount/CheckingAccount";
 
 export default {
   name: "Clinic",
@@ -545,7 +611,8 @@ export default {
     ValidationObserver,
     // eslint-disable-next-line vue/no-unused-components
     VSimpleCheckbox,
-    CTableWrapper
+    CTableWrapper,
+    CheckingAccount
   },
   data() {
     return {
@@ -558,6 +625,25 @@ export default {
         {key: 'assayName', label: "Açıklama", _style: "min-width:200px"},
         {key: "refNo", label: "Referans Değeri"},
         {key: "assayNo", label: "Tahlil Değeri"},
+      ],
+
+      fieldsTableCheckingAccount: [
+        {key: 'protocolId', label: "Protokol Numarası", _style: "min-width:200px"},
+        {key: "protocolType", label: "Protokol Tipi"},
+        {key: "netPrice", label: "Net Ücret"},
+        {key: "remainingPrice", label: "Kalan Ücret"},
+        {key: "taxPrice", label: "KDV"},
+        {key: "paymentSituation", label: "Ödeme Durumu"},
+        {key: "discount", label: "İndirim"},
+
+
+      ],
+
+      fieldsTablePayment: [
+        {key: 'paymentAmount', label: "Ödeme Miktarı", _style: "min-width:200px"},
+        {key: "paymentDate", label: "Tarih"},
+        {key: "paymentTypeDesc", label: "Ödeme Tipi"},
+
       ],
 
       pageLabel: {label: 'sasasa', external: true,},
@@ -650,6 +736,7 @@ export default {
       selectedAssays: [],
       protocolNewUpdateModal: false,
       showResultModal: false,
+      selectPaymentTypes: [],
       usersData: [
         {'assayName': 'Smjhjhjuhjh', 'refNo': '686876', 'assayNo': '87878', 'status': 'Active'},
         {'assayName': 'Estavan Lykos', 'refNo': '8787877', 'assayNo': '988787', 'status': 'Banned'},
@@ -665,7 +752,22 @@ export default {
       protocolId: '',
       id: '',
       getDiagnosis: false,
-      patientMedicines: []
+      patientMedicines: [],
+      remainCheckout: 0,
+      totalCheckout: 0,
+      checkingAccountUUID: '',
+      showServiceDetail: false,
+      showMakePayment: false,
+      checkingAccounts: [],
+      serviceDetail: null,
+      carPlate: '',
+      paymentMovements: [],
+      paymentsModal: false,
+      discountModal: false,
+      showUpdateCategory: true,
+      payment: new Payment("", "", "", ""),
+      discount: new Discount("", "", "")
+
     };
 
   },
@@ -686,6 +788,8 @@ export default {
           return "danger";
         default:
           "primary";
+
+
       }
     },
     toggleDetails(item) {
@@ -696,6 +800,34 @@ export default {
       });
 
     },
+
+
+    async getCheckingAccountList() {
+
+      let response = await new CheckingAccountService().checkingAccountList();
+
+      this.checkingAccounts = response.data.data
+
+    },
+
+    async getPaymentType() {
+      let response = await new CheckingAccountService().getPaymentType();
+
+      this.selectPaymentTypes = response.data
+    },
+
+
+    async getPaymentMovementsList(id) {
+
+      this.checkingAccountUUID = id
+      let response = await new CheckingAccountService().getPaymentMovement(id);
+
+      this.paymentMovements = response.data
+      this.paymentsModal = true
+
+    },
+
+
     setAssayModal() {
       this.selectedAssays = []
       this.protocolUpdateModal = false
@@ -735,7 +867,9 @@ export default {
       }
     },
     async minusSelectedMedicine(index) {
+      console.log("ind",index)
       const deneme = this.selectedMedicines.indexOf(index)
+      console.log("deneme",deneme)
       if (deneme > -1) {
         this.selectedMedicines.splice(deneme, 1)
       }
@@ -786,6 +920,7 @@ export default {
       this.diagnosis.medicines = this.selectedMedicines
     },
     async addProtocol() {
+      this.protocol.isPaid = this.isPaid
       this.loading = true
       for (let i = 0; i < this.protocol.assays.length; i++) {
         this.protocol.assays[i] = this.protocol.assays[i].uuid
@@ -800,6 +935,8 @@ export default {
           title: 'Başarılı',
           message: "Protokol başarıyla eklendi"
         })
+      } else {
+        this.loading = false
       }
     },
     async getOldProtocols() {

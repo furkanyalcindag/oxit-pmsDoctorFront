@@ -244,9 +244,25 @@
                     </td>
                   </template>
 
-                  <template #actions="{ item, index }">
+                  <template #buttons="{ item, index }">
                     <td class="py-2">
-                      <CDropdown toggler-text="İşlemler">
+                      <CBadge :color="getBadge(item.paymentSituation)">{{ item.paymentSituation }}</CBadge>
+                    </td>
+                  </template>
+
+                  <template #buttons="{ item, index }">
+                    <td class="py-2">
+                      <CDropdown
+                          color="link"
+                          size="lg"
+                          :caret="false"
+                          placement="top-start"
+                      >
+                        <template #toggler-content>
+                          &#x1F4C2;<span class="sr-only">sss</span>
+                        </template>
+
+
                         <CDropdownItem>
                           <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                         </CDropdownItem>
@@ -256,7 +272,7 @@
                         <CDropdownItem>
                           <CLink>
                             <CButton @click="$router.push({name:'protocol',params:{patient:item.uuid}})"
-                                     color="primary">Protokol
+                                     color="">Protokol
                             </CButton>
                           </CLink>
                         </CDropdownItem>
@@ -265,6 +281,8 @@
 
                     </td>
                   </template>
+
+
                 </CDataTable>
               </CCardBody>
             </template>
@@ -358,12 +376,13 @@
                               name="Kan Grubu">
                             Kan Grubu <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="patientUpdate.bloodgroup"
-                                :state="errors.length > 0 ? false:null"
-                            />
+                             <CSelect
+                              :options="bloodgroups"
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="patientUpdate.bloodGroup"
+                              :value.sync="patientUpdate.bloodGroup"
+                          />
 
                           </validation-provider>
                         </CCol>
@@ -396,7 +415,7 @@
                             <CInput
                                 description=""
                                 autocomplete="autocomplete"
-                                v-model="patientUpdate.telephoneNumber"
+                                v-model="patientUpdate.mobilePhone"
 
                                 :state="errors.length > 0 ? false:null"
                             />
@@ -428,7 +447,7 @@
                               description=""
                               autocomplete="autocomplete"
                               v-model="patientUpdate.gender"
-                              :value.sync="patinetUpdate.gender"
+                              :value.sync="patientUpdate.gender"
                           />
                         </CCol>
 
@@ -445,22 +464,6 @@
 
 
                         </CCol>
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Doğum Tarihi">
-                            Doğum Tarihi <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="patientUpdate.birthdate"
-
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
-                        </CCol>
 
                         <CCol lg="3">
                           <validation-provider
@@ -474,7 +477,7 @@
                                 type="email"
                                 autocomplete="email"
                                 prepend="@"
-                                v-model="doctorUpdate.email"
+                                v-model="patientUpdate.email"
                                 :state="errors.length > 0 ? false:null"
                             />
 
@@ -490,7 +493,7 @@
                             <CInput
                                 description=""
                                 type="date"
-                                v-model="patientUpdate.birthdate"
+                                v-model="patientUpdate.birthDate"
                                 :state="errors.length > 0 ? false:null"
                             />
 
@@ -551,7 +554,7 @@ export default {
         {key: "gender", label: "Cinsiyet"},
         {key: "mobilePhone", label: "Telefon Numarası"},
         {key: "birthDate", label: "Doğum Tarihi"},
-        {key: "actions", label: "İşlemler"}
+        {key: "buttons", label: "İşlemler"}
 
 
       ],
@@ -637,7 +640,7 @@ export default {
       patients: [],
       patientUpdate: new Patient("", "", "", "", "", "", "", "", "", "",),
       maxDate: '',
-      loadingDelete:false,
+      loadingDelete: false,
       loadingEdit: false
 
 
@@ -717,10 +720,9 @@ export default {
 
       let response = await new PatientService().getSinglePatient(id)
       this.patientUpdate = response.data
-      this.patientUpdate.gender = response.data.gender.value
-      this.patientUpdate.bloodgroup = response.data.bloodgroup.value
+      this.patientUpdate.gender = response.data.gender
+      this.patientUpdate.bloodgroup = response.data.bloodgroup
       if (response.status === 200) {
-        this.staffUpdateModal = true
         this.staffUpdateModal = true
 
 
@@ -756,7 +758,7 @@ export default {
         this.loadingDelete = false
       } else {
         this.isError = true;
-        this.loadingDelete=false
+        this.loadingDelete = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -809,7 +811,7 @@ export default {
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
         if (success) {
-          if (this.doctorUpdate.uuid) {
+          if (this.patientUpdate.uuid) {
             await this.editPatient()
           } else {
             await this.addPatient()
