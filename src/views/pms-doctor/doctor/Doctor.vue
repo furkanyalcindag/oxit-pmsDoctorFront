@@ -174,12 +174,10 @@
                 <CDataTable
                     :items="doctors"
                     :fields="fieldsTable"
-                    column-filter
                     :border="true"
                     :items-per-page="5"
                     :activePage="4"
                     hover
-                    sorter
                     pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
@@ -209,11 +207,11 @@
                         <CDropdownItem>
 
 
-                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                          <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                         </CDropdownItem>
                         <CDropdownItem>
 
-                          <CButton @click="getSingleDoctor(item.uuid)">Düzenle</CButton>
+                          <CButton size="sm" @click="getSingleDoctor(item.uuid)">Düzenle</CButton>
 
                         </CDropdownItem>
                       </CDropdown>
@@ -513,6 +511,8 @@ export default {
       doctorUpdate: new Staff("", "", "", "", "", "", "", ""),
       departments: [],
       doctors: [],
+      loadingDelete: false,
+      loadingEdit: false
 
     };
   },
@@ -555,20 +555,20 @@ export default {
     },
 
     async addDoctor() {
-      console.log("this.", this.doctor)
+
       if (!this.doctor.departmentId) {
-        console.log("id", this.doctor)
+
         this.doctor.departmentId = this.departments[0].value
       }
       this.loading = true
-      console.log("doctor", this.doctor)
+
       let response = await new DoctorService().addDoctor(this.doctor)
       if (response.status === 200) {
         await this.getDoctors()
         this.doctor = new Doctor()
         this.$toast.success({
           title: 'Başarılı',
-          message: "Personel başarıyla eklendi"
+          message: "Doktor başarıyla eklendi"
         })
         this.loading = false
       } else {
@@ -607,7 +607,7 @@ export default {
 
 
     async deleteDoctor() {
-      this.loading = true
+      this.loadingDelete = true
       let response = await new DoctorService().deleteDoctor(this.deleteId)
       if (response.status === 200) {
         await this.getDoctors()
@@ -640,10 +640,11 @@ export default {
         await this.getDoctors()
         this.$toast.success({
           title: 'Başarılı',
-          message: "Personel başarıyla eklendi"
+          message: "Doktor başarıyla güncellendi"
         })
         this.loading = false
       } else {
+        this.loading = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {

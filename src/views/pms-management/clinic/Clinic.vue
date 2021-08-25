@@ -242,11 +242,11 @@
                         <CDropdownItem>
 
 
-                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                          <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                         </CDropdownItem>
                         <CDropdownItem>
 
-                          <CButton @click="getSingleClinic(item.uuid)">Düzenle</CButton>
+                          <CButton size="sm" @click="getSingleClinic(item.uuid)">Düzenle</CButton>
 
                         </CDropdownItem>
                       </CDropdown>

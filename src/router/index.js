@@ -126,6 +126,9 @@ const Secretary = () => import('@/views/pms-doctor/secretary/Secretary')
 
 const patientCalendar = () => import('@/views/pms-doctor/patient/PatientAppointmentCalendar')
 
+const AccountingListClinic = () => import('@/views/pms-doctor/checkingAccount/Accounting')
+
+
 Vue.use(Router)
 
 export default new Router({
@@ -333,6 +336,25 @@ function configRoutes() {
                             path: 'list',
                             name: 'Patient',
                             component: Patient
+                        }
+
+
+                    ]
+                },
+                {
+                    path: '/accounting',
+                    redirect: '',
+                    name: 'AccountingListClinic',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'list',
+                            name: 'AccountingListClinic',
+                            component: AccountingListClinic
                         }
 
 

@@ -9,7 +9,10 @@ class CheckingAccountService {
 
         };
 
-        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/checking-account-api/`, {headers: authHeader(), params})
+        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/checking-account-api/`, {
+            headers: authHeader(),
+            params
+        })
 
 
     }
@@ -44,7 +47,6 @@ class CheckingAccountService {
                 paymentAmount: discount.paymentAmount,
 
 
-
             }, {headers: authHeader()}).then(response => {
 
 
@@ -66,6 +68,24 @@ class CheckingAccountService {
             {
                 headers: authHeader(),
                 params
+            }).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            return error
+        });
+
+
+    }
+
+
+    getCheckingAccountData() {
+
+        return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/total-checking-account-api/',
+            {
+                headers: authHeader(),
+
             }).then(response => {
 
 

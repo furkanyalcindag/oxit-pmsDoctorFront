@@ -115,7 +115,6 @@
                     </CCol>
 
 
-
                   </CRow>
                 </validation-observer>
 
@@ -147,12 +146,10 @@
                 <CDataTable
                     :items="appointments"
                     :fields="fieldsTable"
-                    column-filter
                     :border="true"
                     :items-per-page="5"
                     :activePage="4"
                     hover
-                    sorter
                     pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
@@ -192,13 +189,25 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CDropdown toggler-text="İşlemler">
-                        <CDropdownItem>
-                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
-                        </CDropdownItem>
+                       <CDropdown
+                          color="link"
+                          size="lg"
+                          :caret="false"
+                          placement="top-start"
+                      >
+                        <template #toggler-content>
+                          &#x1F4C2;<span class="sr-only">sss</span>
+                        </template>
 
                         <CDropdownItem>
-                          <CButton @click="getSingleAppointment(item.uuid)">Düzenle</CButton>
+
+
+                          <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
+
+                          <CButton size="sm" @click="getSingleAppointment(item.uuid)">Düzenle</CButton>
+
                         </CDropdownItem>
                       </CDropdown>
                     </td>
@@ -251,92 +260,83 @@
             <CCard v-if="staffUpdateModal">
               <template>
                 <CCardBody>
-                  <CRow>
-
-                    <validation-observer ref="simpleRules">
-                      <CRow>
-
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Saat">
-                            Saat <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                timeFormat="24hr"
-                                type="time"
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="appointmentUpdate.time"
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
-                        </CCol>
-
-                        <CCol lg="2">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Bitiş Saati">
-                            Bitiş Saati<span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                type="time"
-                                timeFormat="true"
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="appointmentUpdate.endTime"
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
-                        </CCol>
 
 
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Tarih">
-                            Tarih <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                type="date"
-                                autocomplete="autocomplete"
-                                v-model="appointmentUpdate.date"
+                  <validation-observer ref="simpleRules">
+                    <CRow>
+                      <CCol lg="3">
+                        Doktor <span class="text-danger">*</span>
+                        <CSelect
+                            :options="doctors"
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="appointmentUpdate.doctor"
+                            :value.sync="appointmentUpdate.doctor"
+                        />
+                      </CCol>
+                      <CCol lg="3">
+                        Hasta <span class="text-danger">*</span>
+                        <CSelect
+                            :options="patients"
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="appointmentUpdate.patient"
+                            :value.sync="appointmentUpdate.patient"
+                        />
+                      </CCol>
+                      <CCol lg="2">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Tarih">
+                          Tarih <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+                          <CInput
+                              description=""
+                              type="date"
+                              autocomplete="autocomplete"
+                              v-model="appointmentUpdate.date"
 
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
-                        </CCol>
-
-
-                        <CCol lg="3">
-                          Doktor <span class="text-danger">*</span>
-                          <CSelect
-                              :options="doctors"
+                              :state="errors.length > 0 ? false:null"
+                          />
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="2">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Saat">
+                          Başlangıç Saati <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+                          <CInput
+                              timeFormat="24hr"
+                              type="time"
                               description=""
                               autocomplete="autocomplete"
-                              v-model="appointmentUpdate.doctor"
-                              :value.sync="appointmentUpdate.doctor"
+                              v-model="appointmentUpdate.time"
+                              :state="errors.length > 0 ? false:null"
                           />
-                        </CCol>
-
-
-                        <CCol lg="3">
-                          Hasta <span class="text-danger">*</span>
-                          <CSelect
-                              :options="patients"
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="2">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Bitiş Saati">
+                          Bitiş Saati<span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+                          <CInput
+                              type="time"
+                              timeFormat="true"
                               description=""
                               autocomplete="autocomplete"
-                              v-model="appointmentUpdate.patient"
-                              :value.sync="appointmentUpdate.patient"
+                              v-model="appointmentUpdate.endTime"
+                              :state="errors.length > 0 ? false:null"
                           />
-                        </CCol>
-                      </CRow>
-                    </validation-observer>
-                  </CRow>
+                        </validation-provider>
+                      </CCol>
+                    </CRow>
+                  </validation-observer>
                 </CCardBody>
               </template>
             </CCard>
@@ -344,7 +344,7 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Hasta Güncelle</h6>
+        <h6 class="modal-title">Randevu Güncelle</h6>
         <CButtonClose @click="staffUpdateModal = false" class="text-white"/>
       </template>
       <template #footer>

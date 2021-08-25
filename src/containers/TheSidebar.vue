@@ -206,6 +206,20 @@ export default {
           _name: 'CSidebarNavTitle',
           _children: ['İşlemler']
         }
+        const patient = {
+          _name: 'CSidebarNavItem',
+          name: 'Hasta',
+          to: '/patient/list',
+          icon: 'cil-user',
+
+        }
+         const accountingList = {
+          _name: 'CSidebarNavItem',
+          name: 'Muhasebe',
+          to: '/accounting/list',
+          icon: 'cil-user',
+
+        }
         const assay = {
           _name: 'CSidebarNavItem',
           name: 'Tahlil',
@@ -231,6 +245,8 @@ export default {
         items.push(assay)
         items.push(patientCalendar)
         items.push(doctorProfile)
+        items.push(patient)
+        items.push(accountingList)
         return items
       }
       if (localStorage.getItem('user_group') === 'Secretary') {

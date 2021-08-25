@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import CoreuiVue from '@coreui/vue'
-import Dashboard from '@/views/Dashboard'
+import Dashboard from '@/views/accounting'
 
 
 Vue.use(CoreuiVue)
 
-describe('Dashboard.vue', () => {
+describe('accounting.vue', () => {
   it('has a name', () => {
     expect(Dashboard.name).toBe('Dashboard')
   })
@@ -22,7 +22,7 @@ describe('Dashboard.vue', () => {
     const wrapper = shallowMount(Dashboard)
     expect(wrapper.isVueInstance()).toBe(true)
   })
-  it('is Dashboard', () => {
+  it('is accounting', () => {
     const wrapper = shallowMount(Dashboard)
     expect(wrapper.is(Dashboard)).toBe(true)
   })

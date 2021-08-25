@@ -2,7 +2,7 @@
   <CCardBody>
 
     <CDataTable
-        :items="checkinAccountItems"
+        :items="accountLists"
         :fields="fieldsTableCheckingAccount"
         :border="true"
         :items-per-page="5"
@@ -28,7 +28,7 @@
       <template #taxRate="{ item, index }">
         <td class="py-2">
           <tr v-if="item.taxRate !== null">
-            {{ item.protocolTaxRate }}
+            {{ item.protocolTaxRate.substring(0,2) }}
           </tr>
 
         </td>
@@ -65,13 +65,13 @@
               &#x1F4C2;<span class="sr-only">sss</span>
             </template>
             <CDropdownItem>
-              <CButton @click="getPaymentMovementsList(item.checkingAccountUUID)"> İşlem Bilgi</CButton>
+              <CButton size="sm" @click="getPaymentMovementsList(item.checkingAccountUUID)"> İşlem Bilgi</CButton>
             </CDropdownItem>
             <CDropdownItem>
-              <CButton @click="setMakePaymentModal(item.checkingAccountUUID)">Ödeme Yap</CButton>
+              <CButton size="sm" @click="setMakePaymentModal(item.checkingAccountUUID)">Ödeme Yap</CButton>
             </CDropdownItem>
             <CDropdownItem>
-              <CButton @click="setMakeDiscountModal(item.checkingAccountUUID)">İndirim Yap</CButton>
+              <CButton size="sm" @click="setMakeDiscountModal(item.checkingAccountUUID)">İndirim Yap</CButton>
             </CDropdownItem>
           </CDropdown>
 
@@ -309,6 +309,11 @@ export default {
 
     }
   },
+  props: {
+    accountLists: {
+      type: Array,
+    }
+  },
   methods: {
 
     validator(val) {
@@ -328,14 +333,7 @@ export default {
     },
 
 
-    async getCheckingAccountList() {
-      console.log("ad",this.$route)
 
-      let response = await new CheckingAccountService().checkingAccountList(this.$route.params.patient);
-
-      this.checkinAccountItems = response.data.data
-
-    },
 
 
     setMakePaymentModal(id) {
