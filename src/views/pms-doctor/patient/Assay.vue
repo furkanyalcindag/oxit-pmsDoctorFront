@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Klinik Yönetimi
+              Tahlil
               <div class="card-header-actions">
 
                 <CLink
@@ -28,7 +28,7 @@
                 <validation-observer ref="simpleRules">
                   <CRow>
 
-                    <CCol lg="3">
+                    <CCol lg="4">
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100"
@@ -43,23 +43,57 @@
                         />
                       </validation-provider>
                     </CCol>
+                    <CCol lg="4">
+                      <CRow>
+                        <CCol lg="3">
+                          <h6>
+                            Ücretli mi ? <span class="text-danger">*</span>
+                          </h6>
+                          <CSwitch
+                              class="mx-1"
+                              color="primary"
+                              name="switch1"
+                              :checked.sync="isPaid"
+                              v-model="isPaid"
+                          />
+                        </CCol>
+                        <CCol v-if="isPaid" lg="4">
+                          <h6>
+                            Ücret
+                          </h6>
+                          <CInput
+                              type="number"
+                              v-model="assay.price"
+                          />
+                        </CCol>
+                        <CCol v-if="isPaid" lg="4">
+                          <h6>
+                            KDV
+                          </h6>
+                          <CInput
+                              type="number"
+                              v-model="assay.taxRate"
+                          />
+                        </CCol>
+                      </CRow>
+
+                    </CCol>
+                    <CCol class="mt-4" lg="3">
+                      <CButton type="submit" color="primary"
+                               @click="validationForm"
+                      >
+                        <c-spinner size="sm" v-show="loading">
+                        </c-spinner>
+                        Kaydet
+                      </CButton>
+                    </CCol>
 
 
                   </CRow>
+
                 </validation-observer>
 
-                <div class="form-actions">
 
-                  <CButton type="submit" color="primary"
-                           @click="validationForm"
-                  >
-                    <c-spinner size="sm" v-show="loading">
-                    </c-spinner>
-                    Kaydet
-                  </CButton>
-
-
-                </div>
               </CCardBody>
             </CCollapse>
           </CCard>
@@ -78,12 +112,10 @@
                 <CDataTable
                     :items="assays"
                     :fields="fieldsTable"
-                    column-filter
                     :border="true"
                     :items-per-page="5"
                     :activePage="4"
                     hover
-                    sorter
                     pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
@@ -96,17 +128,46 @@
                     </td>
                   </template>
 
-                  <template #actions="{ item, index }">
+
+                  <template #taxRate="{ item, index }">
                     <td class="py-2">
-                      <CDropdown toggler-text="İşlemler">
+                      <tr v-if="item.taxRate !== null">
+                        {{ item.taxRate }}
+                      </tr>
+
+                    </td>
+                  </template>
+
+
+                  <template #price="{ item, index }">
+                    <td class="py-2">
+                      <tr v-if="item.price !== null">
+                        {{ item.price }}
+                      </tr>
+
+                    </td>
+                  </template>
+
+
+                  <template #buttons="{ item, index }">
+                    <td class="py-2">
+                      <CDropdown
+                          color="link"
+                          size="lg"
+                          :caret="false"
+                          placement="top-start"
+                      >
+                        <template #toggler-content>
+                          &#x1F4C2;<span class="sr-only">sss</span>
+                        </template>
                         <CDropdownItem>
 
 
-                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                          <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                         </CDropdownItem>
                         <CDropdownItem>
 
-                          <CButton @click="getSingleAssay(item.uuid)">Düzenle</CButton>
+                          <CButton size="sm" @click="getSingleAssay(item.uuid)">Düzenle</CButton>
 
                         </CDropdownItem>
                       </CDropdown>
@@ -161,31 +222,60 @@
             <CCard v-if="assayUpdateModal">
               <template>
                 <CCardBody>
-                  <CRow>
-
-                    <validation-observer ref="simpleRules">
-                      <CRow>
-
-                        <CCol lg="6">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Tahlil Adı">
-                            Tahlil Adı <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="assayUpdate.name"
-                                :state="errors.length > 0 ? false:null"
+                  <validation-observer ref="simpleRules">
+                    <CRow>
+                      <CCol lg="4">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Tahlil Adı">
+                          Tahlil Adı <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+                          <CInput
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="assayUpdate.name"
+                              :state="errors.length > 0 ? false:null"
+                          />
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="8">
+                        <CRow>
+                          <CCol lg="3">
+                            <h6>
+                              Ücretli mi ? <span class="text-danger">*</span>
+                            </h6>
+                            <CSwitch
+                                class="mx-1"
+                                color="primary"
+                                name="switch1"
+                                :checked.sync="isPaidUpdate"
+                                v-model="isPaidUpdate"
                             />
-                          </validation-provider>
-                        </CCol>
+                          </CCol>
+                          <CCol v-if="isPaidUpdate" lg="4">
+                            <h6>
+                              Ücret
+                            </h6>
+                            <CInput
+                                type="number"
+                                v-model="assayUpdate.price"
+                            />
+                          </CCol>
+                          <CCol v-if="isPaidUpdate" lg="4">
+                            <h6>
+                              KDV
+                            </h6>
+                            <CInput
+                                type="number"
+                                v-model="assayUpdate.taxRate"
+                            />
+                          </CCol>
+                        </CRow>
 
-
-                      </CRow>
-                    </validation-observer>
-                  </CRow>
+                      </CCol>
+                    </CRow>
+                  </validation-observer>
                 </CCardBody>
               </template>
             </CCard>
@@ -198,7 +288,10 @@
       </template>
       <template #footer>
         <CButton @click="assayUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton :disabled="loading" @click="validationForm" color="success">
+          <c-spinner v-show="loading" size="sm"></c-spinner>
+          Güncelle
+        </CButton>
       </template>
     </CModal>
 
@@ -231,7 +324,9 @@ export default {
     return {
       fieldsTable: [
         {key: 'name', label: "Tahlil Adı", _style: "min-width:200px"},
-        {key: 'actions', label: "İşlemler"},
+        {key: "price", label: "Ücret"},
+        {key: "taxRate", label: "KDV"},
+        {key: 'buttons', label: "İşlemler"},
 
 
       ],
@@ -264,6 +359,7 @@ export default {
       collapseDuration: 0,
       darkModal: false,
       carModal: false,
+      isPaid: false,
       show: true,
       showAddCar: true,
       horizontal: {label: "col-3", input: "col-9"},
@@ -320,6 +416,9 @@ export default {
       assayUpdate: new Assay(""),
       assayUpdateModal: false,
       assays: [],
+      loadingDelete: false,
+      loadingEdit: false,
+      isPaidUpdate: false
 
 
     };
@@ -364,8 +463,8 @@ export default {
 
     async addAssay() {
       this.loading = true
-
-      let response = await new AssayService().addSecretary(this.assay)
+      this.assay.isPaid = this.isPaid
+      let response = await new AssayService().addAssay(this.assay)
       if (response.status === 200) {
         await this.getAssays()
         this.assay = new Assay()
@@ -375,6 +474,7 @@ export default {
         })
         this.loading = false
       } else {
+        this.loading = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -401,6 +501,7 @@ export default {
       if (response.status === 200) {
         this.assayUpdateModal = true
         this.assayUpdate = response.data
+        this.isPaidUpdate = this.assayUpdate.isPaid
 
 
       }
@@ -409,7 +510,7 @@ export default {
 
 
     async deleteAssay() {
-
+      this.loadingDelete = true
       let response = await new AssayService().deleteAssay(this.deleteId)
       if (response.status === 200) {
         await this.getAssays()
@@ -418,6 +519,7 @@ export default {
           title: 'Başarılı',
           message: "Tahlil başarıyla silindi"
         })
+        this.loading = false
       } else {
         this.isError = true;
         this.errors = response.response.data;
@@ -431,6 +533,8 @@ export default {
     },
 
     async editAssay() {
+      this.loading = true
+      this.assay.isPaid = this.isPaidUpdate
       let response = await new AssayService().editAssay(this.assayUpdate)
       if (response.status === 200) {
         this.assayUpdateModal = false
@@ -439,6 +543,7 @@ export default {
           title: 'Başarılı',
           message: "Tahlil başarıyla güncellendi"
         })
+        this.loading = false
       } else {
         this.isError = true;
         this.errors = response.response.data;

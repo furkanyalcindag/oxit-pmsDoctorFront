@@ -34,7 +34,10 @@ class ProtocolService {
 
             description: protocol.description,
             patientId: protocol.patient,
-            assays: protocol.assays
+            assays: protocol.assays,
+            price : protocol.price,
+            isPaid : protocol.isPaid,
+            taxRate : protocol.taxRate
 
         }, {headers: authHeader()})
 
@@ -52,7 +55,10 @@ class ProtocolService {
 
             description: protocol.description,
             patientId: protocol.patient,
-            assays: protocol.assays
+            assays: protocol.assays,
+            price: protocol.price,
+            isPaid : protocol.isPaid,
+            taxRate : protocol.taxRate
 
         }, {headers: authHeader(), params})
 

@@ -23,12 +23,12 @@ class PatientService {
             {
                 firstName: patient.firstName,
                 lastName: patient.lastName,
-                genderId : patient.gender,
+                genderId : patient.genderId,
                 identityNumber :patient.identityNumber,
                 mobilePhone : patient.mobilePhone,
                 address : patient.address,
                 birthDate : patient.birthDate,
-                bloodGroupId : patient.bloodGroup,
+                bloodGroupId : patient.bloodGroupId,
                 email : patient.email
 
             },

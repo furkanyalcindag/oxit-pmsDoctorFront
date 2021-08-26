@@ -111,31 +111,38 @@
 
                 <CDataTable
                     :items="secretarys"
-
                     :fields="fieldsTable"
-                    column-filter
                     :border="true"
                     :items-per-page="5"
                     :activePage="4"
                     hover
-                    sorter
                     pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
                 >
 
-                  <template #actions="{ item, index }">
+                  <template #buttons="{ item, index }">
                     <td class="py-2">
-                      <CDropdown toggler-text="İşlemler">
+
+                      <CDropdown
+                          color="link"
+                          size="lg"
+                          :caret="false"
+                          placement="top-start"
+                      >
+                        <template #toggler-content>
+                          &#x1F4C2;<span class="sr-only">sss</span>
+                        </template>
+
                         <CDropdownItem>
 
 
-                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                          <CButton size="sm"appoi @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                         </CDropdownItem>
                         <CDropdownItem>
 
-                          <CButton @click="getSingleSecretary(item.uuid)">Düzenle</CButton>
+                          <CButton size="sm" @click="getSingleSecretary(item.uuid)">Düzenle</CButton>
 
                         </CDropdownItem>
                       </CDropdown>
@@ -289,7 +296,7 @@ export default {
         {key: 'firstName', label: "Sekreter Adı", _style: "min-width:200px"},
         {key: "lastName", label: "Sekreter Soyadı"},
         {key: "email", label: "Email"},
-        {key: "actions", label: "İşlemler"}
+        {key: "buttons", label: "İşlemler"}
       ],
 
       pageLabel: {label: 'sasasa', external: true,},
@@ -415,12 +422,13 @@ export default {
       if (response.status === 200) {
         await this.getSecretarys()
         this.secretary = new Secretary()
-        this.loading = false
         this.$toast.success({
           title: 'Başarılı',
           message: "Sekreter başarıyla eklendi"
         })
+        this.loading = false
       } else {
+        this.loading = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -457,18 +465,16 @@ export default {
 
     async deleteSecretary() {
       this.loadingDelete = true
-
       let response = await new SecretaryService().deleteSecretary(this.deleteId)
       if (response.status === 200) {
         await this.getSecretarys()
-        this.loadingDelete = false
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
           message: "Sekreter başarıyla silindi"
         })
+        this.loading = false
       } else {
-        this.loadingDelete
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -481,18 +487,18 @@ export default {
     },
 
     async editSecretary() {
-      this.loadingEdit = true
+      this.loading = true
       let response = await new SecretaryService().editSecretary(this.secretaryUpdate)
       if (response.status === 200) {
         this.staffUpdateModal = false
         await this.getSecretarys()
-        this.loadingEdit = false
+
         this.$toast.success({
           title: 'Başarılı',
           message: "Sekreter başarıyla güncellendi"
         })
+        this.loading = false
       } else {
-        this.loadingEdit = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {

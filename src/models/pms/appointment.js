@@ -4,10 +4,10 @@ export default class Appointment {
         this.time = time
         this.endTime= endTime
         this.date = date
-        this.isPaid = isPaid
+
         this.doctorId = doctorId
         this.patientId = patientId
-        this.price = price
+
 
 
     }

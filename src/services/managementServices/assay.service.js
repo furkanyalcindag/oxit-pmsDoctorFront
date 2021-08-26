@@ -21,10 +21,13 @@ class AssayService {
 
     }
 
-    addSecretary(assay) {
+    addAssay(assay) {
         return axios.post(process.env.VUE_APP_API_URL + '/pmsDoctor/assay-api/',
             {
                 name: assay.assayName,
+                price : assay.price,
+                taxRate : assay.taxRate,
+                isPaid : assay.isPaid
 
 
             }, {headers: authHeader()}).then(response => {
@@ -43,6 +46,9 @@ class AssayService {
         return axios.put(process.env.VUE_APP_API_URL + '/pmsDoctor/assay-api/',
             {
                 name: assay.name,
+                price : assay.price,
+                taxRate : assay.taxRate,
+                isPaid : assay.isPaid
 
 
             }, {headers: authHeader(), params}).then(response => {

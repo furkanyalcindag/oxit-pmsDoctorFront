@@ -9,10 +9,9 @@ class AppointmentService {
                 time: appointment.time,
                 endTime: appointment.endTime,
                 date: appointment.date,
-                isPaid: appointment.isPaid,
                 doctorId: appointment.doctorId,
                 patientId: appointment.patientId,
-                price: appointment.price
+
 
             }, {headers: authHeader()}).then(response => {
             return response;
@@ -79,10 +78,9 @@ class AppointmentService {
             {
                 time: appointment.time,
                 date: appointment.date,
-                isPaid: appointment.isPaid,
                 doctorId: appointment.doctorId,
                 patientId: appointment.patientId,
-                price: appointment.price
+
             }, {headers: authHeader(), params}).then(response => {
             return response;
         }).catch(error => {

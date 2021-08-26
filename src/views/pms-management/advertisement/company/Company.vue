@@ -137,11 +137,11 @@
                         <CDropdownItem>
 
 
-                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                          <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                         </CDropdownItem>
                         <CDropdownItem>
 
-                          <CButton @click="getSingleCompany(item.uuid)">Düzenle</CButton>
+                          <CButton size="sm" @click="getSingleCompany(item.uuid)">Düzenle</CButton>
 
                         </CDropdownItem>
                       </CDropdown>
@@ -414,9 +414,38 @@ export default {
           message: "işlem başarıyla gerçekleşti"
         })
         this.loadingEdit = false
-      } else if (response.status === 401) {
+      }
 
-      } else {
+      else if (response.status===406) {
+         this.loadingEdit = false
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Başlangıç saati bitiş saatinden büyük olamaz"
+        })
+      }
+
+        else if (response.status===301) {
+         this.loadingEdit = false
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Başlangıç tarihi bugünün tarihinden küçük olamaz"
+        })
+      }
+
+          else if (response.status===417) {
+         this.loadingEdit = false
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Bitiş tarihi bugünün tarihinden küçük olamaz"
+        })
+      }
+
+
+      else if (response.status === 401) {
+         localStorage.clear()
+
+      }
+      else {
         this.loadingEdit = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {

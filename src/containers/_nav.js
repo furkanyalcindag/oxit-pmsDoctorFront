@@ -73,6 +73,8 @@ const clinic = {
     route: '/clinic/clinic',
     icon: 'cil-people',
 }
+
+
 const staffs = {
     _name: 'CSidebarNavDropdown',
     name: 'Personel',
@@ -193,6 +195,7 @@ if (user_group === groups.admin) {
     items.push(advertisement)
     items.push(accounting)
     items.push(notifications)
+
 }
 if (user_group === groups.clinic) {
     items.push(doctor)

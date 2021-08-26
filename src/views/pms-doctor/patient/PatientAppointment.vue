@@ -114,27 +114,6 @@
 
                     </CCol>
 
-                    <CCol lg="2">
-                      <CRow>
-                        <CCol lg="6">
-                          Ücretli mi ? <span class="text-danger">*</span>
-                          <span class="text-danger">{{ errors[0] }}</span>
-                          <CSwitch
-                              class="mx-1"
-                              color="primary"
-                              name="switch1"
-                              :checked.sync="appointment.isPaid"
-                          />
-                        </CCol>
-                        <CCol lg="6">
-                          Ücret
-                          <CInput
-                              v-model="appointment.price"
-                          />
-                        </CCol>
-                      </CRow>
-                    </CCol>
-
 
                   </CRow>
                 </validation-observer>
@@ -167,12 +146,10 @@
                 <CDataTable
                     :items="appointments"
                     :fields="fieldsTable"
-                    column-filter
                     :border="true"
                     :items-per-page="5"
                     :activePage="4"
                     hover
-                    sorter
                     pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
@@ -209,27 +186,28 @@
                       {{ item.doctor.label }}
                     </td>
                   </template>
-                  <template #isPaid="{ item, index }">
-                    <td class="py-2" v-if="item.isPaid">
-
-                      {{ item.price }} TL
-                    </td>
-                    <td v-else class="py-2">
-
-                      -
-                    </td>
-                  </template>
-
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CDropdown toggler-text="İşlemler">
-                        <CDropdownItem>
-                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
-                        </CDropdownItem>
+                       <CDropdown
+                          color="link"
+                          size="lg"
+                          :caret="false"
+                          placement="top-start"
+                      >
+                        <template #toggler-content>
+                          &#x1F4C2;<span class="sr-only">sss</span>
+                        </template>
 
                         <CDropdownItem>
-                          <CButton @click="getSingleAppointment(item.uuid)">Düzenle</CButton>
+
+
+                          <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
+
+                          <CButton size="sm" @click="getSingleAppointment(item.uuid)">Düzenle</CButton>
+
                         </CDropdownItem>
                       </CDropdown>
                     </td>
@@ -282,92 +260,83 @@
             <CCard v-if="staffUpdateModal">
               <template>
                 <CCardBody>
-                  <CRow>
-
-                    <validation-observer ref="simpleRules">
-                      <CRow>
-
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Saat">
-                            Saat <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                timeFormat="24hr"
-                                type="time"
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="appointmentUpdate.time"
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
-                        </CCol>
-
-                        <CCol lg="2">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Bitiş Saati">
-                            Bitiş Saati<span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                type="time"
-                                timeFormat="true"
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="appointmentUpdate.endTime"
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
-                        </CCol>
 
 
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Tarih">
-                            Tarih <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                type="date"
-                                autocomplete="autocomplete"
-                                v-model="appointmentUpdate.date"
+                  <validation-observer ref="simpleRules">
+                    <CRow>
+                      <CCol lg="3">
+                        Doktor <span class="text-danger">*</span>
+                        <CSelect
+                            :options="doctors"
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="appointmentUpdate.doctor"
+                            :value.sync="appointmentUpdate.doctor"
+                        />
+                      </CCol>
+                      <CCol lg="3">
+                        Hasta <span class="text-danger">*</span>
+                        <CSelect
+                            :options="patients"
+                            description=""
+                            autocomplete="autocomplete"
+                            v-model="appointmentUpdate.patient"
+                            :value.sync="appointmentUpdate.patient"
+                        />
+                      </CCol>
+                      <CCol lg="2">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Tarih">
+                          Tarih <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+                          <CInput
+                              description=""
+                              type="date"
+                              autocomplete="autocomplete"
+                              v-model="appointmentUpdate.date"
 
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
-                        </CCol>
-
-
-                        <CCol lg="3">
-                          Doktor <span class="text-danger">*</span>
-                          <CSelect
-                              :options="doctors"
+                              :state="errors.length > 0 ? false:null"
+                          />
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="2">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Saat">
+                          Başlangıç Saati <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+                          <CInput
+                              timeFormat="24hr"
+                              type="time"
                               description=""
                               autocomplete="autocomplete"
-                              v-model="appointmentUpdate.doctor"
-                              :value.sync="appointmentUpdate.doctor"
+                              v-model="appointmentUpdate.time"
+                              :state="errors.length > 0 ? false:null"
                           />
-                        </CCol>
-
-
-                        <CCol lg="3">
-                          Hasta <span class="text-danger">*</span>
-                          <CSelect
-                              :options="patients"
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="2">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:100"
+                            name="Bitiş Saati">
+                          Bitiş Saati<span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+                          <CInput
+                              type="time"
+                              timeFormat="true"
                               description=""
                               autocomplete="autocomplete"
-                              v-model="appointmentUpdate.patient"
-                              :value.sync="appointmentUpdate.patient"
+                              v-model="appointmentUpdate.endTime"
+                              :state="errors.length > 0 ? false:null"
                           />
-                        </CCol>
-                      </CRow>
-                    </validation-observer>
-                  </CRow>
+                        </validation-provider>
+                      </CCol>
+                    </CRow>
+                  </validation-observer>
                 </CCardBody>
               </template>
             </CCard>
@@ -375,7 +344,7 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Hasta Güncelle</h6>
+        <h6 class="modal-title">Randevu Güncelle</h6>
         <CButtonClose @click="staffUpdateModal = false" class="text-white"/>
       </template>
       <template #footer>
@@ -425,7 +394,6 @@ export default {
         {key: "endTime", label: "Bitiş Saati"},
         {key: "doctor", label: "Doktor"},
         {key: "patient", label: "Hasta"},
-        {key: "isPaid", label: "Ücret"},
         {key: "actions", label: "İşlemler"},
 
 
@@ -577,27 +545,23 @@ export default {
           title: 'Başarılı',
           message: "Randevu başarıyla eklendi"
         })
-      } else if (response.staus===406) {
-        this.$toast.success({
+      } else if (response.status === 406) {
+        this.$toast.warn({
           title: 'Başarısız',
-          message: "Başlangıç tarihi bitiş tarihinden büyük olamaz"
+          message: "Başlangıç saati bitiş saatinden büyük olamaz"
         })
-      }
-        else if (response.staus===301) {
-        this.$toast.success({
+      } else if (response.status === 301) {
+        this.$toast.warn({
           title: 'Başarısız',
-          message: "Başlangıç tarihi bugünün tarihinden küçük olamaz"
+          message: "Başlangıç saati şuanki saatten küçük olamaz"
         })
-      }
-        else if (response.staus===411){
-        this.$toast.success({
+      } else if (response.status === 411) {
+        this.$toast.warn({
           title: 'Başarısız',
-          message: "Bitiş tarihi bugünün tarihinden küçük olamaz"
+          message: "Bitiş saati şuanki saatten küçük olamaz"
         })
 
-      }
-
-      else {
+      } else {
         this.loading = false
         this.isError = true;
         this.errors = response.response.data;
@@ -651,8 +615,7 @@ export default {
           message: "Randevu başarıyla silindi"
         })
         this.loadingDelete = false
-      }
-      else {
+      } else {
         this.loadingDelete = false
         this.isError = true;
         this.errors = response.response.data;
@@ -684,43 +647,41 @@ export default {
           title: 'Başarılı',
           message: "Randevu başarıyla güncellendi"
         })
-      }
-
-      else if (response.status===406) {
-         this.loadingEdit = false
+      } else if (response.status === 406) {
+        this.loadingEdit = false
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Şuanki saatten geçmiş bir başlangıç saati eklenemez"
+        })
+      } else if (response.status === 301) {
+        this.loadingEdit = false
         this.$toast.success({
           title: 'Başarısız',
           message: "Başlangıç saati bitiş saatinden büyük olamaz"
         })
-      }
-        else if (response.status===301) {
-           this.loadingEdit = false
-        this.$toast.success({
-          title: 'Başarısız',
-          message: "Başlangıç saati şuanki saatten küçük olamaz"
-        })
-      }
-        else if (response.status===411) {
+      } else if (response.status === 411) {
         this.loadingEdit = false
         this.$toast.success({
           title: 'Başarısız',
           message: "Bitiş saati şuanki saatten küçük olamaz"
         })
-      }
-
-         else if (response.status===417) {
-          this.loadingEdit = false
+      } else if (response.status === 417) {
+        this.loadingEdit = false
         this.$toast.success({
           title: 'Başarısız',
           message: "Geçmiş tarih eklenemez"
         })
+      } else if (response.status === 304) {
+        this.loadingEdit = false
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Şuanki saatten geçmiş bir bitiş saati eklenemez"
+        })
 
-      }
+      } else if (response.status === 401) {
+        localStorage.clear()
 
-
-
-
-      else {
+      } else {
         this.loadingEdit = false
         this.isError = true;
         this.errors = response.response.data;

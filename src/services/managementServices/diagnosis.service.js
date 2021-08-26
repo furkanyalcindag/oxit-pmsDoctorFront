@@ -22,7 +22,11 @@ class DiagnosisService {
             diagnosis: diagnosis.diagnosis,
             protocolId: diagnosis.protocolId,
             medicines: diagnosis.medicines
-        }, {headers: authHeader()})
+        }, {headers: authHeader()}).then(response => {
+            return response
+        }).catch(error => {
+            return error
+        })
 
     }
 

@@ -81,11 +81,6 @@ const ServiceDetail = () => import('@/views/service/ServiceDetail')
 
 const ServiceCustomerApprove = () => import('@/views/service/ServiceCustomerApprove')
 
-const CheckingAccountList = () => import('@/views/checkingAccount/CheckingAccountList')
-
-const CheckingAccountByCustomerList = () => import('@/views/checkingAccount/CheckingAccounByCustomerList')
-
-
 const Staffs = () => import('@/views/pms-management/staff/Staffs')
 
 const Clinic = () => import('@/views/pms-management/clinic/Clinic')
@@ -130,6 +125,9 @@ const Assay = () => import('@/views/pms-doctor/patient/Assay')
 const Secretary = () => import('@/views/pms-doctor/secretary/Secretary')
 
 const patientCalendar = () => import('@/views/pms-doctor/patient/PatientAppointmentCalendar')
+
+const AccountingListClinic = () => import('@/views/pms-doctor/checkingAccount/Accounting')
+
 
 Vue.use(Router)
 
@@ -338,6 +336,25 @@ function configRoutes() {
                             path: 'list',
                             name: 'Patient',
                             component: Patient
+                        }
+
+
+                    ]
+                },
+                {
+                    path: '/accounting',
+                    redirect: '',
+                    name: 'AccountingListClinic',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'list',
+                            name: 'AccountingListClinic',
+                            component: AccountingListClinic
                         }
 
 
@@ -804,29 +821,6 @@ function configRoutes() {
                             name: 'Flags',
                             component: Flags
                         }
-                    ]
-                },
-                {
-                    path: 'checking-account',
-                    redirect: '/checking-account/checking-account-list',
-                    name: 'CheckingAccount',
-                    component: {
-                        render(c) {
-                            return c('router-view')
-                        }
-                    },
-                    children: [
-                        {
-                            path: 'checking-account-list',
-                            name: 'CheckingAccountList',
-                            component: CheckingAccountList
-                        },
-                        {
-                            path: 'customer/:customerId',
-                            name: 'CheckingAccountByCustomer',
-                            component: CheckingAccountByCustomerList
-                        },
-
                     ]
                 },
                 {

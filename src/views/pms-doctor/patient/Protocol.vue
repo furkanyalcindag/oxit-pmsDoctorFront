@@ -82,6 +82,7 @@
                 </CRow>
                 <hr>
                 <CRow>
+
                   <CCol lg="2">
                     <h5>
                       Cinsiyet:
@@ -98,6 +99,8 @@
                   <CCol lg="3">
                     <h5>{{ patient.email }}</h5>
                   </CCol>
+
+
                 </CRow>
               </CCardBody>
             </CCollapse>
@@ -137,13 +140,14 @@
                                   <CCol lg="12">
                                     <validation-provider
                                         #default="{errors}"
-                                        rules="required|min:3|max:100"
+                                        rules="required|min:3|max:10000"
                                         name="Şikayet">
                                       Şikayet<span class="text-danger">*</span>
                                       <span class="text-danger">{{ errors[0] }}</span>
                                       <CTextarea
 
                                           description=""
+                                          rows="4"
                                           autocomplete="autocomplete"
                                           v-model="protocol.description"
                                           :state="errors.length > 0 ? false:null"
@@ -153,7 +157,8 @@
                                 </CRow>
                               </validation-observer>
                             </CCol>
-                            <CCol lg="6">
+
+                            <CCol v-if="protocol.assays.length" lg="6">
                               <CCardSubtitle class="mt-2">İstenilen Tahliller
                               </CCardSubtitle>
                               <CListGroup>
@@ -164,12 +169,48 @@
                                       <CButton @click="minusSelectedAssay(selected)">
                                         <CIcon :content="$options.freeSet.cilMinus"
                                                name="cil-minus" class="ml-3"/>
-
                                       </CButton>
                                     </CListGroupItem>
                                   </CListGroup>
                                 </CListGroupItem>
                               </CListGroup>
+                            </CCol>
+                          </CRow>
+                          <CRow>
+                            <CCol lg="6">
+                              <CRow>
+                                <CCol lg="4">
+                                  <h6>
+                                    Ücretli mi ? <span class="text-danger">*</span>
+                                  </h6>
+                                  <CSwitch
+                                      class="mx-1"
+                                      color="primary"
+                                      name="switch1"
+                                      :checked.sync="isPaid"
+                                      v-model="isPaid"
+                                  />
+                                </CCol>
+                                <CCol v-if="isPaid" lg="4">
+                                  <h6>
+                                    Ücret
+                                  </h6>
+                                  <CInput
+                                      type="number"
+                                      v-model="protocol.price"
+                                  />
+                                </CCol>
+
+                                <CCol v-if="isPaid" lg="4">
+                                  <h6>
+                                    KDV
+                                  </h6>
+                                  <CInput
+                                      type="number"
+                                      v-model="protocol.taxRate"
+                                  />
+                                </CCol>
+                              </CRow>
                             </CCol>
                           </CRow>
                           <CRow>
@@ -190,12 +231,10 @@
                       <CDataTable
                           :items="protocols"
                           :fields="fieldsTable"
-                          column-filter
                           :border="true"
                           :items-per-page="5"
                           :activePage="4"
                           hover
-                          sorter
                           pagination
                           :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                           clickableRows
@@ -225,6 +264,9 @@
                         </template>
                       </CDataTable>
                     </CCardBody>
+                  </CTab>
+                  <CTab title="Muhasebe">
+                    <checking-account :account-lists="checkinAccountItems"></checking-account>
                   </CTab>
                 </CTabs>
               </CCardBody>
@@ -266,9 +308,9 @@
         <CButton @click="showResultModal = false" color="danger">Kapat</CButton>
 
       </template>
+
+
     </CModal>
-
-
     <CModal
         :show.sync="protocolUpdateModal"
         :no-close-on-backdrop="true"
@@ -349,8 +391,6 @@
         </CButton>
       </template>
     </CModal>
-
-
     <CModal
         :show.sync="protocolNewUpdateModal"
         :no-close-on-backdrop="true"
@@ -365,44 +405,53 @@
             <CCard v-if="protocolNewUpdateModal">
               <template>
                 <CCardBody>
+                  <CRow>
+                    <CCol lg="6">
+                      <span class="text-uppercase text-dark">Şikayet</span>
+                      <CTextarea
+                          rows="10"
+                          disabled
+                          v-model="protocolUpdate.description"
+                      />
+                    </CCol>
+                    <CCol v-if="patientAssays.length" lg="6">
+                      <span v-if="patientAssays.length" class="text-uppercase text-dark">Tahliller</span>
+                      <CListGroup v-if="patientAssays.length">
 
-                  <CTabs>
-                    <CTab title="Şikayet ve Tahliller" active>
-                      <CRow>
-                        <CCol lg="6">
-                          Açıklama <span class="text-danger">*</span>
-                          <CInput
-                              disabled
-                              v-model="protocolUpdate.description"
-                          />
-                        </CCol>
-                        <CCol lg="6">
-                          <CListGroup>
-                            <CListGroupItem v-for="selected in patientAssays">
-                              <CRow>
+                        <CListGroupItem v-for="(selected,index) in patientAssays" :key="index">
+                          <CRow>
 
-                                <CCol lg="9">
-                                  {{ selected.label }}
+                            <CCol lg="9">
+                              {{ selected.label }}
 
-                                </CCol>
+                            </CCol>
 
-                                <CCol lg="3">
+                            <CCol lg="3">
 
-                                  <CButton @click="getSingleAssayResult(selected.value)" color="success">Görüntüle
-                                  </CButton>
-                                </CCol>
-                              </CRow>
-
-
-                            </CListGroupItem>
-                            <CButton @click="getSingleDiagnosis">Teşhis EKle</CButton>
+                              <CButton @click="getSingleAssayResult(selected.value)" color="success">Görüntüle
+                              </CButton>
+                            </CCol>
+                          </CRow>
 
 
-                          </CListGroup>
-                        </CCol>
-                      </CRow>
-                    </CTab>
-                  </CTabs>
+                        </CListGroupItem>
+
+
+                      </CListGroup>
+
+
+                    </CCol>
+                    <CCol v-else lg="6">
+                      <CCard class="mt-4">
+                        <CCardBody class="text-uppercase">Listelenecek Tahlil Yok</CCardBody>
+                      </CCard>
+                    </CCol>
+
+                    <CCol lg="6">
+                      <CButton class="btn-block" color="primary" @click="getSingleDiagnosis">Teşhis Ekle</CButton>
+                    </CCol>
+                  </CRow>
+
                 </CCardBody>
               </template>
             </CCard>
@@ -432,82 +481,106 @@
             <CCard v-if="getDiagnosis">
               <template>
                 <CCardBody>
+                  <validation-observer ref="simpleRules">
+                    <CRow v-if="showDiagnosis">
 
-                  <CRow v-if="showDiagnosis">
-                    <CCol lg="6">
-                      Teşhis <span class="text-danger">*</span>
-                      <CInput
-                          v-model="diagnosis.diagnosis"
-                      />
-                    </CCol>
-                    <CCol lg="6">
-                      <CRow>
-                        <CCol lg="6">
-                          İlaç <span class="text-danger">*</span>
-                          <CInput
-                              description=""
-                              autocomplete="autocomplete"
-                              v-model="medicineName"
+                      <CCol lg="12">
+                        <validation-provider
+                            #default="{errors}"
+                            rules="required|min:3|max:10000"
+                            name="Teşhis">
+                          Teşhis <span class="text-danger">*</span>
+                          <span class="text-danger">{{ errors[0] }}</span>
+                          <CTextarea
+                              rows="6"
+                              v-model="diagnosis.diagnosis"
+                              :state="errors.length > 0 ? false:null"
                           />
-                        </CCol>
-                        <CCol lg="6" v-if="medicineName !== ''">
-                          <CButton @click="pushSelectedMedicine(medicineName)">
-                            <CIcon :content="$options.freeSet.cilPlus"
-                                   name="cil-plus" class="ml-3"/>
-                          </CButton>
-                        </CCol>
-                      </CRow>
-                    </CCol>
-                    <CCol lg="6">
-                      <CCard>
-                        <CListGroup>
-                          <CListGroupItem v-for="selected in selectedMedicines">{{ selected }}
-                            <CButton @click="minusSelectedMedicine(selected)">
-                              <CIcon :content="$options.freeSet.cilMinus"
-                                     name="cil-minus" class="ml-3"/>
+                        </validation-provider>
+                      </CCol>
+                      <CCol lg="6">
+                        <CRow>
+                          <CCol lg="6">
+                            İlaç Adı
+                            <CInput
+                                placeholder="İlaç Adı Giriniz"
+                                autocomplete="autocomplete"
+                                v-model="medicineName"
+                            />
+                          </CCol>
+                          <CCol class="mt-3" lg="6">
+                            <CButton class="btn-outline-success" @click="pushSelectedMedicine(medicineName)">
+                              <CIcon :content="$options.freeSet.cilPlus"
+                                     name="cil-plus"/>
                             </CButton>
-                          </CListGroupItem>
-                        </CListGroup>
-                      </CCard>
-                    </CCol>
-                    <CCol lg="6">
-                      <CButton @click="addDiagnosis">
-                        <c-spinner v-show="loading" size="sm"></c-spinner>
-                        Ekle
-                      </CButton>
-                    </CCol>
-                  </CRow>
-                  <CRow v-else>
-                    <CCol lg="4">
-                      <CCard>
-                        <CCardHeader class="d-flex justify-content-center">Teşhis</CCardHeader>
-                        <CCardBody>
-                          {{ diagnosis.diagnosis }}
-                        </CCardBody>
-                      </CCard>
-                    </CCol>
-                    <CCol lg="8">
-                      <CCard>
-                        <CListGroup>
+                          </CCol>
+                        </CRow>
+                      </CCol>
+                      <CCol v-if="selectedMedicines.length" lg="6">
+                        <span> Eklenen İlaçlar</span>
+                        <CCard>
+
+
+                          <CListGroup>
+                            <CListGroupItem v-for="selected in selectedMedicines">
+                              <CRow>
+                                <CCol lg="10">
+                                  {{ selected }}
+                                </CCol>
+                                <CCol lg="2">
+                                  <CButton class="btn-outline-danger" @click="minusSelectedMedicine(selected)">
+                                    <CIcon :content="$options.freeSet.cilMinus"
+                                           name="cil-minus"/>
+                                  </CButton>
+                                </CCol>
+                              </CRow>
+
+
+                            </CListGroupItem>
+                          </CListGroup>
+                        </CCard>
+                      </CCol>
+                      <CCol class="d-flex justify-content-end" lg="12">
+                        <CButton color="success" @click="validationForm">
+                          <c-spinner v-show="loading" size="sm"></c-spinner>
+                          Kaydet
+                        </CButton>
+                      </CCol>
+                    </CRow>
+                    <CRow v-else>
+                      <CCol lg="8">
+                        <CCard>
+                          <CCardHeader class="d-flex justify-content-center">Teşhis</CCardHeader>
+                          <CCardBody>
+                            {{ diagnosis.diagnosis }}
+                          </CCardBody>
+                        </CCard>
+                      </CCol>
+                      <CCol lg="4">
+                        <CCard>
                           <CCardHeader class="d-flex justify-content-center">İlaçlar</CCardHeader>
-                          <CListGroupItem v-for="medicine in patientMedicines">{{ medicine.name }}</CListGroupItem>
-                        </CListGroup>
-                      </CCard>
-                    </CCol>
-                  </CRow>
+                          <CListGroup>
+
+                            <CListGroupItem v-for="medicine in patientMedicines">{{ medicine.name }}</CListGroupItem>
+                          </CListGroup>
+                        </CCard>
+                      </CCol>
+                    </CRow>
+                  </validation-observer>
                 </CCardBody>
               </template>
+
+
             </CCard>
           </transition>
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Protokol</h6>
+        <h6 class="modal-title">Teşhis</h6>
         <CButtonClose @click="getDiagnosis = false" class="text-white"/>
       </template>
       <template #footer>
         <CButton @click="getDiagnosis = false" color="danger">Kapat</CButton>
-
       </template>
     </CModal>
 
@@ -530,12 +603,14 @@ import ProtocolService from "@/services/managementServices/protocol.service";
 import AssayService from "@/services/managementServices/assay.service";
 import Assay from "@/models/pms/assay";
 import {freeSet} from "@coreui/icons";
-import usersData from "@/views/users/UsersData";
 import CTableWrapper from '@/views/base/Table.vue'
 import DiagnosisService from "../../../services/managementServices/diagnosis.service";
 import Diagnosis from "../../../models/pms/diagnosis";
 import MedicineService from "../../../services/managementServices/medicine.service";
-import Secretary from "@/models/pms/secretary";
+import Payment from "@/models/payment";
+import Discount from "@/models/discount";
+import CheckingAccountService from "@/services/managementServices/checkingAccount.service";
+import CheckingAccount from "@/views/checkingAccount/CheckingAccount";
 
 export default {
   name: "Clinic",
@@ -545,7 +620,8 @@ export default {
     ValidationObserver,
     // eslint-disable-next-line vue/no-unused-components
     VSimpleCheckbox,
-    CTableWrapper
+    CTableWrapper,
+    CheckingAccount
   },
   data() {
     return {
@@ -558,6 +634,25 @@ export default {
         {key: 'assayName', label: "Açıklama", _style: "min-width:200px"},
         {key: "refNo", label: "Referans Değeri"},
         {key: "assayNo", label: "Tahlil Değeri"},
+      ],
+
+      fieldsTableCheckingAccount: [
+        {key: 'protocolId', label: "Protokol Numarası", _style: "min-width:200px"},
+        {key: "protocolType", label: "Protokol Tipi"},
+        {key: "netPrice", label: "Net Ücret"},
+        {key: "remainingPrice", label: "Kalan Ücret"},
+        {key: "taxPrice", label: "KDV"},
+        {key: "paymentSituation", label: "Ödeme Durumu"},
+        {key: "discount", label: "İndirim"},
+
+
+      ],
+
+      fieldsTablePayment: [
+        {key: 'paymentAmount', label: "Ödeme Miktarı", _style: "min-width:200px"},
+        {key: "paymentDate", label: "Tarih"},
+        {key: "paymentTypeDesc", label: "Ödeme Tipi"},
+
       ],
 
       pageLabel: {label: 'sasasa', external: true,},
@@ -650,6 +745,7 @@ export default {
       selectedAssays: [],
       protocolNewUpdateModal: false,
       showResultModal: false,
+      selectPaymentTypes: [],
       usersData: [
         {'assayName': 'Smjhjhjuhjh', 'refNo': '686876', 'assayNo': '87878', 'status': 'Active'},
         {'assayName': 'Estavan Lykos', 'refNo': '8787877', 'assayNo': '988787', 'status': 'Banned'},
@@ -665,7 +761,23 @@ export default {
       protocolId: '',
       id: '',
       getDiagnosis: false,
-      patientMedicines: []
+      patientMedicines: [],
+      remainCheckout: 0,
+      totalCheckout: 0,
+      checkingAccountUUID: '',
+      showServiceDetail: false,
+      showMakePayment: false,
+      checkingAccounts: [],
+      serviceDetail: null,
+      carPlate: '',
+      paymentMovements: [],
+      paymentsModal: false,
+      discountModal: false,
+      showUpdateCategory: true,
+      payment: new Payment("", "", "", ""),
+      discount: new Discount("", "", ""),
+      checkinAccountItems: []
+
     };
 
   },
@@ -686,6 +798,8 @@ export default {
           return "danger";
         default:
           "primary";
+
+
       }
     },
     toggleDetails(item) {
@@ -696,6 +810,13 @@ export default {
       });
 
     },
+    async getCheckingAccountList() {
+      let response = await new CheckingAccountService().checkingAccountList(this.$route.params.patient);
+      this.checkinAccountItems = response.data.data
+
+    },
+
+
     setAssayModal() {
       this.selectedAssays = []
       this.protocolUpdateModal = false
@@ -735,7 +856,9 @@ export default {
       }
     },
     async minusSelectedMedicine(index) {
+      console.log("ind", index)
       const deneme = this.selectedMedicines.indexOf(index)
+      console.log("deneme", deneme)
       if (deneme > -1) {
         this.selectedMedicines.splice(deneme, 1)
       }
@@ -780,12 +903,22 @@ export default {
       this.protocol.assays = this.selectedAssays
     },
     async pushSelectedMedicine(medicine) {
-      if (this.isUniqeElementInMedicineArray(medicine, this.selectedMedicines)) {
-        this.selectedMedicines.push(medicine)
+      if (this.medicineName !== '') {
+        if (this.isUniqeElementInMedicineArray(medicine, this.selectedMedicines)) {
+          this.selectedMedicines.push(medicine)
+        }
+        this.diagnosis.medicines = this.selectedMedicines
+        this.medicineName = ''
+      } else {
+        this.$toast.warn({
+          title: 'Uyarı',
+          message: "Lütfen Bir İlaç Adı Giriniz"
+        })
       }
-      this.diagnosis.medicines = this.selectedMedicines
+
     },
     async addProtocol() {
+      this.protocol.isPaid = this.isPaid
       this.loading = true
       for (let i = 0; i < this.protocol.assays.length; i++) {
         this.protocol.assays[i] = this.protocol.assays[i].uuid
@@ -795,11 +928,14 @@ export default {
       if (response.status === 200) {
         this.loading = false
         await this.getOldProtocols()
+        await this.getCheckingAccountList()
         this.protocol = new Protocol("", [])
         this.$toast.success({
           title: 'Başarılı',
           message: "Protokol başarıyla eklendi"
         })
+      } else {
+        this.loading = false
       }
     },
     async getOldProtocols() {
@@ -814,12 +950,13 @@ export default {
         this.showDiagnosis = false
         this.loading = false
         await this.getSingleDiagnosis()
-        this.diagnosis = new Diagnosis()
         this.$toast.success({
           title: 'Başarılı',
           message: "Teşhis başarıyla eklendi"
         })
       } else {
+        console.log("burda")
+        this.loading = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -830,6 +967,15 @@ export default {
         }
       }
 
+    },
+    async validationForm() {
+      this.$refs.simpleRules.validate().then(async success => {
+        if (success) {
+          await this.addDiagnosis()
+        }
+
+
+      })
     },
 
     async getSingleDiagnosis() {
@@ -874,6 +1020,7 @@ export default {
   watch: {},
 
   async created() {
+    await this.getCheckingAccountList()
     await this.getSinglePatient()
     await this.getOldProtocols()
 

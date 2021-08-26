@@ -146,17 +146,26 @@
                 >
 
 
-                  <template #actions="{ item, index }">
+                  <template #buttons="{ item, index }">
                     <td class="py-2">
-                      <CDropdown toggler-text="İşlemler">
+                      <CDropdown
+                          color="link"
+                          size="lg"
+                          :caret="false"
+                          placement="top-start"
+                      >
+                        <template #toggler-content>
+                          &#x1F4C2;<span class="sr-only">sss</span>
+                        </template>
+
                         <CDropdownItem>
 
 
-                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                          <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                         </CDropdownItem>
                         <CDropdownItem>
 
-                          <CButton @click="getSingleAdvertisementLocation(item.uuid)">Düzenle</CButton>
+                          <CButton size="sm" @click="getSingleAdvertisementLocation(item.uuid)">Düzenle</CButton>
 
                         </CDropdownItem>
                       </CDropdown>
@@ -305,7 +314,7 @@
         <CButtonClose @click="staffUpdateModal=false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton :disabled="loadingEdit"  @click="staffUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton :disabled="loadingEdit" @click="staffUpdateModal = false" color="danger">Kapat</CButton>
         <CButton @click="validationForm" color="success">
           <c-spinner v-show="loadingEdit" size="sm"></c-spinner>
           Güncelle
@@ -343,7 +352,7 @@ export default {
         {key: "name", label: "Reklam Yeri"},
         {key: "width", label: "Genişlik"},
         {key: "height", label: "Uzunluk"},
-        {key: "actions", label: "İşlemler"},
+        {key: "buttons", label: "İşlemler"},
 
       ],
 
