@@ -27,7 +27,7 @@ class AssayService {
                 name: assay.assayName,
                 price : assay.price,
                 taxRate : assay.taxRate,
-                isPaid : assay.isPaid
+                isPrice : assay.isPaid
 
 
             }, {headers: authHeader()}).then(response => {
@@ -48,7 +48,7 @@ class AssayService {
                 name: assay.name,
                 price : assay.price,
                 taxRate : assay.taxRate,
-                isPaid : assay.isPaid
+                isPrice : assay.isPaid
 
 
             }, {headers: authHeader(), params}).then(response => {

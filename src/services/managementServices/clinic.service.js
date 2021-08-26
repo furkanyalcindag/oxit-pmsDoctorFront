@@ -4,8 +4,11 @@ import authHeader from "@/services/auth-header";
 class ClinicService {
 
 
-    getClinics() {
-        return axios.get(process.env.VUE_APP_API_URL + `/management/clinic-api/`, {headers: authHeader()})
+    getClinics(page) {
+        const params = {
+            activePage: page
+        }
+        return axios.get(process.env.VUE_APP_API_URL + `/management/clinic-api/`, {headers: authHeader(), params})
     }
 
 

@@ -175,10 +175,7 @@
                     :items="doctors"
                     :fields="fieldsTable"
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -218,6 +215,17 @@
                     </td>
                   </template>
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
               </CCardBody>
             </template>
           </CCard>
@@ -512,7 +520,8 @@ export default {
       departments: [],
       doctors: [],
       loadingDelete: false,
-      loadingEdit: false
+      loadingEdit: false,
+      pageCount: 0,
 
     };
   },
@@ -564,7 +573,7 @@ export default {
 
       let response = await new DoctorService().addDoctor(this.doctor)
       if (response.status === 200) {
-        await this.getDoctors()
+        await this.getDoctors(1)
         this.doctor = new Doctor()
         this.$toast.success({
           title: 'Başarılı',
@@ -610,7 +619,7 @@ export default {
       this.loadingDelete = true
       let response = await new DoctorService().deleteDoctor(this.deleteId)
       if (response.status === 200) {
-        await this.getDoctors()
+        await this.getDoctors(1)
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
@@ -637,7 +646,7 @@ export default {
       let response = await new DoctorService().editDoctor(this.doctorUpdate)
       if (response.status === 200) {
         this.staffUpdateModal = false
-        await this.getDoctors()
+        await this.getDoctors(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "Doktor başarıyla güncellendi"
@@ -657,10 +666,11 @@ export default {
     },
 
 
-    async getDoctors() {
+    async getDoctors(page) {
 
-      let response = await new DoctorService().getDoctor()
+      let response = await new DoctorService().getDoctor(page)
       this.doctors = response.data.data
+      this.pageCount = response.data.activePage
     },
 
 
@@ -677,10 +687,17 @@ export default {
     },
   },
 
-  watch: {},
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getDoctors(this.page)
+
+    },
+  },
 
   async created() {
-    await this.getDoctors()
+    await this.getDoctors(1)
     await this.getDepartments()
 
 

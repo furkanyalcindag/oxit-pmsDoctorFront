@@ -92,8 +92,8 @@
                           :options="doctors"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="appointment.doctor"
-                          :value.sync="appointment.doctor"
+                          v-model="appointment.doctorId"
+                          :value.sync="appointment.doctorId"
 
                       />
 
@@ -107,8 +107,8 @@
                           :options="patients"
                           description=""
                           autocomplete="autocomplete"
-                          v-model="appointment.patient"
-                          :value.sync="appointment.patient"
+                          v-model="appointment.patientId"
+                          :value.sync="appointment.patientId"
 
                       />
 
@@ -147,10 +147,7 @@
                     :items="appointments"
                     :fields="fieldsTable"
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -189,7 +186,7 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                       <CDropdown
+                      <CDropdown
                           color="link"
                           size="lg"
                           :caret="false"
@@ -213,6 +210,17 @@
                     </td>
                   </template>
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
               </CCardBody>
             </template>
           </CCard>
@@ -378,7 +386,7 @@ import AppointmentService from "@/services/managementServices/appointment.servic
 import VSimpleCheckbox from 'vuetify'
 
 export default {
-  name: "Clinic",
+  name: "PatientAppointment",
   components: {
     ValidationProvider,
     ValidationObserver,
@@ -485,7 +493,8 @@ export default {
       appointments: [],
       minDate: '',
       loadingDelete: false,
-      loadingEdit: false
+      loadingEdit: false,
+      pageCount: 0
 
 
     };
@@ -530,32 +539,35 @@ export default {
 
     async addAppointment() {
       this.loading = true
-      if (this.appointment.doctorId === "") {
+      if (this.appointment.doctorId === "" || this.appointment.patientId === undefined) {
         this.appointment.doctorId = this.doctors[0].value
       }
-      if (this.appointment.patientId === "") {
+      if (this.appointment.patientId === "" || this.appointment.patientId === undefined) {
         this.appointment.patientId = this.patients[0].value
       }
       let response = await new AppointmentService().addAppointment(this.appointment)
       if (response.status === 200) {
         this.loading = false
-        await this.getAppointments()
+        await this.getAppointments(1)
         this.appointment = new Appointment()
         this.$toast.success({
           title: 'Başarılı',
           message: "Randevu başarıyla eklendi"
         })
       } else if (response.status === 406) {
+        this.loading = false
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Başlangıç saati şuanki saatten geçmiş bir saat olamaz"
+        })
+      } else if (response.status === 301) {
+        this.loading = false
         this.$toast.warn({
           title: 'Başarısız',
           message: "Başlangıç saati bitiş saatinden büyük olamaz"
         })
-      } else if (response.status === 301) {
-        this.$toast.warn({
-          title: 'Başarısız',
-          message: "Başlangıç saati şuanki saatten küçük olamaz"
-        })
       } else if (response.status === 411) {
+        this.loading = false
         this.$toast.warn({
           title: 'Başarısız',
           message: "Bitiş saati şuanki saatten küçük olamaz"
@@ -608,7 +620,7 @@ export default {
 
       let response = await new AppointmentService().deleteAppointment(this.deleteId)
       if (response.status === 200) {
-        await this.getAppointments()
+        await this.getAppointments(1)
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
@@ -642,7 +654,7 @@ export default {
       if (response.status === 200) {
         this.loadingEdit = false
         this.staffUpdateModal = false
-        await this.getAppointments()
+        await this.getAppointments(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "Randevu başarıyla güncellendi"
@@ -695,10 +707,11 @@ export default {
     },
 
 
-    async getAppointments() {
+    async getAppointments(page) {
 
-      let response = await new AppointmentService().getAppointment()
+      let response = await new AppointmentService().getAppointment(page)
       this.appointments = response.data.data
+      this.pageCount = response.data.activePage
     },
 
 
@@ -707,7 +720,6 @@ export default {
         if (success) {
           if (this.appointmentUpdate.uuid) {
             await this.editAppointment()
-            console.log("ed")
           } else {
             await this.addAppointment()
           }
@@ -716,12 +728,19 @@ export default {
     },
   },
 
-  watch: {},
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getAppointments(this.page)
+
+    },
+  },
 
   async created() {
     await this.getDoctors()
     await this.getPatients()
-    await this.getAppointments()
+    await this.getAppointments(1)
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -734,7 +753,7 @@ export default {
   async mounted() {
     await this.getDoctors()
     await this.getPatients()
-    await this.getAppointments()
+    await this.getAppointments(1)
 
 
   },

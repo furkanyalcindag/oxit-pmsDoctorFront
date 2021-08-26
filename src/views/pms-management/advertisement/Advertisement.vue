@@ -133,13 +133,8 @@
                 <CDataTable
                     :items="locations"
                     :fields="fieldsTable"
-                    column-filter
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
-                    sorter
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -172,6 +167,17 @@
                     </td>
                   </template>
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
 
 
               </CCardBody>
@@ -428,6 +434,7 @@ export default {
       loadingEdit: false,
       loadingDelete: false,
       disableDelete: false,
+      pageCount: 0
     };
   },
 
@@ -451,7 +458,7 @@ export default {
       this.loading = true
       let response = await new AdvertisementLocationService().addAdvertisementLocation(this.advertisement)
       if (response.status === 200) {
-        await this.getAdvertisementLocation()
+        await this.getAdvertisementLocation(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
@@ -475,7 +482,7 @@ export default {
       this.disableEdit = true
       let response = await new AdvertisementLocationService().editAdvertisementLocation(this.advertisementUpdate)
       if (response.status === 200) {
-        await this.getAdvertisementLocation()
+        await this.getAdvertisementLocation(1)
         this.staffUpdateModal = false
         this.$toast.success({
           title: 'Başarılı',
@@ -495,16 +502,17 @@ export default {
         }
       }
     },
-    async getAdvertisementLocation() {
-      let response = await new AdvertisementLocationService().getAdvertisementLocation()
+    async getAdvertisementLocation(page) {
+      let response = await new AdvertisementLocationService().getAdvertisementLocation(page)
       this.locations = response.data.data
+      this.pageCount = response.data.activePage
     },
     async deleteAdvertisementLocation() {
       this.loadingDelete = true
       this.disableDelete = true
       let response = await new AdvertisementLocationService().deleteAdvertisementLocation(this.deleteId)
       if (response.status === 200) {
-        await this.getAdvertisementLocation()
+        await this.getAdvertisementLocation(1)
         this.deleteModel = false
         this.loadingDelete = false
         this.disableDelete = false
@@ -548,13 +556,20 @@ export default {
     },
   },
 
-  watch: {},
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getAdvertisementLocation(this.page)
+
+    },
+  },
 
   async created() {
-    await this.getAdvertisementLocation()
+    await this.getAdvertisementLocation(1)
   },
   async mounted() {
-    await this.getAdvertisementLocation()
+    await this.getAdvertisementLocation(1)
 
   },
   computed: {}

@@ -1,58 +1,55 @@
 <template>
   <CCard>
-    <CTabs>
-      <CTab title="Günlük İşlemler">
+    <CCardBody>
+      <CTabs>
+        <CTab title="Günlük İşlemler">
+          <CCard>
+            <CCardBody>
+              <CDataTable
+                  :items="momentaryData"
+                  :fields="fieldsTable"
+                  :border="true"
+                  :items-per-page="5"
+                  :activePage="4"
+                  pagination
+                  :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+                  clickableRows
 
+              >
+                <template #paymentAmount="{ item, index }">
+                  <td class="py-2">
 
+                    {{ item.paymentAmount }} TL
+                  </td>
+                </template>
+              </CDataTable>
+            </CCardBody>
 
+          </CCard>
 
+        </CTab>
+        <CTab title="Tüm İşlemler">
+          <CCard>
+            <CCardBody>
+              <CDataTable
+                  :items="allData"
+                  :fields="fieldsTableTotal"
+                  :border="true"
+                  :items-per-page="5"
+                  :activePage="4"
+                  hover
+                  pagination
+                  :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+                  clickableRows
 
+              >
 
-
-        <CDataTable
-            :items="locations"
-            :fields="fieldsTable"
-            column-filter
-            :border="true"
-            :items-per-page="5"
-            :activePage="4"
-            hover
-            sorter
-            pagination
-            :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
-            clickableRows
-
-        >
-        </CDataTable>
-
-
-
-
-
-
-
-      </CTab>
-      <CTab title="Tüm İşlemler">
-        <CDataTable
-            :items="locations"
-            :fields="fieldsTable"
-            column-filter
-            :border="true"
-            :items-per-page="5"
-            :activePage="4"
-            hover
-            sorter
-            pagination
-            :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
-            clickableRows
-
-        >
-        </CDataTable>
-
-
-      </CTab>
-    </CTabs>
-
+              </CDataTable>
+            </CCardBody>
+          </CCard>
+        </CTab>
+      </CTabs>
+    </CCardBody>
 
   </CCard>
 
@@ -91,21 +88,25 @@ export default {
       paidPriceDaily: 0,
       paidPriceYearly: 0,
       fieldsTable: [
-        {key: "name", label: "Hasta Adı"},
-        {key: "name", label: "Tarih"},
-        {key: "name", label: "Yapılan İşlem"},
-        {key: "name", label: "Günlük Kalan Tutar"},
+        {key: "date", label: "Tarih"},
+        {key: "patient", label: "Hasta Adı"},
+        {key: "paymentTypeDesc", label: "Yapılan İşlem"},
+        {key: "paymentAmount", label: "Tutar"},
 
       ],
 
       fieldsTableTotal: [
-
-        {key: "name", label: "Toplam Tutar"},
-        {key: "name", label: "Toplam Ödenen Tutar"},
-        {key: "name", label: "Toplam Kalan Tutar"},
+        {key: "date", label: "Tarih"},
+        {key: "protocol", label: "Protokol"},
+        {key: "patient", label: "Hasta"},
+        {key: "remainingDebt", label: "Kalan Tutar"},
+        {key: "total", label: "Toplam Tutar"},
+        {key: "paymentTypeDesc", label: "Yapılan İşlem"},
 
 
       ],
+      momentaryData: [],
+      allData: []
 
 
     }
@@ -142,6 +143,14 @@ export default {
       this.paidPriceDaily = response.data.paidPriceDaily
       this.paidPriceYearly = response.data.paidPriceYearly
 
+    },
+    async getMomentaryAccountingData() {
+      let response = await new CheckingAccountService().getMomentaryCheckingAccount()
+      this.momentaryData = response.data
+    },
+    async getAllAccountingData() {
+      let response = await new CheckingAccountService().getAllCheckingAccount()
+      this.allData = response.data
     }
   },
 
@@ -149,7 +158,8 @@ export default {
   mounted() {
   },
   async created() {
-    await this.getAccountingData()
+    await this.getAllAccountingData()
+    await this.getMomentaryAccountingData()
   }
 }
 </script>

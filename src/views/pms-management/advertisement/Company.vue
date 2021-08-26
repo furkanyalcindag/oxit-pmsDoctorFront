@@ -118,13 +118,9 @@
                 <CDataTable
                     :items="companies"
                     :fields="fieldsTableGroup"
-                    column-filter
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
                     sorter
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -148,6 +144,17 @@
                     </td>
                   </template>
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
               </CCardBody>
             </template>
           </CCard>
@@ -287,8 +294,8 @@
 
 <script>
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
-import CompanyService from "../../../../services/managementServices/company.service";
-import Company from "../../../../models/pms/company";
+import CompanyService from "../../../services/managementServices/company.service";
+import Company from "../../../models/pms/company";
 import {ValidationProvider, ValidationObserver} from 'vee-validate'
 import {required, email, min, max} from 'validations'
 
@@ -369,7 +376,8 @@ export default {
       min,
       max,
       loadingDelete: false,
-      loadingEdit: false
+      loadingEdit: false,
+      pageCount: 0
     };
   },
 
@@ -382,7 +390,7 @@ export default {
       this.loading = true
       let response = await new CompanyService().addCompany(this.company)
       if (response.status === 200) {
-        await this.getCompanies()
+        await this.getCompanies(1)
         this.company = new Company("", "", "", "", "")
         this.$toast.success({
           title: 'Başarılı',
@@ -408,44 +416,34 @@ export default {
       let response = await new CompanyService().editCompany(this.companyUpdate)
       if (response.status === 200) {
         this.staffUpdateModal = false
-        await this.getCompanies()
+        await this.getCompanies(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
         })
         this.loadingEdit = false
-      }
-
-      else if (response.status===406) {
-         this.loadingEdit = false
+      } else if (response.status === 406) {
+        this.loadingEdit = false
         this.$toast.warn({
           title: 'Başarısız',
           message: "Başlangıç saati bitiş saatinden büyük olamaz"
         })
-      }
-
-        else if (response.status===301) {
-         this.loadingEdit = false
+      } else if (response.status === 301) {
+        this.loadingEdit = false
         this.$toast.warn({
           title: 'Başarısız',
           message: "Başlangıç tarihi bugünün tarihinden küçük olamaz"
         })
-      }
-
-          else if (response.status===417) {
-         this.loadingEdit = false
+      } else if (response.status === 417) {
+        this.loadingEdit = false
         this.$toast.warn({
           title: 'Başarısız',
           message: "Bitiş tarihi bugünün tarihinden küçük olamaz"
         })
-      }
+      } else if (response.status === 401) {
+        localStorage.clear()
 
-
-      else if (response.status === 401) {
-         localStorage.clear()
-
-      }
-      else {
+      } else {
         this.loadingEdit = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -462,7 +460,7 @@ export default {
       let response = await new CompanyService().deleteCompany(this.deleteId)
       if (response.status === 200) {
         this.deleteModel = false
-        await this.getCompanies()
+        await this.getCompanies(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
@@ -478,9 +476,10 @@ export default {
         this.companyUpdate = response.data
       }
     },
-    async getCompanies() {
-      let response = await new CompanyService().getCompanies()
+    async getCompanies(page) {
+      let response = await new CompanyService().getCompanies(page)
       this.companies = response.data.data
+      this.pageCount = response.data.activePage
 
     },
     async validationForm() {
@@ -495,19 +494,26 @@ export default {
         }
       })
     },
+  },
 
 
-    watch: {},
+  watch: {
 
-    async created() {
-      await this.getCompanies()
-
-
-    },
-    async mounted() {
-      await this.getCompanies()
+    page: function (val) {
+      console.log(val)
+      this.getCompanies(this.page)
 
     },
-  }
+  },
+
+  async created() {
+    await this.getCompanies(1)
+
+
+  },
+  async mounted() {
+    await this.getCompanies(1)
+
+  },
 }
 </script>

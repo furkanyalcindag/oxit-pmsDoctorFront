@@ -3,8 +3,11 @@ import authHeader from "@/services/auth-header";
 
 class StaffService {
 
-    getStaffs() {
-        return axios.get(process.env.VUE_APP_API_URL + '/management/staff-api/', {headers: authHeader()})
+    getStaffs(page) {
+        const params = {
+            activePage: page
+        }
+        return axios.get(process.env.VUE_APP_API_URL + '/management/staff-api/', {headers: authHeader(), params})
 
     }
 

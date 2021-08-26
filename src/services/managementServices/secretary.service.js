@@ -1,13 +1,14 @@
-
 import axios from "axios";
 import authHeader from "@/services/auth-header";
 
 class SecretaryService {
 
 
-    getSecretary() {
-
-        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/secretary-api/`, {headers: authHeader()})
+    getSecretary(page) {
+        const params = {
+            activePage: page
+        }
+        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/secretary-api/`, {headers: authHeader(), params})
 
     }
 
@@ -57,7 +58,7 @@ class SecretaryService {
     }
 
 
-     deleteSecretary(id) {
+    deleteSecretary(id) {
         const params = {
             id: id
         }
@@ -65,15 +66,7 @@ class SecretaryService {
     }
 
 
-
-
 }
-
-
-
-
-
-
 
 
 export default SecretaryService
