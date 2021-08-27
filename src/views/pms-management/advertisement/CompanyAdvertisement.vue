@@ -171,17 +171,9 @@
                     </td>
                   </template>
 
-                  <template #buttons="{ item, index }">
+                  <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CDropdown
-                          color="link"
-                          size="lg"
-                          :caret="false"
-                          placement="top-start"
-                      >
-                        <template #toggler-content>
-                          &#x1F4C2;<span class="sr-only">sss</span>
-                        </template>
+                     <CDropdown size="sm" color="dark" toggler-text="İşlemler">
                         <CDropdownItem>
 
 
@@ -403,7 +395,7 @@ export default {
         {key: "location", label: "Reklam Yeri"},
         {key: "publishStartDate", label: "Yayın Başlangıç Tarihi"},
         {key: "publishEndDate", label: "Yayın Bitiş Tarihi"},
-        {key: "buttons", label: "İşlemler"},
+        {key: "actions", label: "İşlemler"},
 
       ],
 
@@ -523,7 +515,7 @@ export default {
         this.advertisement = new CompanyAdvertisement("", "", "", "", "", "", "")
         this.$toast.success({
           title: 'Başarılı',
-          message: "işlem başarıyla gerçekleşti"
+          message: "Reklam başarıyla eklendi"
         })
       } else if (response.status === 401) {
         console.log()
@@ -628,7 +620,7 @@ export default {
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
-          message: "işlem başarıyla gerçekleşti"
+          message: "Reklam başarıyla silindi"
         })
       } else if (response.status === 401) {
         console.log()

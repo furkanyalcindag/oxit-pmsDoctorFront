@@ -37,7 +37,7 @@ class ProtocolService {
             assays: protocol.assays,
             price: protocol.price,
             isPaid: protocol.isPaid,
-            taxRate: protocol.taxRate
+            taxRate: protocol.taxRate,
 
         }, {headers: authHeader()}).then(response => {
             return response
@@ -45,38 +45,6 @@ class ProtocolService {
             return error
         })
 
-    }
-
-
-    editProtocol(protocol) {
-
-        const params = {
-
-            id: protocol.uuid
-        }
-
-        return axios.put(process.env.VUE_APP_API_URL + '/pmsDoctor/protocol-api/', {
-
-            description: protocol.description,
-            patientId: protocol.patient,
-            assays: protocol.assays,
-            price: protocol.price,
-            isPaid: protocol.isPaid,
-            taxRate: protocol.taxRate
-
-        }, {headers: authHeader(), params})
-
-    }
-
-
-    deleteProtocols(id) {
-
-
-        const params = {
-            id: id
-        }
-
-        return axios.delete(process.env.VUE_APP_API_URL + '/pmsDoctor/protocol-api/', {headers: authHeader(), params})
     }
 
     getResultAssay(id, patientId) {

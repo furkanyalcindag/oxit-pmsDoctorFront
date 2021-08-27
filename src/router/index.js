@@ -110,13 +110,13 @@ const Contract = () => import('@/views/pms-management/contract/Contract');
 
 const Doctor = () => import('@/views/pms-doctor/doctor/Doctor')
 
-const DoctorProfile = () => import('@/views/pms-doctor/doctor/DoctorProfile')
+const Blog = () => import('@/views/pms-doctor/doctor/Blog')
 
+const DoctorProfile = () => import('@/views/pms-doctor/doctor/DoctorProfile')
 
 const Appointment = () => import('@/views/pms-doctor/patient/PatientAppointment')
 
 const Patient = () => import('@/views/pms-doctor/patient/Patient')
-
 
 const Protocol = () => import('@/views/pms-doctor/patient/Protocol')
 
@@ -272,6 +272,7 @@ function configRoutes() {
 
                     ]
                 },
+
                 {
                     path: '/catalog',
                     redirect: '/catalog/category',
@@ -418,6 +419,7 @@ function configRoutes() {
                 },
 
 
+
                 {
                     path: '/assay',
                     redirect: '',
@@ -432,6 +434,28 @@ function configRoutes() {
                             path: 'assay',
                             name: 'Assay',
                             component: Assay
+                        }
+
+
+                    ]
+                },
+
+
+
+                 {
+                    path: '/blog',
+                    redirect: '',
+                    name: 'Blog',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'blog',
+                            name: 'Blog',
+                            component: Blog
                         }
 
 
@@ -458,6 +482,8 @@ function configRoutes() {
 
                     ]
                 },
+
+
 
 
                 {

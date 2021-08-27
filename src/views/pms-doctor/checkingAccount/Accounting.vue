@@ -2,7 +2,7 @@
   <CCard>
     <CCardBody>
       <CTabs>
-        <CTab title="Günlük İşlemler">
+        <CTab title="Günlük Hareketler">
           <CCard>
             <CCardBody>
               <CDataTable
@@ -27,6 +27,24 @@
 
           </CCard>
 
+        </CTab>
+        <CTab title="Tüm Hareketler">
+          <CCard>
+            <CCardBody>
+              <CDataTable
+                  :items="allMovementData"
+                  :fields="fieldsTableMovement"
+                  :border="true"
+                  :items-per-page="5"
+                  :activePage="4"
+                  hover
+                  pagination
+                  :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+                  clickableRows
+              >
+              </CDataTable>
+            </CCardBody>
+          </CCard>
         </CTab>
         <CTab title="Tüm İşlemler">
           <CCard>
@@ -94,6 +112,13 @@ export default {
         {key: "paymentAmount", label: "Tutar"},
 
       ],
+      fieldsTableMovement: [
+        {key: "date", label: "Tarih"},
+        {key: "patient", label: "Hasta Adı"},
+        {key: "paymentTypeDesc", label: "Yapılan İşlem"},
+        {key: "paymentAmount", label: "Tutar"},
+
+      ],
 
       fieldsTableTotal: [
         {key: "date", label: "Tarih"},
@@ -101,12 +126,13 @@ export default {
         {key: "patient", label: "Hasta"},
         {key: "remainingDebt", label: "Kalan Tutar"},
         {key: "total", label: "Toplam Tutar"},
-        {key: "paymentTypeDesc", label: "Yapılan İşlem"},
+        {key: "paymentSituation", label: "Ödeme Durumu"},
 
 
       ],
       momentaryData: [],
-      allData: []
+      allData: [],
+      allMovementData: []
 
 
     }
@@ -151,6 +177,10 @@ export default {
     async getAllAccountingData() {
       let response = await new CheckingAccountService().getAllCheckingAccount()
       this.allData = response.data
+    },
+    async getAllMovemenetData() {
+      let response = await new CheckingAccountService().getAllMovementData()
+      this.allMovementData = response.data
     }
   },
 
@@ -158,8 +188,10 @@ export default {
   mounted() {
   },
   async created() {
-    await this.getAllAccountingData()
     await this.getMomentaryAccountingData()
+    await this.getAllAccountingData()
+    await this.getAllMovemenetData()
+
   }
 }
 </script>

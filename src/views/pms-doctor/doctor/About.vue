@@ -32,10 +32,9 @@
                     <h5 v-if="aboutList.about" class="mb-1">{{ aboutList.about }}</h5>
                     <h5 v-else class="mb-1">-</h5>
                     <small>
-                      <CDropdown size="sm" color="primary" toggler-text="İşlemler">
+                      <CDropdown size="sm" color="dark" toggler-text="İşlemler">
                         <CDropdownItem>
-                          <CButton @click="getSingleAbout">
-                            <CIcon name="cil-pencil"/>
+                          <CButton size="sm" @click="getSingleAbout">
                             Düzenle
                           </CButton>
                         </CDropdownItem>

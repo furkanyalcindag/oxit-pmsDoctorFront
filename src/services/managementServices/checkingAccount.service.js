@@ -100,8 +100,13 @@ class CheckingAccountService {
     getMomentaryCheckingAccount() {
         return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/momentary-checking-account-api/', {headers: authHeader()})
     }
+
     getAllCheckingAccount() {
         return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/all-checking-account-api/', {headers: authHeader()})
+    }
+
+    getAllMovementData() {
+        return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/all-movement-api/', {headers: authHeader()})
     }
 
 

@@ -6,7 +6,7 @@
           <CCard v-if="show">
             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Klinik Yönetimi
+              Hasta Yönetimi
               <div class="card-header-actions">
 
                 <CLink
@@ -28,7 +28,7 @@
                 <validation-observer ref="simpleRules">
                   <CRow>
 
-                    <CCol lg="3">
+                    <CCol lg="4">
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100"
@@ -45,7 +45,7 @@
                     </CCol>
 
 
-                    <CCol lg="3">
+                    <CCol lg="4">
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100"
@@ -61,7 +61,7 @@
                         />
                       </validation-provider>
                     </CCol>
-                    <CCol lg="3">
+                    <CCol lg="4">
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100"
@@ -79,7 +79,7 @@
                       </validation-provider>
                     </CCol>
 
-                    <CCol lg="3">
+                    <CCol lg="4">
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100"
@@ -95,7 +95,7 @@
                         />
                       </validation-provider>
                     </CCol>
-                    <CCol lg="3">
+                    <CCol lg="4">
 
                       Cinsiyet <span class="text-danger">*</span>
 
@@ -110,7 +110,7 @@
 
                     </CCol>
 
-                    <CCol lg="3">
+                    <CCol lg="4">
 
                       Kan Grubu <span class="text-danger">*</span>
 
@@ -124,7 +124,7 @@
                       />
 
                     </CCol>
-                    <CCol lg="3">
+                    <CCol lg="4">
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100"
@@ -141,7 +141,7 @@
                       </validation-provider>
                     </CCol>
 
-                    <CCol lg="3">
+                    <CCol lg="4">
                       <validation-provider
                           #default="{errors}"
                           rules="required|min:3|max:100|email"
@@ -159,7 +159,7 @@
 
                       </validation-provider>
                     </CCol>
-                    <CCol lg="3">
+                    <CCol lg="4">
                       <validation-provider
                           #default="{errors}"
                           rules="required"
@@ -246,19 +246,12 @@
                     </td>
                   </template>
 
-                  <template #buttons="{ item, index }">
+                  <template #actions="{ item, index }">
                     <td class="py-2">
                       <CRow>
                         <CCol lg="4">
-                          <CDropdown
-                              color="link"
-                              size="lg"
-                              :caret="false"
-                              placement="top-start"
-                          >
-                            <template #toggler-content>
-                              &#x1F4C2;<span class="sr-only">sss</span>
-                            </template>
+                          <CDropdown size="sm" color="dark" toggler-text="İşlemler">
+
                             <CDropdownItem>
                               <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                             </CDropdownItem>
@@ -349,7 +342,7 @@
                     <validation-observer ref="simpleRules">
                       <CRow>
 
-                        <CCol lg="3">
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
@@ -366,7 +359,7 @@
                         </CCol>
 
 
-                        <CCol lg="3">
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
@@ -383,26 +376,21 @@
                           </validation-provider>
                         </CCol>
 
+                        <CCol lg="4">
+                          Kan Grubu <span class="text-danger">*</span>
+                          <CSelect
+                              :options="bloodgroups"
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="patientUpdate.bloodGroupId"
+                              :value.sync="patientUpdate.bloodGroupId"
+                          />
 
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Adresi">
-                            Adresi <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="patientUpdate.address"
 
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
                         </CCol>
 
 
-                        <CCol lg="3">
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
@@ -419,7 +407,7 @@
                           </validation-provider>
                         </CCol>
 
-                        <CCol lg="3">
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
@@ -437,7 +425,7 @@
                         </CCol>
 
 
-                        <CCol lg="3">
+                        <CCol lg="4">
                           Cinsiyet <span class="text-danger">*</span>
                           <CSelect
                               :options="genders"
@@ -449,20 +437,24 @@
                         </CCol>
 
 
-                        <CCol lg="3">
-                          Kan Grubu <span class="text-danger">*</span>
-                          <CSelect
-                              :options="bloodgroups"
-                              description=""
-                              autocomplete="autocomplete"
-                              v-model="patientUpdate.bloodGroupId"
-                              :value.sync="patientUpdate.bloodGroupId"
-                          />
+                        <CCol lg="4">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Adresi">
+                            Adresi <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CTextarea
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="patientUpdate.address"
 
-
+                                :state="errors.length > 0 ? false:null"
+                            />
+                          </validation-provider>
                         </CCol>
 
-                        <CCol lg="3">
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100|email"
@@ -480,7 +472,7 @@
 
                           </validation-provider>
                         </CCol>
-                        <CCol lg="3">
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
@@ -549,7 +541,7 @@ export default {
         {key: "gender", label: "Cinsiyet"},
         {key: "mobilePhone", label: "Telefon Numarası"},
         {key: "birthDate", label: "Doğum Tarihi"},
-        {key: "buttons", label: "İşlemler"}
+        {key: "actions", label: "İşlemler"}
 
       ],
 

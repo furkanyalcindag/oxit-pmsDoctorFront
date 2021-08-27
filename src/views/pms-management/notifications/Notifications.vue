@@ -124,18 +124,22 @@
                               <CDataTable
                                   :items="items"
                                   :fields="fieldsTableNotification"
-                                  column-filter
                                   :border="true"
-                                  :items-per-page="5"
-                                  :activePage="4"
                                   hover
-                                  sorter
                                   pagination
                                   :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                                   clickableRows
 
                               >
+
                               </CDataTable>
+
+                              <CPagination
+                                  :activePage.sync="page"
+                                  :pages="pageCount"
+                                  size="sm"
+                                  align="end"
+                              />
 
 
                             </CCardBody>
@@ -218,11 +222,7 @@
                                   :fields="fieldsTable"
                                   column-filter
                                   table-filter
-                                  items-per-page-select
-                                  :items-per-page="5"
                                   hover
-                                  sorter
-                                  pagination
                               >
                                 <template #status="{item}">
                                   <td>
@@ -263,6 +263,13 @@
                                   </CCollapse>
                                 </template>
                               </CDataTable>
+
+                              <CPagination
+                                  :activePage.sync="page"
+                                  :pages="pageCount"
+                                  size="sm"
+                                  align="end"
+                              />
 
 
                             </CCardBody>
@@ -322,6 +329,7 @@ export default {
       collapseDuration: 0,
       darkModal: false,
       carModal: false,
+      pageCount: 0,
       show: true,
       horizontal: {label: "col-3", input: "col-9"},
       options: ["Option 1", "Option 2", "Option 3"],
@@ -397,9 +405,10 @@ export default {
         this.loading = false
       }
     },
-    async getNotifications() {
-      let response = await new NotificationService().getNotifications()
+    async getNotifications(page) {
+      let response = await new NotificationService().getNotifications(page)
       this.items = response.data
+      this.pageCount = response.data.activePage
 
     },
     getBase64(event) {
@@ -429,7 +438,20 @@ export default {
 
 
   },
-  watch: {},
+
+
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getPatients(this.page)
+
+    },
+
+
+  },
+
+
   async created() {
     await this.getNotifications()
 

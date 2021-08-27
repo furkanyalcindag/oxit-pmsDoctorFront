@@ -50,16 +50,14 @@
                               <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">{{ a.title }}</h5>
                                 <small>
-                                  <CDropdown size="sm" color="primary" toggler-text="İşlemler">
+                                  <CDropdown size="sm" color="dark" toggler-text="İşlemler">
                                     <CDropdownItem>
-                                      <CButton @click="getSingleArticle(a.uuid)">
-                                        <CIcon name="cil-pencil"/>
+                                      <CButton size="sm" @click="getSingleArticle(a.uuid)">
                                         Düzenle
                                       </CButton>
                                     </CDropdownItem>
                                     <CDropdownItem>
-                                      <CButton @click="setDeleteModal(a.uuid)">
-                                        <CIcon name="cilTrash"/>
+                                      <CButton size="sm" @click="setDeleteModal(a.uuid)">
                                         Sil
                                       </CButton>
                                     </CDropdownItem>

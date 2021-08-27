@@ -113,10 +113,7 @@
                     :items="assays"
                     :fields="fieldsTable"
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -149,17 +146,9 @@
                   </template>
 
 
-                  <template #buttons="{ item, index }">
+                  <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CDropdown
-                          color="link"
-                          size="lg"
-                          :caret="false"
-                          placement="top-start"
-                      >
-                        <template #toggler-content>
-                          &#x1F4C2;<span class="sr-only">sss</span>
-                        </template>
+                      <CDropdown size="sm" color="dark" toggler-text="İşlemler">
                         <CDropdownItem>
 
 
@@ -174,6 +163,12 @@
                     </td>
                   </template>
                 </CDataTable>
+                <CPagination
+                    :activePage.sync="page"
+                    :pages="pageCount"
+                    size="sm"
+                    align="end"
+                />
               </CCardBody>
             </template>
           </CCard>
@@ -326,7 +321,7 @@ export default {
         {key: 'name', label: "Tahlil Adı", _style: "min-width:200px"},
         {key: "price", label: "Ücret"},
         {key: "taxRate", label: "KDV"},
-        {key: 'buttons', label: "İşlemler"},
+        {key: 'actions', label: "İşlemler"},
 
 
       ],
@@ -418,8 +413,8 @@ export default {
       assays: [],
       loadingDelete: false,
       loadingEdit: false,
-      isPaidUpdate: false
-
+      isPaidUpdate: false,
+      pageCount: 0
 
     };
   },
@@ -470,7 +465,7 @@ export default {
       }
       let response = await new AssayService().addAssay(this.assay)
       if (response.status === 200) {
-        await this.getAssays()
+        await this.getAssays(1)
         this.assay = new Assay()
         this.$toast.success({
           title: 'Başarılı',
@@ -491,10 +486,11 @@ export default {
 
     },
 
-    async getAssays() {
+    async getAssays(page) {
 
-      let response = await new AssayService().getAssays()
+      let response = await new AssayService().getAssays('', page)
       this.assays = response.data.data
+      this.pageCount = response.data.activePage
     },
 
 
@@ -505,7 +501,7 @@ export default {
       if (response.status === 200) {
         this.assayUpdateModal = true
         this.assayUpdate = response.data
-        this.isPaidUpdate = this.assayUpdate.isPaid
+        this.isPaidUpdate = this.assayUpdate.isPrice
 
 
       }
@@ -517,7 +513,7 @@ export default {
       this.loadingDelete = true
       let response = await new AssayService().deleteAssay(this.deleteId)
       if (response.status === 200) {
-        await this.getAssays()
+        await this.getAssays(1)
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
@@ -538,11 +534,11 @@ export default {
 
     async editAssay() {
       this.loading = true
-      this.assay.isPaid = this.isPaidUpdate
+      this.assayUpdate.isPrice = this.isPaidUpdate
       let response = await new AssayService().editAssay(this.assayUpdate)
       if (response.status === 200) {
         this.assayUpdateModal = false
-        await this.getAssays()
+        await this.getAssays(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "Tahlil başarıyla güncellendi"
@@ -574,10 +570,17 @@ export default {
     },
   },
 
-  watch: {},
 
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getAssays(this.page)
+
+    },
+  },
   async created() {
-    await this.getAssays()
+    await this.getAssays(1)
 
 
   },

@@ -186,15 +186,8 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CDropdown
-                          color="link"
-                          size="lg"
-                          :caret="false"
-                          placement="top-start"
-                      >
-                        <template #toggler-content>
-                          &#x1F4C2;<span class="sr-only">sss</span>
-                        </template>
+                      <CDropdown size="sm" color="dark" toggler-text="İşlemler">
+
 
                         <CDropdownItem>
 
@@ -317,7 +310,7 @@
                           Başlangıç Saati <span class="text-danger">*</span>
                           <span class="text-danger">{{ errors[0] }}</span>
                           <CInput
-                              timeFormat="24hr"
+                              timeFormat="true"
                               type="time"
                               description=""
                               autocomplete="autocomplete"

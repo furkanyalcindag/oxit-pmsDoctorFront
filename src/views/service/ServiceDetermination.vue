@@ -225,7 +225,7 @@
                             :drag-text="dragText"
                             :markIsPrimaryText="markPrimary"
                             :popupText="popupText"
-                            :max-image="100"
+                            :max-image="3"
 
                         ></vue-upload-multiple-image>
                       </div>

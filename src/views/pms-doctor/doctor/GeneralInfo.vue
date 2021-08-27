@@ -98,110 +98,114 @@
 
                     <validation-observer ref="simpleRules">
                       <CRow>
+                        <CCol lg="12">
+                          <CRow>
+                            <CCol lg="6">
 
-                        <CCol lg="3">
+                              Doktor Adı <span class="text-danger">*</span>
 
-                          Doktor Adı <span class="text-danger">*</span>
+                              <CInput
+                                  disabled
+                                  description=""
+                                  autocomplete="autocomplete"
+                                  v-model="staff.firstName"
 
-                          <CInput
-                              disabled
-                              description=""
-                              autocomplete="autocomplete"
-                              v-model="staff.firstName"
+                              />
 
-                          />
+                            </CCol>
+                            <CCol lg="6">
+                              Doktor Soyadı <span class="text-danger">*</span>
 
-                        </CCol>
+                              <CInput
+                                  disabled
+                                  description=""
+                                  autocomplete="autocomplete"
+                                  v-model="staff.lastName"
 
-
-                        <CCol lg="3">
-                          Doktor Soyadı <span class="text-danger">*</span>
-
-                          <CInput
-                              disabled
-                              description=""
-                              autocomplete="autocomplete"
-                              v-model="staff.lastName"
-
-                          />
-
-
-                        </CCol>
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Diploma No">
-                            Diploma No <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="staff.diplomaNo"
-                                :state="errors.length > 0 ? false:null"
-                            />
-
-                          </validation-provider>
-                        </CCol>
+                              />
 
 
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Uzmanlık Alanı">
-                            Uzmanlık Alanı <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="staff.profession"
-                                :state="errors.length > 0 ? false:null"
-                            />
-
-                          </validation-provider>
-                        </CCol>
-
-
-                        <CCol lg="3">
-                          Bölüm <span class="text-danger">*</span>
-                          <CSelect
-                              :options="departments"
-                              description=""
-                              autocomplete="autocomplete"
-                              v-model="staff.department"
-                              :value.sync="staff.department"
-                          />
+                            </CCol>
+                          </CRow>
 
 
                         </CCol>
+                        <CCol lg="12">
+                          <CRow>
+
+                            <CCol lg="6">
+                              <validation-provider
+                                  #default="{errors}"
+                                  rules="required|min:3|max:100"
+                                  name="Diploma No">
+                                Diploma No <span class="text-danger">*</span>
+                                <span class="text-danger">{{ errors[0] }}</span>
+                                <CInput
+                                    description=""
+                                    autocomplete="autocomplete"
+                                    v-model="staff.diplomaNo"
+                                    :state="errors.length > 0 ? false:null"
+                                />
+
+                              </validation-provider>
+                            </CCol>
+                            <CCol lg="6">
+                              <validation-provider
+                                  #default="{errors}"
+                                  rules="required|min:3|max:100"
+                                  name="Uzmanlık Alanı">
+                                Uzmanlık Alanı <span class="text-danger">*</span>
+                                <span class="text-danger">{{ errors[0] }}</span>
+                                <CInput
+                                    description=""
+                                    autocomplete="autocomplete"
+                                    v-model="staff.profession"
+                                    :state="errors.length > 0 ? false:null"
+                                />
+
+                              </validation-provider>
+                            </CCol>
+                          </CRow>
 
 
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:3|max:100"
-                              name="Ünvan">
-                            Ünvan <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="staff.title"
-
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
                         </CCol>
+                        <CCol lg="12">
+                          <CRow>
+                            <CCol lg="6">
+                              Bölüm <span class="text-danger">*</span>
+                              <CSelect
+                                  :options="departments"
+                                  description=""
+                                  autocomplete="autocomplete"
+                                  v-model="staff.department"
+                                  :value.sync="staff.department"
+                              />
 
 
-                        <CCol lg="3">
+                            </CCol>
+                            <CCol lg="6">
+                              <validation-provider
+                                  #default="{errors}"
+                                  rules="required|min:3|max:100"
+                                  name="Ünvan">
+                                Ünvan <span class="text-danger">*</span>
+                                <span class="text-danger">{{ errors[0] }}</span>
+                                <CInput
+                                    description=""
+                                    autocomplete="autocomplete"
+                                    v-model="staff.title"
+
+                                    :state="errors.length > 0 ? false:null"
+                                />
+                              </validation-provider>
+                            </CCol>
+                          </CRow>
 
 
+                        </CCol>
+                        <CCol lg="12">
                           Fotoğraf <span class="text-danger">*</span>
-
                           <CInputFile
-                              horizontal
                               @change="getBase64"
                               custom
                               :placeholder="selectedFile"
@@ -209,8 +213,6 @@
                           />
 
                         </CCol>
-
-
                       </CRow>
                     </validation-observer>
                   </CRow>
@@ -231,7 +233,8 @@
         </CButton>
         <CButton :disabled="loading" @click="validationForm" color="success">
           <c-spinner size="sm" v-show="loading"></c-spinner>
-          Güncelle</CButton>
+          Güncelle
+        </CButton>
       </template>
     </CModal>
 
