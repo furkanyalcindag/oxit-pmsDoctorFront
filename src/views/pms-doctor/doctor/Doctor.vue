@@ -143,11 +143,7 @@
 
                       </validation-provider>
                     </CCol>
-
-                  </CRow>
-                </validation-observer>
-
-                <div class="form-actions">
+                      <CCol lg="3" class="form-actions mt-3">
                   <CButton type="submit" color="primary"
                            @click="validationForm"
                   >
@@ -155,7 +151,12 @@
                     Kaydet
                   </CButton>
 
-                </div>
+                </CCol>
+
+                  </CRow>
+                </validation-observer>
+
+
               </CCardBody>
             </CCollapse>
           </CCard>
@@ -187,23 +188,13 @@
                     </td>
                   </template>
 
-                  <template #buttons="{ item, index }">
+                  <template #actions="{ item, index }">
+
                     <td class="py-2">
 
-                      <CDropdown
-                          color="link"
-                          size="lg"
-                          :caret="false"
-                          placement="top-start"
-                      >
-                        <template #toggler-content>
-                          &#x1F4C2;<span class="sr-only">sss</span>
-                        </template>
-
+                      <CDropdown size="sm" color="dark" toggler-text="İşlemler">
 
                         <CDropdownItem>
-
-
                           <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                         </CDropdownItem>
                         <CDropdownItem>
@@ -316,7 +307,7 @@
                               #default="{errors}"
                               rules="required|min:3|max:100"
                               name="Diploma No">
-                            DiplomA No <span class="text-danger">*</span>
+                            Diploma No <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
                             <CInput
                                 description=""
@@ -442,7 +433,7 @@ export default {
         {key: "title", label: "Ünvan"},
         {key: "department", label: "Bölüm"},
         {key: "insuranceNumber", label: "Sİgorta Numarası"},
-        {key: "buttons", label: "İşlemler"}
+        {key: "actions", label: "İşlemler"}
       ],
 
       pageLabel: {label: 'sasasa', external: true,},

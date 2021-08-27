@@ -4,10 +4,11 @@ import authHeader from "@/services/auth-header";
 class AssayService {
 
 
-    getAssays(name) {
+    getAssays(name,page) {
 
         const params = {
             name:name,
+            activePage:page
 
         }
         return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/assay-api/`, {headers: authHeader(),params})
@@ -48,7 +49,7 @@ class AssayService {
                 name: assay.name,
                 price : assay.price,
                 taxRate : assay.taxRate,
-                isPrice : assay.isPaid
+                isPrice : assay.isPrice
 
 
             }, {headers: authHeader(), params}).then(response => {

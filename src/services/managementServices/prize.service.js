@@ -37,7 +37,7 @@ class PrizeService {
             {
                  title : prize.title,
                 description : prize.description,
-                profileImage : prize.profileImage,
+                image : prize.profileImage,
                 date :prize. date
 
             }, {headers: authHeader(), params}).then(response => {

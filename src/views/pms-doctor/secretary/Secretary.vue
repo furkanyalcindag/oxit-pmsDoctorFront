@@ -119,19 +119,10 @@
 
                 >
 
-                  <template #buttons="{ item, index }">
+                  <template #actions="{ item, index }">
                     <td class="py-2">
 
-                      <CDropdown
-                          color="link"
-                          size="lg"
-                          :caret="false"
-                          placement="top-start"
-                      >
-                        <template #toggler-content>
-                          &#x1F4C2;<span class="sr-only">sss</span>
-                        </template>
-
+                    <CDropdown size="sm" color="dark" toggler-text="İşlemler">
                         <CDropdownItem>
 
 
@@ -205,7 +196,7 @@
                     <validation-observer ref="simpleRules">
                       <CRow>
 
-                        <CCol lg="3">
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
@@ -222,7 +213,7 @@
                         </CCol>
 
 
-                        <CCol lg="3">
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
@@ -240,7 +231,7 @@
                         </CCol>
 
 
-                        <CCol lg="3">
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100|email"
@@ -304,7 +295,7 @@ export default {
         {key: 'firstName', label: "Sekreter Adı", _style: "min-width:200px"},
         {key: "lastName", label: "Sekreter Soyadı"},
         {key: "email", label: "Email"},
-        {key: "buttons", label: "İşlemler"}
+        {key: "actions", label: "İşlemler"}
       ],
 
       pageLabel: {label: 'sasasa', external: true,},

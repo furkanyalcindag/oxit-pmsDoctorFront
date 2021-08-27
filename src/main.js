@@ -14,7 +14,14 @@ import VueUploadMultipleImage from 'vue-upload-multiple-image'
 import CxltToastr from "cxlt-vue2-toastr";
 import tr from 'vee-validate/dist/locale/tr';
 import VCalender from 'v-calendar'
+import VueQuillEditor from 'vue-quill-editor'
 
+// require styles
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+Vue.use(VueQuillEditor)
 Vue.use(VueLazyload)
 Vue.use(vuetimeline);
 

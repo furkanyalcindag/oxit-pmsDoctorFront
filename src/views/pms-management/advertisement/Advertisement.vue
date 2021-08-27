@@ -141,17 +141,9 @@
                 >
 
 
-                  <template #buttons="{ item, index }">
+                  <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CDropdown
-                          color="link"
-                          size="lg"
-                          :caret="false"
-                          placement="top-start"
-                      >
-                        <template #toggler-content>
-                          &#x1F4C2;<span class="sr-only">sss</span>
-                        </template>
+                      <CDropdown size="sm" color="dark" toggler-text="İşlemler">
 
                         <CDropdownItem>
 
@@ -358,7 +350,7 @@ export default {
         {key: "name", label: "Reklam Yeri"},
         {key: "width", label: "Genişlik"},
         {key: "height", label: "Uzunluk"},
-        {key: "buttons", label: "İşlemler"},
+        {key: "actions", label: "İşlemler"},
 
       ],
 

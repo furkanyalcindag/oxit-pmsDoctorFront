@@ -33,25 +33,21 @@
                         class="flex-column align-items-start"
                     >
                       <CRow>
-                        <CCol lg="3">
-
-
-                          <img :src="p.profileImage" height="150" width="200">
+                        <CCol lg="2">
+                          <img :src="p.image" height="100" width="100">
                         </CCol>
-                        <CCol lg="9">
+                        <CCol lg="10">
                           <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1">{{ p.title }}</h5>
                             <small>
-                              <CDropdown size="sm" color="primary" toggler-text="İşlemler">
+                              <CDropdown size="sm" color="dark" toggler-text="İşlemler">
                                 <CDropdownItem>
-                                  <CButton @click="getSinglePrize(p.uuid)">
-                                    <CIcon name="cil-pencil"/>
+                                  <CButton size="sm" @click="getSinglePrize(p.uuid)">
                                     Düzenle
                                   </CButton>
                                 </CDropdownItem>
                                 <CDropdownItem>
-                                  <CButton @click="setDeleteModal(p.uuid)">
-                                    <CIcon name="cilTrash"/>
+                                  <CButton size="sm" @click="setDeleteModal(p.uuid)">
                                     Sil
                                   </CButton>
                                 </CDropdownItem>
@@ -459,6 +455,7 @@ export default {
           message: "Ödül başarıyla eklendi"
         })
       } else {
+        this.loading = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {

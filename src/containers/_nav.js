@@ -55,6 +55,14 @@ const assay = {
     to: '/assay/assay',
     icon: 'cil-user',
 }
+
+const blog = {
+    _name: 'CSidebarNavItem',
+    name: 'Blog',
+    to: '/blog/blog',
+    icon: 'cil-user',
+}
+
 const patientCalendar = {
     _name: 'CSidebarNavItem',
     name: 'Hasta Takvimi',
@@ -146,6 +154,8 @@ const doctorProfile = {
     to: '/profile',
     icon: 'cil-people',
 }
+
+
 const contracts = {
     _name: 'CSidebarNavItem',
     name: 'Sözleşme',
@@ -185,6 +195,8 @@ if (user_group === groups.clinic || user_group === groups.doctor) {
     items.push(appointment)
     items.push(patient)
 
+
+
 }
 if (user_group === groups.admin) {
     items.push(staffs)
@@ -205,6 +217,7 @@ if (user_group === 'Doctor') {
     items.push(patientCalendar)
 // items.push(protocol)
     items.push(doctorProfile)
+    items.push(blog)
 }
 export default [
     {

@@ -325,17 +325,9 @@
                             </td>
                           </template>
 
-                          <template #buttons="{ item, index }">
+                          <template #actions="{ item, index }">
                             <td class="py-2">
-                              <CDropdown
-                                  color="link"
-                                  size="lg"
-                                  :caret="false"
-                                  placement="top-start"
-                              >
-                                <template #toggler-content>
-                                  &#x1F4C2;<span class="sr-only">sss</span>
-                                </template>
+                              <CDropdown size="sm" color="dark" toggler-text="İşlemler">
                                 <CDropdownItem>
                                   <CButton size="sm" @click="getPaymentMovementsList(item.checkingAccountUUID)"> İşlem
                                     Bilgi
@@ -598,11 +590,11 @@
                         <CInput
                             placeholder="Tahlil Adı Girerek Arama Yapabilirsiniz"
                             v-model="assay.assayName"
-                            @input="getAssays"
+                            @input="getAssays(page)"
                         />
                       </CCol>
                       <CCol lg="2" class="mt-3">
-                        <CButton @click="getAssays" color="success">Tüm Tahlilleri Görüntüle</CButton>
+                        <CButton @click="getAssays(1)" color="success">Tüm Tahlilleri Görüntüle</CButton>
 
                       </CCol>
 
@@ -629,6 +621,14 @@
 
 
                         </CListGroupItem>
+                        <CPagination
+                            v-show="assayArray.length"
+                            :activePage.sync="page"
+                            :pages="pageCount"
+                            size="sm"
+                            align="center"
+                            class="mt-2"
+                        />
                       </CListGroup>
                     </CCol>
                     <CCol lg="6" v-if="selectedAssays.length">
@@ -902,13 +902,13 @@ export default {
     // eslint-disable-next-line vue/no-unused-components
     VSimpleCheckbox,
     CTableWrapper,
-    CheckingAccount
   },
   data() {
     return {
       fieldsTable: [
         {key: 'description', label: "Açıklama", _style: "min-width:200px"},
         {key: "patient", label: "Hasta"},
+        {key: "situation", label: "Durum"},
         {key: "actions", label: "İşlemler"},
       ],
       fieldsTableAssay: [
@@ -924,7 +924,7 @@ export default {
         {key: "remainingDebt", label: "Kalan Ücret"},
         {key: "discount", label: "İndirim"},
         {key: "paymentSituation", label: "Ödeme Durumu"},
-        {key: "buttons", label: "İşlemler"},
+        {key: "actions", label: "İşlemler"},
 
 
       ],
@@ -1066,7 +1066,8 @@ export default {
 
       ],
       paymentModal: false,
-      totalPrice: 0
+      totalPrice: 0,
+      pageCount: 0
 
     };
 
@@ -1176,9 +1177,10 @@ export default {
       let response = await new PatientService().getSinglePatient(this.$route.params.patient)
       this.patient = response.data
     },
-    async getAssays() {
-      let response = await new AssayService().getAssays(this.assay.assayName)
+    async getAssays(page) {
+      let response = await new AssayService().getAssays(this.assay.assayName, page)
       this.assayArray = response.data.data
+      this.pageCount = response.data.activePage
     },
     async pushSelectedAssay(assay) {
       let obj = {
@@ -1250,6 +1252,7 @@ export default {
         this.showDiagnosis = false
         this.loading = false
         await this.getSingleDiagnosis()
+        await this.getOldProtocols()
         this.$toast.success({
           title: 'Başarılı',
           message: "Teşhis başarıyla eklendi"
@@ -1394,7 +1397,14 @@ export default {
     }
   },
 
-  watch: {},
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getAssays(this.page)
+
+    },
+  },
 
   async created() {
     await this.getCheckingAccountList()

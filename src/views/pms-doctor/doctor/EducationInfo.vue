@@ -37,16 +37,14 @@
                         <div class="d-flex w-100 justify-content-between">
                           <h5 class="mb-1">{{ edu.universityName }}</h5>
                           <small>
-                            <CDropdown size="sm" color="primary" toggler-text="İşlemler">
+                            <CDropdown size="sm" color="dark" toggler-text="İşlemler">
                               <CDropdownItem>
-                                <CButton @click="getSingleEducationInfo(edu.uuid)">
-                                  <CIcon name="cil-pencil"/>
+                                <CButton size="sm" @click="getSingleEducationInfo(edu.uuid)">
                                   Düzenle
                                 </CButton>
                               </CDropdownItem>
                               <CDropdownItem>
-                                <CButton @click="setDeleteModal(edu.uuid)">
-                                  <CIcon name="cilTrash"/>
+                                <CButton size="sm" @click="setDeleteModal(edu.uuid)">
                                   Sil
                                 </CButton>
                               </CDropdownItem>

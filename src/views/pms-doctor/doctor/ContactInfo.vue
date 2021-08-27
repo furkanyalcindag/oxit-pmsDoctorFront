@@ -34,98 +34,88 @@
                 >
                   <CRow>
                     <CCol lg="12">
-                      <div class="d-flex w-100 justify-content-between">
-                        <CRow>
-                          <CCol lg="2">
-                            <img src="../../../icons/icons8-instagram-logo-24.png" height="24" width="24"/>
-                          </CCol>
-                          <CCol lg="10">
-                            <p class="mb-1 ml-1">{{ contactList.instagram }}</p>
-                          </CCol>
+                      <small class="d-flex justify-content-end">
+                        <CDropdown size="sm" color="dark" toggler-text="İşlemler">
+                          <CDropdownItem>
+                            <CButton size="sm" @click="getSingleContactInfo">
+                              Düzenle
+                            </CButton>
+                          </CDropdownItem>
+                        </CDropdown>
+                      </small>
+                      <CRow>
+                        <CCol lg="1">
+                          <img src="../../../icons/icons8-instagram-logo-24.png" height="24" width="24"/>
+                        </CCol>
+                        <CCol lg="11">
+                          <p v-if="contactList.instagram" class="mb-1 ml-1">{{ contactList.instagram }}</p>
+                          <p v-else>-</p>
+                        </CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol lg="1">
+                          <img src="../../../icons/icons8-mail-24.png" height="24" width="24"/>
+                        </CCol>
+                        <CCol lg="11">
+                          <p v-if="contactList.email" class="mb-1 ml-1">{{ contactList.email }}</p>
+                          <p v-else>-</p>
+                        </CCol>
+                      </CRow>
 
-                        </CRow>
-                        <small>
-                          <CDropdown size="sm" color="primary" toggler-text="İşlemler">
-                            <CDropdownItem>
-                              <CButton @click="getSingleContactInfo">
-                                <CIcon name="cil-pencil"/>
-                                Düzenle
-                              </CButton>
-                            </CDropdownItem>
-                          </CDropdown>
-                        </small>
-                      </div>
-                      <div class="d-flex w-100 justify-content-between">
-                        <CRow>
-                          <CCol lg="2">
-                            <img src="../../../icons/icons8-mail-24.png" height="24" width="24"/>
-                          </CCol>
-                          <CCol lg="10">
-                            <p class="mb-1 ml-1">{{ contactList.email }}</p>
-                          </CCol>
+                      <CRow>
+                        <CCol lg="1">
 
-                        </CRow>
+                          <img src="../../../icons/icons8-address-24.png" height="24" width="24"/></CCol>
+                        <CCol lg="11">
+                          <p v-if="contactList.address" class="mb-1 ml-1">{{ contactList.address }}</p>
+                          <p v-else>-</p>
+                        </CCol>
 
-                      </div>
-                      <div class="d-flex w-100 justify-content-between">
-                        <CRow>
-                          <CCol lg="1">
+                      </CRow>
+                      <CRow>
+                        <CCol lg="1">
+                          <img src="../../../icons/icons8-website-24.png" height="24" width="24"/>
+                        </CCol>
+                        <CCol lg="11">
+                          <p v-if="contactList.website" class="mb-1 ml-1">{{ contactList.website }}</p>
+                          <p v-else>-</p>
+                        </CCol>
 
-                            <img src="../../../icons/icons8-address-24.png" height="24" width="24"/></CCol>
-                          <CCol lg="11">
-                            <p class="mb-1 ml-1">{{ contactList.address }}</p>
-                          </CCol>
+                      </CRow>
 
-                        </CRow>
+                      <CRow>
+                        <CCol lg="1">
+                          <img src="../../../icons/icons8-youtube-play-button-24.png" height="24" width="24"/>
+                        </CCol>
+                        <CCol lg="11">
+                          <p v-if="contactList.youtube" class=" ml-2 mb-1">{{ contactList.youtube }}</p>
+                          <p v-else>-</p>
+                        </CCol>
 
-                      </div>
-                      <div class="d-flex w-100 justify-content-between">
-                        <CRow>
-                          <CCol lg="3">
-                            <img src="../../../icons/icons8-website-24.png" height="24" width="24"/>
-                          </CCol>
-                          <CCol lg="9">
-                            <p class="mb-1 ml-1">{{ contactList.website }}</p>
-                          </CCol>
+                      </CRow>
 
-                        </CRow>
 
-                      </div>
-                      <div class="d-flex w-100 justify-content-between">
-                        <CRow>
-                          <CCol lg="2">
-                            <img src="../../../icons/icons8-youtube-play-button-24.png" height="24" width="24"/>
-                          </CCol>
-                          <CCol lg="10">
-                            <p class=" ml-2 mb-1">{{ contactList.youtube }}</p>
-                          </CCol>
+                      <CRow>
+                        <CCol lg="1">
 
-                        </CRow>
+                          <img src="../../../icons/icons8-facebook-24.png" height="24" width="24"/></CCol>
+                        <CCol lg="11">
+                          <p v-if="contactList.facebook" class="mb-1 ml-2">{{ contactList.facebook }}</p>
+                          <p v-else>-</p>
 
-                      </div>
-                      <div class="d-flex w-100 justify-content-between">
-                        <CRow>
-                          <CCol lg="2">
+                        </CCol>
 
-                            <img src="../../../icons/icons8-facebook-24.png" height="24" width="24"/></CCol>
-                          <CCol lg="10">
-                            <p class="mb-1 ml-2">{{ contactList.facebook }}</p>
-                          </CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol lg="1">
+                          <img src="../../../icons/icons8-linkedin-24.png" height="24" width="24"/>
+                        </CCol>
+                        <CCol lg="11">
+                          <p v-if="contactList.linkedIn" class="ml-2 mb-1 ">{{ contactList.linkedin }}</p>
+                          <p v-else>-</p>
+                        </CCol>
 
-                        </CRow>
-
-                      </div>
-                      <div class="d-flex w-100 justify-content-between">
-                        <CRow>
-                          <CCol lg="2">
-                            <img src="../../../icons/icons8-linkedin-24.png" height="24" width="24"/>
-                          </CCol>
-                          <CCol lg="10">
-                            <p class="ml-2 mb-1 ">{{ contactList.linkedin }}</p>
-                          </CCol>
-
-                        </CRow>
-                      </div>
+                      </CRow>
 
                     </CCol>
                   </CRow>
@@ -448,6 +438,8 @@ export default {
         this.contactInfoModal = false
         this.loading = false
         await this.getContactInfo()
+      } else {
+        this.loading = false
       }
 
     },

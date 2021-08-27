@@ -240,6 +240,13 @@ export default {
           to: '/profile',
           icon: 'cil-people',
         }
+        const blog = {
+          _name: 'CSidebarNavItem',
+          name: 'Blog',
+          to: '/blog/blog',
+          icon: 'cil-user',
+
+        }
         let items = []
         items.push(actions)
         items.push(assay)
@@ -247,6 +254,7 @@ export default {
         items.push(doctorProfile)
         items.push(patient)
         items.push(accountingList)
+        items.push(blog)
         return items
       }
       if (localStorage.getItem('user_group') === 'Secretary') {

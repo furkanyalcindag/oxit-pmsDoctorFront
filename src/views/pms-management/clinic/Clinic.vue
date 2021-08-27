@@ -224,17 +224,9 @@
                 >
 
 
-                  <template #buttons="{ item, index }">
+                  <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CDropdown
-                          color="link"
-                          size="lg"
-                          :caret="false"
-                          placement="top-start"
-                      >
-                        <template #toggler-content>
-                          &#x1F4C2;<span class="sr-only">sss</span>
-                        </template>
+                      <CDropdown size="sm" color="dark" toggler-text="İşlemler">
                         <CDropdownItem>
 
 
@@ -506,7 +498,7 @@ export default {
         {key: "email", label: "Email"},
         {key: "telephoneNumber", label: "Telefon Numarası"},
         {key: "cityDistrict", label: "İl/İlçe"},
-        {key: "buttons", label: "İşlemler"}
+        {key: "actions", label: "İşlemler"}
       ],
 
       pageLabel: {label: 'sasasa', external: true,},
