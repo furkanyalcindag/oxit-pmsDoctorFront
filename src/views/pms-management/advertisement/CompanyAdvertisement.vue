@@ -140,13 +140,8 @@
                 <CDataTable
                     :items="advertisements"
                     :fields="fieldsTableAdvertising"
-                    column-filter
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
-                    sorter
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -201,6 +196,17 @@
                     </td>
                   </template>
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
               </CCardBody>
             </template>
           </CCard>
@@ -473,7 +479,9 @@ export default {
       max,
       loadingEdit: false,
       loadingDelete: false,
-      minDate: ''
+      minDate: '',
+      pageCount: 0
+
 
     };
   },
@@ -511,7 +519,7 @@ export default {
       let response = await new CompanyAdvertisementService().addAdvertisement(this.advertisement)
       if (response.status === 200) {
         this.loading = false
-        await this.getAdvertisements()
+        await this.getAdvertisements(1)
         this.advertisement = new CompanyAdvertisement("", "", "", "", "", "", "")
         this.$toast.success({
           title: 'Başarılı',
@@ -521,17 +529,18 @@ export default {
         console.log()
 
       } else if (response.status === 406) {
-        this.$toast.success({
+        this.loading=false
+        this.$toast.warn({
           title: 'Başarısız',
           message: "Başlangıç tarihi bitiş tarihinden büyük olamaz"
         })
       } else if (response.status === 301) {
-        this.$toast.success({
+        this.$toast.warn({
           title: 'Başarısız',
           message: "Başlangıç tarihi bugünün tarihinden küçük olamaz"
         })
       } else if (response.status === 411) {
-        this.$toast.success({
+        this.$toast.warn({
           title: 'Başarısız',
           message: "Bitiş tarihi bugünün tarihinden küçük olamaz"
         })
@@ -553,7 +562,7 @@ export default {
       this.advertisementUpdate.companyName = this.companyUpdate
       let response = await new CompanyAdvertisementService().editAdvertisement(this.advertisementUpdate)
       if (response.status === 200) {
-        await this.getAdvertisements()
+        await this.getAdvertisements(1)
         this.staffUpdateModal = false
         this.$toast.success({
           title: 'Başarılı',
@@ -593,9 +602,10 @@ export default {
       }
 
     },
-    async getAdvertisements() {
-      let response = await new CompanyAdvertisementService().getAdvertisement()
+    async getAdvertisements(page) {
+      let response = await new CompanyAdvertisementService().getAdvertisement(page)
       this.advertisements = response.data.data
+      this.pageCount = response.data.activePage
 
     },
     async getSingleAdvertisement(id) {
@@ -613,7 +623,7 @@ export default {
       this.loadingDelete = true
       let response = await new CompanyAdvertisementService().deleteAdvertisement(this.deleteId)
       if (response.status === 200) {
-        await this.getAdvertisements()
+        await this.getAdvertisements(1)
         this.loadingDelete = false
         this.deleteModel = false
         this.$toast.success({
@@ -649,11 +659,19 @@ export default {
       })
     }
   },
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getAdvertisements(this.page)
+
+    },
+  },
 
   async created() {
     await this.selectCompany()
     await this.selectLocation()
-    await this.getAdvertisements()
+    await this.getAdvertisements(1)
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -665,7 +683,7 @@ export default {
   async mounted() {
     await this.selectCompany()
     await this.selectLocation()
-    await this.getAdvertisements()
+    await this.getAdvertisements(1)
 
   },
 

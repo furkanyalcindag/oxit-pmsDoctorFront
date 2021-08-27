@@ -139,13 +139,8 @@
                 <CDataTable
                     :items="staffs"
                     :fields="fieldsTable"
-                    column-filter
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
-                    sorter
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -182,6 +177,17 @@
                     </td>
                   </template>
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
 
 
               </CCardBody>
@@ -444,7 +450,8 @@ export default {
       min,
       max,
       loadingEdit: false,
-      loadingDelete: false
+      loadingDelete: false,
+      pageCount: 0
     };
   },
 
@@ -494,7 +501,7 @@ export default {
       this.loading = true
       let response = await new StaffService().addStaff(this.staff)
       if (response.status === 200) {
-        await this.getStaffs()
+        await this.getStaffs(1)
         this.staff = new Staff("", "", "", "", "", "")
         this.$toast.success({
           title: 'Başarılı',
@@ -504,6 +511,7 @@ export default {
       } else if (response.status === 401) {
 
       } else {
+        this.loading = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -513,16 +521,17 @@ export default {
         }
       }
     },
-    async getStaffs() {
-      let response = await new StaffService().getStaffs()
+    async getStaffs(page) {
+      let response = await new StaffService().getStaffs(page)
       this.staffs = response.data.data
+      this.pageCount = response.data.activePage
     },
     async deleteStaff() {
       this.loadingDelete = true
       let response = await new StaffService().deleteStaff(this.deleteId)
       if (response.status === 200) {
         this.deleteModel = false
-        await this.getStaffs()
+        await this.getStaffs(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
@@ -554,7 +563,7 @@ export default {
       let response = await new StaffService().editStaff(this.staffUpdate)
       if (response.status === 200) {
         this.staffUpdateModal = false
-        await this.getStaffs()
+        await this.getStaffs(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
@@ -587,15 +596,22 @@ export default {
       })
     },
   },
-  watch: {},
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getStaffs(this.page)
+
+    },
+  },
   created() {
     this.getGroups()
-    this.getStaffs()
+    this.getStaffs(1)
     this.isCorporateControl();
   },
   mounted() {
     this.getGroups()
-    this.getStaffs()
+    this.getStaffs(1)
 
 
   },

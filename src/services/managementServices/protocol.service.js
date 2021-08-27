@@ -35,11 +35,15 @@ class ProtocolService {
             description: protocol.description,
             patientId: protocol.patient,
             assays: protocol.assays,
-            price : protocol.price,
-            isPaid : protocol.isPaid,
-            taxRate : protocol.taxRate
+            price: protocol.price,
+            isPaid: protocol.isPaid,
+            taxRate: protocol.taxRate
 
-        }, {headers: authHeader()})
+        }, {headers: authHeader()}).then(response => {
+            return response
+        }).catch(error => {
+            return error
+        })
 
     }
 
@@ -57,8 +61,8 @@ class ProtocolService {
             patientId: protocol.patient,
             assays: protocol.assays,
             price: protocol.price,
-            isPaid : protocol.isPaid,
-            taxRate : protocol.taxRate
+            isPaid: protocol.isPaid,
+            taxRate: protocol.taxRate
 
         }, {headers: authHeader(), params})
 

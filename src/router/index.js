@@ -92,7 +92,7 @@ const Group = () => import('@/views/pms-management/staff/Group')
 const Advertisement = () => import('@/views/pms-management/advertisement/CompanyAdvertisement')
 
 const AdvertisementLocation = () => import('@/views/pms-management/advertisement/Advertisement')
-const Company = () => import('@/views/pms-management/advertisement/company/Company')
+const Company = () => import('@/views/pms-management/advertisement/Company')
 
 const ClinicAccounting = () => import('@/views/pms-management/accounting/ClinicAccounting')
 

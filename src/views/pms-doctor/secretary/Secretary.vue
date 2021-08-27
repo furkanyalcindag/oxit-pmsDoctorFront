@@ -113,10 +113,7 @@
                     :items="secretarys"
                     :fields="fieldsTable"
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -138,7 +135,7 @@
                         <CDropdownItem>
 
 
-                          <CButton size="sm"appoi @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                          <CButton size="sm" appoi @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
                         </CDropdownItem>
                         <CDropdownItem>
 
@@ -149,6 +146,17 @@
                     </td>
                   </template>
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
               </CCardBody>
             </template>
           </CCard>
@@ -373,7 +381,8 @@ export default {
       secretaryUpdate: new Secretary("", "", "", "",),
       secretarys: [],
       loadingEdit: false,
-      loadingDelete: false
+      loadingDelete: false,
+      pageCount: 0
 
 
     };
@@ -420,7 +429,7 @@ export default {
       this.loading = true
       let response = await new SecretaryService().addSecretary(this.secretary)
       if (response.status === 200) {
-        await this.getSecretarys()
+        await this.getSecretarys(1)
         this.secretary = new Secretary()
         this.$toast.success({
           title: 'Başarılı',
@@ -441,10 +450,11 @@ export default {
 
     },
 
-    async getSecretarys() {
+    async getSecretarys(page) {
 
-      let response = await new SecretaryService().getSecretary()
+      let response = await new SecretaryService().getSecretary(page)
       this.secretarys = response.data.data
+      this.pageCount = response.data.activePage
     },
 
 
@@ -467,7 +477,7 @@ export default {
       this.loadingDelete = true
       let response = await new SecretaryService().deleteSecretary(this.deleteId)
       if (response.status === 200) {
-        await this.getSecretarys()
+        await this.getSecretarys(1)
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
@@ -491,7 +501,7 @@ export default {
       let response = await new SecretaryService().editSecretary(this.secretaryUpdate)
       if (response.status === 200) {
         this.staffUpdateModal = false
-        await this.getSecretarys()
+        await this.getSecretarys(1)
 
         this.$toast.success({
           title: 'Başarılı',
@@ -524,10 +534,18 @@ export default {
     },
   },
 
-  watch: {},
+    watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getSecretarys(this.page)
+
+    },
+  },
+
 
   async created() {
-    await this.getSecretarys()
+    await this.getSecretarys(1)
 
 
   },

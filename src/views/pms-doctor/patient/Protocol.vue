@@ -122,14 +122,8 @@
                       <CCard>
                         <CCardHeader>
                           <div class="card-header-actions">
+                            <CButton color="primary" size="sm" @click="protocolUpdateModal=true">Tahlil Ekle</CButton>
 
-                            <CDropdown href="#" class="card-header-action btn-setting" toggler-text="İşlemler">
-
-                              <CDropdownItem>
-                                <CButton @click="protocolUpdateModal=true" color="primary">Tahlil Ekle</CButton>
-
-                              </CDropdownItem>
-                            </CDropdown>
                           </div>
                         </CCardHeader>
                         <CCardBody>
@@ -165,11 +159,17 @@
                                 <CListGroupItem>
                                   <CListGroup>
                                     <CListGroupItem v-for="(selected,index) in protocol.assays">
-                                      {{ selected.name }}
-                                      <CButton @click="minusSelectedAssay(selected)">
-                                        <CIcon :content="$options.freeSet.cilMinus"
-                                               name="cil-minus" class="ml-3"/>
-                                      </CButton>
+                                      <CRow>
+                                        <CCol lg="10">
+                                          {{ selected.name }} ({{ selected.price }} TL)
+                                        </CCol>
+                                        <CCol lg="2">
+                                          <CButton class="btn-outline-danger" @click="minusSelectedAssay(selected)">
+                                            <CIcon :content="$options.freeSet.cilMinus"
+                                                   name="cil-minus"/>
+                                          </CButton>
+                                        </CCol>
+                                      </CRow>
                                     </CListGroupItem>
                                   </CListGroup>
                                 </CListGroupItem>
@@ -196,6 +196,8 @@
                                     Ücret
                                   </h6>
                                   <CInput
+                                      min="0"
+                                      max="2000"
                                       type="number"
                                       v-model="protocol.price"
                                   />
@@ -206,6 +208,8 @@
                                     KDV
                                   </h6>
                                   <CInput
+                                      min="0"
+                                      max="20"
                                       type="number"
                                       v-model="protocol.taxRate"
                                   />
@@ -225,7 +229,7 @@
                       </CCard>
                     </CCard>
                   </CTab>
-                  <CTab title="Geçmiş Protokoller">
+                  <CTab title="Protokoller">
                     <CCardBody>
 
                       <CDataTable
@@ -266,7 +270,267 @@
                     </CCardBody>
                   </CTab>
                   <CTab title="Muhasebe">
-                    <checking-account :account-lists="checkinAccountItems"></checking-account>
+                    <CCard>
+                      <CCardBody>
+
+                        <CDataTable
+                            :items="checkinAccountItems"
+                            :fields="fieldsTableCheckingAccount"
+                            :border="true"
+                            :items-per-page="5"
+                            :activePage="4"
+                            hover
+                            pagination
+                            :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+                            clickableRows
+
+                        >
+
+
+                          <template #protocolId="{ item, index }">
+                            <td class="py-2">
+                              <tr v-if="item.protocolId !== null">
+                                {{ item.protocolId }}
+                              </tr>
+
+                            </td>
+                          </template>
+
+
+                          <template #taxRate="{ item, index }">
+                            <td class="py-2">
+                              <tr v-if="item.taxRate !== null">
+                                {{ item.protocolTaxRate.substring(0, 2) }}
+                              </tr>
+
+                            </td>
+                          </template>
+
+
+                          <template #discount="{ item, index }">
+                            <td class="py-2">
+                              <tr v-if="item.discount !== null">
+                                {{ item.discount }}
+                              </tr>
+                              <tr v-else>
+                                -
+                              </tr>
+                            </td>
+                          </template>
+
+
+                          <template #paymentSituation="{ item, index }">
+                            <td class="py-2">
+                              <CBadge :color="getBadge(item.paymentSituation)">{{ item.paymentSituation }}</CBadge>
+                            </td>
+                          </template>
+
+                          <template #buttons="{ item, index }">
+                            <td class="py-2">
+                              <CDropdown
+                                  color="link"
+                                  size="lg"
+                                  :caret="false"
+                                  placement="top-start"
+                              >
+                                <template #toggler-content>
+                                  &#x1F4C2;<span class="sr-only">sss</span>
+                                </template>
+                                <CDropdownItem>
+                                  <CButton size="sm" @click="getPaymentMovementsList(item.checkingAccountUUID)"> İşlem
+                                    Bilgi
+                                  </CButton>
+                                </CDropdownItem>
+                                <CDropdownItem>
+                                  <CButton size="sm" @click="setMakePaymentModal(item.checkingAccountUUID)">Ödeme Yap
+                                  </CButton>
+                                </CDropdownItem>
+                                <CDropdownItem>
+                                  <CButton size="sm" @click="setMakeDiscountModal(item.checkingAccountUUID)">İndirim
+                                    Yap
+                                  </CButton>
+                                </CDropdownItem>
+                              </CDropdown>
+
+
+                            </td>
+                          </template>
+
+
+                        </CDataTable>
+
+                        <CModal
+                            :show.sync="showMakePayment"
+                            :no-close-on-backdrop="true"
+                            :centered="true"
+                            :draggable="false"
+                            title="Modal title 2"
+                            :backdrop="true"
+                            size="lg"
+                            color="dark"
+                        >
+                          <CRow>
+                            <CCol lg="12">
+                              <transition name="fade">
+                                <CCard v-if="showMakePayment">
+                                  <template>
+                                    <CCardBody>
+                                      <validation-observer ref="simpleRules">
+                                        <CRow>
+                                          <CCol lg="12">
+                                            <validation-provider
+                                                #default="{errors}"
+                                                rules="required"
+                                                name="Ödeme Tutarı">
+                                              Ödeme Tutarı (TL) <span class="text-danger">*</span>
+                                              <span class="text-danger">{{ errors[0] }}</span>
+                                              <CInput
+                                                  description=""
+                                                  autocomplete="autocomplete"
+                                                  v-model="payment.paymentAmount"
+                                                  :state="errors.length > 0 ? false:null"
+
+                                              />
+                                            </validation-provider>
+                                          </CCol>
+                                        </CRow>
+                                      </validation-observer>
+                                      <CRow>
+                                        <CCol lg="12">
+                                          Ödeme Tipi <span class="text-danger">*</span>
+                                          <CSelect
+                                              :options="selectPaymentTypes"
+                                              v-model="payment.paymentType"
+                                              :value.sync="payment.paymentType"
+
+                                          />
+                                        </CCol>
+                                      </CRow>
+
+
+                                    </CCardBody>
+                                  </template>
+
+                                </CCard>
+                              </transition>
+                            </CCol>
+                          </CRow>
+                          <template #header>
+                            <h6 class="modal-title">Ödeme Yap</h6>
+                            <CButtonClose @click="showMakePayment = false" class="text-white"/>
+                          </template>
+
+                          <template #footer>
+                            <CButton @click="showMakePayment = false" color="danger">Kapat</CButton>
+
+                            <CButton @click="validationFormPayment" color="success">
+                              <c-spinner v-show="loading" size="sm"></c-spinner>
+                              Kaydet
+                            </CButton>
+
+                          </template>
+                        </CModal>
+
+                        <CModal
+                            :show.sync="paymentsModal"
+                            :no-close-on-backdrop="true"
+                            :centered="true"
+                            title="Modal title 2"
+                            size="xl"
+                            color="dark"
+                        >
+
+                          <CRow>
+                            <CCol lg="12">
+                              <transition name="fade">
+                                <CCard v-if="paymentsModal">
+                                  <template>
+                                    <CCardBody>
+
+                                      <CDataTable
+                                          :items="paymentMovements"
+                                          :fields="fieldsTablePaymentMovement"
+                                          :items-per-page="5"
+                                          :activePage="4"
+                                          pagination
+                                          :border="true"
+                                          :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
+                                          clickableRows
+                                      >
+                                      </CDataTable>
+                                    </CCardBody>
+                                  </template>
+                                </CCard>
+                              </transition>
+                            </CCol>
+                          </CRow>
+                          <template #header>
+                            <h6 class="modal-title">Ödeme Hareketleri</h6>
+
+                            <CButtonClose @click="paymentsModal = false" class="text-white"/>
+                          </template>
+                          <template #footer>
+                            <CButton @click="paymentsModal = false" color="danger">Kapat</CButton>
+
+                          </template>
+                        </CModal>
+
+                        <CModal
+                            :show.sync="discountModal"
+                            :no-close-on-backdrop="true"
+                            :centered="true"
+                            title="Modal title 2"
+                            size="lg"
+                            color="dark"
+                        >
+                          <CRow>
+                            <CCol lg="12">
+                              <transition name="fade">
+                                <CCard v-if="discountModal">
+                                  <template>
+                                    <CCardBody>
+                                      <validation-observer ref="simpleRules">
+                                        <CRow>
+                                          <CCol lg="12">
+                                            <validation-provider
+                                                #default="{errors}"
+                                                rules="required|min:3|max:100"
+                                                name="Ödeme Tutarı">
+                                              Ödeme Tutarı(TL) <span class="text-danger">*</span>
+                                              <span class="text-danger">{{ errors[0] }}</span>
+                                              <CInput
+                                                  v-model="discount.paymentAmount"
+                                                  :state="errors.length > 0 ? false:null"
+                                              />
+                                            </validation-provider>
+                                          </CCol>
+                                        </CRow>
+                                      </validation-observer>
+                                    </CCardBody>
+                                  </template>
+
+                                </CCard>
+                              </transition>
+                            </CCol>
+                          </CRow>
+                          <template #header>
+                            <h6 class="modal-title">İndirim İşlemleri</h6>
+                            <CButtonClose @click="discountModal = false" class="text-white"/>
+                          </template>
+                          <template #footer>
+                            <CButton @click="discountModal = false" color="danger">Kapat</CButton>
+
+
+                            <CButton @click="validationFormDiscount" color="success">
+                              <c-spinner v-show="loading" size="sm"></c-spinner>
+                              Kaydet
+                            </CButton>
+
+
+                          </template>
+                        </CModal>
+                      </CCardBody>
+                    </CCard>
                   </CTab>
                 </CTabs>
               </CCardBody>
@@ -329,24 +593,16 @@
                     <CRow>
 
 
-                      <CCol lg="6">
-                        <validation-provider
-                            #default="{errors}"
-                            rules="required|min:3|max:100"
-                            name="Tahlil Adı">
-                          Tahlil Adı <span class="text-danger">*</span>
-                          <span class="text-danger">{{ errors[0] }}</span>
-                          <CInput
-                              description=""
-                              autocomplete="autocomplete"
-                              v-model="assay.assayName"
-                              @input="getAssays"
-                              :state="errors.length > 0 ? false:null"
-                          />
-                        </validation-provider>
+                      <CCol lg="10">
+                        Tahlil Adı
+                        <CInput
+                            placeholder="Tahlil Adı Girerek Arama Yapabilirsiniz"
+                            v-model="assay.assayName"
+                            @input="getAssays"
+                        />
                       </CCol>
-                      <CCol lg="6" class="mt-4">
-                        <CButton @click="getAssays" color="success">Ara</CButton>
+                      <CCol lg="2" class="mt-3">
+                        <CButton @click="getAssays" color="success">Tüm Tahlilleri Görüntüle</CButton>
 
                       </CCol>
 
@@ -357,21 +613,39 @@
                     <CCol lg="6">
 
                       <CListGroup>
-                        <CListGroupItem v-for="assay in assayArray">{{ assay.name }}
-                          <CButton @click="pushSelectedAssay(assay)">
-                            <CIcon :content="$options.freeSet.cilPlus"
-                                   name="cil-plus" class="ml-3"/>
+                        <CListGroupItem v-for="assay in assayArray">
+                          <CRow>
+                            <CCol lg="10">
+                              {{ assay.name }} ({{ assay.price }}TL)
+                            </CCol>
+                            <CCol lg="2">
+                              <CButton class="btn-outline-success" @click="pushSelectedAssay(assay)">
+                                <CIcon :content="$options.freeSet.cilPlus"
+                                       name="cil-plus"/>
 
-                          </CButton>
+                              </CButton>
+                            </CCol>
+                          </CRow>
+
+
                         </CListGroupItem>
                       </CListGroup>
                     </CCol>
-                    <CCol lg="6">
+                    <CCol lg="6" v-if="selectedAssays.length">
                       <CCard>
                         <CListGroup>
                           <CListGroupItem v-for="selected in selectedAssays">{{ selected.name }}</CListGroupItem>
                         </CListGroup>
                       </CCard>
+                      <p class="d-flex justify-content-end">Toplam Tutar: {{ totalPrice }} TL</p>
+                    </CCol>
+                    <CCol v-else>
+                      <CCard>
+                        <CCardBody>
+                          Eklediğiniz tahliller burada listelenecektir
+                        </CCardBody>
+                      </CCard>
+
                     </CCol>
                   </CRow>
                 </CCardBody>
@@ -550,7 +824,8 @@
                     <CRow v-else>
                       <CCol lg="8">
                         <CCard>
-                          <CCardHeader class="d-flex justify-content-center">Teşhis</CCardHeader>
+                          <CCardHeader class="d-flex justify-content-center text-uppercase" style="color:black">Teşhis
+                          </CCardHeader>
                           <CCardBody>
                             {{ diagnosis.diagnosis }}
                           </CCardBody>
@@ -558,10 +833,16 @@
                       </CCol>
                       <CCol lg="4">
                         <CCard>
-                          <CCardHeader class="d-flex justify-content-center">İlaçlar</CCardHeader>
+                          <CCardHeader class="d-flex justify-content-center text-uppercase" style="color: black">
+                            İlaçlar
+                          </CCardHeader>
                           <CListGroup>
+                            <CListGroup v-for="(medicine,index) in patientMedicines">
 
-                            <CListGroupItem v-for="medicine in patientMedicines">{{ medicine.name }}</CListGroupItem>
+                              <CListGroupItem v-if="(index%2)===0" color="dark"> {{ medicine.name }}</CListGroupItem>
+                              <CListGroupItem v-else color="secondary">{{ medicine.name }}</CListGroupItem>
+
+                            </CListGroup>
                           </CListGroup>
                         </CCard>
                       </CCol>
@@ -577,10 +858,10 @@
       </CRow>
       <template #header>
         <h6 class="modal-title">Teşhis</h6>
-        <CButtonClose @click="getDiagnosis = false" class="text-white"/>
+        <CButtonClose @click="clearDiagnosisModal" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="getDiagnosis = false" color="danger">Kapat</CButton>
+        <CButton @click="clearDiagnosisModal" color="danger">Kapat</CButton>
       </template>
     </CModal>
 
@@ -637,13 +918,13 @@ export default {
       ],
 
       fieldsTableCheckingAccount: [
-        {key: 'protocolId', label: "Protokol Numarası", _style: "min-width:200px"},
-        {key: "protocolType", label: "Protokol Tipi"},
-        {key: "netPrice", label: "Net Ücret"},
-        {key: "remainingPrice", label: "Kalan Ücret"},
-        {key: "taxPrice", label: "KDV"},
-        {key: "paymentSituation", label: "Ödeme Durumu"},
+        {key: "protocolId", label: "Protokol Numarası"},
+        {key: "total", label: "Net Ücret"},
+        {key: "taxRate", label: "KDV"},
+        {key: "remainingDebt", label: "Kalan Ücret"},
         {key: "discount", label: "İndirim"},
+        {key: "paymentSituation", label: "Ödeme Durumu"},
+        {key: "buttons", label: "İşlemler"},
 
 
       ],
@@ -776,7 +1057,16 @@ export default {
       showUpdateCategory: true,
       payment: new Payment("", "", "", ""),
       discount: new Discount("", "", ""),
-      checkinAccountItems: []
+      checkinAccountItems: [],
+      fieldsTablePaymentMovement: [
+        {key: "date", label: "Tarih"},
+        {key: "paymentAmount", label: "Ödeme Miktarı"},
+        {key: "paymentTypeDesc", label: "Ödeme Türü"},
+
+
+      ],
+      paymentModal: false,
+      totalPrice: 0
 
     };
 
@@ -788,20 +1078,17 @@ export default {
     },
     getBadge(status) {
       switch (status) {
-        case "Active":
+        case "Ödendi":
           return "success";
-        case "Inactive":
-          return "secondary";
-        case "Pending":
+        case "Kısmi Ödendi":
           return "warning";
-        case "Banned":
+        case "Ödenmedi":
           return "danger";
         default:
-          "primary";
-
-
+          return "warning";
       }
     },
+
     toggleDetails(item) {
       this.$set(this.items[item.id], "_toggled", !item._toggled);
       this.collapseDuration = 300;
@@ -815,8 +1102,12 @@ export default {
       this.checkinAccountItems = response.data.data
 
     },
+    clearDiagnosisModal() {
+      this.diagnosis.diagnosis = ''
+      this.selectedMedicines = []
+      this.getDiagnosis = false
 
-
+    },
     setAssayModal() {
       this.selectedAssays = []
       this.protocolUpdateModal = false
@@ -856,9 +1147,7 @@ export default {
       }
     },
     async minusSelectedMedicine(index) {
-      console.log("ind", index)
       const deneme = this.selectedMedicines.indexOf(index)
-      console.log("deneme", deneme)
       if (deneme > -1) {
         this.selectedMedicines.splice(deneme, 1)
       }
@@ -894,12 +1183,15 @@ export default {
     async pushSelectedAssay(assay) {
       let obj = {
         name: assay.name,
-        uuid: assay.uuid
+        uuid: assay.uuid,
+        price: assay.price
       }
       if (this.isUniqeElementInArray(obj.uuid, this.selectedAssays)) {
         this.selectedAssays.push(obj)
+        this.totalPrice += parseFloat(obj.price)
       }
       obj = {}
+
       this.protocol.assays = this.selectedAssays
     },
     async pushSelectedMedicine(medicine) {
@@ -919,6 +1211,10 @@ export default {
     },
     async addProtocol() {
       this.protocol.isPaid = this.isPaid
+      if (!this.protocol.isPaid) {
+        this.protocol.price = 0
+        this.protocol.taxRate = 0
+      }
       this.loading = true
       for (let i = 0; i < this.protocol.assays.length; i++) {
         this.protocol.assays[i] = this.protocol.assays[i].uuid
@@ -929,7 +1225,11 @@ export default {
         this.loading = false
         await this.getOldProtocols()
         await this.getCheckingAccountList()
-        this.protocol = new Protocol("", [])
+        this.protocol.price = 0
+        this.protocol.taxRate = 0
+        this.protocol.description = ''
+        this.protocol.assays = []
+        this.isPaid = false
         this.$toast.success({
           title: 'Başarılı',
           message: "Protokol başarıyla eklendi"
@@ -955,7 +1255,6 @@ export default {
           message: "Teşhis başarıyla eklendi"
         })
       } else {
-        console.log("burda")
         this.loading = false
         this.isError = true;
         this.errors = response.response.data;
@@ -972,6 +1271,8 @@ export default {
       this.$refs.simpleRules.validate().then(async success => {
         if (success) {
           await this.addDiagnosis()
+        } else {
+          this.loading = false
         }
 
 
@@ -1001,19 +1302,95 @@ export default {
       this.deleteId = id
       this.deleteModel = true
     },
-
-    shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1))
-        let temp = array[i]
-        array[i] = array[j]
-        array[j] = temp
-      }
-      return array
+    setMakePaymentModal(id) {
+      this.showMakePayment = true
+      this.checkingAccountUUID = id
+    },
+    setMakeDiscountModal(id) {
+      this.discountModal = true
+      this.checkingAccountUUID = id
     },
 
-    getShuffledUsersData() {
-      return this.shuffleArray(this.usersData.slice(0))
+    async getPaymentType() {
+      let response = await new CheckingAccountService().getPaymentType();
+      this.selectPaymentTypes = response.data
+      const tempArr = this.selectPaymentTypes
+      const temp = this.selectPaymentTypes.splice(this.selectPaymentTypes.findIndex(v => v.label === 'İndirim'), 1)[0]
+      const indexOf = tempArr.indexOf(temp)
+      if (indexOf > -1) {
+        tempArr.splice(indexOf, 1)
+        this.selectPaymentTypes = tempArr
+      }
+
+    },
+
+
+    async getPaymentMovementsList(id) {
+      this.checkingAccountUUID = id
+      let response = await new CheckingAccountService().getPaymentMovement(id);
+
+
+      this.paymentMovements = response.data.data
+
+      this.paymentsModal = true
+
+    },
+
+
+    async addPayment() {
+      if (this.payment.paymentType === "") {
+        this.payment.paymentType = this.selectPaymentTypes[0].value
+      }
+      this.loading = true
+      this.payment.checkingAccountUUID = this.checkingAccountUUID
+
+      let a = await new CheckingAccountService().addPayment(this.payment);
+      if (a.status === 200) {
+        this.loading = false
+        this.showMakePayment = false
+        await this.getCheckingAccountList()
+        this.successHide();
+        this.$toast.success({
+          title: 'Bilgi',
+          message: 'Ödeme şekli başarıyla eklendi'
+        })
+      } else {
+        this.loading = false
+      }
+    },
+
+
+    async makeDiscount() {
+      this.discount.checkingAccountUUID = this.checkingAccountUUID
+      this.loading = true
+      let response = await new CheckingAccountService().makeDiscount(this.discount);
+      if (response.status === 200) {
+        this.loading = false
+        this.discountModal = false
+        await this.getCheckingAccountList()
+        this.$toast.success({
+          title: 'Başarılı',
+          message: 'İndirim işlemi başarıyla gerçekleştirilmiştir'
+        })
+
+      } else {
+        this.loading = false
+      }
+
+    },
+    validationFormDiscount() {
+      this.$refs.simpleRules.validate().then(async success => {
+        if (success) {
+          await this.makeDiscount()
+        }
+      })
+    },
+    validationFormPayment() {
+      this.$refs.simpleRules.validate().then(async success => {
+        if (success) {
+          await this.addPayment()
+        }
+      })
     }
   },
 
@@ -1023,6 +1400,7 @@ export default {
     await this.getCheckingAccountList()
     await this.getSinglePatient()
     await this.getOldProtocols()
+    await this.getPaymentType()
 
 
   },

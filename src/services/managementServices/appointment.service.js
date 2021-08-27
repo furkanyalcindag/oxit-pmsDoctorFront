@@ -21,14 +21,16 @@ class AppointmentService {
     }
 
 
-    getAppointment() {
-
-
+    getAppointment(page) {
+        const params = {
+            activePage: page
+        }
 
 
         // eslint-disable-next-line no-undef
         return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/appointment-api/', {
             headers: authHeader(),
+            params
 
         })
 
@@ -62,7 +64,7 @@ class AppointmentService {
 
         }
         // eslint-disable-next-line no-undef
-        return axios.get(process.env.VUE_APP_API_URL +'/pmsDoctor/appointment-api/', {
+        return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/appointment-api/', {
             headers: authHeader(),
             params
         })
@@ -89,29 +91,31 @@ class AppointmentService {
 
     }
 
-    appointmentCalendar(startTime,endTime) {
-        const params =  {
+    appointmentCalendar(startTime, endTime) {
+        const params = {
             startTime: startTime,
-            endTime : endTime
+            endTime: endTime
         }
-        return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/appointment-calendar-api/', {headers:authHeader(),params})
+        return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/appointment-calendar-api/', {
+            headers: authHeader(),
+            params
+        })
 
 
-
-}
+    }
 
     appointmentCalendarSingle(id) {
-        const params =  {
+        const params = {
 
-            id:id
+            id: id
         }
-        return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/appointment-calendar-api/', {headers:authHeader(),params})
+        return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/appointment-calendar-api/', {
+            headers: authHeader(),
+            params
+        })
 
 
-
-}
-
-
+    }
 
 
 }

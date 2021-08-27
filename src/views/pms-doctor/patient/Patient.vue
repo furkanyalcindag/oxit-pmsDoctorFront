@@ -208,10 +208,7 @@
                     :items="patients"
                     :fields="fieldsTable"
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -251,40 +248,57 @@
 
                   <template #buttons="{ item, index }">
                     <td class="py-2">
-                      <CDropdown
-                          color="link"
-                          size="lg"
-                          :caret="false"
-                          placement="top-start"
-                      >
-                        <template #toggler-content>
-                          &#x1F4C2;<span class="sr-only">sss</span>
-                        </template>
-
-
-                        <CDropdownItem>
-                          <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
-                        </CDropdownItem>
-                        <CDropdownItem>
-                          <CButton size="sm" @click="getSinglePatient(item.uuid)">Düzenle</CButton>
-                        </CDropdownItem>
-                        <CDropdownItem>
-                          <CLink>
-                            <CButton size="sm" @click="$router.push({name:'protocol',params:{patient:item.uuid}})"
-                                     color="">Protokol
-                            </CButton>
-                          </CLink>
-                        </CDropdownItem>
-                      </CDropdown>
-
-
+                      <CRow>
+                        <CCol lg="4">
+                          <CDropdown
+                              color="link"
+                              size="lg"
+                              :caret="false"
+                              placement="top-start"
+                          >
+                            <template #toggler-content>
+                              &#x1F4C2;<span class="sr-only">sss</span>
+                            </template>
+                            <CDropdownItem>
+                              <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                            </CDropdownItem>
+                            <CDropdownItem>
+                              <CButton size="sm" @click="getSinglePatient(item.uuid)">Düzenle</CButton>
+                            </CDropdownItem>
+                            <CDropdownItem>
+                              <CLink>
+                                <CButton size="sm" @click="$router.push({name:'protocol',params:{patient:item.uuid}})"
+                                         color="">Protokol
+                                </CButton>
+                              </CLink>
+                            </CDropdownItem>
+                            <CDropdownItem>
+                              <CLink>
+                                <CButton size="sm" class="mr-2">Cari Hatırlatma Maili Gönder</CButton>
+                              </CLink>
+                            </CDropdownItem>
+                          </CDropdown>
+                        </CCol>
+                      </CRow>
                     </td>
                   </template>
 
 
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
               </CCardBody>
             </template>
+
           </CCard>
         </transition>
       </CCol>
@@ -537,7 +551,6 @@ export default {
         {key: "birthDate", label: "Doğum Tarihi"},
         {key: "buttons", label: "İşlemler"}
 
-
       ],
 
 
@@ -620,7 +633,8 @@ export default {
       patientUpdate: new Patient("", "", "", "", "", "", "", "", "", "",),
       maxDate: '',
       loadingDelete: false,
-      loadingEdit: false
+      loadingEdit: false,
+      pageCount: 0
 
 
     };
@@ -665,24 +679,23 @@ export default {
 
     async addPatient() {
       this.loading = true
-      if (this.patient.genderId === "") {
+      if (this.patient.genderId === "" || this.patient.genderId === undefined) {
         this.patient.genderId = this.genders[0].value
       }
-      if (this.patient.bloodGroupId === "") {
+      if (this.patient.bloodGroupId === "" || this.patient.bloodGroupId === undefined) {
         this.patient.bloodGroupId = this.bloodgroups[0].value
       }
-
-
       let response = await new PatientService().addPatient(this.patient)
       if (response.status === 200) {
         this.loading = false
-        await this.getPatients()
+        await this.getPatients(1)
         this.patient = new Patient()
         this.$toast.success({
           title: 'Başarılı',
           message: "Hasta başarıyla eklendi"
         })
       } else {
+        this.loading = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
@@ -728,7 +741,7 @@ export default {
 
       let response = await new PatientService().deletePatient(this.deleteId)
       if (response.status === 200) {
-        await this.getPatients()
+        await this.getPatients(1)
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
@@ -775,10 +788,11 @@ export default {
     },
 
 
-    async getPatients() {
+    async getPatients(page) {
 
-      let response = await new PatientService().getPatient()
+      let response = await new PatientService().getPatient(page)
       this.patients = response.data.data
+      this.pageCount = response.data.activePage
     },
 
 
@@ -795,12 +809,10 @@ export default {
     },
   },
 
-  watch: {},
-
   async created() {
     await this.getGenders()
     await this.getBloodGroups()
-    await this.getPatients()
+    await this.getPatients(1)
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -811,10 +823,18 @@ export default {
 
 
   },
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getPatients(this.page)
+
+    },
+  },
   async mounted() {
     await this.getGenders()
     await this.getBloodGroups()
-    await this.getPatients()
+    await this.getPatients(1)
 
 
   },

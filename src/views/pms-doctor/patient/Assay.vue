@@ -464,6 +464,10 @@ export default {
     async addAssay() {
       this.loading = true
       this.assay.isPaid = this.isPaid
+      if (!this.assay.isPaid) {
+        this.assay.price = 0
+        this.assay.taxRate = 0
+      }
       let response = await new AssayService().addAssay(this.assay)
       if (response.status === 200) {
         await this.getAssays()

@@ -1,22 +1,24 @@
-
 import axios from "axios";
 import authHeader from "@/services/auth-header";
 
 class DoctorService {
 
 
-  getDoctor() {
-
-        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/doctor-api/`, {headers: authHeader()})
+    getDoctor(page) {
+        const params = {
+            activePage: page
+        }
+        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/doctor-api/`, {headers: authHeader(), params})
 
     }
 
-      getDoctorSelect() {
+    getDoctorSelect() {
 
         return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/doctor-select-api/`, {headers: authHeader()})
 
     }
-     addDoctor(doctor) {
+
+    addDoctor(doctor) {
         return axios.post(process.env.VUE_APP_API_URL + '/pmsDoctor/doctor-api/',
             {
                 firstName: doctor.firstName,
@@ -38,8 +40,8 @@ class DoctorService {
 
     }
 
-     editDoctor(doctor) {
-       const params =  { id : doctor.uuid}
+    editDoctor(doctor) {
+        const params = {id: doctor.uuid}
         return axios.put(process.env.VUE_APP_API_URL + '/pmsDoctor/doctor-api/',
             {
                 firstName: doctor.firstName,
@@ -50,7 +52,7 @@ class DoctorService {
                 email: doctor.email,
                 departmentId: doctor.department,
 
-            }, {headers: authHeader(),params}).then(response => {
+            }, {headers: authHeader(), params}).then(response => {
 
 
             return response;
@@ -61,7 +63,7 @@ class DoctorService {
 
     }
 
-      getSingleDoctor(id) {
+    getSingleDoctor(id) {
         const params = {
             id: id
         }
@@ -69,7 +71,7 @@ class DoctorService {
     }
 
 
-     deleteDoctor(id) {
+    deleteDoctor(id) {
         const params = {
             id: id
         }
@@ -77,10 +79,7 @@ class DoctorService {
     }
 
 
-
-
 }
-
 
 
 export default DoctorService

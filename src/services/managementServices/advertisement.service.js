@@ -2,8 +2,11 @@ import axios from "axios";
 import authHeader from "@/services/auth-header";
 
 class AdvertisementLocationService {
-    getAdvertisementLocation() {
-        return axios.get(process.env.VUE_APP_API_URL + '/management/advertising-api/', {headers: authHeader()})
+    getAdvertisementLocation(page) {
+        const params = {
+            activePage: page
+        }
+        return axios.get(process.env.VUE_APP_API_URL + '/management/advertising-api/', {headers: authHeader(), params})
 
     }
 

@@ -1,38 +1,40 @@
-
-
-
 import axios from "axios";
 import authHeader from "@/services/auth-header";
 
 class PatientService {
 
 
-  getPatient() {
+    getPatient(page) {
+        const params = {
+            activePage: page
+        }
 
-        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/patient-api/`, {headers: authHeader()})
+        return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/patient-api/`, {headers: authHeader(), params})
 
     }
 
-     getPatientSelect() {
+    getPatientSelect() {
 
         return axios.get(process.env.VUE_APP_API_URL + `/pmsDoctor/patient-select-api/`, {headers: authHeader()})
 
     }
-     addPatient(patient) {
+
+    addPatient(patient) {
         return axios.post(process.env.VUE_APP_API_URL + '/pmsDoctor/patient-api/',
             {
                 firstName: patient.firstName,
                 lastName: patient.lastName,
-                genderId : patient.genderId,
-                identityNumber :patient.identityNumber,
-                mobilePhone : patient.mobilePhone,
-                address : patient.address,
-                birthDate : patient.birthDate,
-                bloodGroupId : patient.bloodGroupId,
-                email : patient.email
+                genderId: patient.genderId,
+                identityNumber: patient.identityNumber,
+                mobilePhone: patient.mobilePhone,
+                address: patient.address,
+                birthDate: patient.birthDate,
+                bloodGroupId: patient.bloodGroupId,
+                email: patient.email
 
             },
-            {headers: authHeader()
+            {
+                headers: authHeader()
             }).then(response => {
             return response;
         }).catch(error => {
@@ -42,20 +44,20 @@ class PatientService {
 
     }
 
-     editPatient(patient) {
-       const params =  { id : patient.uuid}
+    editPatient(patient) {
+        const params = {id: patient.uuid}
         return axios.put(process.env.VUE_APP_API_URL + '/pmsDoctor/patient-api/',
             {
                 firstName: patient.firstName,
                 lastName: patient.lastName,
-                genderId : patient.gender,
-                identityNumber :patient.identityNumber,
-                mobilePhone : patient.mobilePhone,
-                address : patient.address,
-                birthDate : patient.birthDate,
-                bloodGroupId : patient.bloodGroup,
-                email : patient.email
-            }, {headers: authHeader(),params}).then(response => {
+                genderId: patient.gender,
+                identityNumber: patient.identityNumber,
+                mobilePhone: patient.mobilePhone,
+                address: patient.address,
+                birthDate: patient.birthDate,
+                bloodGroupId: patient.bloodGroup,
+                email: patient.email
+            }, {headers: authHeader(), params}).then(response => {
             return response;
         }).catch(error => {
             return error.response
@@ -64,7 +66,7 @@ class PatientService {
 
     }
 
-      getSinglePatient(id) {
+    getSinglePatient(id) {
         const params = {
             id: id
         }
@@ -72,22 +74,19 @@ class PatientService {
     }
 
 
-     deletePatient(id) {
+    deletePatient(id) {
         const params = {
             id: id
         }
         return axios.delete(process.env.VUE_APP_API_URL + `/pmsDoctor/patient-api/`,
-            {headers: authHeader(),
+            {
+                headers: authHeader(),
                 params
             })
     }
 
 
-
-
-
 }
-
 
 
 export default PatientService

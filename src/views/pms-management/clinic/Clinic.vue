@@ -217,11 +217,7 @@
                 <CDataTable
                     :items="clinics"
                     :fields="fieldsTable"
-                    column-filter
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -253,6 +249,17 @@
                     </td>
                   </template>
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
               </CCardBody>
             </template>
           </CCard>
@@ -573,7 +580,8 @@ export default {
       min,
       max,
       loadingDelete: false,
-      loadingEdit: false
+      loadingEdit: false,
+      pageCount: 0
     };
   },
 
@@ -613,9 +621,10 @@ export default {
       this.deleteModel = true
 
     },
-    async getClinics() {
-      let response = await new ClinicService().getClinics();
+    async getClinics(page) {
+      let response = await new ClinicService().getClinics(page);
       this.clinics = response.data.data
+      this.pageCount = response.data.activePage
     },
     async addClinic() {
       this.loading = true
@@ -629,7 +638,7 @@ export default {
       if (a.status === 200) {
         this.isSuccess = false;
         this.isSuccess = true;
-        await this.getClinics();
+        await this.getClinics(1);
         this.clinic = await new Clinic()
         this.loading = false
         this.$toast.success({
@@ -669,7 +678,7 @@ export default {
       let response = await new ClinicService().editClinic(this.clinicUpdate)
       if (response.status === 200) {
         this.clinicUpdateModal = false
-        await this.getClinics()
+        await this.getClinics(1)
         this.loadingEdit = false
         this.$toast.success({
           title: 'Başarılı',
@@ -710,7 +719,7 @@ export default {
       let response = await new ClinicService().deleteClinic(this.deleteId)
       if (response.status === 200) {
         this.deleteModel = false
-        await this.getClinics()
+        await this.getClinics(1)
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
@@ -742,18 +751,25 @@ export default {
     },
   },
 
-  watch: {},
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getClinics(this.page)
+
+    },
+  },
 
   async created() {
     await this.getCities()
     await this.getDistricts(this.cities[0].value)
-    await this.getClinics()
+    await this.getClinics(1)
 
   },
   async mounted() {
     await this.getCities()
     await this.getDistricts(this.cities[0].value)
-    await this.getClinics()
+    await this.getClinics(1)
 
 
   },
