@@ -486,7 +486,7 @@
                                           <CCol lg="12">
                                             <validation-provider
                                                 #default="{errors}"
-                                                rules="required|min:3|max:100"
+                                                rules="required|min:1|max:100"
                                                 name="Ödeme Tutarı">
                                               Ödeme Tutarı(TL) <span class="text-danger">*</span>
                                               <span class="text-danger">{{ errors[0] }}</span>
@@ -1240,6 +1240,9 @@ export default {
         this.loading = false
       }
     },
+
+
+
     async getOldProtocols() {
       let response = await new ProtocolService().getPatientProtocols(this.$route.params.patient)
       this.protocols = response.data

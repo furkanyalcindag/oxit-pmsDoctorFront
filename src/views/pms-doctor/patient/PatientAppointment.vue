@@ -553,6 +553,14 @@ export default {
           title: 'Başarısız',
           message: "Başlangıç saati şuanki saatten geçmiş bir saat olamaz"
         })
+
+      } else if (response.status === 406) {
+        this.loading = false
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Başlangıç saati şuanki saatten geçmiş bir saat olamaz"
+        })
+
       } else if (response.status === 301) {
         this.loading = false
         this.$toast.warn({
@@ -565,6 +573,19 @@ export default {
           title: 'Başarısız',
           message: "Bitiş saati şuanki saatten küçük olamaz"
         })
+      } else if (response.status === 417) {
+        this.loadingEdit = false
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Geçmiş tarih eklenemez"
+        })
+      } else if (response.status === 304) {
+        this.loadingEdit = false
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Şuanki saatten geçmiş bir bitiş saati eklenemez"
+        })
+
 
       } else {
         this.loading = false
@@ -584,13 +605,12 @@ export default {
 
       let response = await new AppointmentService().getSingleAppointment(id)
       this.appointmentUpdate = response.data
-      this.appointmentUpdate.doctor = response.data.doctor.value
-      this.appointmentUpdate.patient = response.data.patient.value
+      this.appointmentUpdate.doctor = response.data.doctor
+      this.appointmentUpdate.patient = response.data.patient
+      this.appointmentUpdate.time = response.data.time.substring(0, 5)
+      this.appointmentUpdate.endTime = response.data.endTime.substring(0, 5)
       if (response.status === 200) {
         this.staffUpdateModal = true
-        this.staffUpdateModal = true
-
-
       }
 
     },
@@ -634,16 +654,13 @@ export default {
     },
 
     async editAppointment() {
+      console.log("1", this.appointmentUpdate)
       this.loadingEdit = true
-      if (this.appointmentUpdate.doctor === "") {
-        this.appointmentUpdate.doctor = this.doctors[0].value
-      }
+      this.appointmentUpdate.doctor = this.appointmentUpdate.doctor.value
+      this.appointmentUpdate.patient = this.appointmentUpdate.patient.value
+      console.log("2", this.appointmentUpdate)
 
-      if (this.appointmentUpdate.patient === "") {
-        this.appointmentUpdate.patient = this.patients[0].value
-      }
-
-      let response = await new AppointmentService().updateAppointment(this.appointmentUpdate)
+      let response = await new AppointmentService().editAppointment(this.appointmentUpdate)
       if (response.status === 200) {
         this.loadingEdit = false
         this.staffUpdateModal = false
@@ -654,31 +671,39 @@ export default {
         })
       } else if (response.status === 406) {
         this.loadingEdit = false
-        this.$toast.success({
+        this.$toast.warn({
           title: 'Başarısız',
-          message: "Şuanki saatten geçmiş bir başlangıç saati eklenemez"
+          message: "Başlangıç saati şuanki saatten geçmiş bir saat olamaz"
         })
+
+      } else if (response.status === 406) {
+        this.loadingEdit = false
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Başlangıç saati şuanki saatten geçmiş bir saat olamaz"
+        })
+
       } else if (response.status === 301) {
         this.loadingEdit = false
-        this.$toast.success({
+        this.$toast.warn({
           title: 'Başarısız',
           message: "Başlangıç saati bitiş saatinden büyük olamaz"
         })
       } else if (response.status === 411) {
         this.loadingEdit = false
-        this.$toast.success({
+        this.$toast.warn({
           title: 'Başarısız',
           message: "Bitiş saati şuanki saatten küçük olamaz"
         })
       } else if (response.status === 417) {
         this.loadingEdit = false
-        this.$toast.success({
+        this.$toast.warn({
           title: 'Başarısız',
           message: "Geçmiş tarih eklenemez"
         })
       } else if (response.status === 304) {
         this.loadingEdit = false
-        this.$toast.success({
+        this.$toast.warn({
           title: 'Başarısız',
           message: "Şuanki saatten geçmiş bir bitiş saati eklenemez"
         })

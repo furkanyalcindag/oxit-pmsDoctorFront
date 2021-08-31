@@ -463,9 +463,10 @@ export default {
       }
     },
     async addArticle() {
+       this.articleModal = true
       let response = await new ArticleService().addArticle(this.article)
       if (response.status === 200) {
-        this.articleModal = false
+
         await this.getArticles()
         await this.getArticlesTimeline()
         this.article = new Article()

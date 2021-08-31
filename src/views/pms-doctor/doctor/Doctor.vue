@@ -25,13 +25,14 @@
                 <div>
 
                 </div>
-                <validation-observer ref="simpleRules">
+
+   <validation-observer ref="simpleRules">
                   <CRow>
 
                     <CCol lg="3">
                       <validation-provider
                           #default="{errors}"
-                          rules="required|min:3|max:100"
+                          rules="required|min:1|max:100"
                           name="Doktor Adı">
                         Doktor Adı <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
@@ -48,9 +49,9 @@
                     <CCol lg="3">
                       <validation-provider
                           #default="{errors}"
-                          rules="required|min:3|max:100"
+                          rules="required|min:1|max:100"
                           name="Doktor Soyad">
-                        Doktor Soyad <span class="text-danger">*</span>
+                        Doktor Soyadı <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
                         <CInput
                             description=""
@@ -111,7 +112,7 @@
                     <CCol lg="3">
                       <validation-provider
                           #default="{errors}"
-                          rules="required|min:3|max:100"
+                          rules="required|min:1|max:100"
                           name="Ünvan">
                         Ünvan <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
@@ -155,7 +156,6 @@
 
                   </CRow>
                 </validation-observer>
-
 
               </CCardBody>
             </CCollapse>
@@ -272,7 +272,7 @@
                         <CCol lg="3">
                           <validation-provider
                               #default="{errors}"
-                              rules="required|min:3|max:100"
+                              rules="required|min:1|max:100"
                               name="Doktor Adı">
                             Doktor Adı <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
@@ -289,7 +289,7 @@
                         <CCol lg="3">
                           <validation-provider
                               #default="{errors}"
-                              rules="required|min:3|max:100"
+                              rules="required|min:1|max:100"
                               name="Doktor Soyad">
                             Doktor Soyad <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
@@ -348,7 +348,7 @@
                         <CCol lg="3">
                           <validation-provider
                               #default="{errors}"
-                              rules="required|min:3|max:100"
+                              rules="required|min:1|max:100"
                               name="Ünvan">
                             Ünvan <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
@@ -432,7 +432,7 @@ export default {
         {key: "email", label: "Email"},
         {key: "title", label: "Ünvan"},
         {key: "department", label: "Bölüm"},
-        {key: "insuranceNumber", label: "Sİgorta Numarası"},
+        {key: "insuranceNumber", label: "Sigorta Numarası"},
         {key: "actions", label: "İşlemler"}
       ],
 

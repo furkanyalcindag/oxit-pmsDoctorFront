@@ -111,7 +111,7 @@
                           <img src="../../../icons/icons8-linkedin-24.png" height="24" width="24"/>
                         </CCol>
                         <CCol lg="11">
-                          <p v-if="contactList.linkedIn" class="ml-2 mb-1 ">{{ contactList.linkedin }}</p>
+                          <p v-if="contactList.linkedin" class="ml-2 mb-1 ">{{ contactList.linkedin }}</p>
                           <p v-else>-</p>
                         </CCol>
 
@@ -279,7 +279,7 @@
         <CButton @click="contactInfoModal = false" color="danger">Kapat</CButton>
         <CButton :disabled="loading" @click="validationForm" color="success">
           <c-spinner v-show="loading" size="sm"></c-spinner>
-          Kaydet
+          Güncelle
         </CButton>
       </template>
     </CModal>

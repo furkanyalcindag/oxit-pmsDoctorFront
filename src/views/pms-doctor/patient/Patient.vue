@@ -21,6 +21,8 @@
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
+
+
               <CCardBody>
                 <div>
 
@@ -190,6 +192,12 @@
 
                 </div>
               </CCardBody>
+
+
+
+
+
+
             </CCollapse>
           </CCard>
         </transition>

@@ -249,7 +249,7 @@
         color="danger"
         :show.sync="deleteModel"
     >
-      Eğitimi silmek istediğinizden emin misiniz?
+      Eğitim bilgisini silmek istediğinizden emin misiniz?
 
 
       <template #header>
@@ -457,10 +457,22 @@ export default {
         this.educationInfoUpdateModal = false
         this.loadingEdit = false
         await this.getEducationInfo()
-      } else {
-        this.loadingEdit = false
-      }
 
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Eğitim bilgileri başarıyla güncellendi"
+        })
+      } else {
+        this.isError = true;
+        this.loadingEdit = false
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
+      }
     },
     async addEducationInfo() {
       this.loading = true
@@ -472,6 +484,20 @@ export default {
         this.loading = false
         this.educationInfoModal = false
         await this.getEducationInfo()
+         this.$toast.success({
+          title: 'Başarılı',
+          message: "Eğitim bilgileri başarıyla eklendi"
+        })
+        this.loading = false
+      } else {
+        this.isError = true;
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
 
 
       }

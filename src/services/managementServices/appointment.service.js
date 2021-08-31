@@ -20,6 +20,26 @@ class AppointmentService {
         });
     }
 
+    editAppointment(appointment) {
+        const params = {id: appointment.uuid}
+        return axios.put(process.env.VUE_APP_API_URL + '/pmsDoctor/appointment-api/',
+            {
+                time: appointment.time,
+                endTime: appointment.endTime,
+                date: appointment.date,
+                doctorId: appointment.doctorId,
+                patientId: appointment.patientId,
+
+            }, {headers: authHeader(), params}).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            return error.response
+        });
+    }
+
+
 
     getAppointment(page) {
         const params = {
@@ -80,8 +100,8 @@ class AppointmentService {
             {
                 time: appointment.time,
                 date: appointment.date,
-                doctorId: appointment.doctorId,
-                patientId: appointment.patientId,
+                doctorId: appointment.doctor,
+                patientId: appointment.patient,
 
             }, {headers: authHeader(), params}).then(response => {
             return response;
