@@ -240,6 +240,16 @@ export default {
           to: '/profile',
           icon: 'cil-people',
         }
+
+         const doctorsPatient = {
+          _name: 'CSidebarNavItem',
+          name: 'Hastalar',
+          to: '/doctors-patient',
+          icon: 'cil-people',
+        }
+
+
+
         const blog = {
           _name: 'CSidebarNavItem',
           name: 'Blog',
@@ -252,9 +262,9 @@ export default {
         items.push(assay)
         items.push(patientCalendar)
         items.push(doctorProfile)
-        items.push(patient)
         items.push(accountingList)
         items.push(blog)
+        items.push(doctorsPatient)
         return items
       }
       if (localStorage.getItem('user_group') === 'Secretary') {

@@ -634,7 +634,8 @@ export default {
       maxDate: '',
       loadingDelete: false,
       loadingEdit: false,
-      pageCount: 0
+      pageCount: 0,
+      group:''
 
 
     };

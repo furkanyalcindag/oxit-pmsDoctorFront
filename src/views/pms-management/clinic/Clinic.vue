@@ -559,8 +559,6 @@ export default {
       deleteModel: false,
       deleteId: '',
       clinics: [],
-      cities:[],
-      districts: [],
       cit: '',
       updateId: 0,
       updateModal: false,
@@ -691,8 +689,6 @@ export default {
           })
         }
       }
-
-
     },
     async getSingleClinic(id) {
       this.clinicUpdateModal = true

@@ -4,176 +4,15 @@
       <CCol lg="12">
         <transition name="fade">
           <CCard v-if="show">
-            <CCardHeader>
+             <CCardHeader>
               <CIcon name="cil-pencil"/>
-              Klinik Yönetimi
-              <div class="card-header-actions">
-
-                <CLink
-                    class="card-header-action btn-minimize"
-                    @click="formCollapsed = !formCollapsed"
-                >
-                  <CIcon
-                      :name="`cil-chevron-${formCollapsed ? 'bottom' : 'top'}`"
-                  />
-                </CLink>
-
-              </div>
+              Hasta Listesi
             </CCardHeader>
-            <CCollapse :show="formCollapsed">
-              <CCardBody>
-                <div>
-
-                </div>
-
-   <validation-observer ref="simpleRules">
-                  <CRow>
-
-                    <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:1|max:100"
-                          name="Doktor Adı">
-                        Doktor Adı <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="doctor.firstName"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-                    </CCol>
-
-
-                    <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:1|max:100"
-                          name="Doktor Soyad">
-                        Doktor Soyadı <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="doctor.lastName"
-
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-                    </CCol>
-                    <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Diploma No">
-                        Diploma No <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="doctor.diplomaNo"
-                            :state="errors.length > 0 ? false:null"
-                        />
-
-                      </validation-provider>
-                    </CCol>
-
-                    <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Sigorta Numarası">
-                        Sigorta Numarası <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="doctor.insuranceNumber"
-
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-                    </CCol>
-                    <CCol lg="3">
-
-                      Bölüm <span class="text-danger">*</span>
-
-                      <CSelect
-                          :options="departments"
-                          description=""
-                          autocomplete="autocomplete"
-                          v-model="doctor.departmentId"
-                          :value.sync="doctor.departmentId"
-
-                      />
-
-                    </CCol>
-                    <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:1|max:100"
-                          name="Ünvan">
-                        Ünvan <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            description=""
-                            autocomplete="autocomplete"
-                            v-model="doctor.title"
-
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
-                    </CCol>
-
-                    <CCol lg="3">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100|email"
-                          name="E-Mail">
-                        E-Mail <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-                        <CInput
-                            description=""
-                            type="email"
-                            autocomplete="email"
-                            prepend="@"
-                            v-model="doctor.email"
-                            :state="errors.length > 0 ? false:null"
-                        />
-
-                      </validation-provider>
-                    </CCol>
-                      <CCol lg="3" class="form-actions mt-3">
-                  <CButton type="submit" color="primary"
-                           @click="validationForm"
-                  >
-                    <c-spinner v-show="loading" size="sm"></c-spinner>
-                    Kaydet
-                  </CButton>
-
-                </CCol>
-
-                  </CRow>
-                </validation-observer>
-
-              </CCardBody>
-            </CCollapse>
-          </CCard>
-        </transition>
-      </CCol>
-    </CRow>
-
-
-    <CRow>
-      <CCol lg="12">
-        <transition name="fade">
-          <CCard v-if="show">
             <template>
               <CCardBody>
 
                 <CDataTable
-                    :items="doctors"
+                    :items="patients"
                     :fields="fieldsTable"
                     :border="true"
                     hover
@@ -181,30 +20,70 @@
                     clickableRows
 
                 >
-                  <template #department="{ item, index }">
+                  <template #firstName="{ item, index }">
                     <td class="py-2">
 
-                      {{ item.department.label }}
+                      {{ item.firstName }} {{ item.lastName }}
+                    </td>
+                  </template>
+                  <template #bloodGroup="{ item, index }">
+                    <td class="py-2">
+
+                      {{ item.bloodGroup.label }}
+                    </td>
+                  </template>
+                  <template #gender="{ item, index }">
+                    <td class="py-2">
+
+                      {{ item.gender.label }}
+                    </td>
+                  </template>
+                  <template #birthDate="{ item, index }">
+                    <td class="py-2">
+
+                      {{ item.birthDate.substring(8, 10) }}-{{
+                        item.birthDate.substring(5, 8)
+                      }}{{ item.birthDate.substring(0, 4) }}
+                    </td>
+                  </template>
+
+                  <template #buttons="{ item, index }">
+                    <td class="py-2">
+                      <CBadge :color="getBadge(item.paymentSituation)">{{ item.paymentSituation }}</CBadge>
                     </td>
                   </template>
 
                   <template #actions="{ item, index }">
-
                     <td class="py-2">
+                      <CRow>
+                        <CCol lg="4">
+                          <CDropdown size="sm" color="dark" toggler-text="İşlemler">
 
-                      <CDropdown size="sm" color="dark" toggler-text="İşlemler">
-
-                        <CDropdownItem>
-                          <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
-                        </CDropdownItem>
-                        <CDropdownItem>
-
-                          <CButton size="sm" @click="getSingleDoctor(item.uuid)">Düzenle</CButton>
-
-                        </CDropdownItem>
-                      </CDropdown>
+                            <CDropdownItem>
+                              <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                            </CDropdownItem>
+                            <CDropdownItem>
+                              <CButton size="sm" @click="getSinglePatient(item.uuid)">Düzenle</CButton>
+                            </CDropdownItem>
+                            <CDropdownItem>
+                              <CLink>
+                                <CButton size="sm" @click="$router.push({name:'protocol',params:{patient:item.uuid}})"
+                                         color="">Protokol
+                                </CButton>
+                              </CLink>
+                            </CDropdownItem>
+                            <CDropdownItem>
+                              <CLink>
+                                <CButton size="sm" class="mr-2">Cari Hatırlatma Maili Gönder</CButton>
+                              </CLink>
+                            </CDropdownItem>
+                          </CDropdown>
+                        </CCol>
+                      </CRow>
                     </td>
                   </template>
+
+
                 </CDataTable>
                 <template>
                   <div>
@@ -219,6 +98,7 @@
                 </template>
               </CCardBody>
             </template>
+
           </CCard>
         </transition>
       </CCol>
@@ -229,9 +109,9 @@
         title="Modal title"
         color="danger"
         :show.sync="deleteModel"
-        @ok="deleteDoctor"
+        @ok="deletePatient"
     >
-      Doktoru silmek istediğinizden emin misiniz?
+      Hastayı silmek istediğinizden emin misiniz?
 
 
       <template #header>
@@ -240,8 +120,8 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteDoctor" color="success">
-          <c-spinner v-show="loading" size="sm"></c-spinner>
+        <CButton :disabled="loadingDelete" @click="deletePatient" color="success">
+          <c-spinner v-show="loadingDelete" size="sm"></c-spinner>
           Evet
         </CButton>
       </template>
@@ -269,100 +149,119 @@
                     <validation-observer ref="simpleRules">
                       <CRow>
 
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:1|max:100"
-                              name="Doktor Adı">
-                            Doktor Adı <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="doctorUpdate.firstName"
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
-                        </CCol>
-
-
-                        <CCol lg="3">
-                          <validation-provider
-                              #default="{errors}"
-                              rules="required|min:1|max:100"
-                              name="Doktor Soyad">
-                            Doktor Soyad <span class="text-danger">*</span>
-                            <span class="text-danger">{{ errors[0] }}</span>
-                            <CInput
-                                description=""
-                                autocomplete="autocomplete"
-                                v-model="doctorUpdate.lastName"
-
-                                :state="errors.length > 0 ? false:null"
-                            />
-                          </validation-provider>
-                        </CCol>
-                        <CCol lg="3">
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
-                              name="Diploma No">
-                            Diploma No <span class="text-danger">*</span>
+                              name="Hasta Adı">
+                            Hasta Adı <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
                             <CInput
                                 description=""
                                 autocomplete="autocomplete"
-                                v-model="doctorUpdate.diplomaNo"
+                                v-model="patientUpdate.firstName"
                                 :state="errors.length > 0 ? false:null"
                             />
-
                           </validation-provider>
                         </CCol>
 
-                        <CCol lg="3">
+
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100"
-                              name="Sigorta Numarası">
-                            Sigorta Numarası <span class="text-danger">*</span>
+                              name="Hasta Soyadı">
+                            Hasta Soyadı <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
                             <CInput
                                 description=""
                                 autocomplete="autocomplete"
-                                v-model="doctorUpdate.insuranceNumber"
+                                v-model="patientUpdate.lastName"
 
                                 :state="errors.length > 0 ? false:null"
                             />
                           </validation-provider>
                         </CCol>
-                        <CCol lg="3">
-                          Bölüm <span class="text-danger">*</span>
+
+                        <CCol lg="4">
+                          Kan Grubu <span class="text-danger">*</span>
                           <CSelect
-                              :options="departments"
+                              :options="bloodgroups"
                               description=""
                               autocomplete="autocomplete"
-                              v-model="doctorUpdate.departmentId"
-                              :value.sync="doctor.departmentId"
+                              v-model="patientUpdate.bloodGroupId"
+                              :value.sync="patientUpdate.bloodGroupId"
                           />
+
+
                         </CCol>
-                        <CCol lg="3">
+
+
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
-                              rules="required|min:1|max:100"
-                              name="Ünvan">
-                            Ünvan <span class="text-danger">*</span>
+                              rules="required|min:3|max:100"
+                              name="Telefon Numarası">
+                            Telefon Numarası <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
                             <CInput
                                 description=""
                                 autocomplete="autocomplete"
-                                v-model="doctorUpdate.title"
+                                v-model="patientUpdate.mobilePhone"
 
                                 :state="errors.length > 0 ? false:null"
                             />
                           </validation-provider>
                         </CCol>
 
-                        <CCol lg="3">
+                        <CCol lg="4">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="TC No">
+                            TC No <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="patientUpdate.identityNumber"
+
+                                :state="errors.length > 0 ? false:null"
+                            />
+                          </validation-provider>
+                        </CCol>
+
+
+                        <CCol lg="4">
+                          Cinsiyet <span class="text-danger">*</span>
+                          <CSelect
+                              :options="genders"
+                              description=""
+                              autocomplete="autocomplete"
+                              v-model="patientUpdate.genderId"
+                              :value.sync="patientUpdate.genderId"
+                          />
+                        </CCol>
+
+
+                        <CCol lg="4">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Adresi">
+                            Adresi <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CTextarea
+                                description=""
+                                autocomplete="autocomplete"
+                                v-model="patientUpdate.address"
+
+                                :state="errors.length > 0 ? false:null"
+                            />
+                          </validation-provider>
+                        </CCol>
+
+                        <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
                               rules="required|min:3|max:100|email"
@@ -374,13 +273,28 @@
                                 type="email"
                                 autocomplete="email"
                                 prepend="@"
-                                v-model="doctorUpdate.email"
+                                v-model="patientUpdate.email"
                                 :state="errors.length > 0 ? false:null"
                             />
 
                           </validation-provider>
                         </CCol>
+                        <CCol lg="4">
+                          <validation-provider
+                              #default="{errors}"
+                              rules="required|min:3|max:100"
+                              name="Doğum Tarihi">
+                            Doğum Tarihi <span class="text-danger">*</span>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            <CInput
+                                description=""
+                                type="date"
+                                v-model="patientUpdate.birthDate"
+                                :state="errors.length > 0 ? false:null"
+                            />
 
+                          </validation-provider>
+                        </CCol>
                       </CRow>
                     </validation-observer>
                   </CRow>
@@ -391,7 +305,7 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Personel Güncelle</h6>
+        <h6 class="modal-title">Hasta Bilgileri Güncelle</h6>
         <CButtonClose @click="staffUpdateModal = false" class="text-white"/>
       </template>
       <template #footer>
@@ -413,13 +327,13 @@ import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 import Clinic from "@/models/pms/clinic";
 import {ValidationProvider, ValidationObserver} from 'vee-validate'
 import {required, email, min, max} from 'validations'
-import Doctor from "@/models/pms/doctor";
-import DoctorService from "@/services/managementServices/doctor.service";
-import DepartmentService from "@/services/managementServices/department.service";
-import Staff from "@/models/pms/staff";
+import Patient from "@/models/pms/patient";
+import PatientService from "@/services/managementServices/patient.service";
+import GenderService from "@/services/managementServices/gender.service";
+import BloodService from "@/services/managementServices/blood.service";
 
 export default {
-  name: "Clinic",
+  name: "Doctor",
   components: {
     ValidationProvider,
     ValidationObserver
@@ -427,14 +341,17 @@ export default {
   data() {
     return {
       fieldsTable: [
-        {key: 'firstName', label: "Doktor Adı", _style: "min-width:200px"},
-        {key: "lastName", label: "Doktor Soyad"},
+        {key: 'firstName', label: "Hasta Adı", _style: "min-width:200px"},
         {key: "email", label: "Email"},
-        {key: "title", label: "Ünvan"},
-        {key: "department", label: "Bölüm"},
-        {key: "insuranceNumber", label: "Sigorta Numarası"},
+        {key: "identityNumber", label: "TC No"},
+        {key: "bloodGroup", label: "Kan Grubu"},
+        {key: "gender", label: "Cinsiyet"},
+        {key: "mobilePhone", label: "Telefon Numarası"},
+        {key: "birthDate", label: "Doğum Tarihi"},
         {key: "actions", label: "İşlemler"}
+
       ],
+
 
       pageLabel: {label: 'sasasa', external: true,},
       page: 1,
@@ -506,13 +423,19 @@ export default {
       email,
       min,
       max,
-      doctor: new Staff("", "", "", "", "", "", "", ""),
-      doctorUpdate: new Staff("", "", "", "", "", "", "", ""),
       departments: [],
       doctors: [],
+      patient: new Patient("", "", "", "", "", "", "", "", "", "",),
+      genders: [],
+      bloodgroups: [],
+      patients: [],
+      patientUpdate: new Patient("", "", "", "", "", "", "", "", "", "",),
+      maxDate: '',
       loadingDelete: false,
       loadingEdit: false,
       pageCount: 0,
+      group:''
+
 
     };
   },
@@ -554,23 +477,23 @@ export default {
 
     },
 
-    async addDoctor() {
-
-      if (!this.doctor.departmentId) {
-
-        this.doctor.departmentId = this.departments[0].value
-      }
+    async addPatient() {
       this.loading = true
-
-      let response = await new DoctorService().addDoctor(this.doctor)
+      if (this.patient.genderId === "" || this.patient.genderId === undefined) {
+        this.patient.genderId = this.genders[0].value
+      }
+      if (this.patient.bloodGroupId === "" || this.patient.bloodGroupId === undefined) {
+        this.patient.bloodGroupId = this.bloodgroups[0].value
+      }
+      let response = await new PatientService().addPatient(this.patient)
       if (response.status === 200) {
-        await this.getDoctors(1)
-        this.doctor = new Doctor()
+        this.loading = false
+        await this.getPatients(1)
+        this.patient = new Patient()
         this.$toast.success({
           title: 'Başarılı',
-          message: "Doktor başarıyla eklendi"
+          message: "Hasta başarıyla eklendi"
         })
-        this.loading = false
       } else {
         this.loading = false
         this.isError = true;
@@ -585,13 +508,13 @@ export default {
 
     },
 
-    async getSingleDoctor(id) {
+    async getSinglePatient(id) {
 
-      let response = await new DoctorService().getSingleDoctor(id)
-      this.doctorUpdate = response.data
-      this.doctorUpdate.department = response.data.department.value
+      let response = await new PatientService().getSinglePatient(id)
+      this.patientUpdate = response.data
+      this.patientUpdate.gender = response.data.gender
+      this.patientUpdate.bloodgroup = response.data.bloodgroup
       if (response.status === 200) {
-        this.staffUpdateModal = true
         this.staffUpdateModal = true
 
 
@@ -599,26 +522,35 @@ export default {
 
     },
 
-    async getDepartments() {
+    async getGenders() {
 
-      let response = await new DepartmentService().getDepartment()
-      this.departments = response.data
+      let response = await new GenderService().getGender()
+      this.genders = response.data
     },
 
 
-    async deleteDoctor() {
+    async getBloodGroups() {
+
+      let response = await new BloodService().getBloodGroup()
+      this.bloodgroups = response.data
+    },
+
+
+    async deletePatient() {
       this.loadingDelete = true
-      let response = await new DoctorService().deleteDoctor(this.deleteId)
+
+      let response = await new PatientService().deletePatient(this.deleteId)
       if (response.status === 200) {
-        await this.getDoctors(1)
+        await this.getPatients(1)
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
-          message: "Doktor bilgileri başarıyla silindi"
+          message: "Hasta başarıyla silindi"
         })
-        this.loading = false
+        this.loadingDelete = false
       } else {
         this.isError = true;
+        this.loadingDelete = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -629,18 +561,17 @@ export default {
       }
     },
 
-    async editDoctor() {
+    async editPatient() {
       this.loading = true
-      if (this.doctorUpdate.department === "") {
-        this.doctorUpdate.department = this.departments[0].value
-      }
-      let response = await new DoctorService().editDoctor(this.doctorUpdate)
+      this.patientUpdate.gender = this.patientUpdate.gender.value
+      this.patientUpdate.bloodGroup = this.patientUpdate.bloodGroup.value
+      let response = await new PatientService().editPatient(this.patientUpdate)
       if (response.status === 200) {
         this.staffUpdateModal = false
-        await this.getDoctors(1)
+        await this.getPatients()
         this.$toast.success({
           title: 'Başarılı',
-          message: "Doktor bilgileri başarıyla güncellendi"
+          message: "Hasta başarıyla güncellendi"
         })
         this.loading = false
       } else {
@@ -657,10 +588,10 @@ export default {
     },
 
 
-    async getDoctors(page) {
+    async getPatients(page) {
 
-      let response = await new DoctorService().getDoctor(page)
-      this.doctors = response.data.data
+      let response = await new PatientService().getPatient(page)
+      this.patients = response.data.data
       this.pageCount = response.data.activePage
     },
 
@@ -668,32 +599,42 @@ export default {
     async validationForm() {
       this.$refs.simpleRules.validate().then(async success => {
         if (success) {
-          if (this.doctorUpdate.uuid) {
-            await this.editDoctor()
+          if (this.patientUpdate.uuid) {
+            await this.editPatient()
           } else {
-            await this.addDoctor()
+            await this.addPatient()
           }
         }
       })
     },
   },
 
+  async created() {
+    await this.getGenders()
+    await this.getBloodGroups()
+    await this.getPatients(1)
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+    this.maxDate = today
+
+
+  },
   watch: {
 
     page: function (val) {
       console.log(val)
-      this.getDoctors(this.page)
+      this.getPatients(this.page)
 
     },
   },
-
-  async created() {
-    await this.getDoctors(1)
-    await this.getDepartments()
-
-
-  },
   async mounted() {
+    await this.getGenders()
+    await this.getBloodGroups()
+    await this.getPatients(1)
 
 
   },

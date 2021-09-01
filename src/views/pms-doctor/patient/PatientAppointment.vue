@@ -271,8 +271,8 @@
                             :options="doctors"
                             description=""
                             autocomplete="autocomplete"
-                            v-model="appointmentUpdate.doctor"
-                            :value.sync="appointmentUpdate.doctor"
+                            v-model="appointmentUpdate.doctorId"
+                            :value.sync="appointmentUpdate.doctorId"
                         />
                       </CCol>
                       <CCol lg="3">
@@ -281,8 +281,8 @@
                             :options="patients"
                             description=""
                             autocomplete="autocomplete"
-                            v-model="appointmentUpdate.patient"
-                            :value.sync="appointmentUpdate.patient"
+                            v-model="appointmentUpdate.patientId"
+                            :value.sync="appointmentUpdate.patientId"
                         />
                       </CCol>
                       <CCol lg="2">
@@ -655,11 +655,20 @@ export default {
 
     async editAppointment() {
       console.log("1", this.appointmentUpdate)
-      this.loadingEdit = true
+      this.loadingEdit =true
+
       this.appointmentUpdate.doctor = this.appointmentUpdate.doctor.value
       this.appointmentUpdate.patient = this.appointmentUpdate.patient.value
-      console.log("2", this.appointmentUpdate)
 
+      // if (this.appointmentUpdate.patientId === "" || this.appointmentUpdate.patientId === undefined) {
+        //this.appointment.patientId = this.patients[0].value
+      //}
+      //if (this.appointmentUpdate.doctorId === "" || this.appointmentUpdate.doctorId === undefined) {
+        //this.appointmentUpdate.doctorId = this.doctors[0].value
+      //}
+
+
+      console.log("2", this.appointmentUpdate)
       let response = await new AppointmentService().editAppointment(this.appointmentUpdate)
       if (response.status === 200) {
         this.loadingEdit = false

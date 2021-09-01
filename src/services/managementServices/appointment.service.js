@@ -27,8 +27,8 @@ class AppointmentService {
                 time: appointment.time,
                 endTime: appointment.endTime,
                 date: appointment.date,
-                doctorId: appointment.doctorId,
-                patientId: appointment.patientId,
+                doctorId: appointment.doctor,
+                patientId: appointment.patient,
 
             }, {headers: authHeader(), params}).then(response => {
 
