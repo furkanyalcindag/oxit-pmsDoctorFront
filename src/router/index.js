@@ -106,6 +106,8 @@ const Notifications = () => import('@/views/pms-management/notifications/Notific
 
 const Wristbands = () => import('@/views/pms-management/wristbands/Wristbands');
 
+const DoctorsPatient = () => import('@/views/pms-doctor/doctor/DoctorsPatient')
+
 const Contract = () => import('@/views/pms-management/contract/Contract');
 
 const Doctor = () => import('@/views/pms-doctor/doctor/Doctor')
@@ -415,6 +417,16 @@ function configRoutes() {
                     name: 'profile',
                     component: DoctorProfile
 
+
+                },
+
+
+
+                  {
+                    path: '/doctors-patient',
+                    redirect: '',
+                    name: 'Doctor',
+                    component: DoctorsPatient,
 
                 },
 

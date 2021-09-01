@@ -31,7 +31,7 @@
                     <CCol lg="3">
                       <validation-provider
                           #default="{errors}"
-                          rules="required|min:3|max:100"
+                          rules="required|min:1|max:100"
                           name="Sekreter Adı">
                         Sekreter Adı <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
@@ -48,7 +48,7 @@
                     <CCol lg="3">
                       <validation-provider
                           #default="{errors}"
-                          rules="required|min:3|max:100"
+                          rules="required|min:1|max:100"
                           name="Sekreter Soyad">
                         Sekreter Soyad <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
@@ -199,7 +199,7 @@
                         <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
-                              rules="required|min:3|max:100"
+                              rules="required|min:1|max:100"
                               name="Doktor Adı">
                             Sekreter Adı <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
@@ -216,7 +216,7 @@
                         <CCol lg="4">
                           <validation-provider
                               #default="{errors}"
-                              rules="required|min:3|max:100"
+                              rules="required|min:1|max:100"
                               name="Sekreter Soyad">
                             Sekreter Soyad <span class="text-danger">*</span>
                             <span class="text-danger">{{ errors[0] }}</span>
@@ -466,6 +466,7 @@ export default {
 
     async deleteSecretary() {
       this.loadingDelete = true
+
       let response = await new SecretaryService().deleteSecretary(this.deleteId)
       if (response.status === 200) {
         await this.getSecretarys(1)
@@ -474,7 +475,7 @@ export default {
           title: 'Başarılı',
           message: "Sekreter başarıyla silindi"
         })
-        this.loading = false
+        this.loadingDelete = false
       } else {
         this.isError = true;
         this.errors = response.response.data;
@@ -491,6 +492,7 @@ export default {
       this.loading = true
       let response = await new SecretaryService().editSecretary(this.secretaryUpdate)
       if (response.status === 200) {
+
         this.staffUpdateModal = false
         await this.getSecretarys(1)
 

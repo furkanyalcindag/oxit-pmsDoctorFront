@@ -171,45 +171,45 @@
                           </CCol>
                           <CCol lg="12">
                             <CRow>
-                                    <CCol lg="7">
-                              <vue-upload-multiple-image
-                                  @upload-success="uploadImageSuccess"
-                                  @before-remove="beforeRemove"
-                                  @edit-image="editImage"
-                                  :data-images="images"
-                                  idUpload="myIdUpload"
-                                  editUpload="myIdEdit"
-                                  :primary-text="primaryText"
-                                  :browse-text="browseText"
-                                  :drag-text="dragText"
-                                  :markIsPrimaryText="markPrimary"
-                                  :popupText="popupText"
-                                  :max-image="2"
-                                  :show-add="false"
+                              <CCol lg="7">
+                                <vue-upload-multiple-image
+                                    @upload-success="uploadImageSuccess"
+                                    @before-remove="beforeRemove"
+                                    @edit-image="editImage"
+                                    :data-images="images"
+                                    idUpload="myIdUpload"
+                                    editUpload="myIdEdit"
+                                    :primary-text="primaryText"
+                                    :browse-text="browseText"
+                                    :drag-text="dragText"
+                                    :markIsPrimaryText="markPrimary"
+                                    :popupText="popupText"
+                                    :max-image="2"
+                                    :show-add="false"
 
-                              ></vue-upload-multiple-image>
-                            </CCol>
-                            <CCol lg="5">
-                              <CRow>
-                                <CCol lg="6">
-                                  <span>Yayınlansın</span>
-                                </CCol>
-                                <CCol lg="2">
-                                  <CSwitch
-                                      class="mx-1"
-                                      color="primary"
-                                      name="switch1"
-                                      :checked.sync="isPublish"
-                                      v-model="isPublish"
-                                  />
+                                ></vue-upload-multiple-image>
+                              </CCol>
+                              <CCol lg="5">
+                                <CRow>
+                                  <CCol lg="6">
+                                    <span>Yayınlansın</span>
+                                  </CCol>
+                                  <CCol lg="2">
+                                    <CSwitch
+                                        class="mx-1"
+                                        color="primary"
+                                        name="switch1"
+                                        :checked.sync="isPublish"
+                                        v-model="isPublish"
+                                    />
 
-                                </CCol>
-                              </CRow>
+                                  </CCol>
+                                </CRow>
 
 
-                            </CCol>
+                              </CCol>
 
-                          </CRow>
+                            </CRow>
                           </CCol>
 
 
@@ -255,7 +255,8 @@
       <template #footer>
         <CButton @click="blogModal = false" color="danger">Kapat</CButton>
         <CButton :disabled="loading" @click="validationForm" color="success">
-          <c-spinner v-show="loading" size="sm"></c-spinner>
+          <c-spinner v-show="loading" size="sm">
+          </c-spinner>
           Kaydet
         </CButton>
       </template>
@@ -281,7 +282,7 @@
                           <CCol lg="12">
                             <validation-provider
                                 #default="{errors}"
-                                rules="required|min:3|max:1000"
+                                rules="required|min:1|max:1000"
                                 name="Başlık">
                               Başlık <span class="text-danger">*</span>
                               <span class="text-danger">{{ errors[0] }}</span>
@@ -323,45 +324,45 @@
                           </CCol>
                           <CCol lg="12">
                             <CRow>
-                                    <CCol lg="7">
-                              <vue-upload-multiple-image
-                                  @upload-success="uploadImageSuccess"
-                                  @before-remove="beforeRemove"
-                                  @edit-image="editImage"
-                                  :data-images="images"
-                                  idUpload="myIdUpload"
-                                  editUpload="myIdEdit"
-                                  :primary-text="primaryText"
-                                  :browse-text="browseText"
-                                  :drag-text="dragText"
-                                  :markIsPrimaryText="markPrimary"
-                                  :popupText="popupText"
-                                  :max-image="2"
-                                  :show-add="false"
+                              <CCol lg="7">
+                                <vue-upload-multiple-image
+                                    @upload-success="uploadImageSuccess"
+                                    @before-remove="beforeRemove"
+                                    @edit-image="editImage"
+                                    :data-images="images"
+                                    idUpload="myIdUpload"
+                                    editUpload="myIdEdit"
+                                    :primary-text="primaryText"
+                                    :browse-text="browseText"
+                                    :drag-text="dragText"
+                                    :markIsPrimaryText="markPrimary"
+                                    :popupText="popupText"
+                                    :max-image="2"
+                                    :show-add="false"
 
-                              ></vue-upload-multiple-image>
-                            </CCol>
-                            <CCol lg="5">
-                              <CRow>
-                                <CCol lg="6">
-                                  <span>Yayınlansın</span>
-                                </CCol>
-                                <CCol lg="2">
-                                  <CSwitch
-                                      class="mx-1"
-                                      color="primary"
-                                      name="switch1"
-                                      :checked.sync="isPublishUpdate"
-                                      v-model="isPublishUpdate"
-                                  />
+                                ></vue-upload-multiple-image>
+                              </CCol>
+                              <CCol lg="5">
+                                <CRow>
+                                  <CCol lg="6">
+                                    <span>Yayınlansın</span>
+                                  </CCol>
+                                  <CCol lg="2">
+                                    <CSwitch
+                                        class="mx-1"
+                                        color="primary"
+                                        name="switch1"
+                                        :checked.sync="isPublishUpdate"
+                                        v-model="isPublishUpdate"
+                                    />
 
-                                </CCol>
-                              </CRow>
+                                  </CCol>
+                                </CRow>
 
 
-                            </CCol>
+                              </CCol>
 
-                          </CRow>
+                            </CRow>
                           </CCol>
                         </CRow>
 
@@ -533,7 +534,10 @@ export default {
       markPrimary: "Ana fotoğraf yap",
       popupText: "Blog Resimleri",
       images: [],
-      imagesPost: []
+      imagesPost: [],
+      loadingDelete: false,
+      loadingEdit: false
+
     };
   },
   methods: {
@@ -566,7 +570,9 @@ export default {
     editImage(formData, index, fileList) {
       this.imagesPost = fileList
     },
+
     async addBlog() {
+      this.loading = true
       this.blog.image = this.imagesPost[0].path
       if (this.blog.department === "" || this.blog.department === undefined) {
         this.blog.department = this.departments[0].value
@@ -574,19 +580,30 @@ export default {
       this.blog.isPublish = this.isPublish
       let response = await new BlogService().addBlog(this.blog)
       if (response.status === 200) {
-        this.loading = true
+        this.loading = false
+
         this.blogModal = false
         this.images = []
         this.blog = new Blog()
         await this.getBlogs(1)
         this.$toast.success({
           title: 'Başarılı',
-          message: 'işlem başarıyla gerçekleştirilmiştir'
+          message: 'Blog başarıyla eklendi'
         })
-      } else {
         this.loading = false
+      } else {
+        this.isError = true;
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
       }
     },
+
+
     setOpenModal() {
       this.images = []
       this.blogModal = true
@@ -605,7 +622,7 @@ export default {
       let response = await new BlogService().editBlog(this.blogUpdate)
       if (response.status === 200) {
         await this.getBlogs(1)
-        this.loading = false
+        this.loadingEdit = false
         this.blogUpdateModal = false
         this.images = []
         this.$toast.success({
@@ -613,7 +630,7 @@ export default {
           message: ' işlem başarıyla gerçekleştirilmiştir'
         })
       } else {
-        this.loading = false
+        this.loadingEdit = false
       }
     },
     async getSingleBlog(id) {
@@ -638,13 +655,14 @@ export default {
 
     },
     async deleteBlog() {
+      this.loadingDelete = true
       let response = await new BlogService().deleteBlog(this.blogUUID)
       if (response.status === 200) {
         this.deleteModel = false
         await this.getBlogs(1)
         this.$toast.success({
           title: 'Başarılı',
-          message: 'işlem başarıyla gerçekleştirilmiştir'
+          message: 'Blog başarıyla silindi'
         })
       }
 

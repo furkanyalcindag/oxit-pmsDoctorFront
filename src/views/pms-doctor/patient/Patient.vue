@@ -21,6 +21,8 @@
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
+
+
               <CCardBody>
                 <div>
 
@@ -190,6 +192,12 @@
 
                 </div>
               </CCardBody>
+
+
+
+
+
+
             </CCollapse>
           </CCard>
         </transition>
@@ -626,7 +634,8 @@ export default {
       maxDate: '',
       loadingDelete: false,
       loadingEdit: false,
-      pageCount: 0
+      pageCount: 0,
+      group:''
 
 
     };

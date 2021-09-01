@@ -4,7 +4,6 @@ export default class Appointment {
         this.time = time
         this.endTime= endTime
         this.date = date
-
         this.doctorId = doctorId
         this.patientId = patientId
 

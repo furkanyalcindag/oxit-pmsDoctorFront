@@ -404,27 +404,48 @@ export default {
       let response = await new ArticleService().editArticle(this.articleUpdate);
       if (response.status === 200) {
         this.articleUpdateModal = false
+        this.loadingEdit = false
         await this.getArticles()
         await this.getArticlesTimeline()
+        this.$toast.success({
+          title: 'Başarılı',
+          message: "Makale başarıyla güncellendi"
+        })
+      } else {
+        this.isError = true;
+        this.loadingEdit = false
+        this.errors = response.response.data;
+        for (const [key, value] of Object.entries(this.errors)) {
+          this.$toast.error({
+            title: 'Hata',
+            message: `${key}: ${value}`
+          })
+        }
       }
 
     },
+
+
     async getArticlesTimeline() {
       let response = await new ArticleService().getArticleTimeline()
       this.timeline_data = response.data
     },
     async addArticle() {
-      let response = await new ArticleService().addArticle(this.article)
+      this.loading = true
+      let response = await new ArticleService().addArticle(this.article);
       if (response.status === 200) {
         this.articleModal = false
         await this.getArticles()
         await this.getArticlesTimeline()
+        this.loading = false
         this.article = new Article()
         this.$toast.success({
           title: 'Başarılı',
           message: "Makale başarıyla eklendi"
         })
+
       } else {
+        this.loading = false
         this.isError = true;
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {

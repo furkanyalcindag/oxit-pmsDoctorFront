@@ -31,7 +31,7 @@
                     <CCol lg="3">
                       <validation-provider
                           #default="{errors}"
-                          rules="required|min:3|max:100"
+                          rules="required|min:1|max:100"
                           name="Klinik Adı">
                         Klinik Adı <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
@@ -48,7 +48,7 @@
                     <CCol lg="3">
                       <validation-provider
                           #default="{errors}"
-                          rules="required|min:3|max:100"
+                          rules="required|min:1|max:100"
                           name="Yetkili Ad">
                         Yetkili Ad <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
@@ -64,7 +64,7 @@
                     <CCol lg="3">
                       <validation-provider
                           #default="{errors}"
-                          rules="required|min:3|max:100"
+                          rules="required|min:1|max:100"
                           name="Yetkili Soyad">
                         Yetkili Soyad <span class="text-danger">*</span>
                         <span class="text-danger">{{ errors[0] }}</span>
@@ -132,9 +132,9 @@
 
                       <CSelect
                           :options="cities"
-                          v-model="city"
-                          :value.sync="city"
-                          @change="getDistricts(city)"
+                          v-model="clinic.cityId"
+                          :value.sync="clinic.cityId"
+                          @change="getDistricts(cities)"
 
                       />
 
@@ -145,8 +145,8 @@
 
                       <CSelect
                           :options="districts"
-                          v-model="district"
-                          :value.sync="district"
+                          v-model="clinic.districtId"
+                          :value.sync="clinic.districtId"
 
                       />
 
@@ -403,8 +403,8 @@
                       İl <span class="text-danger">*</span>
                       <CSelect
                           :options="cities"
-                          v-model="cityUpdate"
-                          :value.sync="cityUpdate"
+                          v-model="clinicUpdate.cityId"
+                          :value.sync="clinicUpdate.cityId"
                           @change="getDistricts(cityUpdate)"
                       />
                     </CCol>
@@ -412,8 +412,8 @@
                       İlçe <span class="text-danger">*</span>
                       <CSelect
                           :options="districts"
-                          v-model="districtUpdate"
-                          :value.sync="districtUpdate"
+                          v-model="clinicUpdate.districtId"
+                          :value.sync="clinicUpdate.districtId"
                       />
 
                     </CCol>
@@ -511,7 +511,7 @@ export default {
       loading: false,
       pagination: {external: true},
       customers: [],
-      cities: [],
+      cities : [],
       districts: [],
       staffs: [],
       clinic: new Clinic("", "", "", "", "", "", "", "", "", ""),
@@ -559,8 +559,6 @@ export default {
       deleteModel: false,
       deleteId: '',
       clinics: [],
-      city: '',
-      district: '',
       cit: '',
       updateId: 0,
       updateModal: false,
@@ -661,6 +659,8 @@ export default {
     },
     async editClinic() {
       this.loadingEdit = false
+      this.clinicUpdate.city = this.clinicUpdate.city.value
+      this.clinicUpdate.district = this.clinicUpdate.district.value
       if (this.districtUpdate === '') {
         this.clinicUpdate.districtId = this.districts[0].value
       }
@@ -672,6 +672,8 @@ export default {
         this.clinicUpdateModal = false
         await this.getClinics(1)
         this.loadingEdit = false
+
+
         this.$toast.success({
           title: 'Başarılı',
           message: "Klinik başarıyla güncellendi"
@@ -687,8 +689,6 @@ export default {
           })
         }
       }
-
-
     },
     async getSingleClinic(id) {
       this.clinicUpdateModal = true
@@ -701,11 +701,12 @@ export default {
       this.cities = response.data
 
     },
-    async getDistricts(city) {
+    async getDistricts() {
 
-      let response = await new GeneralService().getDistrict(city)
+      let response = await new GeneralService().getDistrict()
       this.districts = response.data
     },
+
     async deleteClinic() {
       this.loadingDelete = true
       let response = await new ClinicService().deleteClinic(this.deleteId)

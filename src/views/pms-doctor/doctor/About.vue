@@ -122,7 +122,7 @@ import Contact from "@/models/pms/contact";
 import {freeSet} from '@coreui/icons'
 import About from "@/models/pms/about";
 import AboutService from "@/services/managementServices/about.service";
-import Secretary from "@/models/pms/secretary";
+
 
 export default {
   name: "Clinic",
@@ -255,12 +255,13 @@ export default {
 
     async editAbout() {
       this.loading = true
-
       let response = await new AboutService().editAbout(this.about);
       if (response.status === 200) {
         this.aboutUpdateModal = false
         this.loading = false
         await this.getAbout()
+      } else {
+        this.loading = false
       }
 
     },
@@ -268,6 +269,7 @@ export default {
       this.loading = true
       let response = await new AboutService().addAbout(this.about)
       if (response.status === 200) {
+        this.loading = false
         this.aboutUpdateModal = false
         await this.getAbout()
         this.about = new About()
