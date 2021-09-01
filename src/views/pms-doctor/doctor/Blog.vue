@@ -205,6 +205,21 @@
 
                                   </CCol>
                                 </CRow>
+                                <CRow>
+                                  <CCol lg="6">
+                                    <span>Vitrinde Görünsün</span>
+                                  </CCol>
+                                  <CCol lg="2">
+                                    <CSwitch
+                                        class="mx-1"
+                                        color="primary"
+                                        name="switch1"
+                                        :checked.sync="isSponsored"
+                                        v-model="isSponsored"
+                                    />
+
+                                  </CCol>
+                                </CRow>
 
 
                               </CCol>
@@ -358,6 +373,21 @@
 
                                   </CCol>
                                 </CRow>
+                                <CRow>
+                                  <CCol lg="6">
+                                    <span>Vitrinde Görünsün</span>
+                                  </CCol>
+                                  <CCol lg="2">
+                                    <CSwitch
+                                        class="mx-1"
+                                        color="primary"
+                                        name="switch1"
+                                        :checked.sync="isSponsoredUpdate"
+                                        v-model="isSponsoredUpdate"
+                                    />
+
+                                  </CCol>
+                                </CRow>
 
 
                               </CCol>
@@ -458,6 +488,7 @@ export default {
         {key: 'title', label: "Başlık", _style: "min-width:200px"},
         {key: "department", label: "Kategori"},
         {key: "isPublish", label: "Yayın Durumu"},
+        {key: "isSponsored", label: "Sponsorlu İçerik"},
         {key: "actions", label: "İşlemler"},
       ],
       pageLabel: {label: 'sasasa', external: true,},
@@ -536,7 +567,9 @@ export default {
       images: [],
       imagesPost: [],
       loadingDelete: false,
-      loadingEdit: false
+      loadingEdit: false,
+      isSponsored: false,
+      isSponsoredUpdate: false
 
     };
   },
@@ -573,11 +606,17 @@ export default {
 
     async addBlog() {
       this.loading = true
-      this.blog.image = this.imagesPost[0].path
+      if (this.imagesPost.length) {
+        this.blog.image = this.imagesPost[0].path
+      } else {
+        this.blog.image = null
+      }
       if (this.blog.department === "" || this.blog.department === undefined) {
         this.blog.department = this.departments[0].value
       }
       this.blog.isPublish = this.isPublish
+      this.blog.isSponsored = this.isSponsored
+
       let response = await new BlogService().addBlog(this.blog)
       if (response.status === 200) {
         this.loading = false
@@ -616,6 +655,7 @@ export default {
     async editBlog() {
       this.blogUpdate.department = this.blogUpdate.department.value
       this.blogUpdate.isPublish = this.isPublishUpdate
+      this.blogUpdate.isSponsoredUpdate = this.isSponsoredUpdate
       if (this.imagesPost.length) {
         this.blogUpdate.image = this.imagesPost[0].path
       }

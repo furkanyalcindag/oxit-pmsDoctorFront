@@ -1242,7 +1242,6 @@ export default {
     },
 
 
-
     async getOldProtocols() {
       let response = await new ProtocolService().getPatientProtocols(this.$route.params.patient)
       this.protocols = response.data
@@ -1362,6 +1361,10 @@ export default {
         })
       } else {
         this.loading = false
+        this.$toast.warn({
+          title: 'Uyarı',
+          message: a.data
+        })
       }
     },
 
@@ -1380,6 +1383,10 @@ export default {
         })
 
       } else {
+        this.$toast.warn({
+          title: 'Uyarı',
+          message: response.data
+        })
         this.loading = false
       }
 
