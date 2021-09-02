@@ -121,6 +121,9 @@
       </template>
       <template #footer>
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="$router.push({name:'protocol',params:{patient:appointment.patient.value}})" color="success">
+          Protokol Aç
+        </CButton>
       </template>
     </CModal>
 

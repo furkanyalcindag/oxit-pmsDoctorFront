@@ -24,14 +24,14 @@
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
-              <CCardBody style="backdrop-filter: blur(20px); background-color: #ebeff5">
+              <CCardBody style="background-color: #ebeff5">
                 <CRow>
 
                   <CCol class="d-flex justify-content-center" lg="12">
                     <img v-if="staff.profileImage" class="profileImage" :src="staff.profileImage"
 
-                         height="140"
-                         width="140"/>
+                         height="180"
+                         width="180"/>
 
 
                     <img v-else src="../../../icons/1181575-200.png" height="200" width="200"/></CCol>
