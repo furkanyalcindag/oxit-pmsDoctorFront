@@ -91,34 +91,34 @@ export default {
     //   localStorage.setItem('user_name_surname',response.data)
     // },
 
-    async getDashboardData() {
-      let response = await new DashboardService().getAdminDashboard();
-      if(response.status===200){
-        this.data = response.data
-      }
-      else {
-        //await this.$router.push("/pages/login");
-      }
-
-
-
-    },
-
-  },
-
-
-  async beforeCreate() {
-    if (!AuthService.localStorageControl()) {
-      this.$router.push('/pages/login');
-    }
-
-    // await this.setUser()
-
+    // async getDashboardData() {
+    //   let response = await new DashboardService().getAdminDashboard();
+    //   if(response.status===200){
+    //     this.data = response.data
+    //   }
+    //   else {
+    //     //await this.$router.push("/pages/login");
+    //   }
+    //
+    //
+    //
+    // },
 
   },
+
+
+  // async beforeCreate() {
+  //   if (!AuthService.localStorageControl()) {
+  //     this.$router.push('/pages/login');
+  //   }
+  //
+  //   // await this.setUser()
+  //
+  //
+  // },
 
   async mounted() {
-    await this.getDashboardData();
+    // await this.getDashboardData();
 
 
 

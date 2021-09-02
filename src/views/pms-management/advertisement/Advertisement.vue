@@ -106,7 +106,9 @@
                     <CCol lg="4" class="mt-3">
                       <div class="form-actions">
                         <CButton @click="validationForm" type="submit" color="primary"
-                        >Kaydet
+                        >
+                          <c-spinner v-show="loading" size="sm"></c-spinner>
+                          Kaydet
                         </CButton>
 
                       </div>
@@ -131,13 +133,8 @@
                 <CDataTable
                     :items="locations"
                     :fields="fieldsTable"
-                    column-filter
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
-                    sorter
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -146,12 +143,33 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-                      <CButton @click="getSingleAdvertisementLocation(item.uuid)" color="primary" class="mr-2">Düzenle
-                      </CButton>
+                      <CDropdown size="sm" color="dark" toggler-text="İşlemler">
+
+                        <CDropdownItem>
+
+
+                          <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
+
+                          <CButton size="sm" @click="getSingleAdvertisementLocation(item.uuid)">Düzenle</CButton>
+
+                        </CDropdownItem>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
 
 
               </CCardBody>
@@ -167,7 +185,7 @@
         color="danger"
         :show.sync="deleteModel"
     >
-      Personeli silmek istediğinizden emin misiniz?
+      Reklamı silmek istediğinizden emin misiniz?
 
 
       <template #header>
@@ -175,8 +193,11 @@
         <CButtonClose @click="deleteModel = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteAdvertisementLocation" color="success">Evet</CButton>
+        <CButton :disabled="disableDelete" @click="deleteModel = false" color="danger">Hayır</CButton>
+        <CButton @click="deleteAdvertisementLocation" color="success">
+          <c-spinner v-show="loadingDelete" size="sm"></c-spinner>
+          Evet
+        </CButton>
       </template>
 
 
@@ -287,12 +308,15 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Personel Güncelle</h6>
-        <CButtonClose class="text-white"/>
+        <h6 class="modal-title">Reklamı Güncelle</h6>
+        <CButtonClose @click="staffUpdateModal=false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton :disabled="loadingEdit" @click="staffUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="validationForm" color="success">
+          <c-spinner v-show="loadingEdit" size="sm"></c-spinner>
+          Güncelle
+        </CButton>
       </template>
     </CModal>
 
@@ -314,7 +338,7 @@ import {ValidationProvider, ValidationObserver} from 'vee-validate'
 import {required, email, min, max} from 'validations'
 
 export default {
-  name: "AdvertisingLocation",
+  name: "Advertising",
   components: {
     ValidationObserver,
     ValidationProvider
@@ -353,6 +377,7 @@ export default {
       isErrorCustomerUpdate: false,
       groups: [],
       staffUpdateModal: false,
+      advertisementUpdateModal: false,
       details: [],
       errors: [],
       errorsCar: [],
@@ -397,19 +422,21 @@ export default {
       required,
       min,
       max,
-      email
-
-
+      email,
+      loadingEdit: false,
+      loadingDelete: false,
+      disableDelete: false,
+      pageCount: 0
     };
   },
 
   methods: {
     popUpChange() {
       if (this.showPopUp) {
-        console.log("if")
+
         this.showPopUp = false
       } else {
-        console.log("else")
+
         this.showPopUp = false
       }
     },
@@ -420,17 +447,19 @@ export default {
 
     },
     async addAdvertisementLocation() {
+      this.loading = true
       let response = await new AdvertisementLocationService().addAdvertisementLocation(this.advertisement)
       if (response.status === 200) {
-        await this.getAdvertisementLocation()
+        await this.getAdvertisementLocation(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
         })
+        this.loading = false
       } else if (response.status === 401) {
 
       } else {
-        console.log("res", response.data)
+        this.loading = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -441,18 +470,21 @@ export default {
       }
     },
     async editAdvertisementLocation() {
+      this.loadingEdit = true
+      this.disableEdit = true
       let response = await new AdvertisementLocationService().editAdvertisementLocation(this.advertisementUpdate)
       if (response.status === 200) {
-        await this.getAdvertisementLocation()
+        await this.getAdvertisementLocation(1)
         this.staffUpdateModal = false
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
         })
+        this.loadingEdit = false
       } else if (response.status === 401) {
 
       } else {
-        console.log("res", response.data)
+        this.loadingEdit = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -462,15 +494,20 @@ export default {
         }
       }
     },
-    async getAdvertisementLocation() {
-      let response = await new AdvertisementLocationService().getAdvertisementLocation()
+    async getAdvertisementLocation(page) {
+      let response = await new AdvertisementLocationService().getAdvertisementLocation(page)
       this.locations = response.data.data
+      this.pageCount = response.data.activePage
     },
     async deleteAdvertisementLocation() {
+      this.loadingDelete = true
+      this.disableDelete = true
       let response = await new AdvertisementLocationService().deleteAdvertisementLocation(this.deleteId)
       if (response.status === 200) {
-        await this.getAdvertisementLocation()
+        await this.getAdvertisementLocation(1)
         this.deleteModel = false
+        this.loadingDelete = false
+        this.disableDelete = false
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
@@ -478,7 +515,7 @@ export default {
       } else if (response.status === 401) {
 
       } else {
-        console.log("res", response.data)
+        this.loadingDelete = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -511,13 +548,20 @@ export default {
     },
   },
 
-  watch: {},
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getAdvertisementLocation(this.page)
+
+    },
+  },
 
   async created() {
-    await this.getAdvertisementLocation()
+    await this.getAdvertisementLocation(1)
   },
   async mounted() {
-    await this.getAdvertisementLocation()
+    await this.getAdvertisementLocation(1)
 
   },
   computed: {}

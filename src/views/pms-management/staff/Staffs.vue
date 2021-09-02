@@ -87,20 +87,13 @@
                       </validation-provider>
                     </CCol>
                     <CCol lg="4">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Grup">
-                        Grup <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
+                      Grup <span class="text-danger">*</span>
 
-                        <CSelect
-                            :options="groups"
-                            v-model="staff.group"
-                            :value.sync="staff.group"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
+                      <CSelect
+                          :options="groups"
+                          v-model="staff.group"
+                          :value.sync="staff.group"
+                      />
                     </CCol>
                     <CCol lg="4">
                       <validation-provider
@@ -122,7 +115,9 @@
                 </validation-observer>
                 <div class="form-actions">
                   <CButton type="submit" color="primary" @click="validationForm"
-                  >Kaydet
+                  >
+                    <c-spinner v-show="loading" size="sm"></c-spinner>
+                    Kaydet
                   </CButton>
 
                 </div>
@@ -144,13 +139,8 @@
                 <CDataTable
                     :items="staffs"
                     :fields="fieldsTable"
-                    column-filter
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
-                    sorter
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -163,11 +153,32 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-                      <CButton @click="getSingleStaff(item.uuid)" color="primary" class="mr-2">Düzenle</CButton>
+                      <CDropdown size="sm" color="dark" toggler-text="İşlemler">
+                        <CDropdownItem>
+
+
+                          <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
+
+                          <CButton size="sm" @click="getSingleStaff(item.uuid)">Düzenle</CButton>
+
+                        </CDropdownItem>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
 
 
               </CCardBody>
@@ -192,7 +203,10 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteStaff" color="success">Evet</CButton>
+        <CButton @click="deleteStaff" color="success">
+          <c-spinner v-show="loadingDelete" size="sm"></c-spinner>
+          Evet
+        </CButton>
       </template>
 
 
@@ -325,7 +339,10 @@
       </template>
       <template #footer>
         <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton @click="validationForm" color="success">
+          <c-spinner v-show="loadingEdit" size="sm"></c-spinner>
+          Güncelle
+        </CButton>
       </template>
     </CModal>
 
@@ -422,7 +439,10 @@ export default {
       required,
       email,
       min,
-      max
+      max,
+      loadingEdit: false,
+      loadingDelete: false,
+      pageCount: 0
     };
   },
 
@@ -466,23 +486,23 @@ export default {
     async getGroups() {
       let response = await new UserService().getGroups();
       this.groups = response.data
-      console.log("groups", this.groups)
     },
 
     async addStaff() {
-      console.log("group", this.staff)
+      this.loading = true
       let response = await new StaffService().addStaff(this.staff)
       if (response.status === 200) {
-        await this.getStaffs()
+        await this.getStaffs(1)
         this.staff = new Staff("", "", "", "", "", "")
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
         })
+        this.loading = false
       } else if (response.status === 401) {
 
       } else {
-        console.log("res", response.data)
+        this.loading = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -492,23 +512,25 @@ export default {
         }
       }
     },
-    async getStaffs() {
-      let response = await new StaffService().getStaffs()
+    async getStaffs(page) {
+      let response = await new StaffService().getStaffs(page)
       this.staffs = response.data.data
+      this.pageCount = response.data.activePage
     },
     async deleteStaff() {
+      this.loadingDelete = true
       let response = await new StaffService().deleteStaff(this.deleteId)
       if (response.status === 200) {
         this.deleteModel = false
-        await this.getStaffs()
+        await this.getStaffs(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
         })
+        this.loadingDelete = false
       } else if (response.status === 401) {
 
       } else {
-        console.log("res", response.data)
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -527,20 +549,21 @@ export default {
       }
     },
     async editStaff() {
+      this.loadingEdit = true
       this.staffUpdate.group = this.groupUpdate
-      console.log("den", this.staffUpdate)
       let response = await new StaffService().editStaff(this.staffUpdate)
       if (response.status === 200) {
         this.staffUpdateModal = false
-        await this.getStaffs()
+        await this.getStaffs(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
         })
+        this.loadingEdit = false
       } else if (response.status === 401) {
 
       } else {
-        console.log("res", response.data)
+        this.loadingEdit = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -564,15 +587,22 @@ export default {
       })
     },
   },
-  watch: {},
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getStaffs(this.page)
+
+    },
+  },
   created() {
     this.getGroups()
-    this.getStaffs()
+    this.getStaffs(1)
     this.isCorporateControl();
   },
   mounted() {
     this.getGroups()
-    this.getStaffs()
+    this.getStaffs(1)
 
 
   },

@@ -2,8 +2,12 @@ import axios from "axios";
 import authHeader from "@/services/auth-header";
 
 class NotificationService {
-    getNotifications() {
-        return axios.get(process.env.VUE_APP_API_URL + '/management/notification-api/', {headers: authHeader()})
+
+    getNotifications(page) {
+        const params = {
+            activePage: page,
+        }
+        return axios.get(process.env.VUE_APP_API_URL + '/management/notification-api/', {headers: authHeader(),params})
     }
 
     addNotification(notification) {

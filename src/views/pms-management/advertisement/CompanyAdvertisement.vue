@@ -41,40 +41,25 @@
                       </validation-provider>
                     </CCol>
                     <CCol lg="4">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name="Firma Adı">
-                        Firma Adı <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
-
-                        <CSelect
-                            description=""
-                            autocomplete="autocomplete"
-                            :options="companies"
-                            v-model="advertisement.companyName"
-                            :value.sync="advertisement.companyName"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
+                      Firma Adı <span class="text-danger">*</span>
+                      <CSelect
+                          description=""
+                          autocomplete="autocomplete"
+                          :options="companies"
+                          v-model="advertisement.companyName"
+                          :value.sync="advertisement.companyName"
+                      />
                     </CCol>
                     <CCol lg="4">
-                      <validation-provider
-                          #default="{errors}"
-                          rules="required|min:3|max:100"
-                          name=" Reklam Yeri">
-                        Reklam Yeri <span class="text-danger">*</span>
-                        <span class="text-danger">{{ errors[0] }}</span>
+                      Reklam Yeri <span class="text-danger">*</span>
 
-                        <CSelect
-                            description=""
-                            autocomplete="autocomplete"
-                            :options="locations"
-                            v-model="advertisement.locationName"
-                            :value.sync="advertisement.locationName"
-                            :state="errors.length > 0 ? false:null"
-                        />
-                      </validation-provider>
+                      <CSelect
+                          description=""
+                          autocomplete="autocomplete"
+                          :options="locations"
+                          v-model="advertisement.locationName"
+                          :value.sync="advertisement.locationName"
+                      />
                     </CCol>
                     <CCol lg="4">
                       <validation-provider
@@ -85,6 +70,7 @@
                         <span class="text-danger">{{ errors[0] }}</span>
 
                         <CInput
+                            :min="minDate"
                             type="date"
                             v-model="advertisement.publishStartDate"
                             :state="errors.length > 0 ? false:null"
@@ -101,6 +87,7 @@
                         <span class="text-danger">{{ errors[0] }}</span>
 
                         <CInput
+                            :min="minDate"
                             type="date"
                             v-model="advertisement.publishEndDate"
                             :state="errors.length > 0 ? false:null"
@@ -126,7 +113,9 @@
                     <CCol lg="4" class="mt-3">
                       <div class="form-actions">
                         <CButton @click="validationForm" type="submit" color="primary"
-                        >Kaydet
+                        >
+                          <c-spinner v-show="loading" size="sm"></c-spinner>
+                          Kaydet
                         </CButton>
 
                       </div>
@@ -151,13 +140,8 @@
                 <CDataTable
                     :items="advertisements"
                     :fields="fieldsTableAdvertising"
-                    column-filter
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
-                    sorter
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -172,15 +156,49 @@
                       {{ item.location.label }}
                     </td>
                   </template>
+                  <template #publishStartDate="{ item, index }">
+                    <td class="py-2">
+                      {{ item.publishStartDate.substring(8, 11) }}-{{ item.publishStartDate.substring(5, 7) }}-{{
+                        item.publishStartDate.substring(0, 4)
+                      }}
+                    </td>
+                  </template>
+                  <template #publishEndDate="{ item, index }">
+                    <td class="py-2">
+                      {{ item.publishEndDate.substring(8, 11) }}-{{ item.publishEndDate.substring(5, 7) }}-{{
+                        item.publishEndDate.substring(0, 4)
+                      }}
+                    </td>
+                  </template>
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-                      <CButton @click="getSingleAdvertisement(item.uuid)" color="primary" class="mr-2">Düzenle
-                      </CButton>
+                     <CDropdown size="sm" color="dark" toggler-text="İşlemler">
+                        <CDropdownItem>
+
+
+                          <CButton @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
+
+                          <CButton @click="getSingleAdvertisement(item.uuid)">Düzenle</CButton>
+
+                        </CDropdownItem>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
               </CCardBody>
             </template>
           </CCard>
@@ -194,7 +212,7 @@
         color="danger"
         :show.sync="deleteModel"
     >
-      Personeli silmek istediğinizden emin misiniz?
+      Reklamı silmek istediğinizden emin misiniz?
 
 
       <template #header>
@@ -203,7 +221,10 @@
       </template>
       <template #footer>
         <CButton @click="deleteModel = false" color="danger">Hayır</CButton>
-        <CButton @click="deleteAdvertisement" color="success">Evet</CButton>
+        <CButton :disabled="loadingDelete" @click="deleteAdvertisement" color="success">
+          <c-spinner v-show="loadingDelete" size="sm"></c-spinner>
+          Evet
+        </CButton>
       </template>
 
 
@@ -244,7 +265,7 @@
                       <CCol lg="4">
                         <validation-provider
                             #default="{errors}"
-                            rules="required|min:3|max:100"
+                            rules="required"
                             name="Firma Adı">
                           Firma Adı <span class="text-danger">*</span>
                           <span class="text-danger">{{ errors[0] }}</span>
@@ -262,7 +283,7 @@
                       <CCol lg="4">
                         <validation-provider
                             #default="{errors}"
-                            rules="required|min:3|max:100"
+                            rules="required"
                             name=" Reklam Yeri">
                           Reklam Yeri <span class="text-danger">*</span>
                           <span class="text-danger">{{ errors[0] }}</span>
@@ -337,8 +358,11 @@
         <CButtonClose class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton :disabled="loadingEdit" @click="staffUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="validationForm" color="success">
+          <c-spinner v-show="loadingEdit" size="sm"></c-spinner>
+          Güncelle
+        </CButton>
       </template>
     </CModal>
 
@@ -444,7 +468,12 @@ export default {
       required,
       email,
       min,
-      max
+      max,
+      loadingEdit: false,
+      loadingDelete: false,
+      minDate: '',
+      pageCount: 0
+
 
     };
   },
@@ -452,10 +481,8 @@ export default {
   methods: {
     popUpChange() {
       if (this.showPopUp) {
-        console.log("if")
         this.showPopUp = false
       } else {
-        console.log("else")
         this.showPopUp = false
       }
     },
@@ -474,6 +501,7 @@ export default {
       this.companies = response.data
     },
     async addAdvertisement() {
+      this.loading = true
       if (this.advertisement.locationName === '') {
         this.advertisement.locationName = this.locations[0].value
       }
@@ -482,16 +510,35 @@ export default {
       }
       let response = await new CompanyAdvertisementService().addAdvertisement(this.advertisement)
       if (response.status === 200) {
-        await this.getAdvertisements()
+        this.loading = false
+        await this.getAdvertisements(1)
         this.advertisement = new CompanyAdvertisement("", "", "", "", "", "", "")
         this.$toast.success({
           title: 'Başarılı',
-          message: "işlem başarıyla gerçekleşti"
+          message: "Reklam başarıyla eklendi"
         })
       } else if (response.status === 401) {
+        console.log()
+
+      } else if (response.status === 406) {
+        this.loading=false
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Başlangıç tarihi bitiş tarihinden büyük olamaz"
+        })
+      } else if (response.status === 301) {
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Başlangıç tarihi bugünün tarihinden küçük olamaz"
+        })
+      } else if (response.status === 411) {
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Bitiş tarihi bugünün tarihinden küçük olamaz"
+        })
 
       } else {
-        console.log("res", response.data)
+        this.loadingEdit = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -502,27 +549,40 @@ export default {
       }
     },
     async editAdvertisement() {
-      console.log("comp0", this.advertisementUpdate)
-      // if (this.advertisementUpdate.locationName === '') {
-      //   this.advertisementUpdate.locationName = this.locations[0].value
-      // }
-      // if (this.advertisementUpdate.companyName === '') {
-      //   this.advertisementUpdate.companyName = this.companies[0].value
-      // }
+      this.loadingEdit = true
       this.advertisementUpdate.locationName = this.locationUpdate
       this.advertisementUpdate.companyName = this.companyUpdate
       let response = await new CompanyAdvertisementService().editAdvertisement(this.advertisementUpdate)
       if (response.status === 200) {
-        await this.getAdvertisements()
+        await this.getAdvertisements(1)
         this.staffUpdateModal = false
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
         })
+        this.loadingEdit = false
       } else if (response.status === 401) {
+        console.log()
+
+
+      } else if (response.status === 406) {
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Başlangıç tarihi bitiş tarihinden büyük olamaz"
+        })
+      } else if (response.status === 301) {
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Başlangıç tarihi bugünün tarihinden küçük olamaz"
+        })
+      } else if (response.status === 411) {
+        this.$toast.success({
+          title: 'Başarısız',
+          message: "Bitiş tarihi bugünün tarihinden küçük olamaz"
+        })
 
       } else {
-        console.log("res", response.data)
+        this.loadingEdit = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -530,12 +590,14 @@ export default {
             message: `${key}: ${value}`
           })
         }
+
       }
 
     },
-    async getAdvertisements() {
-      let response = await new CompanyAdvertisementService().getAdvertisement()
+    async getAdvertisements(page) {
+      let response = await new CompanyAdvertisementService().getAdvertisement(page)
       this.advertisements = response.data.data
+      this.pageCount = response.data.activePage
 
     },
     async getSingleAdvertisement(id) {
@@ -550,18 +612,21 @@ export default {
 
     },
     async deleteAdvertisement() {
+      this.loadingDelete = true
       let response = await new CompanyAdvertisementService().deleteAdvertisement(this.deleteId)
       if (response.status === 200) {
-        await this.getAdvertisements()
+        await this.getAdvertisements(1)
+        this.loadingDelete = false
         this.deleteModel = false
         this.$toast.success({
           title: 'Başarılı',
-          message: "işlem başarıyla gerçekleşti"
+          message: "Reklam başarıyla silindi"
         })
       } else if (response.status === 401) {
+        console.log()
 
       } else {
-        console.log("res", response.data)
+        this.loadingDelete = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -581,25 +646,38 @@ export default {
             await this.addAdvertisement()
           }
         } else {
+          console.log()
         }
       })
+    }
+  },
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getAdvertisements(this.page)
+
     },
   },
-
-  watch: {},
 
   async created() {
     await this.selectCompany()
     await this.selectLocation()
-    await this.getAdvertisements()
+    await this.getAdvertisements(1)
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+    this.minDate = today
   },
   async mounted() {
     await this.selectCompany()
     await this.selectLocation()
-    await this.getAdvertisements()
+    await this.getAdvertisements(1)
 
   },
-  computed: {}
 
-};
+}
 </script>

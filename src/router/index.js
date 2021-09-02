@@ -1,9 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import ProductList from "@/views/catalog/ProductList";
-import Repairman from "@/views/staff/Staff";
-import Staff from "@/views/staff/Staff";
-import UserService from "../services/UserService"
+import UserService from "../services/UserService";
 
 
 // Containers
@@ -83,11 +81,6 @@ const ServiceDetail = () => import('@/views/service/ServiceDetail')
 
 const ServiceCustomerApprove = () => import('@/views/service/ServiceCustomerApprove')
 
-const CheckingAccountList = () => import('@/views/checkingAccount/CheckingAccountList')
-
-const CheckingAccountByCustomerList = () => import('@/views/checkingAccount/CheckingAccounByCustomerList')
-
-
 const Staffs = () => import('@/views/pms-management/staff/Staffs')
 
 const Clinic = () => import('@/views/pms-management/clinic/Clinic')
@@ -99,7 +92,7 @@ const Group = () => import('@/views/pms-management/staff/Group')
 const Advertisement = () => import('@/views/pms-management/advertisement/CompanyAdvertisement')
 
 const AdvertisementLocation = () => import('@/views/pms-management/advertisement/Advertisement')
-const Company = () => import('@/views/pms-management/advertisement/company/Company')
+const Company = () => import('@/views/pms-management/advertisement/Company')
 
 const ClinicAccounting = () => import('@/views/pms-management/accounting/ClinicAccounting')
 
@@ -114,6 +107,27 @@ const Notifications = () => import('@/views/pms-management/notifications/Notific
 const Wristbands = () => import('@/views/pms-management/wristbands/Wristbands');
 
 const Contract = () => import('@/views/pms-management/contract/Contract');
+
+const Doctor = () => import('@/views/pms-doctor/doctor/Doctor')
+
+const Blog = () => import('@/views/pms-doctor/doctor/Blog')
+
+const DoctorProfile = () => import('@/views/pms-doctor/doctor/DoctorProfile')
+
+const Appointment = () => import('@/views/pms-doctor/patient/PatientAppointment')
+
+const Patient = () => import('@/views/pms-doctor/patient/Patient')
+
+const Protocol = () => import('@/views/pms-doctor/patient/Protocol')
+
+const Assay = () => import('@/views/pms-doctor/patient/Assay')
+
+const Secretary = () => import('@/views/pms-doctor/secretary/Secretary')
+
+const patientCalendar = () => import('@/views/pms-doctor/patient/PatientAppointmentCalendar')
+
+const AccountingListClinic = () => import('@/views/pms-doctor/checkingAccount/Accounting')
+
 
 Vue.use(Router)
 
@@ -131,6 +145,7 @@ function configRoutes() {
         serviceman: "Tamirci",
         customer: "Customer",
         accountant: "Muhasebe",
+
     }
 
     var dashboard_link = "/staffs"
@@ -257,6 +272,7 @@ function configRoutes() {
 
                     ]
                 },
+
                 {
                     path: '/catalog',
                     redirect: '/catalog/category',
@@ -288,7 +304,7 @@ function configRoutes() {
 
                 {
                     path: '/clinic',
-                    redirect: '/clinic/clinic',
+                    redirect: '',
                     name: 'Clinic',
                     component: {
                         render(c) {
@@ -300,6 +316,190 @@ function configRoutes() {
                             path: 'clinic',
                             name: 'Clinic',
                             component: Clinic
+                        }
+
+
+                    ]
+                },
+
+
+                {
+                    path: '/patient',
+                    redirect: '',
+                    name: 'Patient',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'list',
+                            name: 'Patient',
+                            component: Patient
+                        }
+
+
+                    ]
+                },
+                {
+                    path: '/accounting',
+                    redirect: '',
+                    name: 'AccountingListClinic',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'list',
+                            name: 'AccountingListClinic',
+                            component: AccountingListClinic
+                        }
+
+
+                    ]
+                },
+                {
+                    path: '',
+                    redirect: '',
+                    name: 'protocol',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'protocol/:patient',
+                            name: 'protocol',
+                            component: Protocol
+                        }
+
+
+                    ]
+                },
+                {
+                    path: '/patientCalendar',
+                    redirect: '',
+                    name: 'PatientCalendar',
+                    component: patientCalendar
+
+                },
+
+
+                {
+                    path: '/doctor',
+                    redirect: '/doctor',
+                    name: 'Doctor',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'list',
+                            name: 'Doctor',
+                            component: Doctor
+                        }
+
+
+                    ]
+                },
+
+                {
+                    path: '/profile',
+                    redirect: '',
+                    name: 'profile',
+                    component: DoctorProfile
+
+
+                },
+
+
+
+                {
+                    path: '/assay',
+                    redirect: '',
+                    name: 'Assay',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'assay',
+                            name: 'Assay',
+                            component: Assay
+                        }
+
+
+                    ]
+                },
+
+
+
+                 {
+                    path: '/blog',
+                    redirect: '',
+                    name: 'Blog',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'blog',
+                            name: 'Blog',
+                            component: Blog
+                        }
+
+
+                    ]
+                },
+
+
+                {
+                    path: '/appointment',
+                    redirect: '/appointment',
+                    name: 'Appointment',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'appointment',
+                            name: 'Appointment',
+                            component: Appointment
+                        }
+
+
+                    ]
+                },
+
+
+
+
+                {
+                    path: '/secretary',
+                    redirect: '/secretary',
+                    name: 'Secretary',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [
+                        {
+                            path: 'list',
+                            name: 'Secretary',
+                            component: Secretary
                         }
 
 
@@ -650,29 +850,6 @@ function configRoutes() {
                     ]
                 },
                 {
-                    path: 'checking-account',
-                    redirect: '/checking-account/checking-account-list',
-                    name: 'CheckingAccount',
-                    component: {
-                        render(c) {
-                            return c('router-view')
-                        }
-                    },
-                    children: [
-                        {
-                            path: 'checking-account-list',
-                            name: 'CheckingAccountList',
-                            component: CheckingAccountList
-                        },
-                        {
-                            path: 'customer/:customerId',
-                            name: 'CheckingAccountByCustomer',
-                            component: CheckingAccountByCustomerList
-                        },
-
-                    ]
-                },
-                {
                     path: 'notifications',
                     redirect: '/notifications/alerts',
                     name: 'Notifications',
@@ -742,4 +919,3 @@ function configRoutes() {
 
     ]
 }
-

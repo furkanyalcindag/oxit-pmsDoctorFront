@@ -45,19 +45,11 @@
                     </td>
                   </template>
 
-                  <template #buttons="{ item, index }">
+                  <template #actions="{ item, index }">
                     <td class="py-2">
 
 
-                      <CDropdown
-                          color="link"
-                          size="lg"
-                          :caret="false"
-                          placement="top-start"
-                      >
-                        <template #toggler-content>
-                          &#x1F4C2;<span class="sr-only">sss</span>
-                        </template>
+                      <CDropdown size="sm" color="dark" toggler-text="İşlemler">
                         <!--<CDropdownItem @click="getServiceDetail(item.uuid)">Servis Detay</CDropdownItem> -->
                         <CDropdownItem v-for="(button,key) in item.buttons" :key="key"
                                        @click="generalService(item.checkingAccountId,button.buttonFunction)">
@@ -266,7 +258,7 @@
         <CButtonClose @click="paymentsModal = false" class="text-white"/>
       </template>
       <template #footer>
-          <CButton @click="getPaymentMovementPdf" color="primary" class="float-right">Ekstre</CButton>
+        <CButton @click="getPaymentMovementPdf" color="primary" class="float-right">Ekstre</CButton>
         <CButton @click="paymentsModal = false" color="danger">Kapat</CButton>
 
       </template>
@@ -376,7 +368,7 @@ export default {
         {key: "discount", label: "İndirim"},
         {key: "remainingPrice", label: "Kalan Ücret"},
         {key: "paymentSituation", label: "Ödeme Durumu"},
-        {key: "buttons", label: "İşlemler"},
+        {key: "actions", label: "İşlemler"},
       ],
       fieldsTablePayment: [
         {key: 'paymentAmount', label: "Ödeme Miktarı", _style: "min-width:200px"},
@@ -454,9 +446,9 @@ export default {
       paymentMovements: [],
       paymentsModal: false,
       discountModal: false,
-      remainCheckout:0,
-      totalCheckout:0,
-      checkingAccountUUID:''
+      remainCheckout: 0,
+      totalCheckout: 0,
+      checkingAccountUUID: ''
     };
   },
 
@@ -514,7 +506,7 @@ export default {
 
     async getPaymentMovementsList(id) {
 
-      this.checkingAccountUUID=id
+      this.checkingAccountUUID = id
       let response = await new CheckingAccountService().getPaymentMovement(id);
 
       this.paymentMovements = response.data

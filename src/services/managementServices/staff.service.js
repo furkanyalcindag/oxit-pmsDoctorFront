@@ -3,8 +3,40 @@ import authHeader from "@/services/auth-header";
 
 class StaffService {
 
-    getStaffs() {
-        return axios.get(process.env.VUE_APP_API_URL + '/management/staff-api/', {headers: authHeader()})
+    getStaffs(page) {
+        const params = {
+            activePage: page
+        }
+        return axios.get(process.env.VUE_APP_API_URL + '/management/staff-api/', {headers: authHeader(), params})
+
+    }
+
+    getGeneralInfo() {
+        return axios.get(process.env.VUE_APP_API_URL + '/pmsDoctor/general-info-api/', {headers: authHeader()})
+
+    }
+
+    editGeneralInfo(staff) {
+        const params = {
+            id: staff.uuid
+
+
+        }
+        return axios.put(process.env.VUE_APP_API_URL + '/pmsDoctor/general-info-api/', {
+            profileImage: staff.profileImage,
+            diplomaNo: staff.diplomaNo,
+            departmentId: staff.department,
+            profession: staff.profession,
+            title: staff.title
+
+
+        }, {headers: authHeader(), params}).then(response => {
+
+
+            return response;
+        }).catch(error => {
+            return error
+        });
 
     }
 

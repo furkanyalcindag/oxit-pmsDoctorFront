@@ -91,7 +91,9 @@
                     <CCol lg="6" class="mt-3">
                       <div class="form-actions">
                         <CButton type="submit" color="primary" @click="validationForm"
-                        >Kaydet
+                        >
+                          <c-spinner v-show="loading" size="sm"></c-spinner>
+                          Kaydet
                         </CButton>
 
                       </div>
@@ -116,13 +118,9 @@
                 <CDataTable
                     :items="companies"
                     :fields="fieldsTableGroup"
-                    column-filter
                     :border="true"
-                    :items-per-page="5"
-                    :activePage="4"
                     hover
                     sorter
-                    pagination
                     :noItemsView="{ noResults: 'Veri bulunamadı', noItems: 'Veri bulunamadı' }"
                     clickableRows
 
@@ -131,11 +129,32 @@
 
                   <template #actions="{ item, index }">
                     <td class="py-2">
-                      <CButton @click="setDeleteModal(item.uuid)" color="danger" class="mr-2">Sil</CButton>
-                      <CButton @click="getSingleCompany(item.uuid)" color="primary" class="mr-2">Düzenle</CButton>
+                      <CDropdown toggler-text="İşlemler">
+                        <CDropdownItem>
+
+
+                          <CButton size="sm" @click="setDeleteModal(item.uuid)" class="mr-2">Sil</CButton>
+                        </CDropdownItem>
+                        <CDropdownItem>
+
+                          <CButton size="sm" @click="getSingleCompany(item.uuid)">Düzenle</CButton>
+
+                        </CDropdownItem>
+                      </CDropdown>
                     </td>
                   </template>
                 </CDataTable>
+                <template>
+                  <div>
+
+                    <CPagination
+                        :activePage.sync="page"
+                        :pages="pageCount"
+                        size="sm"
+                        align="end"
+                    />
+                  </div>
+                </template>
               </CCardBody>
             </template>
           </CCard>
@@ -157,8 +176,11 @@
         <CButtonClose @click="deleteModel = false" class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="deleteModel=false" color="danger">Hayır</CButton>
-        <CButton @click="deleteCompany" color="success">Evet</CButton>
+        <CButton :disabled="loadingDelete" @click="deleteModel=false" color="danger">Hayır</CButton>
+        <CButton @click="deleteCompany" color="success">
+          <c-spinner v-show="loadingDelete" size="sm"></c-spinner>
+          Evet
+        </CButton>
       </template>
 
 
@@ -254,12 +276,15 @@
         </CCol>
       </CRow>
       <template #header>
-        <h6 class="modal-title">Personel Güncelle</h6>
+        <h6 class="modal-title">Firma Güncelle</h6>
         <CButtonClose class="text-white"/>
       </template>
       <template #footer>
-        <CButton @click="staffUpdateModal = false" color="danger">Kapat</CButton>
-        <CButton @click="validationForm" color="success">Güncelle</CButton>
+        <CButton :disabled="loadingEdit" @click="staffUpdateModal = false" color="danger">Kapat</CButton>
+        <CButton @click="validationForm" color="success">
+          <c-spinner v-show="loadingEdit" size="sm"></c-spinner>
+          Güncelle
+        </CButton>
       </template>
     </CModal>
 
@@ -269,8 +294,8 @@
 
 <script>
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
-import CompanyService from "../../../../services/managementServices/company.service";
-import Company from "../../../../models/pms/company";
+import CompanyService from "../../../services/managementServices/company.service";
+import Company from "../../../models/pms/company";
 import {ValidationProvider, ValidationObserver} from 'vee-validate'
 import {required, email, min, max} from 'validations'
 
@@ -349,7 +374,10 @@ export default {
       required,
       email,
       min,
-      max
+      max,
+      loadingDelete: false,
+      loadingEdit: false,
+      pageCount: 0
     };
   },
 
@@ -359,20 +387,20 @@ export default {
       this.deleteModel = true
     },
     async addCompany() {
+      this.loading = true
       let response = await new CompanyService().addCompany(this.company)
-      console.log("res", response)
       if (response.status === 200) {
-        await this.getCompanies()
+        await this.getCompanies(1)
         this.company = new Company("", "", "", "", "")
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
         })
-
+        this.loading = false
       } else if (response.status === 401) {
 
       } else {
-        console.log("res", response.data)
+        this.loading = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -384,17 +412,39 @@ export default {
 
     },
     async editCompany() {
+      this.loadingEdit = true
       let response = await new CompanyService().editCompany(this.companyUpdate)
       if (response.status === 200) {
         this.staffUpdateModal = false
-        await this.getCompanies()
+        await this.getCompanies(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
         })
+        this.loadingEdit = false
+      } else if (response.status === 406) {
+        this.loadingEdit = false
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Başlangıç saati bitiş saatinden büyük olamaz"
+        })
+      } else if (response.status === 301) {
+        this.loadingEdit = false
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Başlangıç tarihi bugünün tarihinden küçük olamaz"
+        })
+      } else if (response.status === 417) {
+        this.loadingEdit = false
+        this.$toast.warn({
+          title: 'Başarısız',
+          message: "Bitiş tarihi bugünün tarihinden küçük olamaz"
+        })
       } else if (response.status === 401) {
+        localStorage.clear()
 
       } else {
+        this.loadingEdit = false
         this.errors = response.response.data;
         for (const [key, value] of Object.entries(this.errors)) {
           this.$toast.error({
@@ -406,14 +456,16 @@ export default {
 
     },
     async deleteCompany() {
+      this.loadingDelete = true
       let response = await new CompanyService().deleteCompany(this.deleteId)
       if (response.status === 200) {
         this.deleteModel = false
-        await this.getCompanies()
+        await this.getCompanies(1)
         this.$toast.success({
           title: 'Başarılı',
           message: "işlem başarıyla gerçekleşti"
         })
+        this.loadingDelete = false
       }
 
     },
@@ -424,9 +476,10 @@ export default {
         this.companyUpdate = response.data
       }
     },
-    async getCompanies() {
-      let response = await new CompanyService().getCompanies()
+    async getCompanies(page) {
+      let response = await new CompanyService().getCompanies(page)
       this.companies = response.data.data
+      this.pageCount = response.data.activePage
 
     },
     async validationForm() {
@@ -443,18 +496,24 @@ export default {
     },
   },
 
-  watch: {},
+
+  watch: {
+
+    page: function (val) {
+      console.log(val)
+      this.getCompanies(this.page)
+
+    },
+  },
 
   async created() {
-    await this.getCompanies()
+    await this.getCompanies(1)
 
 
   },
   async mounted() {
-    await this.getCompanies()
+    await this.getCompanies(1)
 
   },
-  computed: {}
-
-};
+}
 </script>

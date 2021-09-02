@@ -1,5 +1,7 @@
 import 'core-js/stable'
 import Vue from 'vue'
+import vuetimeline from "@growthbunker/vuetimeline";
+
 
 import App from './App'
 import router from './router'
@@ -11,13 +13,24 @@ import VueLazyload from 'vue-lazyload'
 import VueUploadMultipleImage from 'vue-upload-multiple-image'
 import CxltToastr from "cxlt-vue2-toastr";
 import tr from 'vee-validate/dist/locale/tr';
+import VCalender from 'v-calendar'
+import VueQuillEditor from 'vue-quill-editor'
 
+// require styles
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+Vue.use(VueQuillEditor)
 Vue.use(VueLazyload)
+Vue.use(vuetimeline);
 
 Vue.use(VeeValidate);
-Validator.localize('tr',tr)
+Validator.localize('tr', tr)
 Vue.config.performance = true
-
+Vue.use(VCalender, {
+    componentPrefix: 'vc',
+})
 Vue.use(CoreuiVue)
 Vue.config.productionTip = false;
 

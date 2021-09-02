@@ -34,8 +34,11 @@ class CompanyService {
         });
     }
 
-    getCompanies() {
-        return axios.get(process.env.VUE_APP_API_URL + '/management/company-api/', {headers: authHeader()})
+    getCompanies(page) {
+        const params = {
+            activePage: page
+        }
+        return axios.get(process.env.VUE_APP_API_URL + '/management/company-api/', {headers: authHeader(), params})
     }
 
     getSingleCompany(id) {
