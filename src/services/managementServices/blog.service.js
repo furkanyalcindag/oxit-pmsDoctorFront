@@ -23,7 +23,8 @@ class BlogService {
                 departmentId: blog.department,
                 image: blog.image,
                 description: blog.description,
-                isPublish: blog.isPublish
+                isPublish: blog.isPublish,
+                isSponsored: blog.isSponsored
 
 
             }, {headers: authHeader()}).then(response => {
@@ -46,7 +47,8 @@ class BlogService {
                 departmentId: blog.department,
                 description: blog.description,
                 image: blog.image,
-                isPublish: blog.isPublish
+                isPublish: blog.isPublish,
+                isSponsored: blog.isSponsored
 
 
             }, {headers: authHeader(), params}).then(response => {
