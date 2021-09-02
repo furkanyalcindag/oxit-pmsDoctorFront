@@ -194,10 +194,6 @@
               </CCardBody>
 
 
-
-
-
-
             </CCollapse>
           </CCard>
         </transition>
@@ -542,7 +538,7 @@ export default {
   data() {
     return {
       fieldsTable: [
-        {key: 'firstName', label: "Hasta Adı", _style: "min-width:200px"},
+        {key: 'firstName', label: "Adı Soyadı", _style: "min-width:200px"},
         {key: "email", label: "Email"},
         {key: "identityNumber", label: "TC No"},
         {key: "bloodGroup", label: "Kan Grubu"},
@@ -550,6 +546,7 @@ export default {
         {key: "mobilePhone", label: "Telefon Numarası"},
         {key: "birthDate", label: "Doğum Tarihi"},
         {key: "actions", label: "İşlemler"}
+
 
       ],
 
@@ -635,7 +632,7 @@ export default {
       loadingDelete: false,
       loadingEdit: false,
       pageCount: 0,
-      group:''
+      group: ''
 
 
     };
